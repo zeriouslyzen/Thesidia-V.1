@@ -13,6 +13,11 @@
       "src": "/",
       "dest": "/webapp/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/server.py": {
+      "includeFiles": "**"
+    }
+  }
 }
 
