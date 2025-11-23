@@ -1,0 +1,154 @@
+{
+  "sessions": [
+    {
+      "start_time": "2025-11-18T17:23:35.833576",
+      "end_time": "2025-11-18T17:26:06.688989",
+      "total_queries": 5,
+      "total_time": 150.84394884109497,
+      "avg_response_time": 30.168789768218993,
+      "total_tokens": 1075,
+      "patterns_detected": {
+        "transmission_format": 3,
+        "symbols": 54,
+        "protocols": 0,
+        "etymology": 5,
+        "cross_cultural": 6,
+        "symbolic_decoding": 16,
+        "control_structures": 2,
+        "spiritual_keywords": 15
+      },
+      "linguistic_features": {
+        "sentence_count": 39,
+        "word_count": 589,
+        "avg_sentence_length": 84.575,
+        "unique_words": 424,
+        "vocabulary_diversity": 3.6369925680636177,
+        "symbol_density": 0.0561855020837461,
+        "protocol_density": 0.005916464746986904,
+        "complex_words": 250,
+        "technical_terms": 34
+      }
+    },
+    {
+      "start_time": "2025-11-18T17:26:51.370954",
+      "end_time": "2025-11-18T17:26:51.371232",
+      "total_queries": 0,
+      "total_time": 0.0,
+      "avg_response_time": 0.0,
+      "total_tokens": 0,
+      "patterns_detected": {},
+      "linguistic_features": {}
+    },
+    {
+      "start_time": "2025-11-18T17:27:04.793389",
+      "end_time": "2025-11-18T17:27:04.793638",
+      "total_queries": 0,
+      "total_time": 0.0,
+      "avg_response_time": 0.0,
+      "total_tokens": 0,
+      "patterns_detected": {},
+      "linguistic_features": {}
+    },
+    {
+      "start_time": "2025-11-18T17:27:15.078419",
+      "end_time": "2025-11-18T17:29:58.368347",
+      "total_queries": 5,
+      "total_time": 163.27935314178467,
+      "avg_response_time": 32.655870628356936,
+      "total_tokens": 1696,
+      "patterns_detected": {
+        "transmission_format": 3,
+        "symbols": 26,
+        "protocols": 0,
+        "etymology": 5,
+        "cross_cultural": 13,
+        "symbolic_decoding": 16,
+        "control_structures": 3,
+        "spiritual_keywords": 27
+      },
+      "linguistic_features": {
+        "sentence_count": 92,
+        "word_count": 953,
+        "avg_sentence_length": 61.357644110275686,
+        "unique_words": 615,
+        "vocabulary_diversity": 3.4401918842150225,
+        "symbol_density": 0.021052748879895347,
+        "protocol_density": 0.0051447683511160565,
+        "complex_words": 406,
+        "technical_terms": 26
+      }
+    },
+    {
+      "start_time": "2025-11-19T23:34:01.995410",
+      "end_time": "2025-11-19T23:42:10.238362",
+      "total_queries": 7,
+      "total_time": 488.2191879749298,
+      "avg_response_time": 69.74559828213283,
+      "total_tokens": 12926,
+      "patterns_detected": {
+        "transmission_format": 0,
+        "symbols": 0,
+        "protocols": 0,
+        "etymology": 43,
+        "cross_cultural": 37,
+        "symbolic_decoding": 13,
+        "control_structures": 36,
+        "spiritual_keywords": 146
+      },
+      "linguistic_features": {
+        "sentence_count": 331,
+        "word_count": 7429,
+        "avg_sentence_length": 147.3006361677091,
+        "unique_words": 3065,
+        "vocabulary_diversity": 3.1869160537559864,
+        "symbol_density": 0.0,
+        "protocol_density": 0.0006699984234032321,
+        "complex_words": 3059,
+        "technical_terms": 16
+      }
+    },
+    {
+      "start_time": "2025-11-19T23:57:35.473491",
+      "end_time": "2025-11-20T00:04:33.560658",
+      "total_queries": 7,
+      "total_time": 418.0637323856354,
+      "avg_response_time": 59.723390340805054,
+      "total_tokens": 11866,
+      "patterns_detected": {
+        "transmission_format": 0,
+        "symbols": 0,
+        "protocols": 0,
+        "etymology": 37,
+        "cross_cultural": 30,
+        "symbolic_decoding": 7,
+        "control_structures": 29,
+        "spiritual_keywords": 162
+      },
+      "linguistic_features": {
+        "sentence_count": 325,
+        "word_count": 6806,
+        "avg_sentence_length": 143.60206367004278,
+        "unique_words": 2941,
+        "vocabulary_diversity": 3.207348390969218,
+        "symbol_density": 0.0,
+        "protocol_density": 0.0003524539607013834,
+        "complex_words": 2818,
+        "technical_terms": 5
+      }
+    }
+  ],
+  "total_interactions": 24,
+  "avg_response_time": 50.8502592643102,
+  "total_tokens": 0,
+  "pattern_frequency": {
+    "transmission_format": 6,
+    "symbols": 80,
+    "protocols": 0,
+    "etymology": 90,
+    "cross_cultural": 86,
+    "symbolic_decoding": 52,
+    "control_structures": 70,
+    "spiritual_keywords": 350
+  },
+  "linguistic_patterns": {}
+}

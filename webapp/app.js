@@ -1,0 +1,804 @@
+// Thesidia Web App - Security-First, High-End Mobile Interface
+
+class ThesidiaApp {
+    constructor() {
+        this.apiEndpoint = '/api/thesidia'; // Backend API endpoint
+        this.statusEndpoint = '/api/status'; // Status endpoint
+        this.conversations = [];
+        this.currentConversationId = null;
+        this.isProcessing = false;
+        this.showThinking = false;
+        this.deepResearchMode = false;
+        this.autoDetect = true;
+        
+        this.init();
+    }
+    
+    init() {
+        this.setupEventListeners();
+        this.loadConversations();
+        this.setupAutoResize();
+        this.setupKeyboardShortcuts();
+        this.checkStatus();
+        this.startStatusPolling();
+    }
+    
+    async checkStatus() {
+        try {
+            const response = await fetch(this.statusEndpoint);
+            const data = await response.json();
+            
+            this.updateStatusIndicators(data);
+        } catch (error) {
+            console.error('Status check error:', error);
+            this.updateStatusIndicators({
+                ollama_status: false,
+                thesidia_ready: false
+            });
+        }
+    }
+    
+    updateStatusIndicators(status) {
+        const ollamaStatus = document.getElementById('ollamaStatus');
+        const thesidiaStatus = document.getElementById('thesidiaStatus');
+        
+        if (!ollamaStatus || !thesidiaStatus) {
+            console.error('Status indicators not found in DOM');
+            return;
+        }
+        
+        // Ollama status
+        const ollamaDot = ollamaStatus.querySelector('.status-dot');
+        if (ollamaDot) {
+            if (status.ollama_status) {
+                ollamaDot.classList.add('online');
+                ollamaDot.classList.remove('offline');
+            } else {
+                ollamaDot.classList.add('offline');
+                ollamaDot.classList.remove('online');
+            }
+        }
+        
+        // Thesidia status
+        const thesidiaDot = thesidiaStatus.querySelector('.status-dot');
+        if (thesidiaDot) {
+            if (status.thesidia_ready && status.ollama_status) {
+                thesidiaDot.classList.add('ready');
+                thesidiaDot.classList.remove('offline');
+            } else {
+                thesidiaDot.classList.add('offline');
+                thesidiaDot.classList.remove('ready');
+            }
+        }
+    }
+    
+    startStatusPolling() {
+        // Check status every 5 seconds
+        setInterval(() => {
+            this.checkStatus();
+        }, 5000);
+    }
+    
+    setupEventListeners() {
+        try {
+            // Send button
+            const sendBtn = document.getElementById('sendBtn');
+            const promptInput = document.getElementById('promptInput');
+            
+            if (!sendBtn || !promptInput) {
+                console.error('Critical elements not found: sendBtn or promptInput');
+                return;
+            }
+            
+            sendBtn.addEventListener('click', () => this.sendMessage());
+            promptInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendMessage();
+                }
+            });
+            
+            // Menu toggle
+            const menuBtn = document.getElementById('menuBtn');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const overlay = document.getElementById('overlay');
+            
+            if (menuBtn) menuBtn.addEventListener('click', () => this.toggleSidebar());
+            if (closeSidebar) closeSidebar.addEventListener('click', () => this.toggleSidebar());
+            if (overlay) overlay.addEventListener('click', () => this.toggleSidebar());
+            
+            // New chat
+            const newChatBtn = document.getElementById('newChatBtn');
+            if (newChatBtn) newChatBtn.addEventListener('click', () => this.newConversation());
+        } catch (error) {
+            console.error('Error setting up event listeners:', error);
+        }
+        
+        // Thinking toggle
+        const thinkingToggle = document.getElementById('showThinkingToggle');
+        if (thinkingToggle) {
+            thinkingToggle.addEventListener('change', (e) => {
+                this.showThinking = e.target.checked;
+                const thinkingBtn = document.getElementById('thinkingBtn');
+                if (thinkingBtn) {
+                    if (this.showThinking) {
+                        thinkingBtn.classList.add('active');
+                    } else {
+                        thinkingBtn.classList.remove('active');
+                    }
+                }
+            });
+        }
+        
+        // Deep research toggle
+        const deepResearchToggle = document.getElementById('deepResearchToggle');
+        if (deepResearchToggle) {
+            deepResearchToggle.addEventListener('change', (e) => {
+                this.deepResearchMode = e.target.checked;
+                // Disable auto-detect when manual mode is enabled
+                if (this.deepResearchMode) {
+                    const autoDetectToggle = document.getElementById('autoDetectToggle');
+                    if (autoDetectToggle) {
+                        autoDetectToggle.checked = false;
+                        this.autoDetect = false;
+                    }
+                }
+            });
+        }
+        
+        // Auto-detect toggle
+        const autoDetectToggle = document.getElementById('autoDetectToggle');
+        if (autoDetectToggle) {
+            autoDetectToggle.addEventListener('change', (e) => {
+                this.autoDetect = e.target.checked;
+                // Disable deep research when auto-detect is enabled
+                if (this.autoDetect) {
+                    const deepResearchToggle = document.getElementById('deepResearchToggle');
+                    if (deepResearchToggle) {
+                        deepResearchToggle.checked = false;
+                        this.deepResearchMode = false;
+                    }
+                }
+            });
+        }
+        
+        // Toggle thinking display
+        const toggleThinking = document.getElementById('toggleThinking');
+        if (toggleThinking) {
+            toggleThinking.addEventListener('click', () => {
+                const thinkingSteps = document.getElementById('thinkingSteps');
+                if (thinkingSteps) {
+                    if (thinkingSteps.style.display === 'none') {
+                        thinkingSteps.style.display = 'block';
+                        toggleThinking.textContent = 'Hide';
+                    } else {
+                        thinkingSteps.style.display = 'none';
+                        toggleThinking.textContent = 'Show';
+                    }
+                }
+            });
+        }
+        
+        // Auto-resize textarea
+        promptInput.addEventListener('input', () => this.autoResizeTextarea(promptInput));
+    }
+    
+    setupAutoResize() {
+        const promptInput = document.getElementById('promptInput');
+        promptInput.addEventListener('input', () => {
+            promptInput.style.height = 'auto';
+            promptInput.style.height = Math.min(promptInput.scrollHeight, 200) + 'px';
+        });
+    }
+    
+    setupKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // Cmd/Ctrl + K for new chat
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                this.newConversation();
+            }
+            
+            // Escape to close sidebar
+            if (e.key === 'Escape') {
+                this.closeSidebar();
+            }
+        });
+    }
+    
+    async sendMessage() {
+        const promptInput = document.getElementById('promptInput');
+        const message = promptInput.value.trim();
+        
+        if (!message || this.isProcessing) return;
+        
+        // Clear input
+        promptInput.value = '';
+        promptInput.style.height = 'auto';
+        
+        // Add user message
+        this.addMessage('user', message);
+        
+        // Show typing indicator
+        this.showTypingIndicator();
+        
+        // Disable send button
+        this.isProcessing = true;
+        this.updateSendButton();
+        
+        try {
+            // Send to backend (streaming handles UI updates)
+            await this.callThesidiaAPI(message);
+            
+            // Hide typing indicator (streaming will handle this)
+            this.hideTypingIndicator();
+            
+        } catch (error) {
+            console.error('Error:', error);
+            this.hideTypingIndicator();
+            this.addMessage('thesidia', 'Error: Could not process request. Please try again.');
+        } finally {
+            this.isProcessing = false;
+            this.updateSendButton();
+        }
+    }
+    
+    async callThesidiaAPI(message) {
+        // Security: Sanitize input
+        let sanitizedMessage = this.sanitizeInput(message);
+        
+        // Apply deep research mode if enabled
+        if (this.deepResearchMode && !this.autoDetect) {
+            // Prepend deep research prefix if not already present
+            const deepPrefixes = ['deep research:', 'research deeply:', 'deep research ', 'research deeply ', 'comprehensive research:', 'research comprehensively:'];
+            const hasPrefix = deepPrefixes.some(prefix => sanitizedMessage.toLowerCase().startsWith(prefix));
+            if (!hasPrefix) {
+                sanitizedMessage = `deep research: ${sanitizedMessage}`;
+            }
+        }
+        
+        // Use streaming by default
+        return new Promise((resolve, reject) => {
+            // Create message element for streaming
+            const messagesContainer = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message thesidia';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const textElement = document.createElement('p');
+            textElement.textContent = '';
+            contentDiv.appendChild(textElement);
+            
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            
+            // Progress indicator - Better styling
+            const progressDiv = document.createElement('div');
+            progressDiv.className = 'progress-indicator';
+            progressDiv.style.display = 'none';
+            progressDiv.style.marginTop = '12px';
+            messageDiv.appendChild(progressDiv);
+            
+            // Thinking indicator (if enabled)
+            let thinkingDiv = null;
+            if (this.showThinking) {
+                thinkingDiv = document.createElement('div');
+                thinkingDiv.className = 'thinking-indicator';
+                thinkingDiv.style.display = 'none';
+                thinkingDiv.style.marginTop = '8px';
+                messageDiv.appendChild(thinkingDiv);
+            }
+            
+            // Use fetch - handle both streaming and non-streaming
+            const useStreaming = true; // Enable streaming for better UX
+            fetch(this.apiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: sanitizedMessage,
+                    conversation_id: this.currentConversationId,
+                    show_thinking: this.showThinking,
+                    deep_research_mode: this.deepResearchMode,
+                    auto_detect: this.autoDetect,
+                    stream: useStreaming
+                })
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Check content type to determine if streaming or JSON
+                const contentType = response.headers.get('content-type') || '';
+                
+                if (useStreaming && contentType.includes('text/event-stream')) {
+                    // Handle streaming response (SSE)
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let buffer = '';
+                    let fullResponse = '';
+                    let currentEvent = null;
+                    
+                    const readChunk = () => {
+                        reader.read().then(({ done, value }) => {
+                            if (done) {
+                                // Complete
+                                this.hideTypingIndicator();
+                                if (progressDiv.parentNode) {
+                                    progressDiv.style.display = 'none';
+                                }
+                                this.scrollToBottom();
+                                this.saveConversation(sanitizedMessage, fullResponse);
+                                resolve(fullResponse);
+                                return;
+                            }
+                            
+                            buffer += decoder.decode(value, { stream: true });
+                            const lines = buffer.split('\n');
+                            buffer = lines.pop() || ''; // Keep incomplete line in buffer
+                            
+                            for (const line of lines) {
+                                if (line.trim() === '') continue;
+                                
+                                if (line.startsWith('event: ')) {
+                                    currentEvent = line.substring(7).trim();
+                                    continue;
+                                }
+                                
+                                if (line.startsWith('data: ')) {
+                                    try {
+                                        const data = JSON.parse(line.substring(6));
+                                        
+                                        if (data.phase === 'progress' || currentEvent === 'progress') {
+                                            // Update progress indicator with better visibility
+                                            progressDiv.style.display = 'block';
+                                            progressDiv.textContent = `${data.message} (${Math.round(data.progress)}%)`;
+                                            progressDiv.className = 'progress-indicator active';
+                                            this.scrollToBottom();
+                                        } else if (data.text || currentEvent === 'chunk') {
+                                            // Stream text chunk - real-time token streaming
+                                            const chunk = data.text || '';
+                                            textElement.textContent += chunk;
+                                            this.scrollToBottom();
+                                            fullResponse += chunk;
+                                            
+                                            // Hide progress when streaming starts
+                                            if (chunk.length > 0 && progressDiv.style.display !== 'none') {
+                                                progressDiv.style.display = 'none';
+                                            }
+                                        } else if (currentEvent === 'thinking' || data.thinking) {
+                                            // Show thinking steps
+                                            if (this.showThinking) {
+                                                this.displayThinkingStep(data.step || 'thinking', data.message || data.thinking);
+                                                
+                                                // Also show inline thinking indicator
+                                                if (thinkingDiv) {
+                                                    thinkingDiv.style.display = 'block';
+                                                    thinkingDiv.textContent = `${data.message || data.thinking}`;
+                                                }
+                                            }
+                                        } else if (data.phase === 'complete' || currentEvent === 'complete') {
+                                            // Complete
+                                            progressDiv.style.display = 'none';
+                                            this.hideTypingIndicator();
+                                        } else if (data.error || currentEvent === 'error') {
+                                            // Error
+                                            throw new Error(data.message || data.error || 'Unknown error');
+                                        }
+                                    } catch (e) {
+                                        console.error('Error parsing SSE data:', e, line);
+                                    }
+                                    currentEvent = null;
+                                }
+                            }
+                            
+                            readChunk();
+                        }).catch(err => {
+                            console.error('Streaming error:', err);
+                            this.hideTypingIndicator();
+                            if (progressDiv.parentNode) {
+                                progressDiv.style.display = 'none';
+                            }
+                            reject(err);
+                        });
+                    };
+                    
+                    readChunk();
+                } else {
+                    // Handle non-streaming JSON response
+                    return response.json().then(data => {
+                        this.hideTypingIndicator();
+                        if (progressDiv.parentNode) {
+                            progressDiv.style.display = 'none';
+                        }
+                        
+                        const responseText = data.response || data.message || 'No response';
+                        textElement.textContent = responseText;
+                        this.scrollToBottom();
+                        this.saveConversation(sanitizedMessage, responseText);
+                        resolve(responseText);
+                    });
+                }
+            }).catch(err => {
+                console.error('Fetch error:', err);
+                this.hideTypingIndicator();
+                if (progressDiv.parentNode) {
+                    progressDiv.style.display = 'none';
+                }
+                textElement.textContent = `Error: ${err.message}`;
+                reject(err);
+            });
+        });
+    }
+    
+    async callThesidiaAPIFallback(message) {
+        // Fallback non-streaming method
+        const response = await fetch(this.apiEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                conversation_id: this.currentConversationId,
+                show_thinking: this.showThinking,
+                deep_research_mode: this.deepResearchMode,
+                auto_detect: this.autoDetect,
+                stream: false
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Display thinking steps if available
+        if (data.thinking_steps && data.thinking_steps.length > 0) {
+            this.displayThinkingSteps(data.thinking_steps);
+        }
+        
+        return data.response || data.message || 'No response received';
+    }
+    
+    displayThinkingSteps(steps) {
+        const thinkingContent = document.getElementById('thinkingContent');
+        const thinkingSteps = document.getElementById('thinkingSteps');
+        
+        if (!thinkingContent || !thinkingSteps) return;
+        
+        thinkingContent.innerHTML = '';
+        
+        steps.forEach((step, index) => {
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'thinking-step';
+            stepDiv.style.animationDelay = `${index * 0.1}s`;
+            
+            stepDiv.innerHTML = `
+                <div class="thinking-step-header">${this.escapeHtml(step.step)}</div>
+                <div class="thinking-step-detail">${this.escapeHtml(step.detail)}</div>
+                <div class="thinking-step-time">${new Date(step.timestamp).toLocaleTimeString()}</div>
+            `;
+            
+            thinkingContent.appendChild(stepDiv);
+        });
+        
+        thinkingSteps.style.display = 'block';
+        this.scrollToBottom();
+    }
+    
+    displayThinkingStep(step, message) {
+        // Display real-time thinking step
+        const thinkingContent = document.getElementById('thinkingContent');
+        const thinkingSteps = document.getElementById('thinkingSteps');
+        
+        if (!thinkingContent || !thinkingSteps || !this.showThinking) return;
+        
+        // Show thinking steps container
+        thinkingSteps.style.display = 'block';
+        
+        // Add or update thinking step
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'thinking-step';
+        stepDiv.innerHTML = `
+            <div class="thinking-step-header">${this.escapeHtml(step)}</div>
+            <div class="thinking-step-detail">${this.escapeHtml(message)}</div>
+            <div class="thinking-step-time">${new Date().toLocaleTimeString()}</div>
+        `;
+        
+        thinkingContent.appendChild(stepDiv);
+        this.scrollToBottom();
+    }
+    
+    sanitizeInput(input) {
+        // Basic sanitization - remove potentially dangerous characters
+        return input
+            .replace(/[<>]/g, '') // Remove < and >
+            .trim()
+            .slice(0, 10000); // Limit length
+    }
+    
+    addMessageWithTyping(type, text, speed = 15) {
+        // Create message element
+        const messagesContainer = document.getElementById('messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        
+        const textElement = document.createElement('p');
+        textElement.textContent = '';
+        contentDiv.appendChild(textElement);
+        
+        messageDiv.appendChild(contentDiv);
+        messagesContainer.appendChild(messageDiv);
+        
+        // Scroll to bottom
+        this.scrollToBottom();
+        
+        // Remove system message if exists
+        const systemMessage = messagesContainer.querySelector('.system-message');
+        if (systemMessage && type !== 'system') {
+            systemMessage.remove();
+        }
+        
+        // Type out the text letter by letter
+        let index = 0;
+        const typingInterval = setInterval(() => {
+            if (index < text.length) {
+                // Handle special characters and formatting
+                if (text[index] === '\n') {
+                    textElement.innerHTML += '<br>';
+                } else if (text[index] === '*' && index + 1 < text.length && text[index + 1] === '*') {
+                    // Handle bold markdown
+                    let boldEnd = text.indexOf('**', index + 2);
+                    if (boldEnd !== -1) {
+                        textElement.innerHTML += '<strong>' + text.substring(index + 2, boldEnd) + '</strong>';
+                        index = boldEnd + 1;
+                    } else {
+                        textElement.textContent += text[index];
+                    }
+                } else {
+                    textElement.textContent += text[index];
+                }
+                index++;
+                // Auto-scroll as text appears
+                this.scrollToBottom();
+            } else {
+                clearInterval(typingInterval);
+            }
+        }, speed);
+    }
+    
+    addMessage(type, content) {
+        const messagesContainer = document.getElementById('messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        
+        // Format content (support markdown-like formatting)
+        const formattedContent = this.formatMessage(content);
+        contentDiv.innerHTML = formattedContent;
+        
+        messageDiv.appendChild(contentDiv);
+        messagesContainer.appendChild(messageDiv);
+        
+        // Scroll to bottom
+        this.scrollToBottom();
+        
+        // Remove system message if exists
+        const systemMessage = messagesContainer.querySelector('.system-message');
+        if (systemMessage && type !== 'system') {
+            systemMessage.remove();
+        }
+    }
+    
+    formatMessage(content) {
+        // Simple formatting - convert code blocks, preserve line breaks
+        return content
+            .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            .replace(/\n/g, '<br>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    }
+    
+    showTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        typingIndicator.style.display = 'block';
+        this.scrollToBottom();
+    }
+    
+    hideTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        typingIndicator.style.display = 'none';
+    }
+    
+    scrollToBottom() {
+        const chatContainer = document.getElementById('chatContainer');
+        setTimeout(() => {
+            chatContainer.scrollTo({
+                top: chatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 100);
+    }
+    
+    updateSendButton() {
+        const sendBtn = document.getElementById('sendBtn');
+        sendBtn.disabled = this.isProcessing;
+    }
+    
+    toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    }
+    
+    closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    }
+    
+    newConversation() {
+        this.currentConversationId = null;
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.innerHTML = `
+            <div class="message system-message">
+                <div class="message-content">
+                    <p>Execute directives directly. Build websites, devices, blueprints, training programs.</p>
+                </div>
+            </div>
+        `;
+        this.closeSidebar();
+    }
+    
+    saveConversation(userMessage, thesidiaResponse) {
+        if (!this.currentConversationId) {
+            this.currentConversationId = Date.now().toString();
+        }
+        
+        const conversation = {
+            id: this.currentConversationId,
+            title: userMessage.slice(0, 50),
+            preview: thesidiaResponse.slice(0, 100),
+            timestamp: Date.now(),
+            messages: [
+                { type: 'user', content: userMessage },
+                { type: 'thesidia', content: thesidiaResponse }
+            ]
+        };
+        
+        // Save to localStorage (in production, use secure backend)
+        this.conversations.unshift(conversation);
+        this.conversations = this.conversations.slice(0, 50); // Keep last 50
+        localStorage.setItem('thesidia_conversations', JSON.stringify(this.conversations));
+        
+        this.updateConversationsList();
+    }
+    
+    loadConversations() {
+        try {
+            const stored = localStorage.getItem('thesidia_conversations');
+            if (stored) {
+                this.conversations = JSON.parse(stored);
+                this.updateConversationsList();
+            }
+        } catch (error) {
+            console.error('Error loading conversations:', error);
+        }
+    }
+    
+    updateConversationsList() {
+        const listContainer = document.getElementById('conversationsList');
+        listContainer.innerHTML = '';
+        
+        this.conversations.forEach(conv => {
+            const item = document.createElement('div');
+            item.className = 'conversation-item';
+            if (conv.id === this.currentConversationId) {
+                item.classList.add('active');
+            }
+            
+            item.innerHTML = `
+                <div class="conversation-title">${this.escapeHtml(conv.title)}</div>
+                <div class="conversation-preview">${this.escapeHtml(conv.preview)}</div>
+            `;
+            
+            item.addEventListener('click', () => this.loadConversation(conv.id));
+            listContainer.appendChild(item);
+        });
+    }
+    
+    loadConversation(conversationId) {
+        const conversation = this.conversations.find(c => c.id === conversationId);
+        if (!conversation) return;
+        
+        this.currentConversationId = conversationId;
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.innerHTML = '';
+        
+        conversation.messages.forEach(msg => {
+            this.addMessage(msg.type, msg.content);
+        });
+        
+        this.updateConversationsList();
+        this.closeSidebar();
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    autoResizeTextarea(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+    }
+}
+
+// Initialize app when DOM is ready
+try {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                window.thesidiaApp = new ThesidiaApp();
+                console.log('Thesidia app initialized');
+            } catch (error) {
+                console.error('Error initializing Thesidia app:', error);
+                // Show error message to user
+                const app = document.getElementById('app');
+                if (app) {
+                    app.innerHTML = `
+                        <div style="padding: 20px; color: #fff; background: #000;">
+                            <h1>Error Loading Thesidia</h1>
+                            <p>There was an error initializing the app. Please check the console for details.</p>
+                            <p>Error: ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+        });
+    } else {
+        try {
+            window.thesidiaApp = new ThesidiaApp();
+            console.log('Thesidia app initialized');
+        } catch (error) {
+            console.error('Error initializing Thesidia app:', error);
+            const app = document.getElementById('app');
+            if (app) {
+                app.innerHTML = `
+                    <div style="padding: 20px; color: #fff; background: #000;">
+                        <h1>Error Loading Thesidia</h1>
+                        <p>There was an error initializing the app. Please check the console for details.</p>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    }
+} catch (error) {
+    console.error('Fatal error:', error);
+}
+
+// Service Worker for PWA (optional)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        // Service worker registration can be added here
+    });
+}
+

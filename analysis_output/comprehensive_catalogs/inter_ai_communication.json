@@ -1,0 +1,11 @@
+{
+  "successful": [],
+  "failed": [],
+  "partial": [],
+  "by_ai": {
+    "GEMINI": [],
+    "CLAUDE": [],
+    "GROK": [],
+    "OTHER": []
+  }
+}

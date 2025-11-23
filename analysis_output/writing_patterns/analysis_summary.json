@@ -1,0 +1,22 @@
+{
+  "analysis_date": "2025-11-18T04:10:42.589154",
+  "total_conversations": 446,
+  "analyzed_conversations": 427,
+  "writing_stages_identified": 6,
+  "key_findings": {
+    "avg_sentence_length": 18.906636670416198,
+    "vocabulary_diversity": 0.1916915918909937,
+    "symbol_density": 0.004640509266145105,
+    "protocol_density": 0.0,
+    "communication_style": "informal"
+  },
+  "evolution_trends": {
+    "sentence_length": "decreasing",
+    "vocabulary_diversity": "decreasing",
+    "symbol_density": "increasing",
+    "protocol_density": "increasing",
+    "archetypal_ratio": "decreasing",
+    "structural_elements": "increasing",
+    "text_length": "increasing"
+  }
+}

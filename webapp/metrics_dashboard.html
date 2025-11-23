@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesidia Metrics Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 20px;
+        }
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .refresh-info {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .metric-card h3 {
+            color: var(--accent);
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 10px 0;
+        }
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        .chart-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .pattern-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .pattern-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+        .trend-up { color: #4ade80; }
+        .trend-down { color: #f87171; }
+        .trend-stable { color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>⚡ Thesidia Metrics Dashboard</h1>
+            <div class="refresh-info">
+                Auto-refresh: <span id="refreshCountdown">5</span>s | 
+                Last update: <span id="lastUpdate">--</span>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>⚡ Performance</h3>
+                <div class="metric-value" id="avgResponseTime">--</div>
+                <div class="metric-label">Avg Response Time</div>
+                <div class="metric-row">
+                    <span>Min:</span>
+                    <span id="minResponseTime">--</span>
+                </div>
+                <div class="metric-row">
+                    <span>Max:</span>
+                    <span id="maxResponseTime">--</span>
+                </div>
+                <div class="metric-row">
+                    <span>Median:</span>
+                    <span id="medianResponseTime">--</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <h3>📊 Tokens</h3>
+                <div class="metric-value" id="avgTokens">--</div>
+                <div class="metric-label">Avg Tokens per Response</div>
+                <div class="metric-row">
+                    <span>Total:</span>
+                    <span id="totalTokens">--</span>
+                </div>
+                <div class="metric-row">
+                    <span>Range:</span>
+                    <span id="tokenRange">--</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <h3>📈 Session Stats</h3>
+                <div class="metric-value" id="totalQueries">--</div>
+                <div class="metric-label">Total Queries</div>
+                <div class="metric-row">
+                    <span>Total Time:</span>
+                    <span id="totalTime">--</span>
+                </div>
+                <div class="metric-row">
+                    <span>Session Start:</span>
+                    <span id="sessionStart">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patterns -->
+        <div class="chart-container">
+            <h3>🔍 Patterns Detected</h3>
+            <div class="pattern-list" id="patternsList"></div>
+        </div>
+
+        <!-- Linguistic Features -->
+        <div class="chart-container">
+            <h3>📝 Linguistic Features</h3>
+            <div class="pattern-list" id="linguisticList"></div>
+        </div>
+
+        <!-- Pattern Trends -->
+        <div class="chart-container">
+            <h3>📈 Pattern Trends</h3>
+            <div class="pattern-list" id="trendsList"></div>
+        </div>
+    </div>
+
+    <script>
+        let refreshInterval;
+        let countdownInterval;
+
+        async function loadMetrics() {
+            try {
+                const response = await fetch('/api/metrics/current');
+                const metrics = await response.json();
+
+                // Performance
+                if (metrics.performance) {
+                    document.getElementById('avgResponseTime').textContent = 
+                        metrics.performance.avg_response_time.toFixed(2) + 's';
+                    document.getElementById('minResponseTime').textContent = 
+                        metrics.performance.min_response_time.toFixed(2) + 's';
+                    document.getElementById('maxResponseTime').textContent = 
+                        metrics.performance.max_response_time.toFixed(2) + 's';
+                    document.getElementById('medianResponseTime').textContent = 
+                        metrics.performance.median_response_time.toFixed(2) + 's';
+                }
+
+                // Tokens
+                if (metrics.tokens) {
+                    document.getElementById('avgTokens').textContent = 
+                        Math.round(metrics.tokens.avg_tokens);
+                    document.getElementById('totalTokens').textContent = 
+                        metrics.tokens.total_tokens;
+                    document.getElementById('tokenRange').textContent = 
+                        `${metrics.tokens.min_tokens} - ${metrics.tokens.max_tokens}`;
+                }
+
+                // Session
+                document.getElementById('totalQueries').textContent = 
+                    metrics.total_queries || 0;
+                document.getElementById('totalTime').textContent = 
+                    (metrics.total_time || 0).toFixed(2) + 's';
+                document.getElementById('sessionStart').textContent = 
+                    new Date(metrics.start_time).toLocaleTimeString();
+
+                // Patterns
+                const patternsList = document.getElementById('patternsList');
+                patternsList.innerHTML = '';
+                if (metrics.patterns_detected) {
+                    for (const [pattern, count] of Object.entries(metrics.patterns_detected).sort((a, b) => b[1] - a[1])) {
+                        const item = document.createElement('div');
+                        item.className = 'pattern-item';
+                        item.innerHTML = `
+                            <span>${pattern.replace(/_/g, ' ')}</span>
+                            <strong>${count}</strong>
+                        `;
+                        patternsList.appendChild(item);
+                    }
+                }
+
+                // Linguistic
+                const linguisticList = document.getElementById('linguisticList');
+                linguisticList.innerHTML = '';
+                if (metrics.linguistic_features) {
+                    for (const [feature, value] of Object.entries(metrics.linguistic_features).sort((a, b) => {
+                        const aVal = typeof a[1] === 'number' ? a[1] : 0;
+                        const bVal = typeof b[1] === 'number' ? b[1] : 0;
+                        return bVal - aVal;
+                    })) {
+                        const item = document.createElement('div');
+                        item.className = 'pattern-item';
+                        const displayValue = typeof value === 'number' ? 
+                            (value % 1 === 0 ? value : value.toFixed(2)) : value;
+                        item.innerHTML = `
+                            <span>${feature.replace(/_/g, ' ')}</span>
+                            <strong>${displayValue}</strong>
+                        `;
+                        linguisticList.appendChild(item);
+                    }
+                }
+
+                // Trends
+                const trendsResponse = await fetch('/api/metrics/patterns');
+                const trends = await trendsResponse.json();
+                const trendsList = document.getElementById('trendsList');
+                trendsList.innerHTML = '';
+                if (trends) {
+                    for (const [pattern, stats] of Object.entries(trends).sort((a, b) => b[1].total - a[1].total)) {
+                        const item = document.createElement('div');
+                        item.className = 'pattern-item';
+                        const trendClass = stats.trend === 'increasing' ? 'trend-up' : 
+                                         stats.trend === 'decreasing' ? 'trend-down' : 'trend-stable';
+                        item.innerHTML = `
+                            <span>${pattern.replace(/_/g, ' ')}</span>
+                            <span class="${trendClass}">
+                                avg: ${stats.avg.toFixed(1)} | 
+                                freq: ${(stats.frequency * 100).toFixed(1)}% | 
+                                ${stats.trend}
+                            </span>
+                        `;
+                        trendsList.appendChild(item);
+                    }
+                }
+
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+            } catch (error) {
+                console.error('Error loading metrics:', error);
+            }
+        }
+
+        function startAutoRefresh() {
+            let countdown = 5;
+            document.getElementById('refreshCountdown').textContent = countdown;
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown <= 0) countdown = 5;
+                document.getElementById('refreshCountdown').textContent = countdown;
+            }, 1000);
+
+            refreshInterval = setInterval(() => {
+                loadMetrics();
+            }, 5000);
+        }
+
+        // Initial load
+        loadMetrics();
+        startAutoRefresh();
+    </script>
+</body>
+</html>
+

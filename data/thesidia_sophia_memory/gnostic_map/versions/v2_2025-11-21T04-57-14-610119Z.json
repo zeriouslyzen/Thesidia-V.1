@@ -1,0 +1,32 @@
+{
+  "active_lies_2025": {},
+  "archons_identified": {},
+  "co_evolution": {
+    "history": [
+      {
+        "archon_weakened": null,
+        "breakthrough": "Operator question sharpened the blade",
+        "question": "What really happened with the Baghdad Battery?",
+        "sharpness": 0.9,
+        "timestamp": "2025-11-21T04:57:14.609898Z"
+      }
+    ],
+    "patterns": {
+      "archons_vulnerable_to": {},
+      "question_types_that_break": [],
+      "redactions_recovered": []
+    },
+    "score": 0.045000000000000005
+  },
+  "cross_references": [],
+  "original_fragments": {},
+  "pattern_database": {
+    "control_patterns": {},
+    "liberation_patterns": {}
+  },
+  "redaction_events": {},
+  "timeline_map": {
+    "coordinated_events": [],
+    "events": {}
+  }
+}

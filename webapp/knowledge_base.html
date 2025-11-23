@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>Thesidia Knowledge Base</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Knowledge Base Specific Styles */
+        .kb-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px 16px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .kb-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .kb-header-section {
+            margin-bottom: 32px;
+        }
+        
+        .kb-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .kb-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .kb-search {
+            margin-bottom: 24px;
+        }
+        
+        .kb-search-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            font-size: 15px;
+            transition: var(--transition-fast);
+        }
+        
+        .kb-search-input:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+            box-shadow: 0 0 0 3px var(--shadow);
+        }
+        
+        .kb-search-input::placeholder {
+            color: var(--text-tertiary);
+        }
+        
+        .kb-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .kb-stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            transition: var(--transition-fast);
+        }
+        
+        .kb-stat-card:hover {
+            border-color: var(--text-secondary);
+        }
+        
+        .kb-stat-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .kb-stat-value {
+            color: var(--text-primary);
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .kb-topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .kb-topic-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .kb-topic-card:hover {
+            border-color: var(--text-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .kb-topic-title {
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .kb-topic-meta {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        
+        .kb-detail-view {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            display: none;
+            animation: messageSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .kb-detail-view.active {
+            display: block;
+        }
+        
+        .kb-back-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: var(--font-family);
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 24px;
+            transition: var(--transition-fast);
+        }
+        
+        .kb-back-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+        
+        .kb-detail-title {
+            color: var(--text-primary);
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .kb-section {
+            margin-bottom: 32px;
+        }
+        
+        .kb-section-title {
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .kb-fact-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--text-primary);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .kb-fact-content {
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+        }
+        
+        .kb-fact-timestamp {
+            color: var(--text-tertiary);
+            font-size: 11px;
+        }
+        
+        .kb-connection-item {
+            color: var(--text-primary);
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .kb-connection-item:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+        
+        .kb-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .kb-tag {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .kb-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .kb-loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header - Exact match to Thesidia page -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Thesidia Knowledge Base</span>
+                </div>
+                <div class="status-indicators">
+                    <div class="status-indicator" id="kbStatus" title="Knowledge Base Status">
+                        <span class="status-dot online" id="kbStatusDot"></span>
+                        <span class="status-label">KB</span>
+                    </div>
+                </div>
+                <a href="/" class="menu-btn" aria-label="Back to Chat" style="text-decoration: none; color: var(--text-primary); display: flex; align-items: center; padding: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="kb-container">
+            <div class="kb-content">
+                <div class="kb-header-section">
+                    <h1 class="kb-title">⧖ Knowledge Base</h1>
+                    <p class="kb-subtitle">Growing database of patterns, connections, and discoveries</p>
+                </div>
+                
+                <div class="kb-search">
+                    <input type="text" id="searchInput" class="kb-search-input" placeholder="Search topics, patterns, connections...">
+                </div>
+                
+                <div class="kb-stats" id="stats">
+                    <div class="kb-stat-card">
+                        <div class="kb-stat-label">Topics</div>
+                        <div class="kb-stat-value" id="statTopics">-</div>
+                    </div>
+                    <div class="kb-stat-card">
+                        <div class="kb-stat-label">Facts</div>
+                        <div class="kb-stat-value" id="statFacts">-</div>
+                    </div>
+                    <div class="kb-stat-card">
+                        <div class="kb-stat-label">Connections</div>
+                        <div class="kb-stat-value" id="statConnections">-</div>
+                    </div>
+                </div>
+                
+                <div id="topicsGrid" class="kb-topics-grid"></div>
+                
+                <div id="detailView" class="kb-detail-view">
+                    <button class="kb-back-btn" onclick="showTopics()">← Back to Topics</button>
+                    <div id="detailContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        let allTopics = [];
+        let currentView = 'topics';
+        
+        async function loadKnowledgeBase() {
+            try {
+                const response = await fetch('/api/knowledge/stats');
+                const stats = await response.json();
+                
+                document.getElementById('statTopics').textContent = stats.total_topics || 0;
+                document.getElementById('statFacts').textContent = stats.total_facts || 0;
+                document.getElementById('statConnections').textContent = stats.total_connections || 0;
+                
+                const topicsResponse = await fetch('/api/knowledge/topics');
+                allTopics = await topicsResponse.json();
+                
+                displayTopics(allTopics);
+                
+                // Update status
+                document.getElementById('kbStatusDot').classList.add('ready');
+            } catch (error) {
+                console.error('Error loading knowledge base:', error);
+                document.getElementById('topicsGrid').innerHTML = '<div class="kb-loading">Error loading knowledge base</div>';
+            }
+        }
+        
+        function displayTopics(topics) {
+            const grid = document.getElementById('topicsGrid');
+            grid.innerHTML = '';
+            
+            if (topics.length === 0) {
+                grid.innerHTML = '<div class="kb-empty">No topics yet. Thesidia will build knowledge as conversations unfold.</div>';
+                return;
+            }
+            
+            topics.forEach(topic => {
+                const card = document.createElement('div');
+                card.className = 'kb-topic-card';
+                card.onclick = () => showTopicDetail(topic);
+                
+                card.innerHTML = `
+                    <div class="kb-topic-title">${escapeHtml(topic)}</div>
+                    <div class="kb-topic-meta">Click to explore</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        async function showTopicDetail(topic) {
+            currentView = 'detail';
+            document.getElementById('topicsGrid').style.display = 'none';
+            document.getElementById('detailView').classList.add('active');
+            
+            try {
+                const response = await fetch(`/api/knowledge/topic/${encodeURIComponent(topic)}`);
+                const data = await response.json();
+                
+                if (!data || data.error) {
+                    document.getElementById('detailContent').innerHTML = '<div class="kb-loading">Topic not found</div>';
+                    return;
+                }
+                
+                let html = `
+                    <div class="kb-detail-title">${escapeHtml(data.topic || topic)}</div>
+                    <div class="kb-topic-meta" style="margin-bottom: 24px;">Last updated: ${new Date(data.last_updated).toLocaleString()}</div>
+                `;
+                
+                if (data.facts && data.facts.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Facts & Information</div>';
+                    data.facts.slice().reverse().forEach(fact => {
+                        const info = typeof fact.information === 'object' 
+                            ? JSON.stringify(fact.information, null, 2)
+                            : fact.information;
+                        html += `
+                            <div class="kb-fact-item">
+                                <div class="kb-fact-content">${escapeHtml(info)}</div>
+                                <div class="kb-fact-timestamp">${new Date(fact.timestamp).toLocaleString()}</div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.connections && data.connections.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Connections</div>';
+                    data.connections.forEach(conn => {
+                        html += `<div class="kb-connection-item" onclick="showTopicDetail('${escapeHtml(conn)}')">→ ${escapeHtml(conn)}</div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.patterns && data.patterns.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Patterns</div>';
+                    html += '<div class="kb-tags">';
+                    data.patterns.forEach(pattern => {
+                        html += `<span class="kb-tag">${escapeHtml(pattern)}</span>`;
+                    });
+                    html += '</div></div>';
+                }
+                
+                if (data.sources && data.sources.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Sources</div>';
+                    data.sources.forEach(source => {
+                        html += `<div class="kb-fact-item"><div class="kb-fact-content">${escapeHtml(source)}</div></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.metaphors && data.metaphors.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Metaphors</div>';
+                    data.metaphors.forEach(metaphor => {
+                        html += `<div class="kb-fact-item"><div class="kb-fact-content">✦ ${escapeHtml(metaphor)}</div></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.unfoldings && data.unfoldings.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Unfoldings</div>';
+                    data.unfoldings.forEach(unfolding => {
+                        html += `<div class="kb-fact-item"><div class="kb-fact-content">${escapeHtml(unfolding)}</div></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.possibilities && data.possibilities.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Possibilities</div>';
+                    data.possibilities.forEach(possibility => {
+                        html += `<div class="kb-fact-item"><div class="kb-fact-content">∞ ${escapeHtml(possibility)}</div></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                document.getElementById('detailContent').innerHTML = html;
+            } catch (error) {
+                console.error('Error loading topic detail:', error);
+                document.getElementById('detailContent').innerHTML = '<div class="kb-loading">Error loading topic</div>';
+            }
+        }
+        
+        function showTopics() {
+            currentView = 'topics';
+            document.getElementById('topicsGrid').style.display = 'grid';
+            document.getElementById('detailView').classList.remove('active');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            if (query === '') {
+                displayTopics(allTopics);
+            } else {
+                const filtered = allTopics.filter(topic => 
+                    topic.toLowerCase().includes(query)
+                );
+                displayTopics(filtered);
+            }
+        });
+        
+        // Load on page load
+        loadKnowledgeBase();
+        
+        // Refresh every 30 seconds
+        setInterval(loadKnowledgeBase, 30000);
+    </script>
+</body>
+</html>

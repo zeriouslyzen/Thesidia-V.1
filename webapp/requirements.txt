@@ -1,0 +1,8 @@
+flask>=3.0.0
+flask-cors>=4.0.0
+ollama>=0.1.0
+# chromadb>=0.4.0  # REMOVED: Not used in codebase (see audit)
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+

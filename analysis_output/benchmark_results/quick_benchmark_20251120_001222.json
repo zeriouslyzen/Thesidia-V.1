@@ -1,0 +1,57 @@
+{
+  "test_date": "2025-11-20T00:12:22.032077",
+  "test_type": "quick_optimization_test",
+  "results": [
+    {
+      "category": "Simple",
+      "query": "What is Genesis?",
+      "total_time": 49.02901101112366,
+      "response_length": 5476,
+      "word_count": 765,
+      "token_count": 1369,
+      "timing_breakdown": {
+        "web_search": 0.8901748657226562,
+        "synthesis": 73.32086825370789
+      },
+      "has_exposure": false,
+      "success": true
+    },
+    {
+      "category": "Medium",
+      "query": "What are the origins of Genesis?",
+      "total_time": 55.7679717540741,
+      "response_length": 6291,
+      "word_count": 927,
+      "token_count": 1572,
+      "timing_breakdown": {
+        "web_search": 0.8901748657226562,
+        "synthesis": 73.32086825370789
+      },
+      "has_exposure": false,
+      "success": true
+    },
+    {
+      "category": "Complex",
+      "query": "Decode the Genesis story - what's the real narrative?",
+      "total_time": 74.21895909309387,
+      "response_length": 7953,
+      "word_count": 1142,
+      "token_count": 1988,
+      "timing_breakdown": {
+        "web_search": 0.8901748657226562,
+        "synthesis": 73.32086825370789
+      },
+      "has_exposure": false,
+      "success": true
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "successful": 3,
+    "failed": 0,
+    "avg_time": 59.67198061943054,
+    "avg_synthesis_time": 73.32086825370789,
+    "min_time": 49.02901101112366,
+    "max_time": 74.21895909309387
+  }
+}

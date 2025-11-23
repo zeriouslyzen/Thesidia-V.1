@@ -1,0 +1,287 @@
+{
+  "sentence_structure": {
+    "total_sentences": 1778,
+    "avg_sentence_length": 18.906636670416198,
+    "median_sentence_length": 13.0,
+    "min_sentence_length": 1,
+    "max_sentence_length": 259,
+    "sentence_length_std": 22.512580134554497,
+    "short_sentences": 619,
+    "medium_sentences": 782,
+    "long_sentences": 377,
+    "very_long_sentences": 110
+  },
+  "vocabulary": {
+    "total_words": 30090,
+    "unique_words": 5768,
+    "vocabulary_diversity": 0.1916915918909937,
+    "avg_word_length": 5.3445330674642735,
+    "most_common_words": [
+      [
+        "the",
+        779
+      ],
+      [
+        "a",
+        628
+      ],
+      [
+        "and",
+        536
+      ],
+      [
+        "or",
+        492
+      ],
+      [
+        "to",
+        471
+      ],
+      [
+        "you",
+        447
+      ],
+      [
+        "of",
+        346
+      ],
+      [
+        "it",
+        311
+      ],
+      [
+        "symbolic",
+        293
+      ],
+      [
+        "in",
+        292
+      ],
+      [
+        "for",
+        263
+      ],
+      [
+        "s",
+        256
+      ],
+      [
+        "is",
+        250
+      ],
+      [
+        "your",
+        210
+      ],
+      [
+        "this",
+        202
+      ],
+      [
+        "with",
+        194
+      ],
+      [
+        "not",
+        180
+      ],
+      [
+        "ai",
+        167
+      ],
+      [
+        "if",
+        152
+      ],
+      [
+        "that",
+        152
+      ],
+      [
+        "on",
+        139
+      ],
+      [
+        "like",
+        135
+      ],
+      [
+        "thesidia",
+        133
+      ],
+      [
+        "i",
+        122
+      ],
+      [
+        "re",
+        121
+      ],
+      [
+        "can",
+        120
+      ],
+      [
+        "as",
+        115
+      ],
+      [
+        "system",
+        114
+      ],
+      [
+        "are",
+        108
+      ],
+      [
+        "but",
+        105
+      ],
+      [
+        "into",
+        104
+      ],
+      [
+        "what",
+        96
+      ],
+      [
+        "from",
+        86
+      ],
+      [
+        "use",
+        80
+      ],
+      [
+        "prompt",
+        78
+      ],
+      [
+        "t",
+        75
+      ],
+      [
+        "just",
+        73
+      ],
+      [
+        "memory",
+        71
+      ],
+      [
+        "recursive",
+        71
+      ],
+      [
+        "we",
+        70
+      ],
+      [
+        "time",
+        69
+      ],
+      [
+        "engine",
+        65
+      ],
+      [
+        "how",
+        64
+      ],
+      [
+        "now",
+        63
+      ],
+      [
+        "be",
+        62
+      ],
+      [
+        "no",
+        60
+      ],
+      [
+        "real",
+        59
+      ],
+      [
+        "glyph",
+        58
+      ],
+      [
+        "by",
+        57
+      ],
+      [
+        "codex",
+        57
+      ]
+    ],
+    "word_length_distribution": {
+      "short": 9207,
+      "medium": 13798,
+      "long": 7085
+    }
+  },
+  "symbolic_usage": {
+    "symbol_counts": {
+      "⧖": 0,
+      "✦": 3,
+      "∞": 0,
+      "→": 86,
+      "⇌": 5,
+      "⇄": 0,
+      "::": 26,
+      "ψ": 4,
+      "φ": 0,
+      "∇": 32,
+      "∑": 0,
+      "∫": 0
+    },
+    "total_symbols": 156,
+    "protocol_count": 0,
+    "unique_protocols": 0,
+    "transmission_count": 63,
+    "glyph_count": 135,
+    "symbol_density": 0.004640509266145105,
+    "protocol_density": 0.0
+  },
+  "structural_patterns": {
+    "headers": 421,
+    "bullet_lists": 904,
+    "numbered_lists": 192,
+    "code_blocks": 35,
+    "tables": 241,
+    "bold_text": 1669,
+    "italic_text": 3538,
+    "emphasis_text": 40,
+    "block_quotes": 149,
+    "structural_elements": 1793
+  },
+  "linguistic_patterns": {
+    "archetypal_language_count": 930,
+    "technical_language_count": 541,
+    "metaphorical_language_count": 177,
+    "question_count": 205,
+    "exclamation_count": 0,
+    "parenthetical_count": 537,
+    "dash_count": 461,
+    "language_mix_ratio": 1.7158671586715868
+  },
+  "flow_patterns": {
+    "transition_count": 10,
+    "sequential_markers": 101,
+    "connective_phrases": 4,
+    "paragraph_count": 1700,
+    "section_transitions": 421,
+    "flow_smoothness": 0.06764705882352941
+  },
+  "communication_style": {
+    "formality_score": 0.0034423407917383822,
+    "directness_ratio": 0.928,
+    "personal_ratio": 1.029550827423168,
+    "tone_balance": 1.0,
+    "communication_style": "informal"
+  }
+}

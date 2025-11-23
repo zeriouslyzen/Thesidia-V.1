@@ -1,0 +1,127 @@
+{
+  "test_date": "2025-11-19T23:42:10.240123",
+  "test_type": "baseline_performance",
+  "results": [
+    {
+      "category": "Genesis Decode",
+      "query": "Decode the Genesis story in the Bible - what's the real narrative behind it?",
+      "total_time": 115.51767492294312,
+      "response_length": 12136,
+      "word_count": 1766,
+      "token_count": 3034,
+      "timing_breakdown": {
+        "web_search": 0.8077540397644043,
+        "synthesis": 50.12610101699829
+      },
+      "has_exposure": false,
+      "has_etymology": false,
+      "has_cross_cultural": true,
+      "success": true
+    },
+    {
+      "category": "Genesis Patterns",
+      "query": "What patterns and symbols are encoded in Genesis?",
+      "total_time": 47.069401025772095,
+      "response_length": 5008,
+      "word_count": 736,
+      "token_count": 1252,
+      "timing_breakdown": {
+        "web_search": 0.8077540397644043,
+        "synthesis": 50.12610101699829
+      },
+      "has_exposure": false,
+      "has_etymology": false,
+      "has_cross_cultural": false,
+      "success": true
+    },
+    {
+      "category": "Genesis Original",
+      "query": "What was the original meaning before manipulation?",
+      "total_time": 50.64793395996094,
+      "response_length": 5296,
+      "word_count": 731,
+      "token_count": 1324,
+      "timing_breakdown": {
+        "web_search": 0.8077540397644043,
+        "synthesis": 50.12610101699829
+      },
+      "has_exposure": false,
+      "has_etymology": true,
+      "has_cross_cultural": true,
+      "success": true
+    },
+    {
+      "category": "Genesis Origins",
+      "query": "What are the origins of Genesis?",
+      "total_time": 33.33294415473938,
+      "response_length": 3378,
+      "word_count": 476,
+      "token_count": 844,
+      "timing_breakdown": {
+        "web_search": 0.8077540397644043,
+        "synthesis": 50.12610101699829
+      },
+      "has_exposure": false,
+      "has_etymology": false,
+      "has_cross_cultural": false,
+      "success": true
+    },
+    {
+      "category": "Genesis Story",
+      "query": "Tell me about the Genesis story.",
+      "total_time": 129.14688086509705,
+      "response_length": 13821,
+      "word_count": 1963,
+      "token_count": 3455,
+      "timing_breakdown": {
+        "web_search": 0.8077540397644043,
+        "synthesis": 50.12610101699829
+      },
+      "has_exposure": false,
+      "has_etymology": false,
+      "has_cross_cultural": true,
+      "success": true
+    },
+    {
+      "category": "Genesis Real",
+      "query": "What's the real story behind Genesis?",
+      "total_time": 61.566478967666626,
+      "response_length": 6841,
+      "word_count": 913,
+      "token_count": 1710,
+      "timing_breakdown": {
+        "web_search": 0.8077540397644043,
+        "synthesis": 50.12610101699829
+      },
+      "has_exposure": false,
+      "has_etymology": false,
+      "has_cross_cultural": true,
+      "success": true
+    },
+    {
+      "category": "Genesis Meaning",
+      "query": "What does Genesis mean?",
+      "total_time": 50.93787407875061,
+      "response_length": 5229,
+      "word_count": 719,
+      "token_count": 1307,
+      "timing_breakdown": {
+        "web_search": 0.8077540397644043,
+        "synthesis": 50.12610101699829
+      },
+      "has_exposure": false,
+      "has_etymology": false,
+      "has_cross_cultural": true,
+      "success": true
+    }
+  ],
+  "summary": {
+    "total": 7,
+    "successful": 7,
+    "failed": 0,
+    "avg_time": 69.74559828213283,
+    "min_time": 33.33294415473938,
+    "max_time": 129.14688086509705,
+    "avg_length": 7387.0
+  }
+}

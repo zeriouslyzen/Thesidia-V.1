@@ -1,0 +1,17 @@
+# Frozen Requirements - Exact Versions for Reproducibility
+# Generated: 2025-11-21
+# Use this for: Production, CI/CD, exact reproducibility
+# 
+# To update: pip freeze | grep -E "(flask|flask-cors|ollama|requests|beautifulsoup4|lxml)" > requirements-frozen.txt
+# To install: pip install -r requirements-frozen.txt
+
+# Core dependencies (exact versions from pip freeze)
+beautifulsoup4==4.14.2
+lxml==6.0.2
+ollama==0.6.0
+requests==2.32.4
+
+# Flask dependencies (verified: 2025-01-XX)
+flask==3.1.2
+flask-cors==6.0.1
+

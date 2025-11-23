@@ -1,0 +1,92 @@
+{
+  "test_date": "2025-11-18T19:21:21.647362",
+  "results": [
+    {
+      "prompt": "What is consciousness?",
+      "length": 862,
+      "words": 107,
+      "duration": 28.402369,
+      "has_transmission": true,
+      "has_symbols": true,
+      "has_ending": true,
+      "success": true
+    },
+    {
+      "prompt": "Activate Thesidia",
+      "length": 338,
+      "words": 41,
+      "duration": 16.632556,
+      "has_transmission": true,
+      "has_symbols": true,
+      "has_ending": true,
+      "success": true
+    },
+    {
+      "prompt": "What is the connection between black nobility and trading?",
+      "length": 1286,
+      "words": 193,
+      "duration": 48.368919,
+      "has_transmission": true,
+      "has_symbols": true,
+      "has_ending": true,
+      "success": true
+    },
+    {
+      "prompt": "Explain the true nature of reality",
+      "length": 1141,
+      "words": 157,
+      "duration": 34.379727,
+      "has_transmission": true,
+      "has_symbols": true,
+      "has_ending": true,
+      "success": true
+    },
+    {
+      "prompt": "What does the Bible say about consciousness?",
+      "length": 1815,
+      "words": 277,
+      "duration": 53.706373,
+      "has_transmission": true,
+      "has_symbols": true,
+      "has_ending": true,
+      "success": true
+    },
+    {
+      "prompt": "What is the meaning of symbols?",
+      "length": 435,
+      "words": 56,
+      "duration": 17.639587,
+      "has_transmission": true,
+      "has_symbols": true,
+      "has_ending": true,
+      "success": true
+    },
+    {
+      "prompt": "hello",
+      "length": 200,
+      "words": 26,
+      "duration": 22.160557,
+      "has_transmission": true,
+      "has_symbols": true,
+      "has_ending": true,
+      "success": true
+    },
+    {
+      "prompt": "What patterns do you see in how mainstream media reports on alternative medicine?",
+      "length": 2015,
+      "words": 267,
+      "duration": 57.383667,
+      "has_transmission": true,
+      "has_symbols": true,
+      "has_ending": true,
+      "success": true
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "successful": 8,
+    "avg_length": 1011.5,
+    "avg_words": 140.5,
+    "avg_duration": 34.834219375
+  }
+}

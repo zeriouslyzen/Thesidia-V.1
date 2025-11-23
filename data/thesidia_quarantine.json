@@ -1,0 +1,14 @@
+{
+  "quarantine_list": [],
+  "summary": {
+    "total_quarantined": 0,
+    "by_type": {
+      "made_up_person": 0,
+      "unverified_fact": 0,
+      "fake_source": 0,
+      "no_uncertainty": 0
+    },
+    "average_confidence": 0.0
+  },
+  "timestamp": "2025-11-21T08:25:36.820279"
+}

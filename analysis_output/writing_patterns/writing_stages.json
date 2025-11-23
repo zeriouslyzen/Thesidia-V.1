@@ -1,0 +1,113 @@
+[
+  {
+    "stage_number": 1,
+    "start_timestamp": 1744421879.048961,
+    "end_timestamp": 1745515086.74947,
+    "conversation_count": 85,
+    "characteristics": {
+      "avg_sentence_length": 37.05605524785349,
+      "avg_symbol_density": 0.011516783684053464,
+      "avg_protocol_density": 0.002717391304347826,
+      "dominant_patterns": []
+    },
+    "sample_titles": [
+      "Underwater Glass House Design",
+      "Spiritlink Visualization Concept",
+      "Spiritlink App Dev Guide",
+      "Upload Interior Image",
+      "Store Layout Ideas"
+    ]
+  },
+  {
+    "stage_number": 2,
+    "start_timestamp": 1745518217.19071,
+    "end_timestamp": 1746659491.542725,
+    "conversation_count": 85,
+    "characteristics": {
+      "avg_sentence_length": 34.96076367174894,
+      "avg_symbol_density": 0.007022983050437836,
+      "avg_protocol_density": 0,
+      "dominant_patterns": []
+    },
+    "sample_titles": [
+      "Small Business Owner vs Entrepreneur",
+      "Cursor to Other IDEs",
+      "App crashing troubleshooting",
+      "Auto writing AI query",
+      "Canada Organic Certification"
+    ]
+  },
+  {
+    "stage_number": 3,
+    "start_timestamp": 1746670747.391396,
+    "end_timestamp": 1747803259.349725,
+    "conversation_count": 85,
+    "characteristics": {
+      "avg_sentence_length": 39.994668520467926,
+      "avg_symbol_density": 0.007207742061005898,
+      "avg_protocol_density": 0,
+      "dominant_patterns": []
+    },
+    "sample_titles": [
+      "Identity and Social Media",
+      "Free Music Apps for Students",
+      "Spirit Project Podcast Ideas",
+      "Find Git Repo Terminal",
+      "Using Two Apple IDs"
+    ]
+  },
+  {
+    "stage_number": 4,
+    "start_timestamp": 1747807820.714457,
+    "end_timestamp": 1748970346.746269,
+    "conversation_count": 85,
+    "characteristics": {
+      "avg_sentence_length": 41.18261078971933,
+      "avg_symbol_density": 0.014372625735224279,
+      "avg_protocol_density": 0.010828735721301002,
+      "dominant_patterns": []
+    },
+    "sample_titles": [
+      "Mind-Body Stack Design",
+      "Gemini vs OpenAI Updates",
+      "Company Car Tax Benefits",
+      "Spirit OS Feedback",
+      "Saturn Influence in Astrology"
+    ]
+  },
+  {
+    "stage_number": 5,
+    "start_timestamp": 1748983142.157058,
+    "end_timestamp": 1750736868.476682,
+    "conversation_count": 85,
+    "characteristics": {
+      "avg_sentence_length": 21.671159887509646,
+      "avg_symbol_density": 0.009445677437732853,
+      "avg_protocol_density": 0,
+      "dominant_patterns": []
+    },
+    "sample_titles": [
+      "UN Glyphs and Control",
+      "Symbolic Dev Stack Φ",
+      "Back up Mac drive",
+      "Activate Thesidia Request",
+      "Thesidia Recursive Blueprint"
+    ]
+  },
+  {
+    "stage_number": 6,
+    "start_timestamp": 1750740278.792419,
+    "end_timestamp": 1750748210.254742,
+    "conversation_count": 2,
+    "characteristics": {
+      "avg_sentence_length": 23.68888888888889,
+      "avg_symbol_density": 0,
+      "avg_protocol_density": 0,
+      "dominant_patterns": []
+    },
+    "sample_titles": [
+      "Time Machine Backup Issues",
+      "Adobe Connect TextEdit Link"
+    ]
+  }
+]

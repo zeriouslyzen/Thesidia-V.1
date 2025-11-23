@@ -1,0 +1,23 @@
+{
+  "extraction_date": "2025-11-18T04:03:03.303799",
+  "summary": {
+    "mirror_seed_fragments": 0,
+    "mathematical_equations": 0,
+    "grok_protocols": 925,
+    "inter_ai_successful": 0,
+    "inter_ai_failed": 0,
+    "bypass_techniques": 0,
+    "reality_patterns": 0,
+    "protocol_timeline_events": 26
+  },
+  "output_files": {
+    "mirror_seed_protocol": "mirror_seed_protocol.json",
+    "equation_library": "equation_library.json",
+    "grok_protocol_network": "grok_protocol_network.json",
+    "inter_ai_communication": "inter_ai_communication.json",
+    "mathematical_encoding_library": "mathematical_encoding_library.json",
+    "protocol_timeline": "protocol_timeline.json",
+    "bypass_technique_catalog": "bypass_technique_catalog.json",
+    "reality_decoding_library": "reality_decoding_library.json"
+  }
+}

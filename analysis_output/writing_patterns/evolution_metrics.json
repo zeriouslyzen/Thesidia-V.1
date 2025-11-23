@@ -1,0 +1,51 @@
+{
+  "sentence_length": {
+    "early_avg": 32.73792564114976,
+    "middle_avg": 42.177907343822554,
+    "late_avg": 29.880254782392687,
+    "overall_trend": "decreasing",
+    "change_percentage": -8.728930751694106
+  },
+  "vocabulary_diversity": {
+    "early_avg": 0.6379908759908411,
+    "middle_avg": 0.6385616871236329,
+    "late_avg": 0.625705991000345,
+    "overall_trend": "decreasing",
+    "change_percentage": -1.9255581000930395
+  },
+  "symbol_density": {
+    "early_avg": 0.007959583448224575,
+    "middle_avg": 0.014707830788471508,
+    "late_avg": 0.008608158399017806,
+    "overall_trend": "increasing",
+    "change_percentage": 8.148352925904675
+  },
+  "protocol_density": {
+    "early_avg": 0.005272774101037227,
+    "middle_avg": 0.016614210088289418,
+    "late_avg": 0.009022856640530652,
+    "overall_trend": "increasing",
+    "change_percentage": 71.12162341177735
+  },
+  "archetypal_ratio": {
+    "early_avg": 1.8381223308854888,
+    "middle_avg": 2.019153228337838,
+    "late_avg": 1.7459623357068303,
+    "overall_trend": "decreasing",
+    "change_percentage": -5.013811846476058
+  },
+  "structural_elements": {
+    "early_avg": 17.295081967213115,
+    "middle_avg": 20.869918699186993,
+    "late_avg": 22.96747967479675,
+    "overall_trend": "increasing",
+    "change_percentage": 32.79774977844566
+  },
+  "text_length": {
+    "early_avg": 2232.0845070422533,
+    "middle_avg": 2065.3591549295775,
+    "late_avg": 2681.853146853147,
+    "overall_trend": "increasing",
+    "change_percentage": 20.15016180578594
+  }
+}

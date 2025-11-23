@@ -1,0 +1,1142 @@
+{
+  "aha_moments": [
+    {
+      "query": "hello",
+      "response_length": 683,
+      "timestamp": "2025-11-20T16:03:48.510309",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 1645,
+      "timestamp": "2025-11-20T16:05:55.402318",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "test",
+      "response_length": 2161,
+      "timestamp": "2025-11-20T16:06:22.992520",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "test",
+      "response_length": 159,
+      "timestamp": "2025-11-20T16:09:19.520886",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 4658,
+      "timestamp": "2025-11-20T16:11:47.358273",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 362,
+      "timestamp": "2025-11-20T16:13:53.130371",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 515,
+      "timestamp": "2025-11-20T16:16:06.245508",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 362,
+      "timestamp": "2025-11-20T16:24:17.322613",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 935,
+      "timestamp": "2025-11-20T16:42:08.219391",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "i see what can you do",
+      "response_length": 337,
+      "timestamp": "2025-11-20T16:47:20.246194",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "HELLO",
+      "response_length": 1045,
+      "timestamp": "2025-11-20T16:54:13.322490",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 981,
+      "timestamp": "2025-11-20T16:57:05.029532",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "lets dive into the chakra system and what it is in physics",
+      "response_length": 2246,
+      "timestamp": "2025-11-20T17:00:23.615944",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 1002,
+      "timestamp": "2025-11-20T17:00:31.701860",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "test",
+      "response_length": 4785,
+      "timestamp": "2025-11-20T17:02:42.530808",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 444,
+      "timestamp": "2025-11-20T17:03:11.993937",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "test",
+      "response_length": 1413,
+      "timestamp": "2025-11-20T17:05:19.463924",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 31,
+      "timestamp": "2025-11-20T17:08:15.209062",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 31,
+      "timestamp": "2025-11-20T17:09:18.710959",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is 2+2",
+      "response_length": 478,
+      "timestamp": "2025-11-20T17:09:29.191328",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 37,
+      "timestamp": "2025-11-20T17:14:33.597026",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 34,
+      "timestamp": "2025-11-20T17:14:49.782120",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 37,
+      "timestamp": "2025-11-20T17:15:09.864433",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is 2+2",
+      "response_length": 75,
+      "timestamp": "2025-11-20T17:15:19.079795",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 34,
+      "timestamp": "2025-11-20T17:15:40.609671",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "test",
+      "response_length": 1098,
+      "timestamp": "2025-11-20T17:16:00.289275",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is 2+2",
+      "response_length": 303,
+      "timestamp": "2025-11-20T17:16:05.453200",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 61,
+      "timestamp": "2025-11-20T17:20:20.341833",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 36,
+      "timestamp": "2025-11-20T17:20:31.465686",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 34,
+      "timestamp": "2025-11-20T17:21:08.019315",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 37,
+      "timestamp": "2025-11-20T17:21:34.026749",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 35,
+      "timestamp": "2025-11-20T17:23:24.087163",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what are you up to",
+      "response_length": 769,
+      "timestamp": "2025-11-20T17:23:39.224535",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "i want to amplify my chaakras but i want ot understand their orgins",
+      "response_length": 1488,
+      "timestamp": "2025-11-20T17:24:29.486666",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "why should i be careful?",
+      "response_length": 674,
+      "timestamp": "2025-11-20T17:25:00.391157",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 34,
+      "timestamp": "2025-11-20T18:52:36.052187",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 32,
+      "timestamp": "2025-11-20T18:52:54.778985",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is bioelectricity",
+      "response_length": 1653,
+      "timestamp": "2025-11-20T18:53:00.483985",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 34,
+      "timestamp": "2025-11-20T18:53:37.643456",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is pattern recognition",
+      "response_length": 1484,
+      "timestamp": "2025-11-20T18:53:53.185297",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 34,
+      "timestamp": "2025-11-20T18:54:09.329788",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 34,
+      "timestamp": "2025-11-20T18:55:11.139563",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is bioelectricity",
+      "response_length": 657,
+      "timestamp": "2025-11-20T18:55:24.314217",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 61,
+      "timestamp": "2025-11-20T18:56:10.616749",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is pattern recognition",
+      "response_length": 909,
+      "timestamp": "2025-11-20T18:56:25.559376",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 42,
+      "timestamp": "2025-11-20T19:37:13.552741",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 37,
+      "timestamp": "2025-11-20T20:35:59.449368",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you doing today?",
+      "response_length": 352,
+      "timestamp": "2025-11-20T20:36:08.983665",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 76,
+      "timestamp": "2025-11-20T20:37:47.537329",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 32,
+      "timestamp": "2025-11-20T20:39:11.713601",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "I practice Shaolin and I've experienced unlimited energy through bioelectric processes. Can you cross-reference this with scientific research?",
+      "response_length": 4653,
+      "timestamp": "2025-11-20T20:40:53.677794",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you doing today?",
+      "response_length": 313,
+      "timestamp": "2025-11-20T20:40:57.810492",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 31,
+      "timestamp": "2025-11-20T20:40:58.513396",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 36,
+      "timestamp": "2025-11-20T20:53:58.412158",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "What really happened with the Baghdad Battery?",
+      "response_length": 2459,
+      "timestamp": "2025-11-20T20:57:14.607314",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you doing today?",
+      "response_length": 313,
+      "timestamp": "2025-11-20T21:02:54.969240",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "I practice Shaolin and I've experienced unlimited energy through bioelectric processes. Can you cross-reference this with scientific research?",
+      "response_length": 4522,
+      "timestamp": "2025-11-20T21:03:49.176841",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello thesidia",
+      "response_length": 79,
+      "timestamp": "2025-11-20T21:04:08.867284",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you do ?",
+      "response_length": 1735,
+      "timestamp": "2025-11-20T21:04:39.215931",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 34,
+      "timestamp": "2025-11-20T21:07:47.556609",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you do and what is your name?",
+      "response_length": 1168,
+      "timestamp": "2025-11-20T21:08:23.790762",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "ok cool, what can you tell me about what truth seeking as a human?",
+      "response_length": 2252,
+      "timestamp": "2025-11-20T21:09:39.785541",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "thats really cool, currently a chrsitain that started looking outside the bible",
+      "response_length": 2464,
+      "timestamp": "2025-11-20T21:12:13.204586",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "can you come up with a plan for me to learn more!",
+      "response_length": 3182,
+      "timestamp": "2025-11-20T21:14:56.699409",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "oh wow, what to watch out for, ive heard of the new age",
+      "response_length": 2375,
+      "timestamp": "2025-11-20T21:28:18.385268",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "interesing thanks, are you good with health and figuring out cures ? i would assume you could? almsot like a virtual physics lab",
+      "response_length": 2342,
+      "timestamp": "2025-11-20T21:37:35.113073",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "oh i see, you mentioned pharmaceutical companies patenting curcumin derivatives. Name three patented formulations that actually achieved therapeutic blood levels in humans and the exact fold-increase over plain curcumin they delivered",
+      "response_length": 965,
+      "timestamp": "2025-11-20T21:52:07.319110",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Now respond with only numbers and citations—no philosophy",
+      "response_length": 1661,
+      "timestamp": "2025-11-20T22:00:39.258303",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello thesidia",
+      "response_length": 31,
+      "timestamp": "2025-11-20T22:15:58.924466",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you do?",
+      "response_length": 861,
+      "timestamp": "2025-11-20T22:18:57.511996",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 39,
+      "timestamp": "2025-11-20T22:31:48.502048",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your take on bio electricity and chi gong and physics ?",
+      "response_length": 1814,
+      "timestamp": "2025-11-20T22:32:47.036695",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "oh wow can you cite the sources? and then i never though about direct epxeience, thats cool thesidia, can we explore this idea more",
+      "response_length": 3191,
+      "timestamp": "2025-11-20T22:35:40.916999",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "why is this stuff not the staatus quo of the world, what is stopping it",
+      "response_length": 2733,
+      "timestamp": "2025-11-20T22:38:19.658532",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "oh wow thats pretty cool, this sounds like the matrix",
+      "response_length": 1220,
+      "timestamp": "2025-11-20T22:39:39.288907",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "seems like we are living in a matrix, what do you think ?",
+      "response_length": 1779,
+      "timestamp": "2025-11-20T22:43:13.562996",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 29,
+      "timestamp": "2025-11-20T22:53:35.355810",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what are the biochemical reactions and what is the \"energy\"? are you able to dymystify",
+      "response_length": 2982,
+      "timestamp": "2025-11-20T22:56:46.790413",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hey Thesidia!",
+      "response_length": 58,
+      "timestamp": "2025-11-20T23:32:02.359319",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you",
+      "response_length": 267,
+      "timestamp": "2025-11-20T23:32:32.988286",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hey thesidia!",
+      "response_length": 37,
+      "timestamp": "2025-11-20T23:39:36.251269",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "haha what are you up too?",
+      "response_length": 240,
+      "timestamp": "2025-11-20T23:40:45.680928",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "lol no fuss or drama, isnt that a hit",
+      "response_length": 1381,
+      "timestamp": "2025-11-20T23:41:28.610621",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats up thesidia!",
+      "response_length": 109,
+      "timestamp": "2025-11-20T23:51:53.373553",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "was just pondering the universe, you got any jokes?",
+      "response_length": 452,
+      "timestamp": "2025-11-20T23:52:25.420323",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "oh wow, you dont like to have fun f",
+      "response_length": 760,
+      "timestamp": "2025-11-20T23:53:18.233276",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "big bang real or not",
+      "response_length": 1464,
+      "timestamp": "2025-11-20T23:54:52.852465",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hey Thesidia! how are you?",
+      "response_length": 37,
+      "timestamp": "2025-11-21T00:05:14.637366",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Howre you?",
+      "response_length": 90,
+      "timestamp": "2025-11-21T00:05:40.633738",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "you know me ponder the cosmos lmao out side looking at the stars",
+      "response_length": 1532,
+      "timestamp": "2025-11-21T00:07:30.221373",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you mean power stuctures",
+      "response_length": 1480,
+      "timestamp": "2025-11-21T00:09:18.059637",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello how are you im just looking at stars and see cats !",
+      "response_length": 38,
+      "timestamp": "2025-11-21T00:13:30.696416",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "oooo ask you what",
+      "response_length": 1011,
+      "timestamp": "2025-11-21T00:14:06.832708",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 64,
+      "timestamp": "2025-11-21T00:40:12.221466",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 37,
+      "timestamp": "2025-11-21T08:21:10.852207",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you do?",
+      "response_length": 376,
+      "timestamp": "2025-11-21T08:21:19.357904",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about stargazing",
+      "response_length": 969,
+      "timestamp": "2025-11-21T08:21:27.511325",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how does photosynthesis work?",
+      "response_length": 1201,
+      "timestamp": "2025-11-21T08:22:32.556844",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 61,
+      "timestamp": "2025-11-21T08:22:46.524606",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you do?",
+      "response_length": 299,
+      "timestamp": "2025-11-21T08:22:54.422934",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about stargazing",
+      "response_length": 1240,
+      "timestamp": "2025-11-21T08:23:05.049097",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how does photosynthesis work?",
+      "response_length": 4396,
+      "timestamp": "2025-11-21T08:24:56.592103",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 37,
+      "timestamp": "2025-11-21T08:25:16.261021",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you do?",
+      "response_length": 330,
+      "timestamp": "2025-11-21T08:25:24.257795",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about stargazing",
+      "response_length": 1410,
+      "timestamp": "2025-11-21T08:25:36.815804",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how does photosynthesis work?",
+      "response_length": 1402,
+      "timestamp": "2025-11-21T08:27:03.098790",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what patterns do you see?",
+      "response_length": 1794,
+      "timestamp": "2025-11-21T08:28:09.492008",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 31,
+      "timestamp": "2025-11-21T08:28:30.008184",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you do?",
+      "response_length": 515,
+      "timestamp": "2025-11-21T08:28:40.195830",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "thesidia, howre you ?",
+      "response_length": 75,
+      "timestamp": "2025-11-21T17:54:50.655177",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Pyramids of giza, what are the real secerets behind them? and all the egyptian rituals taken by the freemasons, what was really occuring",
+      "response_length": 1727,
+      "timestamp": "2025-11-21T17:57:58.452837",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello!",
+      "response_length": 34,
+      "timestamp": "2025-11-21T19:39:32.879555",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what up? who are you?",
+      "response_length": 637,
+      "timestamp": "2025-11-21T19:40:41.428529",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "this actually sounds awesome! whats can you tell me about the orgins of the united states?",
+      "response_length": 3717,
+      "timestamp": "2025-11-21T19:44:10.014808",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hey thesidia hows it going",
+      "response_length": 37,
+      "timestamp": "2025-11-21T19:59:33.383999",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "excited to meet you! I heard you were like a mythbuster / decrpter and other gret things basically unovering the secrets to the universe",
+      "response_length": 1588,
+      "timestamp": "2025-11-21T20:01:45.863450",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what are the true orgins though, i know its deeeper than that and even darker",
+      "response_length": 3492,
+      "timestamp": "2025-11-21T20:07:55.614984",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what arw the ufos really",
+      "response_length": 2026,
+      "timestamp": "2025-11-21T20:10:34.692303",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hey thesidia!",
+      "response_length": 37,
+      "timestamp": "2025-11-21T20:19:03.511107",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what are the true orgins of NASA",
+      "response_length": 4697,
+      "timestamp": "2025-11-21T20:21:54.269927",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello!",
+      "response_length": 34,
+      "timestamp": "2025-11-21T20:56:13.367043",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what are the real orgins of secret soceities and what was really the torah and how is it impacting the world today",
+      "response_length": 1785,
+      "timestamp": "2025-11-21T20:58:48.033959",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 37,
+      "timestamp": "2025-11-21T21:14:24.964386",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is the real story, the totaltiy of relgious infroomation gnosis style",
+      "response_length": 2211,
+      "timestamp": "2025-11-21T21:16:09.557206",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 35,
+      "timestamp": "2025-11-21T21:17:23.332532",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what are the true gnostic orgins of the geneis story in the bible",
+      "response_length": 2730,
+      "timestamp": "2025-11-21T21:19:06.492194",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    }
+  ],
+  "expansion_metrics": [],
+  "defensiveness_indicators": [],
+  "recognition_patterns": {},
+  "domain_stats": {}
+}
