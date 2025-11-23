@@ -107,6 +107,16 @@ def index():
     """Serve main HTML file"""
     return send_from_directory('.', 'index.html')
 
+@app.route('/robots.txt')
+def robots():
+    """Serve robots.txt for SEO"""
+    return send_from_directory('.', 'robots.txt'), 200, {'Content-Type': 'text/plain'}
+
+@app.route('/sitemap.xml')
+def sitemap():
+    """Serve sitemap.xml for SEO"""
+    return send_from_directory('.', 'sitemap.xml'), 200, {'Content-Type': 'application/xml'}
+
 @app.route('/<path:path>')
 def serve_static(path):
     """Serve static files"""
