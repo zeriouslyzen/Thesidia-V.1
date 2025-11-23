@@ -13,11 +13,6 @@
       "src": "/",
       "dest": "/webapp/index.html"
     }
-  ],
-  "functions": {
-    "api/**/*.py": {
-      "maxDuration": 60
-    }
-  }
+  ]
 }
 
