@@ -241,12 +241,38 @@ class TruthEngine:
         """
         Score based on archetypal truth (Jung, Campbell, Gnostic, collective psychology).
         
+        Uses ArchetypalAnalyzer for more accurate detection.
+        
         Returns:
             Score 0.0-1.0 based on archetypal patterns
         """
         if not sources:
             return 0.0
         
+        # Try to use ArchetypalAnalyzer if available
+        try:
+            from .archetypal_analyzer import ArchetypalAnalyzer
+            analyzer = ArchetypalAnalyzer()
+            
+            # Analyze all sources
+            total_score = 0.0
+            analyzed_count = 0
+            
+            for source in sources:
+                content = self._get_source_content(source)
+                if content:
+                    analysis = analyzer.analyze(content, claim)
+                    if analysis.get("archetypal_score", 0) > 0:
+                        total_score += analysis["archetypal_score"]
+                        analyzed_count += 1
+            
+            if analyzed_count > 0:
+                return round(min(1.0, total_score / analyzed_count), 3)
+        except Exception:
+            # Fallback to simple keyword detection
+            pass
+        
+        # Fallback: Simple keyword detection
         archetypal_indicators = [
             "archetype", "myth", "hero", "journey", "shadow", "anima",
             "collective", "unconscious", "gnostic", "archon", "sophia",
