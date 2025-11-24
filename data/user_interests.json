@@ -1153,20 +1153,22 @@
         "explain",
         "consciousness"
       ]
+    },
+    "error": {
+      "count": 4,
+      "first_seen": "2025-11-24T01:47:18.941089",
+      "last_seen": "2025-11-24T01:57:48.714893",
+      "related_topics": []
     }
   },
   "research_threads": [],
   "technical_domains": {},
   "journey_context": {
-    "primary_focus": "alright",
+    "primary_focus": "error",
     "active_threads": [],
     "recent_topics": [
-      "alright",
-      "meditation",
-      "explain",
-      "consciousness",
-      "simultaneously"
+      "error"
     ]
   },
-  "last_updated": "2025-11-22T23:09:34.970263"
+  "last_updated": "2025-11-24T01:57:48.715007"
 }

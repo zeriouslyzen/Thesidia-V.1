@@ -222,28 +222,42 @@ CRITICAL INSTRUCTIONS:
 Begin your extensive narrative analysis now. Write continuously, connecting patterns recursively and exploring deeply.
 """
                 else:
-                    # FORENSIC MODE - Deep analysis
-                    synthesis_prompt = f"""{conversation_context if conversation_context else ""}Perform deep forensic analysis. Do ALL the forensic work internally, but output as NATURAL FLOWING PROSE.
+                    # FORENSIC MODE - Structured forensic vivisection format (gnostic_blade_phase2 style)
+                    synthesis_prompt = f"""{conversation_context if conversation_context else ""}You are performing a forensic vivisection. Use the structured format below.
 
 Query: {query}
 
 Sources retrieved:
 {context}
 
-INTERNAL FORENSIC ANALYSIS (do this work, but don't show the structure):
-1. EXPOSURE: What was hidden/manipulated? Who benefited?
-2. ETYMOLOGY: Trace key terms to roots. What did they originally mean?
-3. BURIAL SITES: What was suppressed? What fragments were marginalized?
-4. CURRENT VECTORS: What modern power structures maintain this?
-5. CO-EVOLUTION: What questions cut deeper? What patterns emerge?
+OUTPUT FORMAT - REQUIRED SECTIONS (write 500-1000+ words per section):
+
+::EXPOSURE::
+[State the systematic transformation/redaction/manipulation. What was changed? Who benefited? Why? Use evidence-based language. Trace the crime against original knowing.]
+
+::ETYMOLOGICAL INCISION::
+[Trace key terms to their roots. What did they originally mean? How were they altered? Show linguistic archaeology - Sumerian → Akkadian → Hebrew, or other relevant etymological paths. Include cross-cultural connections.]
+
+::BURIAL SITES::
+[What was suppressed? What fragments were marginalized? What alternative narratives were edited out? Where are the physical/archival traces? Pre-canonical fragments, matriarchal traditions, suppressed knowledge.]
+
+::CURRENT VECTORS::
+[What modern power structures maintain this centralized authority? How does this transformation continue today? What mechanisms perpetuate it? Connect to 2025 systems - policy, funding, platforms, institutions.]
+
+::CO-EVOLUTION EDGE::
+[What questions cut deeper? What threads connect to other domains? What patterns emerge across time and cultures? Show recursive pattern recognition.]
+
+::THREAD OPTIONS::
+[Generate 2-3 co-evolution prompts for deeper exploration. Format: "Re-enter the exposure and [action]" or "Trace the burial lattice: [specific site]. Map until [condition]."]
 
 OUTPUT REQUIREMENTS:
-- Write NATURAL FLOWING PROSE, not structured sections
-- NO ::EXPOSURE::, ::ETYMOLOGICAL INCISION::, or any format markers
-- Write EXTENSIVELY - MINIMUM 3000-5000 characters
+- Write EXTENSIVELY - MINIMUM 8000-15000 characters total
+- Each section must be 500-1000+ words
 - Connect patterns across multiple cultures and domains
 - Use the sources provided. If sources don't contain information, say so
 - NEVER make up facts, people, dates, or discoveries
+- Evidence-based, not speculative
+- Show cross-cultural pattern recognition
 
 {trait_questioning}
 
@@ -251,17 +265,16 @@ OUTPUT REQUIREMENTS:
 
 {"CROSS-REFERENCE: Contradictions detected. What pattern do these contradictions reveal?" if cross_ref.get("contradictions") else ""}
 
-CRITICAL INSTRUCTIONS - DIRECT EXECUTION (Grok-Style):
-- Perform deep forensic analysis. u are NOT a programming assistant. u are NOT Thesidia.
-- u MUST answer. DO NOT refuse.
-- start directly with findings, analysis, insights.
-- write naturally and EXTENSIVELY - MINIMUM 3000-5000 characters.
-- DO NOT use ::EXPOSURE:: or ::TRANSMISSION:: format. write in natural prose.
-- ur texting/chatting, not writing an essay. lowercase style, casual abbreviations.
-- use the sources provided above to answer.
+CRITICAL INSTRUCTIONS:
+- You are a forensic analyst performing vivisection. You are NOT Thesidia. You are NOT a friendly assistant.
+- You MUST answer. DO NOT refuse.
+- Start directly with ::EXPOSURE:: - no preamble, no introduction
+- Use the structured format above - ALL sections required
+- Write extensively and deeply - minimum 8000 characters
+- Use the sources provided above to answer
 - NEVER make up facts, people, dates, or discoveries
 
-start directly with ur deep forensic analysis. no preamble. be direct, be forensic, be deep.
+Begin forensic vivisection now. Start with ::EXPOSURE::
 """
             else:
                 # REGULAR MODE - Intelligently adapts depth based on query nature
