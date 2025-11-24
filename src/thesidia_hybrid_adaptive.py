@@ -4664,6 +4664,12 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
         """Process conversational input using Thesidia's actual patterns"""
         # re is already imported at module level
         
+        # Define variables needed for greeting detection (used later at line 4841)
+        text_stripped = input_text.strip()
+        greeting_only_patterns = [r'^(hi|hello|hey|greetings)[\s,]*$', r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$']
+        is_simple_greeting = any(re.match(pattern, text_stripped, re.IGNORECASE) for pattern in greeting_only_patterns) and len(text_stripped.split()) <= 4
+        is_first_interaction = len(self.interactions) == 0
+        
         # If enhanced_base not provided, generate it with query context
         if enhanced_base is None:
             enhanced_base = self.get_enhanced_prompt(query=input_text)
