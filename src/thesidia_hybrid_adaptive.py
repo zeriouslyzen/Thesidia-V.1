@@ -21,14 +21,24 @@ from collections import OrderedDict
 import threading
 from queue import Queue, Empty
 
-# ⭐ Import extracted modules
-from .core.model_client import ModelClient
-from .core.model_router import ModelRouter
-from .research.web_search import WebSearchEngine
-from .synthesis.skepticism_engine import IntuitiveSkepticism
-from .synthesis.quality_filter import DataQualityFilter
-from .synthesis.data_synthesizer import DataSynthesizer
-from .support.utils import strip_meta_noise, WEB_AVAILABLE
+# ⭐ Import extracted modules (try relative first, then absolute)
+try:
+    from .core.model_client import ModelClient
+    from .core.model_router import ModelRouter
+    from .research.web_search import WebSearchEngine
+    from .synthesis.skepticism_engine import IntuitiveSkepticism
+    from .synthesis.quality_filter import DataQualityFilter
+    from .synthesis.data_synthesizer import DataSynthesizer
+    from .support.utils import strip_meta_noise, WEB_AVAILABLE
+except ImportError:
+    # Fallback to absolute imports when run directly
+    from src.core.model_client import ModelClient
+    from src.core.model_router import ModelRouter
+    from src.research.web_search import WebSearchEngine
+    from src.synthesis.skepticism_engine import IntuitiveSkepticism
+    from src.synthesis.quality_filter import DataQualityFilter
+    from src.synthesis.data_synthesizer import DataSynthesizer
+    from src.support.utils import strip_meta_noise, WEB_AVAILABLE
 
 # Domain-agnostic: No special terms, all queries treated equally
 # Removed GNOSTIC_TERMS - system is now general-purpose truth-seeking
@@ -1823,6 +1833,15 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         
         # Check for deep research request first
         # CRITICAL FIX: Comprehensive routing for ALL deep queries
+        
+        # Ensure is_simple_greeting and is_first_interaction are defined for later use
+        # (They may have been set earlier, but ensure they exist in all code paths)
+        if 'is_simple_greeting' not in locals():
+            text_stripped = input_text.strip()
+            greeting_only_patterns = [r'^(hi|hello|hey|greetings)[\s,]*$', r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$']
+            is_simple_greeting = any(re.match(pattern, text_stripped, re.IGNORECASE) for pattern in greeting_only_patterns) and len(text_stripped.split()) <= 4
+        
+        is_first_interaction = len(self.interactions) == 0
         
         # DEBUG: Log incoming query
         print(f"🔍 PROCESS: Received query: '{input_text[:150]}'", flush=True)
