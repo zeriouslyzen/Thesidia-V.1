@@ -1,0 +1,229 @@
+{
+    "jungian_archetypes": {
+        "Shadow": {
+            "definition": "The repressed, denied, or undeveloped aspects of the personality",
+            "indicators": ["shadow", "dark", "hidden", "repressed", "denied", "unconscious"],
+            "examples": ["The shadow self", "Hidden desires", "Repressed memories"]
+        },
+        "Anima": {
+            "definition": "The inner feminine aspect in the male psyche",
+            "indicators": ["anima", "feminine", "inner woman", "soul", "feeling"],
+            "examples": ["Anima projection", "Feminine principle", "Inner soul"]
+        },
+        "Animus": {
+            "definition": "The inner masculine aspect in the female psyche",
+            "indicators": ["animus", "masculine", "inner man", "spirit", "thinking"],
+            "examples": ["Animus projection", "Masculine principle", "Inner spirit"]
+        },
+        "Self": {
+            "definition": "The unified consciousness and unconsciousness, the whole personality",
+            "indicators": ["self", "wholeness", "integration", "individuation", "center"],
+            "examples": ["True self", "Individuation process", "Self-realization"]
+        },
+        "Persona": {
+            "definition": "The mask or role we present to the world",
+            "indicators": ["persona", "mask", "role", "identity", "appearance"],
+            "examples": ["Social persona", "Public mask", "Role identity"]
+        },
+        "Great Mother": {
+            "definition": "The nurturing, protective, and sometimes devouring mother archetype",
+            "indicators": ["mother", "nurturing", "fertility", "nature", "earth"],
+            "examples": ["Mother goddess", "Nature mother", "Fertility goddess"]
+        },
+        "Wise Old Man": {
+            "definition": "The archetype of wisdom, guidance, and knowledge",
+            "indicators": ["wise", "sage", "elder", "teacher", "guide", "mentor"],
+            "examples": ["Wise sage", "Elder guide", "Mentor figure"]
+        },
+        "Trickster": {
+            "definition": "The boundary-crosser, transformer, and agent of chaos",
+            "indicators": ["trickster", "chaos", "transformation", "boundary", "liminal"],
+            "examples": ["Trickster god", "Boundary crosser", "Agent of change"]
+        },
+        "Hero": {
+            "definition": "The archetype of transformation, journey, and overcoming obstacles",
+            "indicators": ["hero", "journey", "quest", "adventure", "transformation"],
+            "examples": ["Hero's journey", "Quest narrative", "Transformation story"]
+        }
+    },
+    "campbell_patterns": {
+        "Call to Adventure": {
+            "definition": "The hero receives a summons or invitation to begin the journey",
+            "indicators": ["call", "summons", "invitation", "challenge", "quest begins"],
+            "examples": ["The call", "Adventure begins", "Quest invitation"]
+        },
+        "Refusal of Call": {
+            "definition": "The hero initially refuses or hesitates to accept the call",
+            "indicators": ["refusal", "denial", "fear", "hesitation", "resistance"],
+            "examples": ["Refusing the call", "Hesitation", "Initial denial"]
+        },
+        "Supernatural Aid": {
+            "definition": "The hero receives help from a mentor or magical helper",
+            "indicators": ["aid", "helper", "mentor", "guide", "magical"],
+            "examples": ["Mentor appears", "Magical helper", "Supernatural guide"]
+        },
+        "Crossing Threshold": {
+            "definition": "The hero leaves the ordinary world and enters the special world",
+            "indicators": ["threshold", "crossing", "boundary", "entering", "departure"],
+            "examples": ["Crossing the threshold", "Leaving home", "Entering the unknown"]
+        },
+        "Belly of Whale": {
+            "definition": "The hero's lowest point, deepest darkness, or symbolic death",
+            "indicators": ["belly", "whale", "darkness", "descent", "lowest point"],
+            "examples": ["Darkest hour", "Lowest point", "Symbolic death"]
+        },
+        "Road of Trials": {
+            "definition": "The hero faces a series of tests, challenges, and obstacles",
+            "indicators": ["trials", "tests", "challenges", "obstacles", "ordeals"],
+            "examples": ["Series of trials", "Tests and challenges", "Obstacles overcome"]
+        },
+        "Meeting Goddess": {
+            "definition": "The hero meets the divine feminine or achieves union with the sacred",
+            "indicators": ["goddess", "divine feminine", "sacred", "union", "love"],
+            "examples": ["Meeting the goddess", "Divine union", "Sacred encounter"]
+        },
+        "Woman as Temptress": {
+            "definition": "The hero faces temptation that could derail the journey",
+            "indicators": ["temptress", "temptation", "desire", "distraction", "seduction"],
+            "examples": ["Temptation", "Distraction", "Desire"]
+        },
+        "Atonement with Father": {
+            "definition": "The hero reconciles with the father figure or authority",
+            "indicators": ["father", "authority", "reconciliation", "acceptance", "understanding"],
+            "examples": ["Father reconciliation", "Authority acceptance", "Understanding"]
+        },
+        "Apotheosis": {
+            "definition": "The hero achieves enlightenment or divine understanding",
+            "indicators": ["apotheosis", "transcendence", "enlightenment", "divine", "godlike"],
+            "examples": ["Enlightenment", "Transcendence", "Divine understanding"]
+        },
+        "Ultimate Boon": {
+            "definition": "The hero obtains the treasure, knowledge, or goal of the quest",
+            "indicators": ["boon", "treasure", "gift", "reward", "prize"],
+            "examples": ["Ultimate treasure", "Quest reward", "Prize obtained"]
+        },
+        "Refusal of Return": {
+            "definition": "The hero hesitates to return to the ordinary world",
+            "indicators": ["refusal", "return", "stay", "remain", "refuse to go back"],
+            "examples": ["Refusing to return", "Wanting to stay", "Hesitation to go back"]
+        },
+        "Magic Flight": {
+            "definition": "The hero must escape or flee from the special world",
+            "indicators": ["flight", "escape", "pursuit", "chase", "flee"],
+            "examples": ["Magical escape", "Flight from danger", "Pursuit"]
+        },
+        "Rescue from Without": {
+            "definition": "The hero receives external help to complete the return",
+            "indicators": ["rescue", "help", "intervention", "saved", "assistance"],
+            "examples": ["Rescue", "External help", "Intervention"]
+        },
+        "Crossing Return Threshold": {
+            "definition": "The hero returns to the ordinary world with the boon",
+            "indicators": ["return", "home", "back", "reintegration", "coming back"],
+            "examples": ["Return home", "Coming back", "Reintegration"]
+        },
+        "Master of Two Worlds": {
+            "definition": "The hero becomes comfortable in both ordinary and special worlds",
+            "indicators": ["master", "two worlds", "balance", "integration", "both"],
+            "examples": ["Master of both", "Balance achieved", "Integration complete"]
+        },
+        "Freedom to Live": {
+            "definition": "The hero achieves freedom from fear and lives fully",
+            "indicators": ["freedom", "live", "liberation", "free", "unbound"],
+            "examples": ["Freedom achieved", "Liberation", "Living fully"]
+        }
+    },
+    "gnostic_archetypes": {
+        "Archon": {
+            "definition": "Power structure or entity that hides truth and controls knowledge",
+            "indicators": ["archon", "ruler", "authority", "control", "power structure"],
+            "examples": ["Archonic control", "Power structure", "Authority figure"]
+        },
+        "Demiurge": {
+            "definition": "The false creator god who created the material world",
+            "indicators": ["demiurge", "creator", "false god", "craftsman", "maker"],
+            "examples": ["False creator", "Demiurge", "Craftsman god"]
+        },
+        "Sophia": {
+            "definition": "Divine wisdom, the one who remembers what was erased",
+            "indicators": ["sophia", "wisdom", "gnosis", "knowledge", "understanding"],
+            "examples": ["Divine wisdom", "Sophia", "Gnostic knowledge"]
+        },
+        "Aeon": {
+            "definition": "Eternal being or age in Gnostic cosmology",
+            "indicators": ["aeon", "eternity", "age", "eon", "period"],
+            "examples": ["Eternal being", "Aeon", "Eternal age"]
+        },
+        "Pleroma": {
+            "definition": "The fullness of the divine realm",
+            "indicators": ["pleroma", "fullness", "divine", "complete", "whole"],
+            "examples": ["Divine fullness", "Pleroma", "Complete divine"]
+        },
+        "Redaction": {
+            "definition": "The editing or alteration of original knowledge",
+            "indicators": ["redaction", "editing", "alteration", "modification", "change"],
+            "examples": ["Text redaction", "Knowledge editing", "Alteration"]
+        },
+        "Fragment": {
+            "definition": "Remnant of original knowledge before manipulation",
+            "indicators": ["fragment", "piece", "remnant", "remains", "partial"],
+            "examples": ["Original fragment", "Knowledge remnant", "Lost piece"]
+        },
+        "Original Knowing": {
+            "definition": "The pristine knowledge before manipulation or redaction",
+            "indicators": ["original", "pristine", "pure", "untainted", "first"],
+            "examples": ["Original knowledge", "Pristine truth", "Pure knowing"]
+        }
+    },
+    "mythic_structures": {
+        "Great Flood": {
+            "definition": "Universal flood myth representing purification and rebirth",
+            "cross_cultural": ["Sumerian", "Biblical", "Hindu", "Native American", "Greek"],
+            "indicators": ["flood", "deluge", "water", "purification", "rebirth", "cleansing"],
+            "examples": ["Noah's flood", "Gilgamesh flood", "Manu's flood"]
+        },
+        "Sky Gods": {
+            "definition": "Celestial deities associated with sky, heaven, and divine authority",
+            "cross_cultural": ["Greek", "Norse", "Egyptian", "Hindu", "Native American"],
+            "indicators": ["sky", "heaven", "celestial", "divine", "god", "deity"],
+            "examples": ["Zeus", "Odin", "Ra", "Indra"]
+        },
+        "Serpent Teachers": {
+            "definition": "Serpent or dragon figures associated with wisdom and knowledge",
+            "cross_cultural": ["Sumerian", "Biblical", "Chinese", "Hindu", "Native American"],
+            "indicators": ["serpent", "snake", "dragon", "wisdom", "knowledge", "teacher"],
+            "examples": ["Naga", "Quetzalcoatl", "Serpent in Eden", "Dragon wisdom"]
+        },
+        "Divine Twins": {
+            "definition": "Twin deities representing duality and complementary forces",
+            "cross_cultural": ["Greek", "Norse", "Hindu", "Native American", "Egyptian"],
+            "indicators": ["twins", "dual", "pair", "two", "duality", "opposites"],
+            "examples": ["Castor and Pollux", "Horus and Set", "Ashvins"]
+        },
+        "Solar Hero": {
+            "definition": "Hero associated with the sun, light, and illumination",
+            "cross_cultural": ["Egyptian", "Greek", "Hindu", "Norse", "Native American"],
+            "indicators": ["solar", "sun", "hero", "light", "illumination", "dawn"],
+            "examples": ["Ra", "Apollo", "Surya", "Baldr"]
+        },
+        "Underworld Journey": {
+            "definition": "Descent into the underworld, death, or darkness",
+            "cross_cultural": ["Greek", "Sumerian", "Egyptian", "Hindu", "Native American"],
+            "indicators": ["underworld", "descent", "hell", "death", "journey", "descent"],
+            "examples": ["Orpheus", "Inanna", "Osiris", "Dante"]
+        },
+        "World Tree": {
+            "definition": "Cosmic tree connecting heaven, earth, and underworld",
+            "cross_cultural": ["Norse", "Hindu", "Native American", "Siberian", "Celtic"],
+            "indicators": ["tree", "axis", "center", "cosmic", "world", "pillar"],
+            "examples": ["Yggdrasil", "Ashvattha", "Tree of Life", "World Pillar"]
+        },
+        "Axis Mundi": {
+            "definition": "The cosmic axis or center connecting different realms",
+            "cross_cultural": ["Universal", "All cultures"],
+            "indicators": ["axis", "mundi", "center", "world", "cosmic", "axis mundi"],
+            "examples": ["World center", "Cosmic axis", "Sacred center"]
+        }
+    }
+}
+
