@@ -1501,7 +1501,8 @@ class DataSynthesizer:
         output_mode: str = "spacious",
         evidence_arrangement: str = None,
         enhanced_prompt: str = None,
-        conversation_context: str = None
+        conversation_context: str = None,
+        wants_structured_format: bool = False  # ⭐ FORMAT OPTION: User wants ::EXPOSURE:: format
     ) -> Dict[str, Any]:
         """Synthesize information with pattern recognition and cross-reference"""
         
