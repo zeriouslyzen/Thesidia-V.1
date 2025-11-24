@@ -1835,12 +1835,7 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         # CRITICAL FIX: Comprehensive routing for ALL deep queries
         
         # Ensure is_simple_greeting and is_first_interaction are defined for later use
-        # (They may have been set earlier, but ensure they exist in all code paths)
-        if 'is_simple_greeting' not in locals():
-            text_stripped = input_text.strip()
-            greeting_only_patterns = [r'^(hi|hello|hey|greetings)[\s,]*$', r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$']
-            is_simple_greeting = any(re.match(pattern, text_stripped, re.IGNORECASE) for pattern in greeting_only_patterns) and len(text_stripped.split()) <= 4
-        
+        # (is_simple_greeting was set earlier, but ensure is_first_interaction is defined)
         is_first_interaction = len(self.interactions) == 0
         
         # DEBUG: Log incoming query
