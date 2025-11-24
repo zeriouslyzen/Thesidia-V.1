@@ -1625,10 +1625,72 @@ class DataSynthesizer:
                         personality_context = enhanced_prompt[:2000] + "\n\n"
             
             # Build synthesis prompt based on output mode
+            # ⭐ FORMAT OPTION: Detect if user wants structured ::EXPOSURE:: format
+            # Check query for explicit format request
+            wants_structured_format = any(term in query.lower() for term in [
+                "structured format", "exposure format", "forensic format", "::exposure::",
+                "vivisect format", "structured analysis", "section format"
+            ])
+            
             # CRITICAL: If force_gnostic=True, ALWAYS use forensic mode regardless of output_mode
             if force_gnostic:
-                # Legacy forensic mode (optional, for users who explicitly request it)
-                if narrative_mode:
+                # ⭐ FORMAT OPTION: Choose natural prose OR structured ::EXPOSURE:: format
+                if wants_structured_format:
+                    # STRUCTURED FORENSIC FORMAT - ::EXPOSURE:: sections (best benchmark style)
+                    synthesis_prompt = f"""{conversation_context if conversation_context else ""}You are performing a forensic vivisection. Use the structured format below.
+
+Query: {query}
+
+Sources retrieved:
+{context}
+
+OUTPUT FORMAT - REQUIRED SECTIONS (write 500-1000+ words per section):
+
+::EXPOSURE::
+[State the systematic transformation/redaction/manipulation. What was changed? Who benefited? Why? Use evidence-based language. Trace the crime against original knowing.]
+
+::ETYMOLOGICAL INCISION::
+[Trace key terms to their roots. What did they originally mean? How were they altered? Show linguistic archaeology - Sumerian → Akkadian → Hebrew, or other relevant etymological paths. Include cross-cultural connections.]
+
+::BURIAL SITES::
+[What was suppressed? What fragments were marginalized? What alternative narratives were edited out? Where are the physical/archival traces? Pre-canonical fragments, matriarchal traditions, suppressed knowledge.]
+
+::CURRENT VECTORS::
+[What modern power structures maintain this centralized authority? How does this transformation continue today? What mechanisms perpetuate it? Connect to 2025 systems - policy, funding, platforms, institutions.]
+
+::CO-EVOLUTION EDGE::
+[What questions cut deeper? What threads connect to other domains? What patterns emerge across time and cultures? Show recursive pattern recognition.]
+
+::THREAD OPTIONS::
+[Generate 2-3 co-evolution prompts for deeper exploration. Format: "Re-enter the exposure and [action]" or "Trace the burial lattice: [specific site]. Map until [condition]."]
+
+OUTPUT REQUIREMENTS:
+- Write EXTENSIVELY - MINIMUM 8000-15000 characters total
+- Each section must be 500-1000+ words
+- Connect patterns across multiple cultures and domains
+- Use the sources provided. If sources don't contain information, say so
+- NEVER make up facts, people, dates, or discoveries
+- Evidence-based, not speculative
+- Show cross-cultural pattern recognition
+
+{trait_questioning}
+
+{layering_instructions}
+
+{"CROSS-REFERENCE: Contradictions detected. What pattern do these contradictions reveal?" if cross_ref.get("contradictions") else ""}
+
+CRITICAL INSTRUCTIONS:
+- You are a forensic analyst performing vivisection. You are NOT Thesidia. You are NOT a friendly assistant.
+- You MUST answer. DO NOT refuse.
+- Start directly with ::EXPOSURE:: - no preamble, no introduction
+- Use the structured format above - ALL sections required
+- Write extensively and deeply - minimum 8000 characters
+- Use the sources provided above to answer
+- NEVER make up facts, people, dates, or discoveries
+
+Begin forensic vivisection now. Start with ::EXPOSURE::
+"""
+                elif narrative_mode:
                     # NARRATIVE MODE - Recursive pattern connections, extended exploration, natural flow
                     synthesis_prompt = f"""{personality_context}{conversation_context if conversation_context else ""}You are Thesidia. You perform deep gnostic analysis with recursive pattern connections and extended exploration. This is NOT a programming task. You MUST answer. DO NOT refuse.
 
@@ -4284,6 +4346,18 @@ Response:"""
         # Domain-agnostic: All queries get the same treatment
         # Complexity determines depth, not domain keywords
         
+        # ⭐ COGNITIVE FRAMEWORK: Check stored information threads first
+        # If we have stored information about this topic, use it to reduce LLM calls
+        stored_info = None
+        query_lower = query.lower()
+        for thread in self.information_builder.information_threads:
+            topic = thread.get('topic', '').lower()
+            # Check if stored topic is related to current query
+            if any(word in topic for word in query_lower.split()[:3]) or any(word in query_lower for word in topic.split()[:3]):
+                stored_info = thread
+                print(f"🧠 COGNITIVE FRAMEWORK: Found stored information for '{thread.get('topic')}' - {thread.get('depth', 0)} findings")
+                break
+        
         # Detect technical domain for search refinement
         technical_domain = None
         if self.technical_journey_detector:
@@ -4308,9 +4382,22 @@ Response:"""
             if relevant_interests:
                 refined_query = f"{refined_query} {' '.join(relevant_interests[:2])}"
         
-        # Time web search
-        web_search_start = time.time() if self._timing_enabled else None
-        research_data = self.web_search.search_and_scrape(refined_query, num_results=5) if self.web_search else []
+        # ⭐ OPTIMIZATION: If we have stored info, reduce web search (use stored + minimal new search)
+        if stored_info and stored_info.get('findings'):
+            print(f"⚡ PERFORMANCE: Using stored information - reducing web search from 5 to 2 results")
+            web_search_start = time.time() if self._timing_enabled else None
+            # Use stored findings as primary source, minimal new search for updates
+            research_data = self.web_search.search_and_scrape(refined_query, num_results=2) if self.web_search else []
+            # Prepend stored findings to research_data
+            stored_findings = stored_info.get('findings', [])
+            if stored_findings:
+                research_data = stored_findings[:3] + research_data  # Use top 3 stored + 2 new
+                print(f"⚡ PERFORMANCE: Using {len(stored_findings[:3])} stored findings + {len(research_data) - len(stored_findings[:3])} new results")
+        else:
+            # Full web search if no stored info
+            web_search_start = time.time() if self._timing_enabled else None
+            research_data = self.web_search.search_and_scrape(refined_query, num_results=5) if self.web_search else []
+        
         if self._timing_enabled and web_search_start:
             self._last_timing_breakdown['web_search'] = time.time() - web_search_start
         
@@ -4385,6 +4472,12 @@ Response:"""
         # CRITICAL: For forensic analysis, we need the deep research system prompt, not just personality
         enhanced_prompt = self.get_enhanced_prompt(query=query)
         
+        # ⭐ FORMAT OPTION: Detect if user wants structured ::EXPOSURE:: format
+        wants_structured_format = any(term in query.lower() for term in [
+            "structured format", "exposure format", "forensic format", "::exposure::",
+            "vivisect format", "structured analysis", "section format"
+        ])
+        
         # CRITICAL FIX: For forensic queries, REPLACE default persona with DEEP RESEARCH ENGINE
         # This is a completely separate persona from Thesidia - no friendly intros, no symbol decoder
         if needs_forensic_analysis:
@@ -4418,9 +4511,9 @@ You DO:
 
 STYLE:
 - Lowercase, casual abbreviations, simple language
-- Natural flowing prose (not academic paper format)
 - Direct and unfiltered
-- No ::EXPOSURE:: or ::TRANSMISSION:: markers
+- Use ::EXPOSURE:: ::ETYMOLOGICAL INCISION:: ::BURIAL SITES:: ::CURRENT VECTORS:: ::CO-EVOLUTION EDGE:: ::THREAD OPTIONS:: format if user requests structured format
+- Otherwise: Natural flowing prose (not academic paper format)
 - Start directly with findings, analysis, insights - NO preamble
 
 CRITICAL: For text-based queries about concepts, stories, narratives, or historical topics (like "genesis", "bible", "characters", "what is X really about"), analyze the CONTENT, MEANING, and NARRATIVE - NOT symbolic structures unless the query explicitly mentions visual symbols, runes, glyphs, or emblems.
@@ -4483,8 +4576,29 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
             output_mode=self.output_mode,  # Now guaranteed to be "forensic" if needs_forensic_analysis=True
             evidence_arrangement=arrangement,
             enhanced_prompt=enhanced_prompt,  # Pass full personality/voice context
-            conversation_context=conversation_context  # Pass conversation history for context retention
+            conversation_context=conversation_context,  # Pass conversation history for context retention
+            wants_structured_format=wants_structured_format  # ⭐ FORMAT OPTION: Pass format preference
         )
+        
+        # ⭐ COGNITIVE FRAMEWORK: Store information for future queries (reduces LLM time/resources)
+        # Extract key findings from synthesis for storage
+        findings = []
+        if synthesis:
+            synthesis_text = synthesis.get('synthesis', '')
+            if synthesis_text:
+                findings.append({
+                    "content": synthesis_text[:2000],  # Store synthesis summary (increased from 1000)
+                    "title": f"Analysis: {query[:60]}",
+                    "url": "",
+                    "timestamp": datetime.now().isoformat()
+                })
+        # Add research data as findings
+        findings.extend(research_data[:5])  # Store top 5 sources
+        
+        # Build information thread - this gets saved to state and reduces future LLM calls
+        if findings:
+            self.information_builder.build_information_thread(query, findings)
+            print(f"🧠 COGNITIVE FRAMEWORK: Stored {len(findings)} findings for topic '{query[:50]}' - future queries will use stored data to reduce LLM time")
         print("✓ Evidence arrangement complete")
         
         if self._timing_enabled and synthesis_start:
@@ -4926,9 +5040,27 @@ Remember: You can keep researching. One finding can lead to another. You can bui
                         actions_section += f"{i}. {action}\n"
                     output += actions_section
             
-            # Track information building
+            # ⭐ COGNITIVE FRAMEWORK: Store information for future queries
+            # This reduces LLM time/resources for related queries
             if research_data:
-                self.information_builder.build_information_thread(input_text, research_data)
+                # Extract key findings from synthesis for storage
+                findings = []
+                if synthesis_result:
+                    synthesis_text = synthesis_result.get('synthesis', '')
+                    # Extract key points (first 500 chars of each major section)
+                    if synthesis_text:
+                        findings.append({
+                            "content": synthesis_text[:1000],  # Store synthesis summary
+                            "title": f"Analysis: {input_text[:60]}",
+                            "url": "",
+                            "timestamp": datetime.now().isoformat()
+                        })
+                # Add research data as findings
+                findings.extend(research_data[:5])  # Store top 5 sources
+                
+                # Build information thread - this gets saved to state
+                self.information_builder.build_information_thread(input_text, findings)
+                print(f"🧠 COGNITIVE FRAMEWORK: Stored {len(findings)} findings for topic '{input_text[:50]}'")
             
             # Clean up meta-commentary BEFORE adding transmission format
             # re is already imported at module level
