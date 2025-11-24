@@ -13,10 +13,12 @@ Analysis & synthesis components:
 from .truth_engine import TruthEngine
 from .skepticism_engine import IntuitiveSkepticism
 from .quality_filter import DataQualityFilter
+from .data_synthesizer import DataSynthesizer
 
 __all__ = [
     "TruthEngine",
     "IntuitiveSkepticism",
     "DataQualityFilter",
+    "DataSynthesizer",
 ]
 
