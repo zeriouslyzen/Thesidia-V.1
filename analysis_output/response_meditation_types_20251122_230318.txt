@@ -1,0 +1,11 @@
+Category: meditation_types
+Timestamp: 2025-11-22T23:07:54.236599
+Prompt: Explain different types of meditation: mindfulness, transcendental, vipassana, and zen.
+================================================================================
+FULL RESPONSE:
+================================================================================
+Mindfulness meditation focuses on paying attention to one's thoughts and feelings in the present moment without judgment. It originated from Buddhism but has been adopted by many other cultures as well. Transcendental meditation involves using a mantra—a simple word or phrase—to focus the mind and achieve a state of deep relaxation. This practice was developed by Maharishi Mahesh Yogi and gained popularity in the West during the 1960s. Vipassana, also known as insight meditation, emphasizes observing bodily sensations and mental states to gain self-awareness and understanding of reality. It's a traditional Buddhist practice that places importance on introspection and self-reflection. Zen meditation, or zazen, is the seated meditation practice of Japanese Zen Buddhism. Practitioners focus on posture, breathing, and sometimes chanting to achieve a state of mindfulness and awareness. The aim is to develop insight into the nature of existence and to cultivate a calm, clear mind. **I can also:** 1. research relativity 2. research einstein
+
+================================================================================
+Response Length: 1049 chars
+Response Time: 45.01s

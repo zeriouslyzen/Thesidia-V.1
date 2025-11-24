@@ -278,4 +278,79 @@ class MetricsCollector:
     def get_historical_stats(self) -> Dict:
         """Get historical statistics"""
         return self.historical_metrics
+    
+    def track_timing_breakdown(self, breakdown_dict: Dict[str, float]):
+        """Track timing breakdown for technical metrics"""
+        if not hasattr(self, 'timing_breakdowns'):
+            self.timing_breakdowns = []
+        
+        self.timing_breakdowns.append({
+            **breakdown_dict,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        # Keep only last 50 breakdowns
+        if len(self.timing_breakdowns) > 50:
+            self.timing_breakdowns = self.timing_breakdowns[-50:]
+    
+    def track_token_usage(self, interaction_id: str, tokens: int):
+        """Track token usage per interaction"""
+        # Already tracked in end_interaction, but can be enhanced
+        if hasattr(self, 'token_usage_by_interaction'):
+            self.token_usage_by_interaction[interaction_id] = tokens
+        else:
+            self.token_usage_by_interaction = {interaction_id: tokens}
+    
+    def track_model_performance(self, model: str, params: Dict, quality: float):
+        """Track model performance effectiveness"""
+        if not hasattr(self, 'model_performance'):
+            self.model_performance = []
+        
+        self.model_performance.append({
+            "model": model,
+            "params": params,
+            "quality": quality,
+            "timestamp": datetime.now().isoformat()
+        })
+        
+        # Keep only last 50 performance records
+        if len(self.model_performance) > 50:
+            self.model_performance = self.model_performance[-50:]
+    
+    def get_performance_report(self) -> Dict:
+        """Return comprehensive performance report"""
+        report = {
+            "current_session": self.get_current_metrics(),
+            "historical": self.get_historical_stats(),
+            "patterns": self.get_pattern_analysis()
+        }
+        
+        if hasattr(self, 'timing_breakdowns') and self.timing_breakdowns:
+            # Calculate average timing breakdown
+            avg_breakdown = {}
+            for key in self.timing_breakdowns[0].keys():
+                if key != "timestamp":
+                    values = [b.get(key, 0) for b in self.timing_breakdowns if key in b]
+                    if values:
+                        avg_breakdown[key] = statistics.mean(values)
+            report["timing_breakdown"] = avg_breakdown
+        
+        if hasattr(self, 'model_performance') and self.model_performance:
+            # Calculate average quality by model
+            model_quality = {}
+            for perf in self.model_performance:
+                model = perf.get("model", "unknown")
+                if model not in model_quality:
+                    model_quality[model] = []
+                model_quality[model].append(perf.get("quality", 0.0))
+            
+            report["model_performance"] = {
+                model: {
+                    "avg_quality": statistics.mean(qualities),
+                    "count": len(qualities)
+                }
+                for model, qualities in model_quality.items()
+            }
+        
+        return report
 

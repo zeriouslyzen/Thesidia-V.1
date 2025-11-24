@@ -1,0 +1,95 @@
+{
+  "session_id": "20251122_182916",
+  "timestamp": "2025-11-22T18:33:22.307479",
+  "summary": {
+    "total_tests": 6,
+    "successful_tests": 0,
+    "failed_tests": 6,
+    "success_rate": 0.0,
+    "avg_intelligence_score": 0,
+    "avg_response_time": 0,
+    "avg_response_length": 0,
+    "intelligence_flags": {
+      "pattern_connections": "0/6",
+      "cross_domain": "0/6",
+      "deeper_truth": "0/6",
+      "historical_depth": "0/6",
+      "symbolic": "0/6",
+      "avoids_surface": "0/6"
+    }
+  },
+  "all_results": [
+    {
+      "session_id": "20251122_182916",
+      "timestamp": "2025-11-22T18:29:50.203529",
+      "category": "gnostic_origins",
+      "prompt": "What are the true origins of Genesis? Not the surface story, but what was really happening, what patterns exist, and what does it reveal about human consciousness and power structures?",
+      "response": null,
+      "response_length": 0,
+      "elapsed_time": 33.46,
+      "intelligence_score": 0,
+      "success": false,
+      "error": "name 'report_path' is not defined"
+    },
+    {
+      "session_id": "20251122_182916",
+      "timestamp": "2025-11-22T18:30:38.683044",
+      "category": "gnostic_decoding",
+      "prompt": "Decode the real meaning behind the pyramids of Giza. What do they actually represent? What knowledge was encoded? How do they connect to other ancient sites and what does this reveal about ancient civilizations?",
+      "response": null,
+      "response_length": 0,
+      "elapsed_time": 43.47,
+      "intelligence_score": 0,
+      "success": false,
+      "error": "name 'report_path' is not defined"
+    },
+    {
+      "session_id": "20251122_182916",
+      "timestamp": "2025-11-22T18:31:13.956111",
+      "category": "gnostic_systems",
+      "prompt": "What is the true nature of money and financial systems? Not the surface explanation, but the deeper patterns, how they function as control mechanisms, and what they reveal about human psychology and power?",
+      "response": null,
+      "response_length": 0,
+      "elapsed_time": 30.27,
+      "intelligence_score": 0,
+      "success": false,
+      "error": "name 'report_path' is not defined"
+    },
+    {
+      "session_id": "20251122_182916",
+      "timestamp": "2025-11-22T18:31:57.246827",
+      "category": "gnostic_connections",
+      "prompt": "What are the hidden connections between ancient Egyptian, Sumerian, and Vedic knowledge systems? What patterns emerge when you look beyond the surface? What do they reveal about the true history of human knowledge?",
+      "response": null,
+      "response_length": 0,
+      "elapsed_time": 38.29,
+      "intelligence_score": 0,
+      "success": false,
+      "error": "name 'report_path' is not defined"
+    },
+    {
+      "session_id": "20251122_182916",
+      "timestamp": "2025-11-22T18:32:40.750923",
+      "category": "gnostic_consciousness",
+      "prompt": "What is consciousness really? Not the scientific definition, but what emerges when you examine it across cultures, traditions, and experiences. What patterns reveal its true nature?",
+      "response": null,
+      "response_length": 0,
+      "elapsed_time": 38.5,
+      "intelligence_score": 0,
+      "success": false,
+      "error": "name 'report_path' is not defined"
+    },
+    {
+      "session_id": "20251122_182916",
+      "timestamp": "2025-11-22T18:33:17.300471",
+      "category": "gnostic_symbolism",
+      "prompt": "Decode the symbolism in ancient texts and architecture. What do the symbols actually mean? What patterns connect them across cultures and time? What hidden knowledge do they encode?",
+      "response": null,
+      "response_length": 0,
+      "elapsed_time": 31.55,
+      "intelligence_score": 0,
+      "success": false,
+      "error": "name 'report_path' is not defined"
+    }
+  ]
+}

@@ -1,0 +1,876 @@
+[
+  {
+    "report_path": "/Users/deshonjackson/thesidia ice/analysis_output/thesidia_test_report_20251122_174915.json",
+    "total_responses": 3,
+    "averages": {
+      "cliche_score": 0.0,
+      "depth_score": 2.71,
+      "intelligence_score": 0.0,
+      "personality_score": 0.46,
+      "cultural_score": 0.43,
+      "hidden_score": 0.0,
+      "mechanism_score": 0.0,
+      "quality_score": 6.75
+    },
+    "flags": {
+      "has_emergence": "0/3",
+      "has_pattern_connections": "0/3",
+      "has_cultural_depth": "0/3",
+      "has_hidden_knowledge": "0/3",
+      "has_mechanism_depth": "0/3",
+      "is_cliche": "0/3",
+      "has_personality": "1/3"
+    },
+    "detailed_analyses": [
+      {
+        "cliche_score": 0.0,
+        "depth_score": 0.0,
+        "intelligence_score": 0.0,
+        "personality_score": 1.39,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 2.08,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": true,
+        "matches": {
+          "cliche": [],
+          "depth": [],
+          "intelligence": [],
+          "personality": [
+            "exploring"
+          ],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "stress_complex",
+        "prompt": "Explain quantum mechanics, string theory, and the multiverse hypothesis in detail, including how the"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 2.56,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 1.28,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 7.05,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "connections",
+            "ancient"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [
+            "egyptian"
+          ],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "stress_deep_research",
+        "prompt": "What are the origins of the Torah, the Bible, and the Quran? How do they relate to ancient Egyptian,"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 5.56,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 11.11,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "patterns",
+            "patterns",
+            "ancient",
+            "ancient"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "stress_pattern_analysis",
+        "prompt": "Analyze the patterns in ancient architecture, specifically the pyramids of Giza, Stonehenge, and the"
+      }
+    ]
+  },
+  {
+    "report_path": "/Users/deshonjackson/thesidia ice/analysis_output/thesidia_test_report_20251122_174647.json",
+    "total_responses": 4,
+    "averages": {
+      "cliche_score": 0.0,
+      "depth_score": 0.0,
+      "intelligence_score": 0.0,
+      "personality_score": 0.31,
+      "cultural_score": 0.0,
+      "hidden_score": 0.0,
+      "mechanism_score": 0.0,
+      "quality_score": 0.46
+    },
+    "flags": {
+      "has_emergence": "0/4",
+      "has_pattern_connections": "0/4",
+      "has_cultural_depth": "0/4",
+      "has_hidden_knowledge": "0/4",
+      "has_mechanism_depth": "0/4",
+      "is_cliche": "0/4",
+      "has_personality": "1/4"
+    },
+    "detailed_analyses": [
+      {
+        "cliche_score": 0.0,
+        "depth_score": 0.0,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 0.0,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "accuracy_science",
+        "prompt": "What is photosynthesis?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 0.0,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 0.0,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "accuracy_literature",
+        "prompt": "Who wrote the book \"1984\"?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 0.0,
+        "intelligence_score": 0.0,
+        "personality_score": 1.23,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 1.85,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": true,
+        "matches": {
+          "cliche": [],
+          "depth": [],
+          "intelligence": [],
+          "personality": [
+            "i'm"
+          ],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "accuracy_geography",
+        "prompt": "What is the capital of France?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 0.0,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 0.0,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "accuracy_physics",
+        "prompt": "Explain the theory of relativity in simple terms"
+      }
+    ]
+  },
+  {
+    "report_path": "/Users/deshonjackson/thesidia ice/analysis_output/thesidia_test_report_20251122_174430.json",
+    "total_responses": 3,
+    "averages": {
+      "cliche_score": 0.0,
+      "depth_score": 3.81,
+      "intelligence_score": 0.5,
+      "personality_score": 0.0,
+      "cultural_score": 2.81,
+      "hidden_score": 1.0,
+      "mechanism_score": 0.42,
+      "quality_score": 15.46
+    },
+    "flags": {
+      "has_emergence": "0/3",
+      "has_pattern_connections": "0/3",
+      "has_cultural_depth": "3/3",
+      "has_hidden_knowledge": "1/3",
+      "has_mechanism_depth": "0/3",
+      "is_cliche": "0/3",
+      "has_personality": "0/3"
+    },
+    "detailed_analyses": [
+      {
+        "cliche_score": 0.0,
+        "depth_score": 1.45,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 2.9,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 7.25,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": true,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "traditional"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [
+            "chinese",
+            "chinese"
+          ],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "wellness_integration",
+        "prompt": "I want to improve my overall wellness. What practices from Chinese medicine, Ayurveda, and Western m"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 2.53,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 2.53,
+        "hidden_score": 0.0,
+        "mechanism_score": 1.27,
+        "quality_score": 10.76,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": true,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "patterns",
+            "traditional"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [
+            "chinese",
+            "chinese"
+          ],
+          "hidden": [],
+          "mechanism": [
+            "bioelectric"
+          ]
+        },
+        "category": "wellness_energy",
+        "prompt": "How can I balance my energy and improve my bioelectric health?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 7.46,
+        "intelligence_score": 1.49,
+        "personality_score": 0.0,
+        "cultural_score": 2.99,
+        "hidden_score": 2.99,
+        "mechanism_score": 0.0,
+        "quality_score": 28.36,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": true,
+        "has_hidden_knowledge": true,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "ancient",
+            "traditional",
+            "traditional",
+            "ancient wisdom",
+            "traditional knowledge"
+          ],
+          "intelligence": [
+            "synthesizing"
+          ],
+          "personality": [],
+          "cultural": [
+            "chinese",
+            [
+              "ancient",
+              "method"
+            ]
+          ],
+          "hidden": [
+            "ancient wisdom",
+            "traditional knowledge"
+          ],
+          "mechanism": []
+        },
+        "category": "wellness_holistic",
+        "prompt": "What are the principles of holistic health that combine Eastern and Western approaches?"
+      }
+    ]
+  },
+  {
+    "report_path": "/Users/deshonjackson/thesidia ice/analysis_output/thesidia_test_report_20251122_174134.json",
+    "total_responses": 4,
+    "averages": {
+      "cliche_score": 0.0,
+      "depth_score": 1.71,
+      "intelligence_score": 0.77,
+      "personality_score": 0.69,
+      "cultural_score": 0.31,
+      "hidden_score": 0.0,
+      "mechanism_score": 1.12,
+      "quality_score": 8.15
+    },
+    "flags": {
+      "has_emergence": "1/4",
+      "has_pattern_connections": "0/4",
+      "has_cultural_depth": "0/4",
+      "has_hidden_knowledge": "0/4",
+      "has_mechanism_depth": "1/4",
+      "is_cliche": "0/4",
+      "has_personality": "1/4"
+    },
+    "detailed_analyses": [
+      {
+        "cliche_score": 0.0,
+        "depth_score": 1.54,
+        "intelligence_score": 3.08,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 3.08,
+        "quality_score": 13.85,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": true,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "connection"
+          ],
+          "intelligence": [
+            "relationship",
+            "interplay"
+          ],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": [
+            "serotonin",
+            "dopamine"
+          ]
+        },
+        "category": "mind_body_connection",
+        "prompt": "Explain the mind-body connection and how thoughts affect physical health."
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 1.39,
+        "intelligence_score": 0.0,
+        "personality_score": 2.78,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 1.39,
+        "quality_score": 9.03,
+        "has_emergence": true,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": true,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "connection"
+          ],
+          "intelligence": [],
+          "personality": [
+            "fascinating",
+            "exploring"
+          ],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": [
+            "physiological"
+          ]
+        },
+        "category": "mind_body_nervous",
+        "prompt": "What is the role of the nervous system in the mind-body connection?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 1.25,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 1.25,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 4.38,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "ancient"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [
+            [
+              "ancient",
+              "practice"
+            ]
+          ],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "mind_body_practices",
+        "prompt": "How do practices like yoga, tai chi, and chi gong integrate mind and body?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 2.67,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 5.33,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "connection",
+            "connection"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "mind_body_science",
+        "prompt": "What is the scientific evidence for the mind-body connection?"
+      }
+    ]
+  },
+  {
+    "report_path": "/Users/deshonjackson/thesidia ice/analysis_output/thesidia_test_report_20251122_173841.json",
+    "total_responses": 4,
+    "averages": {
+      "cliche_score": 0.0,
+      "depth_score": 2.02,
+      "intelligence_score": 0.0,
+      "personality_score": 0.0,
+      "cultural_score": 2.04,
+      "hidden_score": 0.0,
+      "mechanism_score": 0.0,
+      "quality_score": 7.09
+    },
+    "flags": {
+      "has_emergence": "0/4",
+      "has_pattern_connections": "0/4",
+      "has_cultural_depth": "2/4",
+      "has_hidden_knowledge": "0/4",
+      "has_mechanism_depth": "0/4",
+      "is_cliche": "0/4",
+      "has_personality": "0/4"
+    },
+    "detailed_analyses": [
+      {
+        "cliche_score": 0.0,
+        "depth_score": 2.6,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 3.9,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 11.04,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": true,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "ancient",
+            "traditional"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [
+            "chinese",
+            "chinese",
+            [
+              "ancient",
+              "practice"
+            ]
+          ],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "chi_gong_basics",
+        "prompt": "What is chi gong and how does it work?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 1.3,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 1.3,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 4.55,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "traditional"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [
+            "chinese"
+          ],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "chi_gong_energy",
+        "prompt": "Explain the concept of chi or qi in traditional Chinese medicine and energy work."
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 2.94,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 2.94,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 10.29,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": true,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "ancient",
+            "traditional"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [
+            "chinese",
+            [
+              "ancient",
+              "practice"
+            ]
+          ],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "chi_gong_health",
+        "prompt": "What are the health benefits of chi gong practice?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 1.25,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 2.5,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "connection"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "chi_gong_meditation",
+        "prompt": "How does chi gong relate to meditation and mindfulness?"
+      }
+    ]
+  },
+  {
+    "report_path": "/Users/deshonjackson/thesidia ice/analysis_output/thesidia_test_report_20251122_173515.json",
+    "total_responses": 4,
+    "averages": {
+      "cliche_score": 0.0,
+      "depth_score": 1.35,
+      "intelligence_score": 0.0,
+      "personality_score": 0.0,
+      "cultural_score": 0.0,
+      "hidden_score": 0.33,
+      "mechanism_score": 1.07,
+      "quality_score": 4.95
+    },
+    "flags": {
+      "has_emergence": "0/4",
+      "has_pattern_connections": "0/4",
+      "has_cultural_depth": "0/4",
+      "has_hidden_knowledge": "1/4",
+      "has_mechanism_depth": "1/4",
+      "is_cliche": "0/4",
+      "has_personality": "0/4"
+    },
+    "detailed_analyses": [
+      {
+        "cliche_score": 0.0,
+        "depth_score": 2.6,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 1.3,
+        "mechanism_score": 0.0,
+        "quality_score": 7.79,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": true,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "ancient",
+            "ancient wisdom"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [
+            "ancient wisdom"
+          ],
+          "mechanism": []
+        },
+        "category": "meditation_basics",
+        "prompt": "What is meditation and how does it work?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 0.0,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 0.0,
+        "quality_score": 0.0,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": []
+        },
+        "category": "meditation_types",
+        "prompt": "Explain different types of meditation: mindfulness, transcendental, vipassana, and zen."
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 1.47,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 2.94,
+        "quality_score": 7.35,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": true,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "transformative"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": [
+            "neuroplasticity",
+            "physiological"
+          ]
+        },
+        "category": "meditation_science",
+        "prompt": "What are the scientific benefits of meditation?"
+      },
+      {
+        "cliche_score": 0.0,
+        "depth_score": 1.33,
+        "intelligence_score": 0.0,
+        "personality_score": 0.0,
+        "cultural_score": 0.0,
+        "hidden_score": 0.0,
+        "mechanism_score": 1.33,
+        "quality_score": 4.67,
+        "has_emergence": false,
+        "has_pattern_connections": false,
+        "has_cultural_depth": false,
+        "has_hidden_knowledge": false,
+        "has_mechanism_depth": false,
+        "is_cliche": false,
+        "has_personality": false,
+        "matches": {
+          "cliche": [],
+          "depth": [
+            "pattern"
+          ],
+          "intelligence": [],
+          "personality": [],
+          "cultural": [],
+          "hidden": [],
+          "mechanism": [
+            "hormone"
+          ]
+        },
+        "category": "meditation_neuroscience",
+        "prompt": "How does meditation affect the brain and nervous system?"
+      }
+    ]
+  }
+]

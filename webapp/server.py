@@ -24,6 +24,7 @@ if 'knowledge_base' in sys.modules:
 
 from thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
 from knowledge_base import KnowledgeBase
+from memory.user_memory_manager import UserMemoryManager
 import json
 from datetime import datetime
 import ollama
@@ -37,6 +38,9 @@ thesidia = None
 thesidia_ready = False
 ollama_status = False
 knowledge_base = KnowledgeBase(base_dir=project_root)
+
+# Initialize User Memory Manager
+user_memory_manager = UserMemoryManager(base_dir=project_root)
 
 def check_ollama():
     """Check if Ollama is running"""
@@ -86,6 +90,13 @@ init_thesidia()
 # Security: Rate limiting (simple in-memory)
 request_counts = {}
 RATE_LIMIT = 100  # requests per minute per IP
+
+# Vibecode #3: Request queuing to prevent race conditions
+import threading
+from queue import Queue
+_request_queue = Queue(maxsize=50)  # Max 50 concurrent requests
+_request_lock = threading.Lock()
+_active_requests = {}  # Track active requests by message_id
 
 def check_rate_limit(ip):
     """Simple rate limiting"""
@@ -176,24 +187,67 @@ def thesidia_api():
         return jsonify({'error': 'Invalid content type'}), 400
     
     data = request.get_json()
-    message = data.get('message', '').strip()
+    raw_message = data.get('message', '').strip()
+    
+    # CRITICAL FIX #1: Log RAW user input BEFORE any processing
+    print(f"🔍 RAW USER INPUT: '{raw_message}'", flush=True)
+    
     show_thinking = data.get('show_thinking', False)
     stream = data.get('stream', True)  # Default to streaming
     
+    # Get user session info
+    user_id = data.get('user_id')
+    session_id = data.get('session_id')
+    
     # Security: Validate input
-    if not message:
+    if not raw_message:
         return jsonify({'error': 'Message is required'}), 400
     
-    if len(message) > 10000:
+    if len(raw_message) > 10000:
         return jsonify({'error': 'Message too long'}), 400
     
-    # Security: Basic sanitization
+    # CRITICAL FIX #2: Normalize query BEFORE passing to ThesidiaHybridAdaptive
+    # This ensures typo fixes and routing detection work correctly
+    def normalize_query(text):
+        """Normalize query with typo fixes"""
+        text_normalized = text.lower()
+        typo_fixes = {
+            'gneneis': 'genesis', 'genisis': 'genesis', 'genises': 'genesis', 'genensis': 'genesis',
+            'decrpted': 'decrypted', 'decrpt': 'decrypt', 'dycrpted': 'decrypted', 'dycrypt': 'decrypt',
+            'bible': 'bible', 'bibel': 'bible'
+        }
+        for typo, correct in typo_fixes.items():
+            text_normalized = text_normalized.replace(typo, correct)
+        return text_normalized
+    
+    def detect_forensic_routing(text):
+        """Detect if query needs forensic analysis BEFORE passing to model"""
+        normalized = normalize_query(text)
+        needs_forensic = any(term in normalized for term in [
+            "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "abrahamic", "origins", "canon", "canonization",
+            "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "expose", "hidden",
+            "what are", "what are X really", "really about", "characters", "what's really", "true origins", "real origins"
+        ])
+        return needs_forensic
+    
+    # Normalize the message
+    normalized_message = normalize_query(raw_message)
+    needs_forensic = detect_forensic_routing(raw_message)
+    
+    print(f"🔍 NORMALIZED: '{normalized_message}'", flush=True)
+    print(f"🔍 NEEDS FORENSIC: {needs_forensic}", flush=True)
+    
+    # Use normalized message for processing (but keep original for display)
+    message = raw_message  # Keep original for now, but routing will use normalized
+    
+    # Security: Basic sanitization (HTML only, don't modify content)
     message = message.replace('<', '').replace('>', '')
     
     # If streaming requested, use SSE
+    # NOTE: We use thesidia.process() which handles all routing/forensic analysis, then stream the result
     if stream:
         return Response(
-            stream_with_context(_stream_thesidia_response(message, show_thinking)),
+            stream_with_context(_stream_thesidia_response(message, show_thinking, user_id=user_id, session_id=session_id)),
             mimetype='text/event-stream',
             headers={
                 'Cache-Control': 'no-cache',
@@ -234,12 +288,32 @@ def thesidia_api():
                     'timestamp': datetime.now().isoformat()
                 })
         
-        # Process with Thesidia
-        print(f"🔪 SERVER: Processing message: {message[:100]}...")
-        print(f"🔪 SERVER: Thesidia instance: {thesidia}")
-        print(f"🔪 SERVER: Has _handle_deep_research: {hasattr(thesidia, '_handle_deep_research')}")
-        response = thesidia.process(message)
-        print(f"🔪 SERVER: Response length: {len(response)}, has transmission: {'::TRANSMISSION:' in response}")
+        # Process with Thesidia (with user memory support)
+        print(f"🔪 SERVER: Processing message: {message[:100]}...", flush=True)
+        print(f"🔪 SERVER: Normalized: {normalized_message[:100]}...", flush=True)
+        print(f"🔪 SERVER: Needs forensic: {needs_forensic}", flush=True)
+        print(f"🔪 SERVER: Thesidia instance: {thesidia}", flush=True)
+        print(f"🔪 SERVER: Has _handle_deep_research: {hasattr(thesidia, '_handle_deep_research')}", flush=True)
+        
+        # CRITICAL: Pass the ORIGINAL message (not normalized) to process()
+        # The process() method will do its own normalization and routing
+        response = thesidia.process(message, user_id=user_id, session_id=session_id)
+        print(f"🔪 SERVER: Response length: {len(response)}, has transmission: {'::TRANSMISSION:' in response}", flush=True)
+        
+        # Store interaction in user memory
+        try:
+            user_memory_manager.store_interaction(
+                user_input=message,
+                assistant_output=response,
+                user_id=user_id,
+                session_id=session_id,
+                metadata={
+                    'timestamp': datetime.now().isoformat(),
+                    'response_length': len(response)
+                }
+            )
+        except Exception as e:
+            print(f"Warning: Could not store interaction in user memory: {e}")
         
         if show_thinking:
             thinking_steps.append({
@@ -266,8 +340,8 @@ def thesidia_api():
             'message': str(e)
         }), 500
 
-def _stream_thesidia_response(message, show_thinking):
-    """Stream Thesidia response with progress updates"""
+def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None):
+    """Stream Thesidia response with progress updates - USES FULL THESIDIA PROCESS"""
     global thesidia
     
     def send_event(event_type, data):
@@ -283,17 +357,55 @@ def _stream_thesidia_response(message, show_thinking):
             'progress': 5
         })
         
-        # Phase 2: Classification
-        is_directive = thesidia._is_directive(message)
-        is_deep_research = thesidia._is_deep_research_request(message)
+        # CRITICAL: Use thesidia.process() to get full routing, forensic analysis, deep research
+        # This ensures all the logic we built actually runs
         
-        yield send_event('progress', {
-            'phase': 'classification',
-            'message': f'Classifying: {"Deep Research" if is_deep_research else "Directive" if is_directive else "Question"}',
-            'progress': 10
-        })
+        # CRITICAL FIX: Normalize and detect routing BEFORE processing
+        def normalize_query(text):
+            """Normalize query with typo fixes"""
+            text_normalized = text.lower()
+            typo_fixes = {
+                'gneneis': 'genesis', 'genisis': 'genesis', 'genises': 'genesis', 'genensis': 'genesis',
+                'decrpted': 'decrypted', 'decrpt': 'decrypt', 'dycrpted': 'decrypted', 'dycrypt': 'decrypt',
+                'bible': 'bible', 'bibel': 'bible'
+            }
+            for typo, correct in typo_fixes.items():
+                text_normalized = text_normalized.replace(typo, correct)
+            return text_normalized
         
-        # Phase 3: Web search (if needed) - Show real progress
+        def detect_forensic_routing(text):
+            """Detect if query needs forensic analysis"""
+            normalized = normalize_query(text)
+            needs_forensic = any(term in normalized for term in [
+                "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "abrahamic", "origins", "canon", "canonization",
+                "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "expose", "hidden",
+                "what are", "what are X really", "really about", "characters", "what's really", "true origins", "real origins"
+            ])
+            return needs_forensic
+        
+        print(f"🔍 RAW USER INPUT (streaming): '{message}'", flush=True)
+        normalized_message = normalize_query(message)
+        needs_forensic = detect_forensic_routing(message)
+        print(f"🔍 NORMALIZED (streaming): '{normalized_message}'", flush=True)
+        print(f"🔍 NEEDS FORENSIC (streaming): {needs_forensic}", flush=True)
+        print(f"🔪 SERVER: Using full Thesidia process() for: {message[:100]}...", flush=True)
+        
+        # Check routing before processing (using normalized)
+        is_gnostic = needs_forensic
+        
+        if is_gnostic:
+            yield send_event('progress', {
+                'phase': 'classification',
+                'message': 'Detected forensic truth-seeking query - routing to deep research...',
+                'progress': 10
+            })
+            yield send_event('thinking', {
+                'step': 'routing',
+                'message': 'Query requires forensic analysis (health/finance/law/religion)',
+                'progress': 10
+            })
+        
+        # Phase 2: Web search (if needed)
         if thesidia._needs_research(message) and thesidia.web_search:
             yield send_event('progress', {
                 'phase': 'web_search',
@@ -305,102 +417,49 @@ def _stream_thesidia_response(message, show_thinking):
                 'message': 'Gathering information from multiple sources',
                 'progress': 20
             })
-            # Note: Actual search happens in process(), we just show progress
         
-        # Phase 4: Synthesis - Show real progress
-        yield send_event('progress', {
-            'phase': 'synthesis',
-            'message': 'Synthesizing information and patterns...',
-            'progress': 30
-        })
-        yield send_event('thinking', {
-            'step': 'synthesis',
-            'message': 'Cross-referencing sources and identifying patterns',
-            'progress': 30
-        })
-        
-        # Phase 5: Processing - Show real progress
+        # Phase 3: Processing with Thesidia (includes routing, forensic analysis, synthesis)
         yield send_event('progress', {
             'phase': 'processing',
-            'message': 'Generating response...',
-            'progress': 40
+            'message': 'Processing with Thesidia (routing, forensic analysis, synthesis)...',
+            'progress': 30
         })
         yield send_event('thinking', {
-            'step': 'generation',
-            'message': 'Arranging evidence for pattern recognition',
-            'progress': 40
+            'step': 'processing',
+            'message': 'Using full Thesidia system: routing, deep research, forensic analysis',
+            'progress': 30
         })
         
-        # Process with Thesidia - ACTUAL STREAMING from Ollama
-        print(f"🔪 SERVER: Processing message: {message[:100]}...")
+        # CRITICAL FIX: Use thesidia.process() instead of bypassing it
+        # This ensures all routing, forensic analysis, and synthesis happens
+        # NOTE: Currently process() returns complete response (non-streaming)
+        # TODO: Implement true token-by-token streaming in process() method
+        response = thesidia.process(message, user_id=user_id, session_id=session_id)
         
-        # Try to use real streaming from Ollama
-        try:
-            # Build prompt
-            enhanced_prompt = thesidia.get_enhanced_prompt(query=message)
-            full_prompt = f"{enhanced_prompt}\n\nUser: {message}\n\nThesidia:"
-            
-            # Stream directly from Ollama
-            yield send_event('progress', {
-                'phase': 'streaming',
-                'message': 'Streaming response in real-time...',
-                'progress': 50
+        # Phase 4: Stream the response in chunks
+        # CURRENT LIMITATION: This is fake streaming (chunking completed response)
+        # True streaming would require modifying process() to yield tokens as they're generated
+        yield send_event('progress', {
+            'phase': 'streaming',
+            'message': 'Streaming response...',
+            'progress': 90
+        })
+        
+        # Stream response in chunks for real-time UX
+        # TODO: Replace with true token-by-token streaming from Ollama
+        chunk_size = 50
+        for i in range(0, len(response), chunk_size):
+            chunk = response[i:i + chunk_size]
+            yield send_event('chunk', {
+                'text': chunk,
+                'progress': 90 + (i / len(response)) * 10
             })
             
-            accumulated_response = ""
-            token_count = 0
-            
-            # Use Ollama streaming API
-            stream_response = ollama.chat(
-                model=thesidia.model,
-                messages=[{"role": "user", "content": full_prompt}],
-                options={
-                    "temperature": 0.9,
-                    "num_predict": 12000
-                },
-                stream=True  # Enable streaming
-            )
-            
-            for chunk in stream_response:
-                if 'message' in chunk and 'content' in chunk['message']:
-                    token = chunk['message']['content']
-                    accumulated_response += token
-                    token_count += 1
-                    
-                    # Stream token immediately
-                    yield send_event('chunk', {
-                        'text': token,
-                        'progress': 50 + min(40, (token_count / 12000) * 40),
-                        'thinking': f'Generated {token_count} tokens...' if token_count % 50 == 0 else None
-                    })
-                    
-                    # Show thinking every 50 tokens
-                    if show_thinking and token_count % 50 == 0:
-                        yield send_event('thinking', {
-                            'step': 'generating',
-                            'message': f'Generated {token_count} tokens, continuing...',
-                            'progress': token_count
-                        })
-            
-            response = accumulated_response.strip()
-            
-        except Exception as e:
-            # Fallback: Use regular process (non-streaming)
-            print(f"⚠️ Streaming failed, using fallback: {e}")
-            response = thesidia.process(message)
-            
-            # Stream response in chunks as fallback
-            yield send_event('progress', {
-                'phase': 'streaming',
-                'message': 'Streaming response...',
-                'progress': 90
-            })
-            
-            chunk_size = 50
-            for i in range(0, len(response), chunk_size):
-                chunk = response[i:i + chunk_size]
-                yield send_event('chunk', {
-                    'text': chunk,
+            # Show thinking periodically
+            if show_thinking and i % 200 == 0:
+                yield send_event('thinking', {
+                    'step': 'streaming',
+                    'message': f'Streamed {i} chars of {len(response)} total',
                     'progress': 90 + (i / len(response)) * 10
                 })
         
@@ -411,6 +470,23 @@ def _stream_thesidia_response(message, show_thinking):
             'progress': 100,
             'total_length': len(response)
         })
+        
+        # Store interaction in user memory (after streaming completes)
+        if (user_id or session_id) and user_memory_manager:
+            try:
+                user_memory_manager.store_interaction(
+                    user_input=message,
+                    assistant_output=response,
+                    user_id=user_id,
+                    session_id=session_id,
+                    metadata={
+                        'timestamp': datetime.now().isoformat(),
+                        'response_length': len(response),
+                        'streamed': True
+                    }
+                )
+            except Exception as e:
+                print(f"Warning: Could not store interaction in user memory: {e}")
         
         # Save state (async)
         thesidia.save_state()
@@ -504,6 +580,49 @@ def metrics_historical():
         historical = thesidia.metrics.get_historical_stats()
         return jsonify(historical)
     return jsonify({'error': 'Metrics not available'}), 503
+
+@app.route('/api/user/session', methods=['GET', 'POST'])
+def user_session():
+    """Get or create user session"""
+    if request.method == 'POST':
+        # Create or get user session
+        data = request.get_json() or {}
+        user_id = data.get('user_id')
+        session_id = data.get('session_id')
+        
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        return jsonify(user_data)
+    else:
+        # Get session from query params
+        user_id = request.args.get('user_id')
+        session_id = request.args.get('session_id')
+        
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        return jsonify(user_data)
+
+@app.route('/api/user/export', methods=['GET', 'POST'])
+def user_export():
+    """Export user conversation data for download"""
+    if request.method == 'POST':
+        data = request.get_json() or {}
+        user_id = data.get('user_id')
+        session_id = data.get('session_id')
+    else:
+        user_id = request.args.get('user_id')
+        session_id = request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        export_data = user_memory_manager.export_user_data(user_id=user_id, session_id=session_id)
+        
+        # Return as JSON download
+        response = jsonify(export_data)
+        response.headers['Content-Disposition'] = f'attachment; filename=thesidia_conversation_{export_data.get("user_id", "export")}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
+        return response
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     import socket

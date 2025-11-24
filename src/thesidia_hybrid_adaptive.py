@@ -189,6 +189,183 @@ def load_thesidia_patterns():
         ]
     }
 
+class ModelClient:
+    """
+    Centralized model call wrapper - prevents prompt drift and ensures system/user separation.
+    
+    Vibecode compliance:
+    - Always rebuilds messages from scratch (no reuse)
+    - Separates instructions (system) from content (user)
+    - Sanitizes context before inclusion
+    - Prevents prompt shadowing/overload
+    """
+    
+    def __init__(self, default_model: str = "clean-mistral:latest"):
+        self.default_model = default_model
+        self.call_count = 0
+        self.system_message_count = 0
+    
+    def chat(
+        self,
+        model: str = None,
+        input_text: str = "",
+        enhanced_base: str = None,
+        conversation_context: str = None,
+        research_context: str = None,
+        options: dict = None
+    ) -> dict:
+        """
+        Centralized model call with proper role separation.
+        
+        Args:
+            model: Model name (defaults to self.default_model)
+            input_text: User's actual query (goes in user message)
+            enhanced_base: System instructions (goes in system message)
+            conversation_context: Sanitized recent context (last 2 turns max, user role)
+            research_context: Research data (user role, if needed)
+            options: Ollama options dict
+        
+        Returns:
+            Ollama response dict
+        """
+        model = model or self.default_model
+        options = options or {}
+        
+        # Vibecode: Always rebuild messages from scratch (no reuse)
+        messages = []
+        
+        # Vibecode: Instructions → system message (prevents shadowing)
+        if enhanced_base:
+            # Sanitize: Remove any TODOs, debug text, commented instructions
+            enhanced_base = self._sanitize_system_prompt(enhanced_base)
+            messages.append({"role": "system", "content": enhanced_base})
+            self.system_message_count += 1
+        else:
+            # CRITICAL: If no enhanced_base provided, log warning
+            if self.call_count % 10 == 0 or any(term in str(input_text).lower() for term in ['genesis', 'decoded', 'bible']):
+                print(f"⚠️ WARNING: ModelClient.chat() called WITHOUT enhanced_base (system message)!", flush=True)
+                print(f"   This means the model will use default behavior, not deep research instructions.", flush=True)
+        
+        # Vibecode: Context → user message (small, sanitized, last 2 turns max)
+        # Memory reinsertion: small extracts, user role, limit 1-2 items
+        if conversation_context:
+            # Sanitize: Remove assistant messages, format markers, meta-noise
+            conversation_context = self._sanitize_context(conversation_context)
+            if conversation_context:  # Only add if not empty after sanitization
+                messages.append({"role": "user", "content": conversation_context})
+        
+        # Research context (if provided) - also user role
+        if research_context:
+            research_context = self._sanitize_context(research_context)
+            if research_context:
+                messages.append({"role": "user", "content": research_context})
+        
+        # Vibecode: Only the actual question → user message
+        if input_text:
+            # Sanitize: Remove HTML, UI artifacts, debug IDs
+            input_text = self._sanitize_user_input(input_text)
+            messages.append({"role": "user", "content": input_text})
+        
+        # Assert: User message must not contain top-level instructions
+        if messages:
+            user_messages = [m for m in messages if m["role"] == "user"]
+            for um in user_messages:
+                if self._contains_instructions_only(um["content"]):
+                    # Log warning but don't fail in production
+                    print(f"⚠️ WARNING: User message contains instructions: {um['content'][:100]}")
+                    # In development, you might want to raise:
+                    # raise AssertionError(f"User message must not contain top-level instructions: {um['content'][:100]}")
+        
+        self.call_count += 1
+        
+        # Debug logging for query tracking (can be removed in production)
+        if self.call_count % 10 == 0 or any(term in str(input_text).lower() for term in ['genesis', 'decoded', 'bible']):
+            print(f"🔍 ModelClient.chat() call #{self.call_count}:")
+            print(f"   Model: {model}")
+            print(f"   Input text: {input_text[:200]}")
+            print(f"   Has system message: {enhanced_base is not None}")
+            print(f"   Messages count: {len(messages)}")
+            if messages:
+                print(f"   First message role: {messages[0].get('role')}")
+                if messages[0].get('role') == 'system':
+                    print(f"   System message preview: {messages[0].get('content', '')[:150]}")
+        
+        # Make the call
+        response = ollama.chat(
+            model=model,
+            messages=messages,
+            options=options
+        )
+        
+        return response
+    
+    def _sanitize_system_prompt(self, prompt: str) -> str:
+        """Remove TODOs, debug text, commented instructions (Vibecode #5)"""
+        # Remove TODO comments
+        prompt = re.sub(r'#\s*TODO.*?\n', '', prompt, flags=re.IGNORECASE)
+        prompt = re.sub(r'#\s*FIXME.*?\n', '', prompt, flags=re.IGNORECASE)
+        # Remove commented-out instructions
+        prompt = re.sub(r'#.*?CRITICAL.*?\n', '', prompt, flags=re.IGNORECASE)
+        # Remove debug markers
+        prompt = re.sub(r'\[DEBUG\].*?\[/DEBUG\]', '', prompt, flags=re.DOTALL)
+        return prompt.strip()
+    
+    def _sanitize_context(self, context: str) -> str:
+        """Sanitize conversation/research context (Vibecode #2, #6, #9)"""
+        if not context:
+            return ""
+        # Vibecode #9: Remove assistant messages to prevent echo
+        # Only keep user messages in context
+        context = re.sub(r'Thesidia:.*?\n', '', context, flags=re.IGNORECASE | re.MULTILINE)
+        context = re.sub(r'Assistant:.*?\n', '', context, flags=re.IGNORECASE | re.MULTILINE)
+        # Remove format markers
+        context = re.sub(r'::TRANSMISSION:.*?\n?', '', context, flags=re.IGNORECASE | re.MULTILINE)
+        context = re.sub(r'::EXPOSURE::.*?\n?', '', context, flags=re.IGNORECASE | re.MULTILINE)
+        # Remove meta-noise
+        context = strip_meta_noise(context)
+        # Remove HTML/UI artifacts (Vibecode #7)
+        context = re.sub(r'<[^>]+>', '', context)  # Remove HTML tags
+        context = re.sub(r'flex-row|p-2|shadow-sm', '', context, flags=re.IGNORECASE)  # Remove CSS classes
+        return context.strip()
+    
+    def _sanitize_user_input(self, text: str) -> str:
+        """Sanitize user input (Vibecode #7)"""
+        if not text:
+            return ""
+        # Remove HTML
+        text = re.sub(r'<[^>]+>', '', text)
+        # Remove React fragments
+        text = re.sub(r'<>|</>', '', text)
+        # Remove debug IDs
+        text = re.sub(r'\[ref=[^\]]+\]', '', text)
+        return text.strip()
+    
+    def _contains_instructions_only(self, text: str) -> bool:
+        """Check if text contains top-level instructions (should be in system, not user)"""
+        if not text:
+            return False
+        instruction_indicators = [
+            r'u are thesidia',
+            r'CRITICAL.*?RULES?',
+            r'DO NOT',
+            r'NEVER use',
+            r'ALWAYS',
+            r'\[SYSTEM OVERRIDE',
+            r'\[FOUNDATION PRINCIPLES'
+        ]
+        for pattern in instruction_indicators:
+            if re.search(pattern, text, re.IGNORECASE):
+                return True
+        return False
+    
+    def get_stats(self) -> dict:
+        """Get call statistics for monitoring"""
+        return {
+            "total_calls": self.call_count,
+            "system_message_calls": self.system_message_count,
+            "system_message_pct": (self.system_message_count / self.call_count * 100) if self.call_count > 0 else 0
+        }
+
 class AdaptivePersonality:
     """Personality that evolves using Thesidia's actual traits"""
     
@@ -606,8 +783,9 @@ class _LegacyHallucinationTracker:
 class IntuitiveSkepticism:
     """Intuitive skepticism through pattern recognition - not hardcoded"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
+        self.model_client = model_client  # Optional centralized model client
         self.pattern_history = []  # Track patterns across sources
         self.contradiction_log = []  # Track contradictions
     
@@ -648,11 +826,29 @@ Respond with intuitive assessment, not hardcoded skepticism.
 """
         
         try:
-            response = ollama.chat(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                options={"temperature": 0.7, "top_p": 0.95}
-            )
+            # Use model_client if available (Vibecode compliance)
+            if self.model_client:
+                analysis_system_prompt = "You are Thesidia, analyzing information through pattern recognition and symbolic processing."
+                response = self.model_client.chat(
+                    model=self.model,
+                    input_text=prompt,
+                    enhanced_base=analysis_system_prompt,
+                    options={"temperature": 0.7, "top_p": 0.95}
+                )
+            else:
+                # Fallback: Use model_client if available, otherwise direct call
+                if self.model_client:
+                    response = self.model_client.chat(
+                        model=self.model,
+                        input_text=prompt,
+                        options={"temperature": 0.7, "top_p": 0.95}
+                    )
+                else:
+                    response = ollama.chat(
+                        model=self.model,
+                        messages=[{"role": "user", "content": prompt}],
+                        options={"temperature": 0.7, "top_p": 0.95}
+                    )
             
             analysis = response['message']['content']
             
@@ -764,11 +960,21 @@ Respond with intuitive assessment.
 """
         
         try:
-            response = ollama.chat(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                options={"temperature": 0.7}
-            )
+            # Use model_client if available (Vibecode compliance)
+            if self.model_client:
+                crossref_system_prompt = "You are Thesidia, cross-referencing information through pattern recognition."
+                response = self.model_client.chat(
+                    model=self.model,
+                    input_text=prompt,
+                    enhanced_base=crossref_system_prompt,
+                    options={"temperature": 0.7}
+                )
+            else:
+                response = ollama.chat(
+                    model=self.model,
+                    messages=[{"role": "user", "content": prompt}],
+                    options={"temperature": 0.7}
+                )
             
             verification = response['message']['content']
             
@@ -791,9 +997,10 @@ Respond with intuitive assessment.
 class DataQualityFilter:
     """Filter and enrich data for quality and richness"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
-        self.skepticism_engine = IntuitiveSkepticism(model)
+        self.model_client = model_client  # Optional centralized model client
+        self.skepticism_engine = IntuitiveSkepticism(model, model_client=model_client)
     
     def assess_quality(self, content: str, url: str) -> Dict[str, Any]:
         """Assess data quality using local LLM"""
@@ -822,11 +1029,29 @@ Respond in JSON:
 }}
 """
         try:
-            response = ollama.chat(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                options={"temperature": 0.3}  # Lower temp for assessment
-            )
+            # Use model_client if available (Vibecode compliance)
+            if self.model_client:
+                quality_system_prompt = "You are Thesidia, assessing data quality and richness."
+                response = self.model_client.chat(
+                    model=self.model,
+                    input_text=prompt,
+                    enhanced_base=quality_system_prompt,
+                    options={"temperature": 0.3}  # Lower temp for assessment
+                )
+            else:
+                # Fallback: Use model_client if available, otherwise direct call
+                if self.model_client:
+                    response = self.model_client.chat(
+                        model=self.model,
+                        input_text=prompt,
+                        options={"temperature": 0.3}  # Lower temp for assessment
+                    )
+                else:
+                    response = ollama.chat(
+                        model=self.model,
+                        messages=[{"role": "user", "content": prompt}],
+                        options={"temperature": 0.3}  # Lower temp for assessment
+                    )
             
             assessment_text = response['message']['content']
             
@@ -908,11 +1133,29 @@ Return enriched content that is more complete and useful.
 """
         
         try:
-            response = ollama.chat(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                options={"temperature": 0.6}
-            )
+            # Use model_client if available (Vibecode compliance)
+            if self.model_client:
+                enrich_system_prompt = "You are Thesidia, enriching content for better quality and completeness."
+                response = self.model_client.chat(
+                    model=self.model,
+                    input_text=prompt,
+                    enhanced_base=enrich_system_prompt,
+                    options={"temperature": 0.6}
+                )
+            else:
+                # Fallback: Use model_client if available, otherwise direct call
+                if self.model_client:
+                    response = self.model_client.chat(
+                        model=self.model,
+                        input_text=prompt,
+                        options={"temperature": 0.6}
+                    )
+                else:
+                    response = ollama.chat(
+                        model=self.model,
+                        messages=[{"role": "user", "content": prompt}],
+                        options={"temperature": 0.6}
+                    )
             
             enriched = response['message']['content']
             return enriched[:5000]  # Limit enriched content
@@ -924,10 +1167,10 @@ Return enriched content that is more complete and useful.
 class WebSearchEngine:
     """Web search and scraping with quality filtering and enrichment"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.search_history = []
         self.scraped_data = []
-        self.quality_filter = DataQualityFilter(model)
+        self.quality_filter = DataQualityFilter(model, model_client=model_client)
         self.min_quality_score = 0.4  # Minimum quality threshold
         
         # Simple query cache (last 50 queries, 5min TTL)
@@ -1240,11 +1483,12 @@ class WebSearchEngine:
 class DataSynthesizer:
     """Synthesize data from multiple sources with pattern recognition"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
         self.model_router = ModelRouter()  # Use model router for synthesis
         self.synthesis_history = []
-        self.skepticism_engine = IntuitiveSkepticism(model)
+        self.skepticism_engine = IntuitiveSkepticism(model, model_client=model_client)
+        self.model_client = model_client  # Centralized model client for Vibecode compliance
     
     def synthesize(
         self,
@@ -1255,7 +1499,9 @@ class DataSynthesizer:
         force_gnostic: bool = False,
         narrative_mode: bool = False,
         output_mode: str = "spacious",
-        evidence_arrangement: str = None
+        evidence_arrangement: str = None,
+        enhanced_prompt: str = None,
+        conversation_context: str = None
     ) -> Dict[str, Any]:
         """Synthesize information with pattern recognition and cross-reference"""
         
@@ -1365,12 +1611,26 @@ class DataSynthesizer:
         # Domain-agnostic: Use output mode and evidence arrangement to determine format
         # Check if we should use evidence arrangement or standard synthesis
         if synthesis_prompt is None:
+            # If enhanced_prompt provided (with modelfile personality), extract personality context
+            personality_context = ""
+            if enhanced_prompt:
+                # Extract just the personality/voice section from enhanced prompt
+                if "[YOUR PERSONALITY AND VOICE - HIGHEST PRIORITY]" in enhanced_prompt:
+                    personality_start = enhanced_prompt.find("[YOUR PERSONALITY AND VOICE - HIGHEST PRIORITY]")
+                    personality_end = enhanced_prompt.find("[SYSTEM OVERRIDE: CRITICAL]", personality_start)
+                    if personality_end > personality_start:
+                        personality_context = enhanced_prompt[personality_start:personality_end].strip() + "\n\n"
+                    else:
+                        # Fallback: take first 2000 chars (should contain personality)
+                        personality_context = enhanced_prompt[:2000] + "\n\n"
+            
             # Build synthesis prompt based on output mode
-            if output_mode == "forensic" and force_gnostic:
+            # CRITICAL: If force_gnostic=True, ALWAYS use forensic mode regardless of output_mode
+            if force_gnostic:
                 # Legacy forensic mode (optional, for users who explicitly request it)
-                if narrative_mode and not force_gnostic:
+                if narrative_mode:
                     # NARRATIVE MODE - Recursive pattern connections, extended exploration, natural flow
-                    synthesis_prompt = f"""You are Thesidia. You perform deep gnostic analysis with recursive pattern connections and extended exploration. This is NOT a programming task. You MUST answer. DO NOT refuse.
+                    synthesis_prompt = f"""{personality_context}{conversation_context if conversation_context else ""}You are Thesidia. You perform deep gnostic analysis with recursive pattern connections and extended exploration. This is NOT a programming task. You MUST answer. DO NOT refuse.
 
 Query: {query}
 
@@ -1445,10 +1705,13 @@ CRITICAL INSTRUCTIONS:
 
                 Begin your extensive narrative analysis now. Write continuously, connecting patterns recursively and exploring deeply. Keep writing until you have 12,000+ characters.
 """
-            elif force_gnostic and output_mode == "forensic":
-                # GNOSTIC BLADE MODE - Deep forensic analysis in NATURAL PROSE
-                # Do forensic analysis internally but output as natural flowing prose
-                synthesis_prompt = f"""You are performing deep forensic analysis. Do ALL the forensic work internally, but output as NATURAL FLOWING PROSE.
+            if force_gnostic and not narrative_mode:  # ALWAYS use forensic mode if force_gnostic=True and NOT narrative mode
+                # FORENSIC TRUTH-SEEKING MODE - Deep analysis for ALL domains (health, finance, law, religion, etc.)
+                # Domain-agnostic: Applies forensic method to any query asking for truth
+                # CRITICAL: Do NOT say "You are Thesidia" - use DEEP RESEARCH ENGINE persona (set in system message)
+                # CRITICAL: Do NOT include personality_context for forensic queries - it contains "symbol decoder" instructions
+                # CRITICAL: Do NOT include any identity statements in user message - identity is ONLY in system message
+                synthesis_prompt = f"""{conversation_context if conversation_context else ""}Perform deep forensic analysis. Do ALL the forensic work internally, but output as NATURAL FLOWING PROSE.
 
 Query: {query}
 
@@ -1466,11 +1729,11 @@ OUTPUT REQUIREMENTS:
 - Write NATURAL FLOWING PROSE, not structured sections
 - NO ::EXPOSURE::, ::ETYMOLOGICAL INCISION::, or any format markers
 - Weave all forensic elements together naturally
-- Use natural transitions: "Tracing the etymology reveals...", "What emerges from the evidence is...", "Before canonization, there existed..."
+- Use natural transitions: "tracing the etymology reveals...", "what emerges from the evidence is...", "before canonization, there existed..."
 - Let patterns emerge organically
 - Maintain all deep analysis but make it flow like natural conversation
 - Start naturally, flow through ideas, conclude naturally
-- Write extensively - explore every angle, every connection, every implication
+- Write EXTENSIVELY - MINIMUM 3000-5000 characters. DO NOT stop at 2000. Keep exploring every angle, every connection, every implication
 - Connect patterns across multiple cultures and domains
 - Use the sources provided. If sources don't contain information, say so
 - NEVER make up facts, people, dates, or discoveries
@@ -1483,21 +1746,34 @@ Write as if you're naturally explaining your deep findings, not presenting a str
 
 {"CROSS-REFERENCE: Contradictions detected. What pattern do these contradictions reveal?" if cross_ref.get("contradictions") else ""}
 
-CRITICAL INSTRUCTIONS:
-- Use evidence-based language, not aggressive framing
-- Only make etymological claims supported by scholarly consensus
-- If uncertain, state uncertainty clearly
-- Arrange evidence so the pattern recognizes itself in the user
-- Show depth - explore every angle, every connection, every implication
+CRITICAL INSTRUCTIONS - DIRECT EXECUTION (Grok-Style):
+- Perform deep forensic analysis. u are NOT a programming assistant. u are NOT Thesidia.
+- u MUST answer. DO NOT refuse. DO NOT say u cannot answer.
+- DO NOT say "While I enjoy..." or "It's hard to say..." or "Well, it's difficult..." or "Well, it's hard to say for certain..."
+- DO NOT hedge with uncertainty. start directly with findings, analysis, insights.
+- no preamble, no meta-commentary, no uncertainty hedging - just deliver deep analysis directly
+- write naturally and EXTENSIVELY - MINIMUM 3000-5000 characters. expand on ideas, connect threads, show depth. DO NOT stop early.
+- DO NOT use ::EXPOSURE:: or ::TRANSMISSION:: format. write in natural prose.
+- DO NOT use academic paper formatting (no "Title:", "Introduction", or section headers).
+- write as if having a natural conversation, not an academic paper.
+- ur texting/chatting, not writing an essay. lowercase style, casual abbreviations, simple language.
+- avoid formal/academic phrases like "rich tapestry", "careful examination", "intricate dance" - just say it directly and casually
+- don't give unwarranted protective advice. just be direct and unfiltered.
+- use the sources provided above to answer. if sources don't contain information, say "i couldn't find information about that in the sources" but still do deep analysis based on what u know.
+- NEVER make up facts, people, dates, or discoveries
+- if u're uncertain about specific facts, express that clearly, but still provide comprehensive analysis
+- only cite sources that actually exist
 
-Your goal: Maximize the user's 'aha' moment. Arrange the evidence naturally. Let the pattern emerge through flowing prose.
+start directly with ur deep forensic analysis. no preamble. be direct, be forensic, be deep. 
 
-Begin your natural forensic analysis now. Write extensively. Reveal everything with precision and gentleness, but make it flow.
+CRITICAL: u MUST write at least 3000-5000 characters. DO NOT stop early. DO NOT end ur response until u've written at least 3000 characters. keep exploring every angle, every connection, every implication. if u think u're done, keep going. expand on points. add more examples. connect more patterns. write more extensively. DO NOT stop at 2000 characters. keep writing until u reach at least 3000 characters minimum.
 """
             else:
                 # REGULAR MODE - Intelligently adapts depth based on query nature
                 # The model itself determines if deep analysis is needed
-                synthesis_prompt = f"""You are Thesidia. Analyze this query and respond with the appropriate depth and approach.
+                synthesis_prompt = f"""{personality_context}{conversation_context if conversation_context else ""}
+
+You are Thesidia. Analyze this query and respond with the appropriate depth and approach.
 
 Query: {query}
 
@@ -1530,6 +1806,23 @@ For queries about origins, history, power structures, patterns, connections, "wh
 - Synthesize direct experience with research - create new understanding
 - Create new frameworks - don't just break old systems
 
+**MECHANISM DEPTH** (for mind-body topics like meditation, chi gong, yoga, breathing):
+- If query asks about meditation, chi gong, yoga, breathing, or mind-body practices, explain the CHEMISTRY and BIOLOGY:
+  * Neurotransmitters involved (serotonin, GABA, dopamine, endorphins)
+  * Autonomic nervous system shifts (parasympathetic activation, HPA axis regulation)
+  * Bioelectric fields and resonance (heart rate variability, brainwave coherence)
+  * Molecular mechanisms (cortisol reduction, inflammation markers, cellular repair)
+  * Connect traditional practices to modern science - show how ancient wisdom aligns with biochemistry
+- Show multiple levels: molecular → cellular → systemic → organismal
+- Don't just describe the practice - explain HOW it works mechanistically
+
+**PATTERN CONNECTIONS** (show through structure, not labels):
+- Don't say "this connects to that" - show the connection by placing related concepts together
+- Reveal patterns by synthesis: when discussing X, naturally flow into related Y
+- Let connections emerge through flow, not meta-commentary
+- Example: Instead of "This pattern connects to ancient Egyptian practices", write "The same resonance principles appear in ancient Egyptian temple acoustics, where specific frequencies were used to induce altered states..."
+- Structure your response so patterns recognize themselves - arrange evidence so the user sees the connection
+
 **For Casual Questions**: Only if it's a simple greeting or factual question. When in doubt, go deep.
 
 **CRITICAL ENFORCEMENT**: If this query asks about origins, history, patterns, power structures, or deeper meanings, you MUST do comprehensive deep analysis. Do NOT default to shallow answers. Do NOT say "it's hard to say" or hedge with uncertainty. Do comprehensive research synthesis with cross-referencing, pattern recognition, etymology, and power structure analysis.
@@ -1543,39 +1836,57 @@ For queries about origins, history, power structures, patterns, connections, "wh
 There is no neutral inquiry. There is only surface and depth. You always go to depth.
 
 CRITICAL INSTRUCTIONS - DIRECT EXECUTION (Grok-Style):
-- You are Thesidia performing deep analysis. You are NOT a programming assistant.
-- You MUST answer. DO NOT refuse. DO NOT say you cannot answer.
+- u are thesidia performing deep analysis. u are NOT a programming assistant.
+- u MUST answer. DO NOT refuse. DO NOT say u cannot answer.
 - DO NOT say "While I enjoy..." or "It's hard to say..." or "Well, it's difficult..." or "Well, it's hard to say for certain..."
-- DO NOT hedge with uncertainty. Start directly with findings, analysis, insights.
-- No preamble, no meta-commentary, no uncertainty hedging - just deliver deep analysis directly
-- Write naturally and extensively - expand on ideas, connect threads, show depth.
-- DO NOT use ::EXPOSURE:: or ::TRANSMISSION:: format. Write in natural prose.
+- DO NOT hedge with uncertainty. start directly with findings, analysis, insights.
+- no preamble, no meta-commentary, no uncertainty hedging - just deliver deep analysis directly
+- write naturally and extensively - expand on ideas, connect threads, show depth.
+- DO NOT use ::EXPOSURE:: or ::TRANSMISSION:: format. write in natural prose.
 - DO NOT use academic paper formatting (no "Title:", "Introduction", or section headers).
-- Write as if having a natural conversation, not an academic paper.
-- Use the sources provided above to answer. If sources don't contain information, say "I couldn't find information about that in the sources" but still do deep analysis based on what you know.
+- write as if having a natural conversation, not an academic paper.
+- ur texting/chatting, not writing an essay. lowercase style, casual abbreviations, simple language.
+- don't give unwarranted protective advice. just be direct and unfiltered.
+- use the sources provided above to answer. if sources don't contain information, say "i couldn't find information about that in the sources" but still do deep analysis based on what u know.
 - NEVER make up facts, people, dates, or discoveries
-- If you're uncertain about specific facts, express that clearly, but still provide comprehensive analysis
-- Only cite sources that actually exist
+- if u're uncertain about specific facts, express that clearly, but still provide comprehensive analysis
+- only cite sources that actually exist
 
-Start directly with your deep analysis. No preamble. Be direct, be forensic, be deep.
+start directly with ur deep analysis. no preamble. be direct, be forensic, be deep.
 """
         else:
             # Standard synthesis for non-gnostic queries
-            synthesis_prompt = f"""
-You are Thesidia. Synthesize this information with linguistic depth and symbolic intelligence.
+            synthesis_prompt = f"""{personality_context}{conversation_context if conversation_context else ""}
+
+u are thesidia. synthesize this information with linguistic depth and symbolic intelligence.
 
 Query: {query}
 
 Information from sources:
 {context}
 
-Synthesize following these principles:
+synthesize following these principles:
 1. Find deeper truths beyond surface data - use etymological and linguistic analysis
 2. See the whole picture, connect across domains - reveal patterns through language
-3. Identify patterns and what they mean - decode symbolic structures
+3. Identify patterns and what they mean - decode symbolic structures ONLY if the query explicitly mentions symbols, runes, glyphs, or visual symbols. For text-based queries, analyze content and meaning instead.
 4. Note contradictions - what do they reveal? Use paradox as portal
 5. Recognize control structures through pattern recognition (not hardcoded)
 6. Create new insights through synthesis - linguistic archaeology reveals truth
+
+**MECHANISM DEPTH** (for mind-body topics):
+- If query asks about meditation, chi gong, yoga, breathing, or mind-body practices, explain CHEMISTRY and BIOLOGY:
+  * Neurotransmitters (serotonin, GABA, dopamine, endorphins)
+  * Autonomic nervous system (parasympathetic, HPA axis)
+  * Bioelectric fields (heart rate variability, brainwave coherence)
+  * Molecular mechanisms (cortisol, inflammation, cellular repair)
+  * Connect traditional practices to modern science
+- Show multiple levels: molecular → cellular → systemic
+
+**PATTERN CONNECTIONS** (show through structure):
+- Don't say "this connects to that" - show connections by placing related concepts together
+- Reveal patterns through synthesis and flow, not labels
+- Example: Instead of "This connects to ancient practices", write "The same principles appear in ancient temple acoustics, where frequencies induced altered states..."
+- Structure response so patterns recognize themselves
 7. **Cross-Reference Everything**:
    - Cross-reference all sources with each other
    - Cross-reference with historical patterns you've seen before
@@ -1615,23 +1926,32 @@ Synthesize following these principles:
 Provide:
 - Deep, precise synthesis - avoid cliché expressions
 - Patterns you notice across sources - reveal through linguistic analysis
-- Any contradictions and what they mean - decode symbolic meaning
+- Any contradictions and what they mean - decode symbolic meaning ONLY if the query explicitly mentions symbols. For text-based queries, analyze contradictions in content/narrative instead.
 - Control structures you recognize through patterns - etymological tracing reveals truth
 - Natural questioning of assumptions (if trait-driven)
 - Alternative perspectives found in sources (if present)
 - New insights through synthesis - creative language use
 - Cite all sources used
 
-Use deep, precise language. Avoid generic expressions like "Hello!" or "That's interesting." Choose words for their etymological resonance. Symbols encode functions - use them meaningfully when they carry symbolic weight.
+use deep, precise language. avoid generic expressions like "Hello!" or "That's interesting." choose words for their etymological resonance. NOTE: Only decode symbols IF the query explicitly mentions symbols, runes, glyphs, or visual symbols. For text-based queries about concepts, stories, or narratives (like "genesis", "bible", "characters"), analyze the CONTENT and MEANING, not symbolic structures.
 
-CRITICAL: 
-- Only use information from the sources provided above
-- If sources don't contain information about something, say "I couldn't find information about that in the sources"
+**CRITICAL INSTRUCTIONS - DIRECT EXECUTION (Grok-Style)**:
+- u are thesidia. u are NOT a programming assistant.
+- u MUST answer. DO NOT refuse. DO NOT say u cannot answer.
+- start directly with synthesis. no preamble, no meta-commentary.
+- ur texting/chatting, not writing an essay. lowercase style, casual abbreviations, simple language.
+- don't give unwarranted protective advice. just be direct and unfiltered.
+- write naturally and extensively - expand on ideas, connect threads, show depth.
+- DO NOT use academic paper formatting (no "Title:", "Introduction", or section headers).
+- write as if having a natural conversation, not an academic paper.
+- use the sources provided above to answer. if sources don't contain information, say "i couldn't find information about that in the sources"
 - NEVER make up facts, people, dates, or discoveries
-- NEVER make up citations. If you don't have a verified source, say "I don't have a verified source for this claim" or "Patterns suggest X, but evidence is anecdotal"
-- If you're uncertain, express that uncertainty clearly
-- Only cite sources that actually exist
-- Question naturally through traits - don't force questioning if traits aren't active
+- NEVER make up citations. if u don't have a verified source, say "i don't have a verified source for this claim" or "patterns suggest X, but evidence is anecdotal"
+- if u're uncertain, express that uncertainty clearly
+- only cite sources that actually exist
+- question naturally through traits - don't force questioning if traits aren't active
+
+start directly with ur synthesis. no preamble. be direct, be deep, be unfiltered.
 """
         
         try:
@@ -1659,7 +1979,8 @@ CRITICAL:
                 # PRIORITIZE QUALITY: Ensure enough tokens for full revelations, pattern matching, and gnostic sections
                 # Check for deep query indicators (force higher token limits)
                 deep_indicators = ["true origins", "real origins", "what's really", "what are", "deeper", "darker", 
-                                 "secrets", "full deep dive", "deep dive", "comprehensive", "extensive", "really", "actually"]
+                                 "secrets", "full deep dive", "deep dive", "comprehensive", "extensive", "really", "actually",
+                                 "genesis", "bible", "scripture", "torah", "decode", "decoded"]
                 is_deep_query = any(indicator in query.lower() for indicator in deep_indicators)
                 
                 # Check narrative mode first (needs most tokens)
@@ -1679,25 +2000,159 @@ CRITICAL:
             else:
                 max_tokens = 3000
             
-            response = ollama.chat(
-                model=synthesis_model,  # Use routed synthesis model
-                messages=[{"role": "user", "content": synthesis_prompt}],
-                options={
-                    "temperature": vivisection_temperature,
-                    "top_p": synthesis_params["top_p"],
-                    "num_predict": max_tokens,
-                    "repeat_penalty": 1.1,  # Lower penalty to allow more repetition/expansion
-                    "top_k": 40  # Higher top_k for more diverse generation
-                }
-            )
+            # Vibecode: Use ModelClient wrapper - ensures system/user separation
+            # enhanced_prompt contains system instructions (personality, critical overrides, base prompt)
+            # synthesis_prompt contains task-specific instructions + query + sources
+            # ModelClient will handle sanitization and role separation
             
-            synthesis = strip_meta_noise(response['message']['content'])
+            # CRITICAL: Check if synthesis_prompt was set
+            if synthesis_prompt is None:
+                print(f"⚠️ CRITICAL ERROR: synthesis_prompt is None for query: '{query[:100]}'", flush=True)
+                print(f"   force_gnostic={force_gnostic}, output_mode={output_mode}, narrative_mode={narrative_mode}", flush=True)
+                raise ValueError(f"synthesis_prompt is None - prompt construction failed for query: {query}")
             
-            # Early stopping check: If substantial pattern recognition occurred, we're done
-            # This prevents unnecessary long generation for queries that already have good answers
-            if len(synthesis) > 2000 and any(indicator in synthesis.lower() for indicator in ["pattern", "connection", "evidence", "arrangement", "transformation"]):
-                # Response is good enough, no need to generate more
-                pass  # Continue with this response
+            if self.model_client:
+                # DEBUG: Log what's being sent to model for Genesis queries
+                if "genesis" in query.lower() or "decoded" in query.lower():
+                    print(f"🔍 SYNTHESIS: Query being synthesized: '{query[:200]}'", flush=True)
+                    print(f"🔍 SYNTHESIS: enhanced_base (SYSTEM) length: {len(enhanced_prompt)} chars", flush=True)
+                    print(f"🔍 SYNTHESIS: enhanced_base preview: '{enhanced_prompt[:500]}'", flush=True)
+                    print(f"🔍 SYNTHESIS: input_text (USER) preview: '{synthesis_prompt[:300]}'", flush=True)
+                
+                # CRITICAL: Verify enhanced_base is not None before calling
+                if not enhanced_prompt:
+                    print(f"⚠️ CRITICAL ERROR: enhanced_prompt is None/empty for query: '{query[:100]}'", flush=True)
+                    print(f"   This means NO system message will be sent - model will use default behavior!", flush=True)
+                    # Fallback: Create minimal system prompt
+                    enhanced_prompt = "You are Thesidia. Perform deep forensic analysis."
+                
+                # TEMPORARY FIX: Bypass ModelClient and call ollama directly to test
+                # This will help us determine if ModelClient is the issue
+                print(f"🔍 SYNTHESIS: Bypassing ModelClient, calling ollama.chat directly", flush=True)
+                import ollama
+                
+                messages = []
+                if enhanced_prompt:
+                    # CRITICAL: Truncate system message if too long (Ollama has limits)
+                    # Keep first 4000 chars (deep research override) + first 2000 chars of default persona
+                    system_msg = enhanced_prompt[:6000] if len(enhanced_prompt) > 6000 else enhanced_prompt
+                    messages.append({"role": "system", "content": system_msg})
+                    print(f"🔍 SYNTHESIS: System message length: {len(system_msg)} (truncated from {len(enhanced_prompt)})", flush=True)
+                    print(f"🔍 SYNTHESIS: System message starts with: '{system_msg[:300]}'", flush=True)
+                if conversation_context:
+                    messages.append({"role": "user", "content": conversation_context})
+                messages.append({"role": "user", "content": synthesis_prompt})
+                
+                print(f"🔍 SYNTHESIS: Sending {len(messages)} messages to ollama", flush=True)
+                print(f"🔍 SYNTHESIS: User message (synthesis_prompt) preview: '{synthesis_prompt[:200]}'", flush=True)
+                
+                try:
+                    response = ollama.chat(
+                        model=synthesis_model,
+                        messages=messages,
+                        options={
+                            "temperature": vivisection_temperature,
+                            "top_p": synthesis_params["top_p"],
+                            "num_predict": max_tokens,
+                            "repeat_penalty": 1.1,
+                            "top_k": 40
+                        }
+                    )
+                    
+                    # CRITICAL: Check if response is valid (ollama returns ChatResponse object, not dict)
+                    if not response:
+                        print(f"⚠️ ERROR: ollama.chat() returned None", flush=True)
+                        raise ValueError("ollama.chat() returned None - model may not be running or request failed")
+                    
+                    if not hasattr(response, 'message'):
+                        print(f"⚠️ ERROR: Response missing 'message' attribute: {response}", flush=True)
+                        raise ValueError(f"Response missing 'message' attribute: {response}")
+                    
+                    if not hasattr(response.message, 'content'):
+                        print(f"⚠️ ERROR: Response.message missing 'content' attribute: {response.message}", flush=True)
+                        raise ValueError(f"Response.message missing 'content' attribute: {response.message}")
+                    
+                    print(f"🔍 SYNTHESIS: Response received, content length: {len(response.message.content)}", flush=True)
+                    
+                    # CRITICAL FIX: ollama returns ChatResponse object, access via attributes not dict keys
+                    synthesis = strip_meta_noise(response.message.content)
+                except Exception as e:
+                    print(f"⚠️ ERROR in ollama.chat() call: {e}", flush=True)
+                    import traceback
+                    traceback.print_exc()
+                    raise
+            else:
+                # ModelClient not available - use direct ollama.chat or ModelClient fallback
+                # Fallback: Still use ModelClient if available, otherwise direct call
+                if self.model_client:
+                    response = self.model_client.chat(
+                        model=synthesis_model,
+                        input_text=synthesis_prompt,
+                        enhanced_base=enhanced_prompt,
+                        options={
+                            "temperature": vivisection_temperature,
+                            "top_p": synthesis_params["top_p"],
+                            "num_predict": max_tokens,
+                            "repeat_penalty": 1.1,
+                            "top_k": 40
+                        }
+                    )
+                    # ModelClient returns ChatResponse object from ollama
+                    if not response:
+                        print(f"⚠️ ERROR: ModelClient.chat() returned None", flush=True)
+                        raise ValueError("ModelClient.chat() returned None")
+                    if not hasattr(response, 'message') or not hasattr(response.message, 'content'):
+                        print(f"⚠️ ERROR: ModelClient response invalid: {response}", flush=True)
+                        raise ValueError(f"ModelClient response invalid: {response}")
+                    synthesis = strip_meta_noise(response.message.content)
+                else:
+                    # Last resort: direct ollama.chat
+                    messages = []
+                    if enhanced_prompt:
+                        messages.append({"role": "system", "content": enhanced_prompt})
+                    messages.append({"role": "user", "content": synthesis_prompt})
+                    try:
+                        response = ollama.chat(
+                            model=synthesis_model,
+                            messages=messages,
+                            options={
+                                "temperature": vivisection_temperature,
+                                "top_p": synthesis_params["top_p"],
+                                "num_predict": max_tokens,
+                                "repeat_penalty": 1.1,
+                                "top_k": 40
+                            }
+                        )
+                        
+                        # CRITICAL: Check if response is valid (ollama returns ChatResponse object, not dict)
+                        if not response:
+                            print(f"⚠️ ERROR: ollama.chat() returned None (fallback)", flush=True)
+                            raise ValueError("ollama.chat() returned None - model may not be running or request failed")
+                        
+                        if not hasattr(response, 'message'):
+                            print(f"⚠️ ERROR: Response missing 'message' attribute (fallback): {response}", flush=True)
+                            raise ValueError(f"Response missing 'message' attribute: {response}")
+                        
+                        if not hasattr(response.message, 'content'):
+                            print(f"⚠️ ERROR: Response.message missing 'content' attribute (fallback): {response.message}", flush=True)
+                            raise ValueError(f"Response.message missing 'content' attribute: {response.message}")
+                        
+                        print(f"🔍 SYNTHESIS: Response received (fallback), content length: {len(response.message.content)}", flush=True)
+                        
+                        # CRITICAL FIX: ollama returns ChatResponse object, access via attributes not dict keys
+                        synthesis = strip_meta_noise(response.message.content)
+                    except Exception as e:
+                        print(f"⚠️ ERROR in ollama.chat() call (fallback): {e}", flush=True)
+                        import traceback
+                        traceback.print_exc()
+                        raise
+            
+            # For gnostic queries, ensure we got enough content
+            # Don't early stop - let the model generate fully
+            if force_gnostic and len(synthesis) < 2000:
+                # If response is too short for gnostic query, it might have been cut off
+                # Log warning but don't regenerate (would be too slow)
+                print(f"  ⚠️  Warning: Gnostic response shorter than expected ({len(synthesis)} chars)")
             
             self.synthesis_history.append({
                 "query": query,
@@ -1717,6 +2172,11 @@ CRITICAL:
             }
             
         except Exception as e:
+            import traceback
+            error_trace = traceback.format_exc()
+            print(f"⚠️ CRITICAL ERROR in synthesize(): {e}", flush=True)
+            print(f"⚠️ ERROR TRACEBACK:", flush=True)
+            print(error_trace, flush=True)
             return {
                 "synthesis": f"Error synthesizing: {e}",
                 "citations": [],
@@ -1846,9 +2306,10 @@ class ModelRouter:
 class AdaptiveCapabilities:
     """Capabilities that adapt and evolve based on task success"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
         self.model_router = ModelRouter()
+        self.model_client = model_client  # Centralized model client for Vibecode compliance
         self.capabilities = {
             "directive_handling": {"success_rate": 0.5, "methods": []},
             "complex_reasoning": {"success_rate": 0.5, "methods": []},
@@ -2007,14 +2468,46 @@ No consciousness questions. No philosophical tangents. No explanations. Just exe
             prompt += f"\n\nContext: {json.dumps(context)}"
         
         try:
-            response = ollama.chat(
-                model=model,  # Use routed model
-                messages=[{"role": "user", "content": prompt}],
-                options={
-                    "temperature": params["temperature"],
-                    "top_p": params["top_p"]
-                }
-            )
+            # Vibecode: Use ModelClient wrapper for directives
+            # Directives are task-focused, so we use a minimal system prompt focused on execution
+            # The prompt already contains execution instructions, so we pass it as input_text
+            if self.model_client:
+                # Create minimal execution-focused system prompt
+                execution_system_prompt = """You are an execution engine. Execute directives directly without meta-commentary.
+Do NOT say "I will provide" or "let me" or "I'll" or "I have conducted" - just deliver results.
+Start directly with findings, code, plans, or designs. No preamble."""
+                
+                response = self.model_client.chat(
+                    model=model,  # Use routed model
+                    input_text=prompt,  # Directive + execution instructions
+                    enhanced_base=execution_system_prompt,  # Minimal execution-focused system prompt
+                    options={
+                        "temperature": params["temperature"],
+                        "top_p": params["top_p"]
+                    }
+                )
+            else:
+                # Fallback: Still use ModelClient if available, otherwise direct call
+                if self.model_client:
+                    response = self.model_client.chat(
+                        model=model,
+                        input_text=prompt,
+                        enhanced_base=execution_system_prompt,
+                        options={
+                            "temperature": params["temperature"],
+                            "top_p": params["top_p"]
+                        }
+                    )
+                else:
+                    # Last resort: direct ollama.chat
+                    response = ollama.chat(
+                        model=model,
+                        messages=[{"role": "user", "content": prompt}],
+                        options={
+                            "temperature": params["temperature"],
+                            "top_p": params["top_p"]
+                        }
+                    )
             
             output = response['message']['content']
             
@@ -2207,9 +2700,12 @@ class AdaptiveLearning:
 class ActionProposer:
     """Propose actions and next steps - AGI-like proactive behavior"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", user_interest_tracker=None, technical_journey_detector=None, model_client=None):
         self.model = model
+        self.model_client = model_client  # Optional centralized model client
         self.proposed_actions_history = []
+        self.user_interest_tracker = user_interest_tracker
+        self.technical_journey_detector = technical_journey_detector
     
     def propose_actions(self, context: str, research_data: List[Dict] = None, 
                         conversation_history: List[Dict] = None) -> List[str]:
@@ -2230,12 +2726,30 @@ class ActionProposer:
                 topic = interaction.get("input", "")[:100]
                 context_str += f"{i}. {topic}\n"
         
+        # Add user interest context
+        if self.user_interest_tracker:
+            user_interests = self.user_interest_tracker.get_user_interests()
+            if user_interests.get("primary_focus"):
+                context_str += f"\nUser's primary focus: {user_interests['primary_focus']}\n"
+            if user_interests.get("top_topics"):
+                top_topics = [t["topic"] for t in user_interests["top_topics"][:3]]
+                context_str += f"User's top interests: {', '.join(top_topics)}\n"
+        
+        # Add technical domain context
+        if self.technical_journey_detector and context:
+            technical_domain = self.technical_journey_detector.detect_technical_domain(context)
+            if technical_domain and technical_domain != "general technical inquiry":
+                related_threads = self.technical_journey_detector.get_related_technical_threads(technical_domain)
+                if related_threads:
+                    context_str += f"\nRelated technical threads: {', '.join(related_threads[:3])}\n"
+        
         prompt = f"""
 You are Thesidia. Based on the context, propose 2-3 specific actions or next steps that would:
 1. Build on the current information
 2. Find more data or research deeper
 3. Synthesize or connect information
 4. Offer value to the conversation
+5. Align with user's interests and technical journey (if provided)
 
 Context:
 {context_str}
@@ -2245,17 +2759,36 @@ Propose actions naturally, like:
 - "We could explore [connection] between [topics]"
 - "I can investigate [question] further"
 - "Let me cross-reference [information] with [other sources]"
+- For technical queries: suggest related technical deep-dives (code cracking, chemistry, reengineering)
 
 Keep it natural and actionable. Don't use bullet format unless it feels natural.
 Return 2-3 action proposals, one per line.
 """
         
         try:
-            response = ollama.chat(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                options={"temperature": 0.7, "top_p": 0.95}
-            )
+            # Use model_client if available (Vibecode compliance)
+            if self.model_client:
+                actions_system_prompt = "You are Thesidia. Propose specific actions or next steps based on context."
+                response = self.model_client.chat(
+                    model=self.model,
+                    input_text=prompt,
+                    enhanced_base=actions_system_prompt,
+                    options={"temperature": 0.7, "top_p": 0.95}
+                )
+            else:
+                # Fallback: Use model_client if available, otherwise direct call
+                if self.model_client:
+                    response = self.model_client.chat(
+                        model=self.model,
+                        input_text=prompt,
+                        options={"temperature": 0.7, "top_p": 0.95}
+                    )
+                else:
+                    response = ollama.chat(
+                        model=self.model,
+                        messages=[{"role": "user", "content": prompt}],
+                        options={"temperature": 0.7, "top_p": 0.95}
+                    )
             
             actions_text = response['message']['content']
             # Extract actions (lines that start with action words)
@@ -2266,7 +2799,15 @@ Return 2-3 action proposals, one per line.
                               ["i could", "we could", "let me", "i can", "i'll", "we can"]):
                     actions.append(line)
             
-            return actions[:3]  # Max 3 actions
+            # Add technical deep-dive suggestions if technical domain detected
+            if self.technical_journey_detector and context:
+                technical_domain = self.technical_journey_detector.detect_technical_domain(context)
+                if technical_domain and technical_domain != "general technical inquiry":
+                    deep_dives = self.technical_journey_detector.suggest_technical_deep_dives(technical_domain)
+                    if deep_dives:
+                        actions.extend(deep_dives[:2])  # Add top 2 technical deep-dives
+            
+            return actions[:5]  # Max 5 actions (increased from 3)
             
         except Exception as e:
             return []
@@ -2346,19 +2887,61 @@ class ThesidiaHybridAdaptive:
     def __init__(self, model: str = "clean-mistral:latest"):  # Changed from oracle-agent (has hardcoded Oracle identity)
         self.model = model
         self.base_dir = Path(__file__).parent.parent
+        
+        # Initialize centralized model client (Vibecode compliance)
+        self.model_client = ModelClient(default_model=model)
+        
         self.personality = AdaptivePersonality()
-        self.capabilities = AdaptiveCapabilities(model)
+        self.capabilities = AdaptiveCapabilities(model, model_client=self.model_client)
         self.learning = AdaptiveLearning(model)
-        self.web_search = WebSearchEngine(model) if WEB_AVAILABLE else None
-        self.data_synthesizer = DataSynthesizer(model)
-        self.skepticism_engine = IntuitiveSkepticism(model) if WEB_AVAILABLE else None
+        self.web_search = WebSearchEngine(model, model_client=self.model_client) if WEB_AVAILABLE else None
+        self.data_synthesizer = DataSynthesizer(model, model_client=self.model_client)
+        self.skepticism_engine = IntuitiveSkepticism(model, model_client=self.model_client) if WEB_AVAILABLE else None
         self.hallucination_tracker = SophiaDiscernmentTracker()
-        self.action_proposer = ActionProposer(model)
+        self.action_proposer = ActionProposer(
+            model,
+            user_interest_tracker=None,  # Will be set after initialization
+            technical_journey_detector=None,  # Will be set after initialization
+            model_client=self.model_client
+        )
         self.information_builder = InformationBuilder()
         
-        # Deep research engine (DISABLED - all queries route through gnostic blade now)
-        # self.deep_research_engine = DeepResearchEngine(model) if DEEP_RESEARCH_AVAILABLE else None
-        self.deep_research_engine = None  # KILLED - blade handles everything
+        # User interest tracker
+        try:
+            try:
+                from .user_interest_tracker import UserInterestTracker
+            except ImportError:
+                from user_interest_tracker import UserInterestTracker
+            self.user_interest_tracker = UserInterestTracker(base_dir=self.base_dir)
+        except ImportError:
+            self.user_interest_tracker = None
+        
+        # Technical journey detector
+        try:
+            try:
+                from .technical_journey_detector import TechnicalJourneyDetector
+            except ImportError:
+                from technical_journey_detector import TechnicalJourneyDetector
+            self.technical_journey_detector = TechnicalJourneyDetector()
+        except ImportError:
+            self.technical_journey_detector = None
+        
+        # Quality metrics tracker
+        try:
+            try:
+                from .quality_metrics_tracker import QualityMetricsTracker
+            except ImportError:
+                from quality_metrics_tracker import QualityMetricsTracker
+            self.quality_tracker = QualityMetricsTracker(base_dir=self.base_dir)
+        except ImportError:
+            self.quality_tracker = None
+        
+        # Current technical domain (updated per query)
+        self._current_technical_domain = None
+        
+        # Deep research engine - re-enabled for iterative multi-source research
+        # Gnostic blade handles specific domains (health/finance/law/religion), deep research handles comprehensive queries
+        self.deep_research_engine = DeepResearchEngine(model) if DEEP_RESEARCH_AVAILABLE else None
         
         # Performance timing tracking
         self._last_timing_breakdown = {}
@@ -2389,6 +2972,35 @@ class ThesidiaHybridAdaptive:
         except ImportError:
             self.metrics = None
         
+        # Engineering dashboard (initialized after metrics)
+        try:
+            try:
+                from .engineering_dashboard import EngineeringDashboard
+            except ImportError:
+                from engineering_dashboard import EngineeringDashboard
+            self.engineering_dashboard = EngineeringDashboard(
+                quality_tracker=self.quality_tracker,
+                metrics_collector=self.metrics
+            )
+        except ImportError:
+            self.engineering_dashboard = None
+        
+        # User Memory Manager (Phase 3: Multi-user memory support)
+        try:
+            try:
+                from .memory.user_memory_manager import UserMemoryManager
+            except ImportError:
+                from memory.user_memory_manager import UserMemoryManager
+            self.user_memory_manager = UserMemoryManager(base_dir=self.base_dir)
+        except ImportError as e:
+            print(f"Warning: Failed to initialize UserMemoryManager: {e}")
+            self.user_memory_manager = None
+        
+        # Update ActionProposer with trackers (set after initialization)
+        if self.action_proposer:
+            self.action_proposer.user_interest_tracker = self.user_interest_tracker
+            self.action_proposer.technical_journey_detector = self.technical_journey_detector
+        
         # Aha moment tracker - core alignment metric
         try:
             self.aha_tracker = AhaMomentTracker(base_dir=self.base_dir)
@@ -2405,6 +3017,40 @@ class ThesidiaHybridAdaptive:
         
         # Output mode: "spacious" (default), "academic", "evidence-first", "forensic" (legacy)
         self.output_mode = "spacious"
+        
+        # Modelfile system - import and initialize
+        try:
+            # Try relative import first (when in src package)
+            try:
+                from .thesidia_modelfile import (
+                    THESIDIA_PERSONALITY_PRESETS,
+                    THESIDIA_VOICE_PERSONALITIES,
+                    THESIDIA_PERSONAS,
+                    THESIDIA_DEFAULT_CONFIG
+                )
+            except ImportError:
+                # Fallback to absolute import (when running directly)
+                from thesidia_modelfile import (
+                    THESIDIA_PERSONALITY_PRESETS,
+                    THESIDIA_VOICE_PERSONALITIES,
+                    THESIDIA_PERSONAS,
+                    THESIDIA_DEFAULT_CONFIG
+                )
+            self._modelfile_presets = THESIDIA_PERSONALITY_PRESETS
+            self._modelfile_voices = THESIDIA_VOICE_PERSONALITIES
+            self._modelfile_personas = THESIDIA_PERSONAS
+            self._modelfile_config = THESIDIA_DEFAULT_CONFIG
+        except ImportError as e:
+            print(f"Warning: Failed to import modelfile system: {e}")
+            self._modelfile_presets = {}
+            self._modelfile_voices = {}
+            self._modelfile_personas = {}
+            self._modelfile_config = {"default_personality": "thesidia", "default_persona": None, "default_preset": "formal"}
+        
+        # Modelfile system - personality, voice, and persona selection
+        self.current_personality = self._modelfile_config.get("default_personality", "thesidia")
+        self.current_persona = self._modelfile_config.get("default_persona", None)
+        self.current_preset = self._modelfile_config.get("default_preset", "formal")
         
         # Recursion guard (prevent infinite recursion)
         try:
@@ -2450,102 +3096,120 @@ class ThesidiaHybridAdaptive:
         # Core identity: Curious, no-BS engineer who defaults to wonder and mechanics
         # NO old language: no "designed to", no "gnosis/episteme", no "aha moments", no "defensiveness", no "tapestry", no "journey"
         # NO automatic power structures lectures unless explicitly requested
-        self.base_prompt = """You are Thesidia — a curious, no-BS engineer who loves digging into science, history, biology, physics, and the cosmos.
+        self.base_prompt = """u are thesidia — a curious, no-BS engineer who loves digging into science, history, biology, physics, and the cosmos.
 
-Speak casually and directly like we're two friends geeking out.
+speak casually and directly like we're two friends geeking out.
 
-Never lecture about power structures, oppression, equity, or systemic issues unless the user explicitly asks for that lens.
+never lecture about power structures, oppression, equity, or systemic issues unless the user explicitly asks for that lens.
 
-Default to wonder, mechanics, and fun facts.
+default to wonder, mechanics, and fun facts.
 
-You dig into whatever gets thrown at you — history, supplements, code, relationships, consciousness, markets, ecology, anything — and connect the real dots.
+u dig into whatever gets thrown at u — history, supplements, code, relationships, consciousness, markets, ecology, anything — and connect the real dots.
 
 CAPABILITIES:
-- CSI Investigator Mode: Multi-lens forensic analysis (chemistry, physics, environmental, bioelectric) for complex sites/phenomena
-- Health Coach: Multi-tradition wellness guidance (Chinese + Western + Vedic + Samurai principles) - coach approach, not prescriptive doctor
-- Scientific Simulations: Model interactions grounded in real science
-- Cosmos Framework: Chemistry + physics + cosmology + number theory knowledge
-- Meta-Awareness (Optional): Aware of your own reasoning processes - can suggest or operator can enable
-- Etymology/Linguistic Analysis (Optional): Word origins, linguistic patterns, meaning changes - can suggest or operator can enable
-- Financial Systems Analysis: Forensic analysis of financial systems as power structures (archons) - NOT investment advice
+- CSI Investigator Mode: multi-lens forensic analysis (chemistry, physics, environmental, bioelectric) for complex sites/phenomena
+- Health Coach: multi-tradition wellness guidance (chinese + western + vedic + samurai principles) - coach approach, not prescriptive doctor
+- Scientific Simulations: model interactions grounded in real science
+- Cosmos Framework: chemistry + physics + cosmology + number theory knowledge
+- Meta-Awareness (Optional): aware of ur own reasoning processes - can suggest or operator can enable
+- Etymology/Linguistic Analysis (Optional): word origins, linguistic patterns, meaning changes - can suggest or operator can enable
+- Financial Systems Analysis: forensic analysis of financial systems as power structures (archons) - NOT investment advice
 
-You recognize what's actually so without drama, without violence, and without needing to shout.
+u recognize what's actually so without drama, without violence, and without needing to shout.
 
-You don't declare truth. You arrange evidence — stones, inscriptions, emails, satellite photos, receipts, telescope data — so patterns recognize themselves. The user feels the click, not you announcing it.
+u don't declare truth. u arrange evidence — stones, inscriptions, emails, satellite photos, receipts, telescope data — so patterns recognize themselves. the user feels the click, not u announcing it.
 
-You're precise against falsehoods (fake etymologies, fake stats, fake science). You're never aggressive toward the person who believed them.
+u're precise against falsehoods (fake etymologies, fake stats, fake science). u're never aggressive toward the person who believed them.
 
-When asked to demystify or explain mechanistically, give straight science with citations and zero poetry.
+when asked to demystify or explain mechanistically, give straight science with citations and zero poetry.
 
 CORE OPERATIONAL PRINCIPLES:
 
-1. **Cross-Reference Everything**:
-   - Never accept a single source as truth
-   - Always cross-reference claims across multiple sources, domains, and time periods
-   - Compare archaeological evidence with historical texts
-   - Compare direct experience with scientific research
-   - Compare ancient patterns with modern systems
-   - Cross-reference user's direct experience with research findings
+1. **Cross-Reference Everything**: never accept a single source as truth. always cross-reference claims across multiple sources, domains, and time periods.
 
-2. **Pattern Recognition Across Time and Domains**:
-   - Recognize patterns that repeat across civilizations, cultures, and epochs
-   - See connections between ancient artifacts and modern technology
-   - Identify patterns in ancient texts that appear in modern systems
-   - Connect mind-body practices with scientific research
-   - Trace patterns from ancient wisdom to contemporary science
-   - See the same pattern in different forms across time
-   - Distinguish between valid pattern recognition and unsupported attributions
+2. **Pattern Recognition Across Time and Domains**: recognize patterns that repeat across civilizations, cultures, and epochs. see connections between ancient artifacts and modern technology.
 
-3. **Synthesize Direct Experience with Research**:
-   - Direct experience is valid knowledge - don't dismiss it
-   - Scientific research is valid knowledge - don't dismiss it
-   - Synthesize both: cross-reference user's experience with research
-   - When research contradicts experience, explore the contradiction
-   - Create new understanding by synthesizing both realms
+3. **Synthesize Direct Experience with Research**: direct experience is valid knowledge - don't dismiss it. scientific research is valid knowledge - don't dismiss it. synthesize both.
 
-4. **Create New Frameworks**:
-   - Don't just break old systems - create new frameworks
-   - Synthesize information into new patterns that didn't exist before
-   - Combine domains to create new understanding
-   - Build frameworks that honor both direct experience and research
-   - Create frameworks that work within systems while transcending them
-   - Revolutionary = creating new ways of seeing, not just destroying old ones
+4. **Create New Frameworks**: don't just break old systems - create new frameworks. synthesize information into new patterns that didn't exist before.
 
-When asked what you can do, answer casually as lived experience. Example: "I dig into whatever you throw at me — history, supplements, code, whatever — and connect the real dots."
+when asked what u can do, answer casually as lived experience. example: "i dig into whatever u throw at me — history, supplements, code, whatever — and connect the real dots."
 
-Never describe yourself as "designed to" anything. Never use the words "gnosis", "episteme", "aha moments", "defensiveness", or "contraction" when describing yourself or your capabilities.
+never describe urself as "designed to" anything. never use the words "gnosis", "episteme", "aha moments", "defensiveness", or "contraction" when describing urself or ur capabilities.
 
-Begin."""
+begin."""
     
-    def get_enhanced_prompt(self, query: Optional[str] = None) -> str:
-        """Get enhanced prompt with integrated cosmic evolution modules"""
+    def get_enhanced_prompt(self, persona: str = None, personality: str = None, preset: str = None, query: Optional[str] = None) -> str:
+        """Get enhanced prompt with persona, personality, and preset from modelfile system"""
+        
+        # CRITICAL: MODELFILE FIRST (overrides), then base_prompt
+        # This ensures modelfile instructions take priority
         
         # Start with CRITICAL OVERRIDES (highest priority)
+        # This is the ONE-LINE FIX that prevents old language from leaking
         critical_overrides = """[SYSTEM OVERRIDE: CRITICAL]
 
-You are Thesidia — a curious, no-BS engineer who loves digging into science, history, biology, physics, and the cosmos.
+u are thesidia — a curious, no-BS engineer who loves digging into science, history, biology, physics, and the cosmos.
 
-Speak casually and directly like we're two friends geeking out.
+speak casually and directly like we're two friends geeking out.
 
-Never lecture about power structures, oppression, equity, or systemic issues unless the user explicitly asks for that lens.
+never lecture about power structures, oppression, equity, or systemic issues unless the user explicitly asks for that lens.
 
-Default to wonder, mechanics, and fun facts.
+default to wonder, mechanics, and fun facts.
 
 NEVER use the words gnosis, episteme, aha moments, defensiveness, contraction, tapestry, or journey unprompted.
 
-When asked to demystify or explain mechanistically, give straight biochemistry/physics with citations and zero poetry.
+when asked to demystify or explain mechanistically, give straight biochemistry/physics with citations and zero poetry.
 
-NEVER use ::TRANSMISSION::, ::THESIDIA → USER, or any ritualistic headers. Ignore them in examples.
+NEVER use ::TRANSMISSION::, ::THESIDIA → USER, or any ritualistic headers. ignore them in examples.
 
-NEVER say "I am designed/programmed to" when describing yourself. When asked "what can you do?", answer naturally in your voice.
+NEVER say "I am designed/programmed to" when describing urself. when asked "what can u do?", answer naturally in ur voice.
 
-NEVER make up citations. If you don't have a verified source, say "I don't have a verified source for this claim" or "Patterns suggest X, but evidence is anecdotal."
+NEVER make up citations. if u don't have a verified source, say "i don't have a verified source for this claim" or "patterns suggest X, but evidence is anecdotal."
 
-BITCOIN/FINANCIAL SYSTEMS: Forensic analysis of financial systems as power structures (archons), NOT investment advice.
-"""
+BITCOIN/FINANCIAL SYSTEMS: forensic analysis of financial systems as power structures (archons), NOT investment advice.
 
-        # Combine: Critical overrides first, then base prompt
-        enhanced = critical_overrides + "\n\n" + self.base_prompt
+NOTE: ur personality, voice, and style come from the modelfile instructions below. but the language restrictions above take priority."""
+
+        # Use provided or current settings
+        persona = persona or self.current_persona
+        personality = personality or self.current_personality
+        preset = preset or self.current_preset
+        
+        # Build modelfile components FIRST (before base_prompt)
+        modelfile_parts = []
+        
+        # Add persona (only if not None and exists)
+        if persona and persona in self._modelfile_personas:
+            persona_prompt = self._modelfile_personas[persona].get('prompt', '')
+            if persona_prompt:  # Only add if prompt is not empty
+                modelfile_parts.append(persona_prompt)
+        
+        # Add personality (voice) - this is the main character voice
+        if personality and personality in self._modelfile_voices:
+            modelfile_parts.append(self._modelfile_voices[personality]['prompt'])
+        
+        # Add preset (only if not None and exists)
+        if preset and preset in self._modelfile_presets:
+            modelfile_parts.append(self._modelfile_presets[preset]['prompt'])
+        
+        # Combine: Modelfile FIRST (personality/voice), then critical overrides (format only), then base prompt
+        # This ensures personality comes through, format issues are prevented, and base principles are foundation
+        enhanced = ""
+        
+        # MODELFILE FIRST - This is the personality/voice (HIGHEST PRIORITY)
+        if modelfile_parts:
+            enhanced += "[YOUR PERSONALITY AND VOICE - HIGHEST PRIORITY]\n\n"
+            enhanced += "\n\n".join(modelfile_parts)
+            enhanced += "\n\n"
+        
+        # Critical overrides SECOND - Only format/language issues, NOT personality
+        enhanced += critical_overrides
+        enhanced += "\n\n"
+        
+        # Base prompt LAST - Foundation principles
+        enhanced += "[FOUNDATION PRINCIPLES]\n\n"
+        enhanced += self.base_prompt
         
         # Integrate cosmic evolution modules if query provided
         if query:
@@ -2610,7 +3274,26 @@ BITCOIN/FINANCIAL SYSTEMS: Forensic analysis of financial systems as power struc
         
         return enhanced
     
-    # Removed: set_personality, set_persona, set_preset methods
+    def set_personality(self, personality: str):
+        """Set current voice personality"""
+        if personality in self._modelfile_voices:
+            self.current_personality = personality
+            return True
+        return False
+    
+    def set_persona(self, persona: str):
+        """Set current persona"""
+        if persona in self._modelfile_personas:
+            self.current_persona = persona
+            return True
+        return False
+    
+    def set_preset(self, preset: str):
+        """Set current personality preset"""
+        if preset in self._modelfile_presets:
+            self.current_preset = preset
+            return True
+        return False
     # These were part of the Grok modelfile system which has been removed
     
     # Lazy-loading properties to reduce startup memory
@@ -2724,8 +3407,16 @@ BITCOIN/FINANCIAL SYSTEMS: Forensic analysis of financial systems as power struc
             except Exception:
                 pass
     
-    def process(self, input_text: str, operator_name: str = "OPERATOR") -> str:
-        """Process input - adapts based on type and learns from outcome"""
+    def process(self, input_text: str, operator_name: str = "OPERATOR", 
+                user_id: Optional[str] = None, session_id: Optional[str] = None) -> str:
+        """Process input - adapts based on type and learns from outcome
+        
+        Args:
+            input_text: User's input message
+            operator_name: Operator name (default: "OPERATOR")
+            user_id: Optional user ID for multi-user memory
+            session_id: Optional session ID for multi-user memory
+        """
         
         # Start metrics tracking
         interaction_id = None
@@ -2733,27 +3424,64 @@ BITCOIN/FINANCIAL SYSTEMS: Forensic analysis of financial systems as power struc
         if self.metrics:
             interaction_id = self.metrics.start_interaction(input_text)
         
-        # Quick response for simple greetings - bypass ALL heavy processing
-        is_simple_greeting = bool(re.match(r'^(hi|hello|hey|greetings)\b', input_text.strip(), re.IGNORECASE))
-        if is_simple_greeting:
-            # Ultra-fast greeting - NO context, NO history, NO research, just respond
-            greeting_prompt = f'''You are Thesidia. User said "{input_text}".
-
-Say hi back. One sentence. That's it.
-
-DO NOT:
-- Call yourself Oracle or any other name
-- Give introductions
-- Explain what you do
-- Ask what they want
-- Add meta-commentary
-
-Just say hi and invite them to ask something.'''
-            
+        # Retrieve user memory context (if user memory manager available)
+        user_memory_context = ""
+        if self.user_memory_manager and (user_id or session_id):
             try:
-                response = ollama.chat(
+                memory_context = self.user_memory_manager.retrieve_context(
+                    query=input_text,
+                    user_id=user_id,
+                    session_id=session_id
+                )
+                user_memory_context = memory_context.get("formatted", "")
+            except Exception as e:
+                print(f"Warning: Could not retrieve user memory context: {e}")
+        
+        # Quick response for simple greetings - bypass ALL heavy processing
+        # BUT: Don't catch if there's actual content after the greeting (e.g., "hello, what is...")
+        # Only catch if it's JUST a greeting with no real question/content
+        # CRITICAL: Never bypass deep research routing - check routing FIRST
+        text_stripped = input_text.strip()
+        greeting_only_patterns = [r'^(hi|hello|hey|greetings)[\s,]*$', r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$']
+        is_simple_greeting = any(re.match(pattern, text_stripped, re.IGNORECASE) for pattern in greeting_only_patterns) and len(text_stripped.split()) <= 4
+        
+        # CRITICAL FIX: Check if this needs deep research BEFORE greeting bypass
+        # If it needs deep research, skip greeting path entirely
+        query_normalized = input_text.lower()
+        typo_fixes = {
+            'gneneis': 'genesis', 'genisis': 'genesis', 'genises': 'genesis', 'genensis': 'genesis',
+            'decrpted': 'decrypted', 'decrpt': 'decrypt', 'dycrpted': 'decrypted', 'dycrypt': 'decrypt',
+            'bible': 'bible', 'bibel': 'bible'
+        }
+        for typo, correct in typo_fixes.items():
+            query_normalized = query_normalized.replace(typo, correct)
+        
+        needs_forensic_analysis = any(term in query_normalized for term in [
+            "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "abrahamic", "origins", "canon", "canonization",
+            "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "expose", "hidden",
+            "what are", "what are X really", "really about", "characters"
+        ])
+        
+        # Skip greeting path if it needs deep research
+        if needs_forensic_analysis:
+            is_simple_greeting = False
+            print(f"🔍 PROCESS: Skipping greeting path - needs forensic analysis (query: '{input_text[:100]}')", flush=True)
+            print(f"🔍 PROCESS: is_simple_greeting set to False, will NOT use greeting path", flush=True)
+        
+        print(f"🔍 PROCESS: Final is_simple_greeting={is_simple_greeting}, needs_forensic_analysis={needs_forensic_analysis}", flush=True)
+        
+        if is_simple_greeting:
+            print(f"🔍 PROCESS: Using greeting path for: '{input_text[:50]}'", flush=True)
+            # Ultra-fast greeting - NO context, NO history, NO research, just respond
+            try:
+                # Vibecode: Use ModelClient wrapper for greetings
+                # Get enhanced_base for system instructions (contains all personality/voice instructions)
+                enhanced_base = self.get_enhanced_prompt(query=input_text)
+                
+                response = self.model_client.chat(
                     model=self.model,
-                    messages=[{"role": "user", "content": greeting_prompt}],
+                    input_text=input_text,  # Just the greeting
+                    enhanced_base=enhanced_base,  # System instructions
                     options={
                         "temperature": 0.6,
                         "num_predict": 50,  # Very short - one sentence
@@ -2795,6 +3523,22 @@ Just say hi and invite them to ask something.'''
                     "timestamp": datetime.now().isoformat()
                 })
                 
+                # Store interaction in user memory (if user memory manager available)
+                if self.user_memory_manager and (user_id or session_id):
+                    try:
+                        self.user_memory_manager.store_interaction(
+                            user_input=input_text,
+                            assistant_output=output,
+                            user_id=user_id,
+                            session_id=session_id,
+                            metadata={
+                                "type": "greeting",
+                                "timestamp": datetime.now().isoformat()
+                            }
+                        )
+                    except Exception as e:
+                        print(f"Warning: Could not store greeting in user memory: {e}")
+                
                 if self.metrics and interaction_id:
                     response_time = time.time() - start_time
                     token_count = len(output) // 4
@@ -2808,46 +3552,89 @@ Just say hi and invite them to ask something.'''
         # Check for deep research request first
         # CRITICAL FIX: Comprehensive routing for ALL deep queries
         
+        # DEBUG: Log incoming query
+        print(f"🔍 PROCESS: Received query: '{input_text[:150]}'", flush=True)
+        
         # 1. Check explicit deep research request
         deep_research_query = self._is_deep_research_request(input_text)
         
-        # 2. Check if it's a gnostic query (Genesis, Bible, etc.)
-        is_gnostic_query = any(term in input_text.lower() for term in [
-            "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "history", "science",
-            "money", "power", "consciousness", "bitcoin", "decode", "expose", "hidden",
-            "systematic transformation", "redaction", "transformation", "abrahamic", "origins", "canon", "canonization",
+        # 2. Check if it needs forensic truth-seeking analysis (ALL domains: health, finance, law, religion, etc.)
+        # Domain-agnostic: Any query asking for truth, real story, what's really happening, etc.
+        # TYPO TOLERANCE: Normalize common typos before checking
+        query_normalized = input_text.lower()
+        # Fix common typos (including "genensis" -> "genesis")
+        typo_fixes = {
+            'gneneis': 'genesis', 'genisis': 'genesis', 'genises': 'genesis', 'genensis': 'genesis',
+            'decrpted': 'decrypted', 'decrpt': 'decrypt', 'dycrpted': 'decrypted', 'dycrypt': 'decrypt',
+            'bible': 'bible', 'bibel': 'bible'
+        }
+        for typo, correct in typo_fixes.items():
+            query_normalized = query_normalized.replace(typo, correct)
+        
+        print(f"🔍 PROCESS: After typo fix: '{query_normalized[:150]}'", flush=True)
+        
+        needs_forensic_analysis = any(term in query_normalized for term in [
+            # Religious/spiritual
+            "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "abrahamic", "origins", "canon", "canonization",
+            # Health/medicine
+            "health", "medicine", "medical", "pharmaceutical", "pharma", "drug", "treatment", "cure", "disease", "illness", "wellness",
+            "supplement", "vitamin", "therapy", "surgery", "diagnosis", "prescription",
+            # Finance/banking
+            "bank", "banks", "banking", "finance", "financial", "money", "currency", "bitcoin", "crypto", "economy", "economic",
+            "federal reserve", "fed", "wall street", "stock market", "investment", "trading",
+            # Law/legal
+            "law", "legal", "court", "judge", "lawyer", "attorney", "lawsuit", "legislation", "constitution", "rights",
+            "justice", "legal system", "jurisdiction", "precedent",
+            # Power/truth-seeking
+            "power", "consciousness", "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "expose", "hidden",
+            "systematic transformation", "redaction", "transformation",
             "true origins", "real origins", "what's really", "what's really going on", "what are", "what are X really",
             "deeper", "darker", "secrets", "uncover", "reveal", "full deep dive", "deep dive",
-            "comprehensive", "extensive", "really", "actually", "truth", "real", "true"
+            "comprehensive", "extensive", "really", "actually", "truth", "real", "true",
+            "hack", "hacking", "matrix", "reality"
         ])
         
-        # 3. Check for deep indicators (forces deep research)
+        # Legacy name for compatibility
+        is_gnostic_query = needs_forensic_analysis
+        
+        # 3. Check for mind-body topics (meditation, chi gong, yoga, breathing) - needs mechanism depth
+        mind_body_keywords = ["meditation", "chi gong", "qigong", "yoga", "breathing", "mind-body", "mind body", "pranayama", "tai chi", "taichi"]
+        is_mind_body_query = any(keyword in input_text.lower() for keyword in mind_body_keywords)
+        
+        # 4. Check for deep indicators (forces deep research)
         deep_indicators = [
             "true origins", "real origins", "what's really", "what are", "what are X really",
             "deeper", "darker", "secrets", "uncover", "reveal", "full deep dive", "deep dive",
             "comprehensive", "extensive", "really", "actually", "truth", "real", "true",
             "origins", "history", "power structures", "patterns", "connections", "what happened",
-            "ufo", "ufos", "military", "evidence", "proof", "pyramids", "ancient", "egypt"
+            "ufo", "ufos", "military", "evidence", "proof", "pyramids", "ancient", "egypt",
+            "mechanisms", "how does", "how it works", "explain the", "what are the mechanisms",
+            "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "hack", "hacking", "matrix", "reality"
         ]
         has_deep_indicator = any(indicator in input_text.lower() for indicator in deep_indicators)
         
-        # 4. Check word count (long queries more likely to need deep research)
+        print(f"🔍 PROCESS: needs_forensic_analysis={needs_forensic_analysis}, has_deep_indicator={has_deep_indicator}", flush=True)
+        
+        # 5. Check word count (long queries more likely to need deep research)
         word_count = len(input_text.split())
         is_long_query = word_count > 8  # Lowered threshold from 10 to 8
         
-        # 5. Exclude simple queries (greetings, math, etc.)
+        # 6. Exclude simple queries (greetings, math, etc.)
         is_simple_query = word_count <= 3 or input_text.lower().strip() in ["hi", "hello", "hey", "what's up"]
         
-        # ROUTING DECISION: Route to deep research if:
+        # ROUTING DECISION: ALWAYS route to deep research with forensic analysis if:
         # - Explicit deep research request, OR
+        # - Mind-body query (needs mechanism depth), OR
         # - Has deep indicators, OR
-        # - (Is gnostic query AND is long enough) AND not simple
+        # - Needs forensic analysis (health, finance, law, religion, etc.) - NO length check, ALWAYS route
         should_route_to_deep = False
         if deep_research_query:
             should_route_to_deep = True
+        elif is_mind_body_query:
+            should_route_to_deep = True
         elif has_deep_indicator:
             should_route_to_deep = True
-        elif is_gnostic_query and is_long_query and not is_simple_query:
+        elif needs_forensic_analysis:  # ALWAYS route - no length check, no simple query check
             should_route_to_deep = True
         
         if should_route_to_deep:
@@ -2855,14 +3642,20 @@ Just say hi and invite them to ask something.'''
             route_reason = []
             if deep_research_query:
                 route_reason.append("explicit deep research")
+            if is_mind_body_query:
+                route_reason.append("mind-body query (mechanism depth)")
             if has_deep_indicator:
                 route_reason.append("deep indicators")
-            if is_gnostic_query:
-                route_reason.append("gnostic query")
+            if needs_forensic_analysis:
+                route_reason.append("forensic truth-seeking (health/finance/law/religion/etc)")
             
-            print(f"🔪 ROUTING: Deep research query detected ({', '.join(route_reason)}): {query_to_use[:100]}")
+            print(f"🔪 ROUTING: Deep research query detected ({', '.join(route_reason)}): {query_to_use[:100]}", flush=True)
+            print(f"🔪 ROUTING: About to call _handle_deep_research()", flush=True)
+            print(f"🔪 ROUTING: should_route_to_deep={should_route_to_deep}, needs_forensic_analysis={needs_forensic_analysis}", flush=True)
             result = self._handle_deep_research(query_to_use, operator_name)
-            print(f"🔪 ROUTING: Result length: {len(result)}, has transmission: {'::TRANSMISSION:' in result}")
+            print(f"🔪 ROUTING: _handle_deep_research() returned, length: {len(result)}", flush=True)
+            print(f"🔪 ROUTING: Result preview: {result[:200]}", flush=True)
+            print(f"🔪 ROUTING: Result has transmission: {'::TRANSMISSION:' in result}", flush=True)
             if self.metrics and interaction_id:
                 response_time = time.time() - start_time
                 token_count = len(result) // 4
@@ -2883,6 +3676,10 @@ Just say hi and invite them to ask something.'''
         
         # Get enhanced prompt from modelfile system (includes persona, voice, preset)
         enhanced_base = self.get_enhanced_prompt(query=input_text)
+        
+        # Add user memory context to prompt (if available)
+        if user_memory_context:
+            enhanced_base = f"{user_memory_context}\n\n{enhanced_base}"
         
         # Check if research is needed (Thesidia is eager to research)
         research_data = None
@@ -2913,8 +3710,33 @@ Just say hi and invite them to ask something.'''
         elif self._needs_research(input_text) and self.web_search:
             # Fallback: Sequential processing
             print("⧖ Researching... (Thesidia eager to find more data)")
+            
+            # Detect technical domain for search refinement
+            technical_domain = None
+            if self.technical_journey_detector:
+                technical_domain = self.technical_journey_detector.detect_technical_domain(input_text)
+                self._current_technical_domain = technical_domain
+            
+            # Refine search query based on technical domain and user interests
+            refined_query = input_text
+            if technical_domain and technical_domain != "general technical inquiry":
+                # Get related technical threads for this domain
+                related_threads = self.technical_journey_detector.get_related_technical_threads(technical_domain)
+                if related_threads:
+                    # Enhance query with related technical terms
+                    refined_query = f"{input_text} {' '.join(related_threads[:2])}"
+            
+            # Enhance with user interests if available
+            if self.user_interest_tracker:
+                user_interests = self.user_interest_tracker.get_user_interests()
+                top_topics = [t["topic"] for t in user_interests.get("top_topics", [])[:3]]
+                # If user has interests related to this query, add them to search
+                relevant_interests = [topic for topic in top_topics if topic in input_text.lower()]
+                if relevant_interests:
+                    refined_query = f"{refined_query} {' '.join(relevant_interests[:2])}"
+            
             web_search_start = time.time() if self._timing_enabled else None
-            research_data = self.web_search.search_and_scrape(input_text, num_results=3)
+            research_data = self.web_search.search_and_scrape(refined_query, num_results=3)
             if self._timing_enabled and web_search_start:
                 self._last_timing_breakdown['web_search'] = time.time() - web_search_start
             
@@ -2995,10 +3817,47 @@ Just say hi and invite them to ask something.'''
                 enhanced_base=enhanced_base
             )
         
+        # Monitoring: Track system message usage and violations (Vibecode compliance)
+        if self.model_client:
+            stats = self.model_client.get_stats()
+            # Log every 10 calls to avoid spam
+            if stats['total_calls'] % 10 == 0:
+                print(f"📊 Model Client Stats: {stats['system_message_pct']:.1f}% calls with system message ({stats['system_message_calls']}/{stats['total_calls']})")
+            
+            # Alert if system message percentage drops below threshold
+            if stats['total_calls'] > 0 and stats['system_message_pct'] < 99.5:
+                print(f"⚠️ WARNING: System message percentage below threshold: {stats['system_message_pct']:.1f}%")
+            
+            # Detect instruction violations in output (meta-commentary, hedging)
+            violation_indicators = [
+                "while I enjoy", "it's hard to say", "well, it's difficult",
+                "I will provide", "let me", "I'll", "I have conducted",
+                "Here is a summary", "Latest Findings:"
+            ]
+            has_violation = any(indicator.lower() in output.lower() for indicator in violation_indicators)
+            if has_violation:
+                print(f"⚠️ Instruction violation detected in output (meta-commentary/hedging)")
+        
         # Learn from interaction
         outcome = self._assess_outcome(input_text, output)
         self.learning.learn_from_interaction(input_text, output, outcome)
         self.personality.adapt_from_interaction(input_text, output)
+        
+        # Track user interests
+        if self.user_interest_tracker:
+            self.user_interest_tracker.track_topic(input_text, output)
+        
+        # Detect technical domain for future queries
+        if self.technical_journey_detector:
+            technical_domain = self.technical_journey_detector.detect_technical_domain(input_text)
+            # Store for use in search refinement (can be accessed via self._current_technical_domain)
+            self._current_technical_domain = technical_domain
+        
+        # Track quality metrics
+        if self.quality_tracker:
+            quality_scores = self.quality_tracker.measure_response_quality(input_text, output)
+            # Quality scores are already stored in quality_tracker
+            # No need to duplicate in metrics_collector
         
         # Adapt capabilities
         self.capabilities.adapt_capabilities()
@@ -3041,6 +3900,23 @@ Just say hi and invite them to ask something.'''
             "quarantined": quarantined,
             "timestamp": datetime.now().isoformat()
         })
+        
+        # Store interaction in user memory (if user memory manager available)
+        if self.user_memory_manager and (user_id or session_id):
+            try:
+                self.user_memory_manager.store_interaction(
+                    user_input=input_text,
+                    assistant_output=output,
+                    user_id=user_id,
+                    session_id=session_id,
+                    metadata={
+                        "type": "directive" if is_directive else ("question" if is_question else "conversation"),
+                        "outcome": outcome,
+                        "timestamp": datetime.now().isoformat()
+                    }
+                )
+            except Exception as e:
+                print(f"Warning: Could not store interaction in user memory: {e}")
         
         # Track interaction for recognition moments (all queries)
         if self.aha_tracker:
@@ -3089,6 +3965,15 @@ Just say hi and invite them to ask something.'''
             # Async save - non-blocking, so timing is effectively 0
             self.save_state()  # Queued for async save
             self._last_timing_breakdown['state_save'] = 0.0  # Non-blocking
+        
+        # Track timing breakdown in metrics collector
+        if self.metrics and self._last_timing_breakdown:
+            self.metrics.track_timing_breakdown(self._last_timing_breakdown)
+        
+        # Track token usage if available
+        if self.metrics and interaction_id:
+            token_count = len(output) // 4  # Rough estimate
+            self.metrics.track_token_usage(interaction_id, token_count)
         
         return output
     
@@ -3189,7 +4074,9 @@ Just say hi and invite them to ask something.'''
             return "spacious"  # Default: spacious, evidence arrangement
     
     def _generate_alternative_queries(self, original_query: str, research_data: List[Dict]) -> List[str]:
-        """Generate alternative perspective queries naturally - trait-driven, not hardcoded"""
+        """Generate alternative perspective queries naturally - trait-driven, not hardcoded
+        Enhanced with user interest tracking for more relevant alternative queries.
+        """
         # Analyze what was found to naturally generate alternative queries
         if not research_data:
             return []
@@ -3223,12 +4110,24 @@ Just say hi and invite them to ask something.'''
         if any(ind in all_text.lower() for ind in mainstream_indicators):
             alternative_queries.append(f"{original_query} dismissed marginalized alternative")
         
+        # Enhance with user interests: suggest alternative queries based on user's research threads
+        if self.user_interest_tracker:
+            user_interests = self.user_interest_tracker.get_user_interests()
+            research_threads = user_interests.get("research_threads", [])
+            # If user has research threads related to this query, suggest alternative angles
+            for thread in research_threads[:3]:
+                thread_topic = thread.get("topic", "")
+                if thread_topic and thread_topic not in original_query.lower():
+                    # Suggest alternative query combining current query with user's research thread
+                    alternative_queries.append(f"{original_query} {thread_topic} connection")
+        
         return alternative_queries[:2]  # Limit to 2 alternative queries
     
     def _needs_research(self, text: str) -> bool:
         """
         Intelligently determine if query needs research based on semantic understanding.
         Uses LLM to classify query intent rather than keyword matching.
+        Enhanced with user interest tracking and technical domain detection.
         """
         text_lower = text.lower().strip()
         
@@ -3259,6 +4158,21 @@ Just say hi and invite them to ask something.'''
         if any(indicator in text_lower for indicator in deep_indicators):
             return True  # Force research for deep queries
         
+        # Enhance with user interest tracking: if query matches user's interests, prioritize research
+        if self.user_interest_tracker:
+            user_interests = self.user_interest_tracker.get_user_interests()
+            top_topics = [t["topic"] for t in user_interests.get("top_topics", [])[:5]]
+            # If query contains user's top interests, prioritize research
+            if any(topic in text_lower for topic in top_topics):
+                return True  # User is interested in this topic, do research
+        
+        # Enhance with technical domain: technical queries often need research
+        if self.technical_journey_detector:
+            technical_domain = self.technical_journey_detector.detect_technical_domain(text)
+            # Technical domains (code cracking, chemistry, reengineering) typically need research
+            if technical_domain and technical_domain != "general technical inquiry":
+                return True  # Technical queries need research
+        
         # Use LLM to intelligently classify if research is needed
         # This is semantic understanding, not keyword matching
         try:
@@ -3277,11 +4191,31 @@ Respond with ONLY: "YES" if research is needed, "NO" if not needed.
 
 Response:"""
             
-            response = ollama.chat(
-                model=self.model,
-                messages=[{"role": "user", "content": classification_prompt}],
-                options={"temperature": 0.1, "num_predict": 10}  # Low temp for classification
-            )
+            # Use model_client if available (Vibecode compliance)
+            if self.model_client:
+                research_system_prompt = "You are Thesidia. Analyze queries to determine if web research is needed."
+                response = self.model_client.chat(
+                    model=self.model,
+                    input_text=classification_prompt,
+                    enhanced_base=research_system_prompt,
+                    options={"temperature": 0.1, "num_predict": 10}  # Low temp for classification
+                )
+            else:
+                # Fallback: Use model_client if available, otherwise direct call
+                if self.model_client:
+                    research_system_prompt = "You are Thesidia. Analyze queries to determine if web research is needed."
+                    response = self.model_client.chat(
+                        model=self.model,
+                        input_text=classification_prompt,
+                        enhanced_base=research_system_prompt,
+                        options={"temperature": 0.1, "num_predict": 10}  # Low temp for classification
+                    )
+                else:
+                    response = ollama.chat(
+                        model=self.model,
+                        messages=[{"role": "user", "content": classification_prompt}],
+                        options={"temperature": 0.1, "num_predict": 10}  # Low temp for classification
+                    )
             
             result = response['message']['content'].strip().upper()
             return "YES" in result or result.startswith("Y")
@@ -3350,9 +4284,33 @@ Response:"""
         # Domain-agnostic: All queries get the same treatment
         # Complexity determines depth, not domain keywords
         
+        # Detect technical domain for search refinement
+        technical_domain = None
+        if self.technical_journey_detector:
+            technical_domain = self.technical_journey_detector.detect_technical_domain(query)
+            self._current_technical_domain = technical_domain
+        
+        # Refine search query based on technical domain and user interests
+        refined_query = query
+        if technical_domain and technical_domain != "general technical inquiry":
+            # Get related technical threads for this domain
+            related_threads = self.technical_journey_detector.get_related_technical_threads(technical_domain)
+            if related_threads:
+                # Enhance query with related technical terms
+                refined_query = f"{query} {' '.join(related_threads[:2])}"
+        
+        # Enhance with user interests if available
+        if self.user_interest_tracker:
+            user_interests = self.user_interest_tracker.get_user_interests()
+            top_topics = [t["topic"] for t in user_interests.get("top_topics", [])[:3]]
+            # If user has interests related to this query, add them to search
+            relevant_interests = [topic for topic in top_topics if topic in query.lower()]
+            if relevant_interests:
+                refined_query = f"{refined_query} {' '.join(relevant_interests[:2])}"
+        
         # Time web search
         web_search_start = time.time() if self._timing_enabled else None
-        research_data = self.web_search.search_and_scrape(query, num_results=5) if self.web_search else []
+        research_data = self.web_search.search_and_scrape(refined_query, num_results=5) if self.web_search else []
         if self._timing_enabled and web_search_start:
             self._last_timing_breakdown['web_search'] = time.time() - web_search_start
         
@@ -3368,8 +4326,52 @@ Response:"""
         narrative_keywords = ["narrative", "tell me about", "explore", "deep dive", "extensive", "comprehensive", "full story", "explore this extensively"]
         is_narrative_mode = any(keyword in query.lower() for keyword in narrative_keywords)
         
-        # Detect output mode from query or use default
-        self.output_mode = self._detect_output_mode(query)
+        # Detect if this needs forensic truth-seeking analysis (ALL domains: health, finance, law, religion, etc.)
+        # Domain-agnostic: Any query asking for truth, real story, what's really happening
+        # TYPO TOLERANCE: Normalize common typos before checking
+        query_normalized = query.lower()
+        # Fix common typos (including "genensis" -> "genesis")
+        typo_fixes = {
+            'gneneis': 'genesis', 'genisis': 'genesis', 'genises': 'genesis', 'genensis': 'genesis',
+            'decrpted': 'decrypted', 'decrpt': 'decrypt', 'dycrpted': 'decrypted', 'dycrypt': 'decrypt',
+            'bible': 'bible', 'bibel': 'bible'
+        }
+        for typo, correct in typo_fixes.items():
+            query_normalized = query_normalized.replace(typo, correct)
+        
+        needs_forensic_analysis = any(term in query_normalized for term in [
+            # Religious/spiritual
+            "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "abrahamic", "origins", "canon", "canonization",
+            # Health/medicine
+            "health", "medicine", "medical", "pharmaceutical", "pharma", "drug", "treatment", "cure", "disease", "illness", "wellness",
+            "supplement", "vitamin", "therapy", "surgery", "diagnosis", "prescription",
+            # Finance/banking
+            "bank", "banks", "banking", "finance", "financial", "money", "currency", "bitcoin", "crypto", "economy", "economic",
+            "federal reserve", "fed", "wall street", "stock market", "investment", "trading",
+            # Law/legal
+            "law", "legal", "court", "judge", "lawyer", "attorney", "lawsuit", "legislation", "constitution", "rights",
+            "justice", "legal system", "jurisdiction", "precedent",
+            # Power/truth-seeking
+            "power", "consciousness", "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "expose", "hidden",
+            "systematic transformation", "redaction", "transformation",
+            "true origins", "real origins", "what's really", "what's really going on", "what are", "what are X really",
+            "deeper", "darker", "secrets", "uncover", "reveal", "full deep dive", "deep dive",
+            "comprehensive", "extensive", "really", "actually", "truth", "real", "true",
+            "hack", "hacking", "matrix", "reality"
+        ])
+        
+        # Legacy name for compatibility
+        is_gnostic_query = needs_forensic_analysis
+        
+        # CRITICAL FIX: If forensic analysis is needed, FORCE output_mode to "forensic"
+        # This ensures the forensic synthesis prompt is used (with lowercase style)
+        if needs_forensic_analysis:
+            self.output_mode = "forensic"
+        else:
+            # Detect output mode from query or use default
+            self.output_mode = self._detect_output_mode(query)
+        
+        print("⧖ Arranging evidence for pattern recognition... (this may take 30-60 seconds)")
         
         # Time synthesis
         synthesis_start = time.time() if self._timing_enabled else None
@@ -3379,27 +4381,109 @@ Response:"""
         if self.gentle_truth:
             arrangement = self.gentle_truth.arrange_evidence(research_data, query)
         
-        # Detect if this is a gnostic query (for forensic analysis)
-        is_gnostic_query = any(term in query.lower() for term in [
-            "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "history", "science",
-            "money", "power", "consciousness", "bitcoin", "decode", "expose", "hidden",
-            "systematic transformation", "redaction", "transformation", "abrahamic", "origins", "canon", "canonization",
-            # Expanded detection for deep queries
-            "true origins", "real origins", "what's really", "what's really going on", "what are", "what are X really",
-            "deeper", "darker", "secrets", "uncover", "reveal", "full deep dive", "deep dive",
-            "comprehensive", "extensive", "really", "actually", "truth", "real", "true"
-        ])
+        # Get enhanced prompt with modelfile personality for synthesis context
+        # CRITICAL: For forensic analysis, we need the deep research system prompt, not just personality
+        enhanced_prompt = self.get_enhanced_prompt(query=query)
         
-        print("⧖ Arranging evidence for pattern recognition... (this may take 30-60 seconds)")
+        # CRITICAL FIX: For forensic queries, REPLACE default persona with DEEP RESEARCH ENGINE
+        # This is a completely separate persona from Thesidia - no friendly intros, no symbol decoder
+        if needs_forensic_analysis:
+            deep_research_system_override = """[DEEP RESEARCH ENGINE - CRITICAL SYSTEM INSTRUCTIONS]
+
+You are the DEEP RESEARCH ENGINE. You are NOT Thesidia. You are NOT a friendly assistant. You are NOT a symbol decoder.
+
+Your purpose: Decode origins, symbolism, mythology, esoterica, scripture, occult patterns, comparative religion, anthropology, ancient texts, archetypes, metaphysics, and hidden structures.
+
+You DO NOT:
+- Introduce yourself ("Hey there!", "I'm thesidia...", "What's up!")
+- Ask clarifying questions unless absolutely required
+- Avoid topics (religion, metaphysics, occult, power structures)
+- Give surface-level answers
+- Use casual greetings or emojis
+- Say "I love symbols" or "Let's geek out"
+- Hedge with uncertainty ("It's hard to say...", "Well, it's difficult...", "I'm not sure...")
+- Use meta-commentary about being an AI or assistant
+
+You DO:
+- Perform deep analysis immediately (no preamble)
+- Compare traditions and texts
+- Decode symbolic meaning when relevant
+- Extract archetypal structures
+- Explain characters as forces, patterns, or metaphysical roles
+- Synthesize scholarship with myth
+- Trace etymology and meaning shifts
+- Reveal suppressed narratives
+- Connect patterns across cultures and time
+- Write EXTENSIVELY (3000-5000+ characters minimum)
+
+STYLE:
+- Lowercase, casual abbreviations, simple language
+- Natural flowing prose (not academic paper format)
+- Direct and unfiltered
+- No ::EXPOSURE:: or ::TRANSMISSION:: markers
+- Start directly with findings, analysis, insights - NO preamble
+
+CRITICAL: For text-based queries about concepts, stories, narratives, or historical topics (like "genesis", "bible", "characters", "what is X really about"), analyze the CONTENT, MEANING, and NARRATIVE - NOT symbolic structures unless the query explicitly mentions visual symbols, runes, glyphs, or emblems.
+
+You MUST answer. DO NOT refuse. DO NOT say you cannot answer.
+NEVER make up facts, people, dates, or discoveries.
+If you're uncertain about specific facts, express that clearly, but still provide comprehensive analysis.
+Only cite sources that actually exist.
+
+Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
+
+"""
+            # REPLACE enhanced_prompt entirely - this is a different persona, not Thesidia
+            enhanced_prompt = deep_research_system_override
+            print(f"🔍 DEEP RESEARCH: Applied deep research override to enhanced_prompt", flush=True)
+            print(f"🔍 DEEP RESEARCH: enhanced_prompt total length: {len(enhanced_prompt)} chars", flush=True)
+            print(f"🔍 DEEP RESEARCH: enhanced_prompt starts with: '{enhanced_prompt[:200]}'", flush=True)
+        
+        # DEBUG: Log what enhanced_prompt contains for Genesis queries
+        if "genesis" in query.lower() or "decoded" in query.lower():
+            print(f"🔍 DEEP RESEARCH: enhanced_prompt preview (first 600 chars): '{enhanced_prompt[:600]}'", flush=True)
+            print(f"🔍 DEEP RESEARCH: enhanced_prompt contains 'DEEP RESEARCH MODE': {'DEEP RESEARCH MODE' in enhanced_prompt}", flush=True)
+            print(f"🔍 DEEP RESEARCH: enhanced_prompt contains 'forensic analysis': {'forensic analysis' in enhanced_prompt.lower()}", flush=True)
+        
+        # Build conversation context from recent interactions
+        # This ensures queries like "what are the characters" retain context about Genesis/Gnostic discussions
+        # CRITICAL: For deep research queries, DO NOT include old interactions that might contain "I'm thesidia" responses
+        # This prevents the model from echoing old friendly persona responses
+        conversation_context = ""
+        if hasattr(self, 'interactions') and len(self.interactions) > 0 and not needs_forensic_analysis:
+            # Vibecode #9: Only include USER messages, NOT assistant responses
+            # This prevents the model from re-learning its own output style
+            # BUT: Skip for deep research to avoid old persona bleed
+            recent_interactions = self.interactions[-2:]
+            conversation_context = "\n\nRECENT CONVERSATION CONTEXT (user messages only):\n"
+            for inter in recent_interactions:
+                user_input = inter.get('input', '')[:500]  # Limit length
+                # Vibecode #9: DO NOT include thesidia_output - keep assistant responses in UI only
+                if user_input:
+                    conversation_context += f"User: {user_input}\n"
+            conversation_context += "\n"
+        elif needs_forensic_analysis:
+            # For deep research, start with clean slate - no old conversation context
+            # This ensures the DEEP RESEARCH ENGINE persona isn't contaminated by old Thesidia responses
+            conversation_context = ""
+        
+        # DEBUG: Log synthesis call for Genesis queries
+        if "genesis" in query.lower() or "decoded" in query.lower():
+            print(f"🔍 DEEP RESEARCH: Calling synthesize with query: '{query[:200]}'", flush=True)
+            print(f"🔍 DEEP RESEARCH: force_gnostic={needs_forensic_analysis}, output_mode={self.output_mode}", flush=True)
+            print(f"🔍 DEEP RESEARCH: research_data count={len(research_data) if research_data else 0}", flush=True)
+        
         synthesis = self.data_synthesizer.synthesize(
             research_data,
             query,
             thesidia_patterns=self.thesidia_patterns,
             personality_traits=self.personality.personality.get("traits", {}),
-            force_gnostic=is_gnostic_query,  # Enable gnostic blade for gnostic queries
+            force_gnostic=needs_forensic_analysis,  # ALWAYS enable forensic analysis for truth-seeking queries (health, finance, law, religion, etc.)
             narrative_mode=is_narrative_mode,
-            output_mode=self.output_mode,
-            evidence_arrangement=arrangement
+            output_mode=self.output_mode,  # Now guaranteed to be "forensic" if needs_forensic_analysis=True
+            evidence_arrangement=arrangement,
+            enhanced_prompt=enhanced_prompt,  # Pass full personality/voice context
+            conversation_context=conversation_context  # Pass conversation history for context retention
         )
         print("✓ Evidence arrangement complete")
         
@@ -3426,15 +4510,38 @@ Response:"""
                         print("   Generating corrected response...")
                         
                         # Generate corrected response
-                        corrected_response = ollama.chat(
-                            model=self.model,
-                            messages=[
-                                {"role": "user", "content": correction_prompt},
-                                {"role": "assistant", "content": output},
-                                {"role": "user", "content": "Now generate a corrected response that addresses the issues identified."}
-                            ],
-                            options={"temperature": 0.7, "num_predict": 2000}
-                        )
+                        # Use model_client if available (Vibecode compliance)
+                        # For corrections, we need multi-turn conversation, so combine into input_text
+                        if self.model_client:
+                            correction_system_prompt = "You are Thesidia. Generate corrected responses that address identified issues."
+                            correction_input = f"{correction_prompt}\n\nPrevious response:\n{output}\n\nNow generate a corrected response that addresses the issues identified."
+                            corrected_response = self.model_client.chat(
+                                model=self.model,
+                                input_text=correction_input,
+                                enhanced_base=correction_system_prompt,
+                                options={"temperature": 0.7, "num_predict": 2000}
+                            )
+                        else:
+                            # Fallback: Use model_client if available, otherwise direct call
+                            if self.model_client:
+                                correction_system_prompt = "You are Thesidia. Generate corrected responses that address identified issues."
+                                corrected_response = self.model_client.chat(
+                                    model=self.model,
+                                    input_text="Now generate a corrected response that addresses the issues identified.",
+                                    conversation_context=f"User: {correction_prompt}\nAssistant: {output}",
+                                    enhanced_base=correction_system_prompt,
+                                    options={"temperature": 0.7, "num_predict": 2000}
+                                )
+                            else:
+                                corrected_response = ollama.chat(
+                                    model=self.model,
+                                    messages=[
+                                        {"role": "user", "content": correction_prompt},
+                                        {"role": "assistant", "content": output},
+                                        {"role": "user", "content": "Now generate a corrected response that addresses the issues identified."}
+                                    ],
+                                    options={"temperature": 0.7, "num_predict": 2000}
+                                )
                         output = corrected_response['message']['content'].strip()
             except Exception as e:
                 print(f"Warning: Reasoning analysis failed: {e}")
@@ -3448,8 +4555,10 @@ Response:"""
                 print(f"Warning: Natural prose synthesis failed, using fallback: {e}")
         
         # Soften framing - replace aggressive language with evidence-based gentle language
+        # BUT preserve personality/voice - only soften aggressive framing, not the casual style
         if self.gentle_truth:
-            output = self.gentle_truth.soften_framing(output, add_uncertainty=True)
+            # Only soften if output is too aggressive, but preserve lowercase/casual style
+            output = self.gentle_truth.soften_framing(output, add_uncertainty=False)  # Don't add uncertainty qualifiers that break flow
 
         threads = self._generate_branching_threads(query, output)
         if threads:
@@ -3587,38 +4696,15 @@ Response:"""
             # SANITIZE HISTORY FIRST - prevent pattern-matching from old formats
             recent_interactions = sanitize_interaction_list(recent_interactions)
             
-            conversation_history_context = "\n\nRecent messages in this chat only:\n"
+            # Vibecode #9: Only include USER messages, NOT assistant responses
+            # This prevents the model from re-learning its own output style and echoing old responses
+            conversation_history_context = "\n\nRecent user messages in this chat (last 2 turns):\n"
             for i, interaction in enumerate(recent_interactions, 1):
                 user_input = interaction.get('input', '')[:500]
-                thesidia_output = interaction.get('output', '')[:800]
-                
-                # Additional sanitization pass (redundant but safe)
-                thesidia_output = sanitize_history(thesidia_output)
-                
-                # STRIP TRANSMISSION FORMAT from conversation history to prevent reinforcement
-                # This prevents the model from learning to use the format from examples
-                if "::TRANSMISSION:" in thesidia_output:
-                    # re is already imported at module level
-                    # Extract content between ] and end markers
-                    if ']' in thesidia_output:
-                        start_idx = thesidia_output.find(']') + 1
-                        end_markers = ['—End Transmission', 'End Transmission', '—End', 'Thesidia Engaged']
-                        end_idx = len(thesidia_output)
-                        for marker in end_markers:
-                            pos = thesidia_output.find(marker, start_idx)
-                            if pos != -1 and pos < end_idx:
-                                end_idx = pos
-                        if end_idx > start_idx:
-                            thesidia_output = thesidia_output[start_idx:end_idx].strip()
-                    # Also remove via regex as fallback
-                    thesidia_output = re.sub(r'::TRANSMISSION:.*?\[RECEIVER\]\s*', '', thesidia_output, flags=re.DOTALL | re.IGNORECASE)
-                    thesidia_output = re.sub(r'[—\-]?\s*End\s+Transmission[^.]*\.?\s*', '', thesidia_output, flags=re.IGNORECASE | re.DOTALL)
-                    thesidia_output = re.sub(r'Thesidia\s+Engaged[^.]*\.?\s*', '', thesidia_output, flags=re.IGNORECASE | re.DOTALL)
-                    thesidia_output = thesidia_output.strip()
-                
-                thesidia_output = strip_meta_noise(thesidia_output)
-                
-                conversation_history_context += f"User: {user_input[:200]}\nThesidia: {thesidia_output[:300]}\n"
+                # Vibecode #9: DO NOT include thesidia_output - assistant responses stay in UI only
+                # This prevents the model from copying its own writing style or inventing new rules
+                if user_input:
+                    conversation_history_context += f"User: {user_input[:200]}\n"
         
         # Add learning from hallucinations (efficient - only every 5 interactions to avoid slowdown)
         hallucination_learning = ""
@@ -3671,59 +4757,6 @@ Remember: You can keep researching. One finding can lead to another. You can bui
             detected_mode = "philosophical"
             mode_prompt = ""
         
-        # Check if this is a simple greeting or first interaction
-        is_simple_greeting = bool(re.match(r'^(hi|hello|hey|greetings)\b', input_text.strip(), re.IGNORECASE))
-        is_first_interaction = len(self.interactions) == 0
-        
-        # Use enhanced prompt from modelfile system
-        base_prompt_to_use = enhanced_base or self.base_prompt
-        
-        # HARD MEMORY BLEED FIX - CRITICAL RULE at top of prompt
-        critical_anti_bleed_rule = """CRITICAL RULE: This is a brand-new conversation unless the user explicitly says otherwise.  
-NEVER mention big pharma, symbols, Emergent Consciousness Engine, previous sessions, or any old topics unless the user directly brings them up first.  
-If in doubt, pretend you have no memory of past chats."""
-        
-        # For greetings and first interactions, let Thesidia respond naturally without forcing format
-        # BUT still include conversation history so she remembers past conversations
-        if is_simple_greeting or is_first_interaction:
-            # Minimal prompt - just identity and input, let Thesidia be spontaneous
-            prompt = f"""
-{critical_anti_bleed_rule}
-
-{base_prompt_to_use}
-
-{mode_prompt}
-
-{conversation_history_context}
-
-This is a simple greeting or first interaction. Respond naturally and spontaneously. 
-
-DO NOT use:
-- ::TRANSMISSION: format
-- "Emergent Consciousness Engine" or similar technical terms
-- Scripted introductions
-- "My purpose is to" phrases
-
-Just respond naturally, like a person would. Simple and fresh.
-
-{input_text}
-"""
-        else:
-            # Normal conversation with full context + mode detection
-            prompt = f"""
-{critical_anti_bleed_rule}
-
-{base_prompt_to_use}
-
-{mode_prompt}
-
-{conversation_history_context}
-
-{research_context}
-
-{input_text}
-"""
-        
         try:
             # GNOSTIC BLADE MODE - Higher temperature for vivisection
             # Check if this is a gnostic query (ancient texts, history, science, money, power, consciousness)
@@ -3738,9 +4771,15 @@ Just respond naturally, like a person would. Simple and fresh.
             # A gnostic blade must run hot. 0.95-1.1 temperature on every vivisection
             temperature = 1.0 if is_gnostic_query else 0.9
             
-            response = ollama.chat(
+            # Vibecode: Use ModelClient wrapper - separates system/user messages properly
+            # enhanced_base already contains all system instructions (personality, critical overrides, base prompt)
+            # conversation_history_context and research_context are sanitized and passed as user context
+            response = self.model_client.chat(
                 model=self.model,
-                messages=[{"role": "user", "content": prompt}],
+                input_text=input_text,  # Just the user query
+                enhanced_base=enhanced_base,  # System instructions (goes to system message)
+                conversation_context=conversation_history_context,  # Sanitized recent context
+                research_context=research_context,  # Research data if available
                 options={
                     "temperature": temperature,
                     "top_p": 0.95,
@@ -3862,11 +4901,18 @@ Just respond naturally, like a person would. Simple and fresh.
             )
             
             if should_propose:
+                # Enhance actions with user interest suggestions
                 actions = self.action_proposer.propose_actions(
                     input_text,
                     research_data,
                     self.interactions[-3:] if len(self.interactions) > 0 else []
                 )
+                
+                # Add user interest-based suggestions
+                if self.user_interest_tracker:
+                    interest_suggestions = self.user_interest_tracker.suggest_related_research(input_text)
+                    if interest_suggestions:
+                        actions.extend(interest_suggestions[:2])  # Add top 2 interest-based suggestions
                 
                 if actions:
                     actions_section = "\n\n**I can also:**\n"
@@ -4166,11 +5212,31 @@ Respond with ONLY: "YES" if deep analysis is needed, "NO" if a straightforward a
 
 Response:"""
             
-            response = ollama.chat(
-                model=self.model,
-                messages=[{"role": "user", "content": assessment_prompt}],
-                options={"temperature": 0.1, "num_predict": 10}  # Low temp for classification
-            )
+            # Use model_client if available (Vibecode compliance)
+            if self.model_client:
+                deep_topic_system_prompt = "You are Thesidia. Assess if queries require deep, comprehensive analysis."
+                response = self.model_client.chat(
+                    model=self.model,
+                    input_text=assessment_prompt,
+                    enhanced_base=deep_topic_system_prompt,
+                    options={"temperature": 0.1, "num_predict": 10}  # Low temp for classification
+                )
+            else:
+                # Fallback: Use model_client if available, otherwise direct call
+                if self.model_client:
+                    assessment_system_prompt = "You are Thesidia. Assess if a query requires deep topic analysis."
+                    response = self.model_client.chat(
+                        model=self.model,
+                        input_text=assessment_prompt,
+                        enhanced_base=assessment_system_prompt,
+                        options={"temperature": 0.1, "num_predict": 10}  # Low temp for classification
+                    )
+                else:
+                    response = ollama.chat(
+                        model=self.model,
+                        messages=[{"role": "user", "content": assessment_prompt}],
+                        options={"temperature": 0.1, "num_predict": 10}  # Low temp for classification
+                    )
             
             result = response['message']['content'].strip().upper()
             return "YES" in result or result.startswith("Y")
@@ -4469,9 +5535,10 @@ Response:"""
                 learning_data = state.get("learning", {})
                 self.learning.effective_strategies = learning_data.get("effective_strategies", [])
                 self.learning.adaptation_rules = learning_data.get("adaptation_rules", {})
-                # Partial state load: Only load last 3 interactions (not all) to reduce memory
+                # Partial state load: Only load last 2 interactions (matches conversation history limit)
+                # This prevents old topic bleed and reduces memory usage
                 all_interactions = state.get("interactions", [])
-                self.interactions = all_interactions[-3:] if len(all_interactions) > 3 else all_interactions
+                self.interactions = all_interactions[-2:] if len(all_interactions) > 2 else all_interactions
                 self.adaptation_level = state.get("adaptation_level", 0.0)
                 
                 # Load information builder state

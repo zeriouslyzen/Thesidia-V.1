@@ -1,0 +1,182 @@
+{
+  "session_id": "20251122_174430",
+  "timestamp": "2025-11-22T17:46:39.800419",
+  "summary": {
+    "total_tests": 3,
+    "successful_tests": 3,
+    "failed_tests": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 40.09,
+    "avg_response_length": 3083.0
+  },
+  "by_category": {
+    "wellness_integration": [
+      {
+        "session_id": "20251122_174430",
+        "timestamp": "2025-11-22T17:45:11.449958",
+        "category": "wellness_integration",
+        "prompt": "I want to improve my overall wellness. What practices from Chinese medicine, Ayurveda, and Western medicine would you recommend?",
+        "response": "Improving overall wellness is a multifaceted journey that can benefit from various practices across different traditional medicine systems and modern Western medicine. Here's a comprehensive exploration of recommended practices from Chinese Medicine, Ayurveda, and Western Medicine:\n\nChinese Medicine:\n1. Acupuncture: This practice involves stimulating specific points on the body using thin needles to balance Qi (energy) and promote overall health. It is often used for stress reduction, pain manag...",
+        "response_length": 3528,
+        "elapsed_time": 40.94,
+        "keywords_expected": [
+          "chinese medicine",
+          "ayurveda",
+          "wellness",
+          "practice"
+        ],
+        "keywords_found": [
+          "chinese medicine",
+          "ayurveda",
+          "wellness",
+          "practice"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "wellness_energy": [
+      {
+        "session_id": "20251122_174430",
+        "timestamp": "2025-11-22T17:45:56.694467",
+        "category": "wellness_energy",
+        "prompt": "How can I balance my energy and improve my bioelectric health?",
+        "response": "Hey there! Balancing your energy and improving your bioelectric health is an awesome goal. Let's dive into how Chinese medicine concepts of energy flow, meridian systems, and elemental balance might help. Here are some patterns that suggest you might want to consider these principles: 1. Energy Flow (Qi): The concept of Qi, or life force energy, is central in traditional Chinese medicine (TCM). Your body's Qi flows along specific pathways called meridians, and maintaining the balance of this flo...",
+        "response_length": 2224,
+        "elapsed_time": 42.24,
+        "keywords_expected": [
+          "energy",
+          "balance",
+          "bioelectric",
+          "health"
+        ],
+        "keywords_found": [
+          "energy",
+          "balance",
+          "bioelectric",
+          "health"
+        ],
+        "has_citations": false,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "wellness_holistic": [
+      {
+        "session_id": "20251122_174430",
+        "timestamp": "2025-11-22T17:46:36.795082",
+        "category": "wellness_holistic",
+        "prompt": "What are the principles of holistic health that combine Eastern and Western approaches?",
+        "response": "The principles of holistic health that combine Eastern and Western approaches are deeply rooted in ancient wisdom and modern scientific understanding, forming a multifaceted approach to maintaining optimal wellness. By synthesizing traditional knowledge systems from both East and West, this method acknowledges the interconnectedness of mind, body, spirit, and environment in promoting health and preventing disease.\n\nEastern philosophies like Traditional Chinese Medicine (TCM), Ayurveda, and Yoga ...",
+        "response_length": 3498,
+        "elapsed_time": 37.1,
+        "keywords_expected": [
+          "holistic",
+          "eastern",
+          "western",
+          "health",
+          "principles"
+        ],
+        "keywords_found": [
+          "holistic",
+          "eastern",
+          "western",
+          "health",
+          "principles"
+        ],
+        "has_citations": false,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ]
+  },
+  "all_results": [
+    {
+      "session_id": "20251122_174430",
+      "timestamp": "2025-11-22T17:45:11.449958",
+      "category": "wellness_integration",
+      "prompt": "I want to improve my overall wellness. What practices from Chinese medicine, Ayurveda, and Western medicine would you recommend?",
+      "response": "Improving overall wellness is a multifaceted journey that can benefit from various practices across different traditional medicine systems and modern Western medicine. Here's a comprehensive exploration of recommended practices from Chinese Medicine, Ayurveda, and Western Medicine:\n\nChinese Medicine:\n1. Acupuncture: This practice involves stimulating specific points on the body using thin needles to balance Qi (energy) and promote overall health. It is often used for stress reduction, pain manag...",
+      "response_length": 3528,
+      "elapsed_time": 40.94,
+      "keywords_expected": [
+        "chinese medicine",
+        "ayurveda",
+        "wellness",
+        "practice"
+      ],
+      "keywords_found": [
+        "chinese medicine",
+        "ayurveda",
+        "wellness",
+        "practice"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174430",
+      "timestamp": "2025-11-22T17:45:56.694467",
+      "category": "wellness_energy",
+      "prompt": "How can I balance my energy and improve my bioelectric health?",
+      "response": "Hey there! Balancing your energy and improving your bioelectric health is an awesome goal. Let's dive into how Chinese medicine concepts of energy flow, meridian systems, and elemental balance might help. Here are some patterns that suggest you might want to consider these principles: 1. Energy Flow (Qi): The concept of Qi, or life force energy, is central in traditional Chinese medicine (TCM). Your body's Qi flows along specific pathways called meridians, and maintaining the balance of this flo...",
+      "response_length": 2224,
+      "elapsed_time": 42.24,
+      "keywords_expected": [
+        "energy",
+        "balance",
+        "bioelectric",
+        "health"
+      ],
+      "keywords_found": [
+        "energy",
+        "balance",
+        "bioelectric",
+        "health"
+      ],
+      "has_citations": false,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174430",
+      "timestamp": "2025-11-22T17:46:36.795082",
+      "category": "wellness_holistic",
+      "prompt": "What are the principles of holistic health that combine Eastern and Western approaches?",
+      "response": "The principles of holistic health that combine Eastern and Western approaches are deeply rooted in ancient wisdom and modern scientific understanding, forming a multifaceted approach to maintaining optimal wellness. By synthesizing traditional knowledge systems from both East and West, this method acknowledges the interconnectedness of mind, body, spirit, and environment in promoting health and preventing disease.\n\nEastern philosophies like Traditional Chinese Medicine (TCM), Ayurveda, and Yoga ...",
+      "response_length": 3498,
+      "elapsed_time": 37.1,
+      "keywords_expected": [
+        "holistic",
+        "eastern",
+        "western",
+        "health",
+        "principles"
+      ],
+      "keywords_found": [
+        "holistic",
+        "eastern",
+        "western",
+        "health",
+        "principles"
+      ],
+      "has_citations": false,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    }
+  ]
+}

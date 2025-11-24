@@ -1,0 +1,354 @@
+{
+  "report_path": "analysis_output/gnostic_intelligence_report_20251122_183332.json",
+  "total_responses": 6,
+  "averages": {
+    "cliche_score": 0.25,
+    "depth_score": 3.23,
+    "intelligence_score": 0.34,
+    "personality_score": 0.23,
+    "cultural_score": 0.45,
+    "hidden_score": 0.37,
+    "mechanism_score": 0.0,
+    "quality_score": 8.17
+  },
+  "flags": {
+    "has_emergence": "4/6",
+    "has_pattern_connections": "2/6",
+    "has_cultural_depth": "3/6",
+    "has_hidden_knowledge": "5/6",
+    "has_mechanism_depth": "0/6",
+    "is_cliche": "1/6",
+    "has_personality": "1/6"
+  },
+  "detailed_analyses": [
+    {
+      "cliche_score": 0.89,
+      "depth_score": 1.95,
+      "intelligence_score": 0.35,
+      "personality_score": 0.18,
+      "cultural_score": 0.18,
+      "hidden_score": 0.18,
+      "mechanism_score": 0.0,
+      "quality_score": 2.84,
+      "has_emergence": true,
+      "has_pattern_connections": false,
+      "has_cultural_depth": false,
+      "has_hidden_knowledge": true,
+      "has_mechanism_depth": false,
+      "is_cliche": true,
+      "has_personality": false,
+      "matches": {
+        "cliche": [
+          "it's important to",
+          "it's important to",
+          "in conclusion",
+          "it's essential",
+          [
+            "based on",
+            "however"
+          ]
+        ],
+        "depth": [
+          "emergence",
+          "patterns",
+          "patterns",
+          "connections",
+          "patterns",
+          "pattern",
+          "connections",
+          "ancient",
+          "across cultures",
+          "ancient"
+        ],
+        "intelligence": [
+          "beyond",
+          [
+            "essential",
+            "process"
+          ]
+        ],
+        "personality": [
+          "intriguing"
+        ],
+        "cultural": [
+          "greek"
+        ],
+        "hidden": [
+          "beneath the surface"
+        ],
+        "mechanism": []
+      },
+      "category": "gnostic_origins",
+      "prompt": "What are the true origins of Genesis? Not the surface story, but what was really happening, what pat"
+    },
+    {
+      "cliche_score": 0.15,
+      "depth_score": 2.96,
+      "intelligence_score": 0.3,
+      "personality_score": 0.15,
+      "cultural_score": 0.0,
+      "hidden_score": 0.3,
+      "mechanism_score": 0.0,
+      "quality_score": 6.88,
+      "has_emergence": false,
+      "has_pattern_connections": false,
+      "has_cultural_depth": false,
+      "has_hidden_knowledge": true,
+      "has_mechanism_depth": false,
+      "is_cliche": false,
+      "has_personality": false,
+      "matches": {
+        "cliche": [
+          "in conclusion"
+        ],
+        "depth": [
+          "connections",
+          "patterns",
+          "connections",
+          "patterns",
+          "connections",
+          "connections",
+          "pattern",
+          "ancient",
+          "ancient",
+          "ancient"
+        ],
+        "intelligence": [
+          "beyond",
+          "beyond"
+        ],
+        "personality": [
+          "exploring"
+        ],
+        "cultural": [],
+        "hidden": [
+          "hidden",
+          "hidden"
+        ],
+        "mechanism": []
+      },
+      "category": "gnostic_decoding",
+      "prompt": "Decode the real meaning behind the pyramids of Giza. What do they actually represent? What knowledge"
+    },
+    {
+      "cliche_score": 0.0,
+      "depth_score": 2.27,
+      "intelligence_score": 0.0,
+      "personality_score": 0.16,
+      "cultural_score": 0.0,
+      "hidden_score": 0.0,
+      "mechanism_score": 0.0,
+      "quality_score": 4.79,
+      "has_emergence": true,
+      "has_pattern_connections": false,
+      "has_cultural_depth": false,
+      "has_hidden_knowledge": false,
+      "has_mechanism_depth": false,
+      "is_cliche": false,
+      "has_personality": false,
+      "matches": {
+        "cliche": [],
+        "depth": [
+          "evolution",
+          "patterns",
+          "interconnected",
+          "connections",
+          "patterns",
+          "connections",
+          "patterns",
+          "ancient",
+          "ancient",
+          "ancient"
+        ],
+        "intelligence": [],
+        "personality": [
+          "exploring"
+        ],
+        "cultural": [],
+        "hidden": [],
+        "mechanism": []
+      },
+      "category": "gnostic_systems",
+      "prompt": "What is the true nature of money and financial systems? Not the surface explanation, but the deeper "
+    },
+    {
+      "cliche_score": 0.12,
+      "depth_score": 4.04,
+      "intelligence_score": 0.73,
+      "personality_score": 0.73,
+      "cultural_score": 1.59,
+      "hidden_score": 0.49,
+      "mechanism_score": 0.0,
+      "quality_score": 13.65,
+      "has_emergence": true,
+      "has_pattern_connections": true,
+      "has_cultural_depth": true,
+      "has_hidden_knowledge": true,
+      "has_mechanism_depth": false,
+      "is_cliche": false,
+      "has_personality": true,
+      "matches": {
+        "cliche": [
+          "in conclusion"
+        ],
+        "depth": [
+          "emergence",
+          "evolution",
+          "evolution",
+          "evolution",
+          "connections",
+          "patterns",
+          "pattern",
+          "connection",
+          "patterns",
+          "connections"
+        ],
+        "intelligence": [
+          "synthesizing",
+          "beyond",
+          "beyond",
+          "beyond",
+          "beyond",
+          [
+            "underlying",
+            "principle"
+          ]
+        ],
+        "personality": [
+          "fascinating",
+          "striking",
+          "remarkable",
+          "intriguing",
+          "exploring"
+        ],
+        "cultural": [
+          "egyptian",
+          "egyptian",
+          "egyptian",
+          "egyptian",
+          "chinese",
+          "egyptian",
+          "egyptian",
+          "vedic",
+          "vedic",
+          "vedic"
+        ],
+        "hidden": [
+          "hidden",
+          "hidden",
+          "hidden",
+          "hidden"
+        ],
+        "mechanism": []
+      },
+      "category": "gnostic_connections",
+      "prompt": "What are the hidden connections between ancient Egyptian, Sumerian, and Vedic knowledge systems? Wha"
+    },
+    {
+      "cliche_score": 0.17,
+      "depth_score": 3.34,
+      "intelligence_score": 0.5,
+      "personality_score": 0.17,
+      "cultural_score": 0.33,
+      "hidden_score": 0.17,
+      "mechanism_score": 0.0,
+      "quality_score": 8.28,
+      "has_emergence": false,
+      "has_pattern_connections": true,
+      "has_cultural_depth": true,
+      "has_hidden_knowledge": true,
+      "has_mechanism_depth": false,
+      "is_cliche": false,
+      "has_personality": false,
+      "matches": {
+        "cliche": [
+          "remember that"
+        ],
+        "depth": [
+          "pattern",
+          "connections",
+          "connection",
+          "pattern",
+          "connection",
+          "patterns",
+          "connection",
+          "patterns",
+          "connections",
+          "connections"
+        ],
+        "intelligence": [
+          "synthesizing",
+          "beyond",
+          "relationship"
+        ],
+        "personality": [
+          "exploring"
+        ],
+        "cultural": [
+          "diverse",
+          "cross-cultural"
+        ],
+        "hidden": [
+          "esoteric"
+        ],
+        "mechanism": []
+      },
+      "category": "gnostic_consciousness",
+      "prompt": "What is consciousness really? Not the scientific definition, but what emerges when you examine it ac"
+    },
+    {
+      "cliche_score": 0.16,
+      "depth_score": 4.81,
+      "intelligence_score": 0.16,
+      "personality_score": 0.0,
+      "cultural_score": 0.62,
+      "hidden_score": 1.09,
+      "mechanism_score": 0.0,
+      "quality_score": 12.58,
+      "has_emergence": true,
+      "has_pattern_connections": false,
+      "has_cultural_depth": true,
+      "has_hidden_knowledge": true,
+      "has_mechanism_depth": false,
+      "is_cliche": false,
+      "has_personality": false,
+      "matches": {
+        "cliche": [
+          "in conclusion"
+        ],
+        "depth": [
+          "patterns",
+          "pattern",
+          "pattern",
+          "patterns",
+          "connections",
+          "patterns",
+          "patterns",
+          "patterns",
+          "patterns",
+          "patterns"
+        ],
+        "intelligence": [
+          "beyond"
+        ],
+        "personality": [],
+        "cultural": [
+          "greek",
+          "egyptian",
+          "egyptian",
+          "diverse"
+        ],
+        "hidden": [
+          "hidden",
+          "esoteric",
+          "forgotten",
+          "hidden",
+          "hidden"
+        ],
+        "mechanism": []
+      },
+      "category": "gnostic_symbolism",
+      "prompt": "Decode the symbolism in ancient texts and architecture. What do the symbols actually mean? What patt"
+    }
+  ]
+}

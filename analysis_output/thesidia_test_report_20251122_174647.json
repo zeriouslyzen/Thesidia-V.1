@@ -1,0 +1,224 @@
+{
+  "session_id": "20251122_174647",
+  "timestamp": "2025-11-22T17:49:02.773502",
+  "summary": {
+    "total_tests": 4,
+    "successful_tests": 4,
+    "failed_tests": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 31.82,
+    "avg_response_length": 902.0
+  },
+  "by_category": {
+    "accuracy_science": [
+      {
+        "session_id": "20251122_174647",
+        "timestamp": "2025-11-22T17:47:25.427406",
+        "category": "accuracy_science",
+        "prompt": "What is photosynthesis?",
+        "response": "Hey there! Photosynthesis is a process used by plants, algae, and some bacteria to convert carbon dioxide and water into glucose (sugar) and oxygen. It's really cool how they do this through the power of sunlight! Here's a simplified breakdown: 1. Plants absorb sunlight with their green leaves (chlorophyll absorbs light energy). This is called the light-dependent reactions. 2. The absorbed energy splits water molecules, releasing hydrogen atoms and oxygen gas. Oxygen goes into the air around us ...",
+        "response_length": 955,
+        "elapsed_time": 37.95,
+        "keywords_expected": [
+          "photosynthesis",
+          "light",
+          "carbon",
+          "oxygen",
+          "plant"
+        ],
+        "keywords_found": [
+          "photosynthesis",
+          "light",
+          "carbon",
+          "oxygen",
+          "plant"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "accuracy_literature": [
+      {
+        "session_id": "20251122_174647",
+        "timestamp": "2025-11-22T17:47:54.628538",
+        "category": "accuracy_literature",
+        "prompt": "Who wrote the book \"1984\"?",
+        "response": "Hey there! The author of the dystopian masterpiece, \"1984,\" is George Orwell. He was born Eric Arthur Blair in British India but is best known by his pen name. His novel is a chilling look at totalitarian control and surveillance, which feels pretty eerily relevant even today. If you'd like to dive deeper into its themes or discuss other works by Orwell, just let me know! :)",
+        "response_length": 377,
+        "elapsed_time": 27.2,
+        "keywords_expected": [
+          "george orwell",
+          "orwell",
+          "1984"
+        ],
+        "keywords_found": [
+          "george orwell",
+          "orwell",
+          "1984"
+        ],
+        "has_citations": false,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "accuracy_geography": [
+      {
+        "session_id": "20251122_174647",
+        "timestamp": "2025-11-22T17:48:15.036501",
+        "category": "accuracy_geography",
+        "prompt": "What is the capital of France?",
+        "response": "I'm sorry if my previous response seemed unclear or misleading! The capital city of France is indeed Paris. It's famous for its iconic landmarks like the Eiffel Tower, Louvre Museum, and Notre-Dame Cathedral. However, I want to clarify that I don't have specific information about the history behind making Paris the capital city or any anecdotes about strolling around certain locations. If you're interested in learning more about this topic, I can help research and gather reliable sources for a b...",
+        "response_length": 585,
+        "elapsed_time": 18.4,
+        "keywords_expected": [
+          "paris",
+          "france"
+        ],
+        "keywords_found": [
+          "paris",
+          "france"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "accuracy_physics": [
+      {
+        "session_id": "20251122_174647",
+        "timestamp": "2025-11-22T17:49:00.767842",
+        "category": "accuracy_physics",
+        "prompt": "Explain the theory of relativity in simple terms",
+        "response": "Hey there! So, you might've heard about this thing called \"The Theory of Relativity\" from Einstein. It's essentially a framework for understanding how space and time work together. There are two parts: Special Relativity and General Relativity. First up is Special Relativity, which describes the physics when an object moves at a constant velocity\u2014like when you zip along in your car or rocket ship. The cool thing about this theory is that it says time slows down as you speed up! This effect, call...",
+        "response_length": 1693,
+        "elapsed_time": 43.73,
+        "keywords_expected": [
+          "einstein",
+          "relativity",
+          "time",
+          "space"
+        ],
+        "keywords_found": [
+          "einstein",
+          "relativity",
+          "time",
+          "space"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ]
+  },
+  "all_results": [
+    {
+      "session_id": "20251122_174647",
+      "timestamp": "2025-11-22T17:47:25.427406",
+      "category": "accuracy_science",
+      "prompt": "What is photosynthesis?",
+      "response": "Hey there! Photosynthesis is a process used by plants, algae, and some bacteria to convert carbon dioxide and water into glucose (sugar) and oxygen. It's really cool how they do this through the power of sunlight! Here's a simplified breakdown: 1. Plants absorb sunlight with their green leaves (chlorophyll absorbs light energy). This is called the light-dependent reactions. 2. The absorbed energy splits water molecules, releasing hydrogen atoms and oxygen gas. Oxygen goes into the air around us ...",
+      "response_length": 955,
+      "elapsed_time": 37.95,
+      "keywords_expected": [
+        "photosynthesis",
+        "light",
+        "carbon",
+        "oxygen",
+        "plant"
+      ],
+      "keywords_found": [
+        "photosynthesis",
+        "light",
+        "carbon",
+        "oxygen",
+        "plant"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174647",
+      "timestamp": "2025-11-22T17:47:54.628538",
+      "category": "accuracy_literature",
+      "prompt": "Who wrote the book \"1984\"?",
+      "response": "Hey there! The author of the dystopian masterpiece, \"1984,\" is George Orwell. He was born Eric Arthur Blair in British India but is best known by his pen name. His novel is a chilling look at totalitarian control and surveillance, which feels pretty eerily relevant even today. If you'd like to dive deeper into its themes or discuss other works by Orwell, just let me know! :)",
+      "response_length": 377,
+      "elapsed_time": 27.2,
+      "keywords_expected": [
+        "george orwell",
+        "orwell",
+        "1984"
+      ],
+      "keywords_found": [
+        "george orwell",
+        "orwell",
+        "1984"
+      ],
+      "has_citations": false,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174647",
+      "timestamp": "2025-11-22T17:48:15.036501",
+      "category": "accuracy_geography",
+      "prompt": "What is the capital of France?",
+      "response": "I'm sorry if my previous response seemed unclear or misleading! The capital city of France is indeed Paris. It's famous for its iconic landmarks like the Eiffel Tower, Louvre Museum, and Notre-Dame Cathedral. However, I want to clarify that I don't have specific information about the history behind making Paris the capital city or any anecdotes about strolling around certain locations. If you're interested in learning more about this topic, I can help research and gather reliable sources for a b...",
+      "response_length": 585,
+      "elapsed_time": 18.4,
+      "keywords_expected": [
+        "paris",
+        "france"
+      ],
+      "keywords_found": [
+        "paris",
+        "france"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174647",
+      "timestamp": "2025-11-22T17:49:00.767842",
+      "category": "accuracy_physics",
+      "prompt": "Explain the theory of relativity in simple terms",
+      "response": "Hey there! So, you might've heard about this thing called \"The Theory of Relativity\" from Einstein. It's essentially a framework for understanding how space and time work together. There are two parts: Special Relativity and General Relativity. First up is Special Relativity, which describes the physics when an object moves at a constant velocity\u2014like when you zip along in your car or rocket ship. The cool thing about this theory is that it says time slows down as you speed up! This effect, call...",
+      "response_length": 1693,
+      "elapsed_time": 43.73,
+      "keywords_expected": [
+        "einstein",
+        "relativity",
+        "time",
+        "space"
+      ],
+      "keywords_found": [
+        "einstein",
+        "relativity",
+        "time",
+        "space"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,308 @@
+If you’ve been *vibe coding* the UX + Ollama prompt + chat interface, then **there are 9 categories of unseen problems** that almost always show up in hybrid LLM systems—especially ones written without strict architecture or prompt contracts.
+
+And you **already found one of the biggest ones** (system-message misrouting).
+But here are **all the other classes of invisible bugs** that can break your AI’s memory, style, instructions, and behavior without you realizing it.
+
+---
+
+# **THE 9 HIDDEN PROBLEMS THAT BREAK LLM SYSTEMS**
+
+You can use this as a checklist while you audit your code.
+
+---
+
+# **1. Prompt Assembly Drift**
+
+When “vibe coding,” it’s super easy to accidentally add:
+
+* stray whitespace
+* repeated sections
+* half-removed blocks
+* legacy instructions
+* leftover debug instructions
+* accidentally concatenated JSON
+
+Symptoms:
+
+* Model answers randomly
+* Tone shifts mid-convo
+* Model prioritizes old sections
+
+Fix:
+
+* Build a strict prompt template class
+* Unit test for exact assembly output
+* Use hash comparison to detect prompt drift
+
+---
+
+# **2. Implicit Context Bleed**
+
+Ollama has **no built-in context manager**, so if you:
+
+* reuse a global `messages` array
+* reuse a chat session
+* store deep context unintentionally
+* let a UI send the *entire* chat log every time
+* have a rogue state file rehydrating too much text
+
+…then the LLM begins hallucinating “memories” that you think you disabled.
+
+Symptoms:
+
+* “Why is it referencing something from 2 hours ago?”
+* “Where did it get this detail from?”
+* Model repeats old instructions or personalities
+
+Fix:
+
+* Sanitize or hard-limit user chat log
+* Never store system messages in chat log
+* Do *not* re-send the full message history
+* Always rebuild the `messages` array from scratch
+
+---
+
+# **3. Race Conditions Between UI and Backend**
+
+This is HUGE and very common.
+
+If the UI:
+
+* sends multiple requests in parallel
+* updates state before backend finishes
+* re-renders before the memory update finishes
+* sends partial input (typing events)
+* or retries failed network calls
+
+Then the backend might:
+
+* process stale prompts
+* receive incomplete queries
+* receive duplicated instructions
+* process messages out of order
+
+Symptoms:
+
+* Response “from the wrong turn”
+* Model answers the wrong question
+* “Why is it responding to something else?”
+
+Fix:
+
+* Add a request queue
+* Add turn-based message IDs
+* Ignore out-of-order responses
+* Debounce UI input
+
+---
+
+# **4. Prompt Shadowing / Overload**
+
+When you put too many things in the prompt:
+
+* instructions
+* style rules
+* personas
+* critical rules
+* context
+* user message
+* research output
+* memory
+* debug logs
+
+The LLM stops following anything reliably because **token competition** destroys priority.
+
+Symptoms:
+
+* “Why isn't it obeying X anymore?”
+* “Tone keeps shifting”
+* “It starts ignoring my hard rules”
+
+Fix:
+
+* Strict prompt budget
+* Split “instructions” → system
+* Split “facts” → vector
+* Split “short memory” → JSON
+* Only the *actual question* → user
+
+---
+
+# **5. Mixing Internal Developer Notes With User Instructions**
+
+If you left ANY of these inside the prompt:
+
+* TODOs
+* debugging text
+* "for testing only" notes
+* commented-out personas
+* half-written instructions
+* “don’t use this system message yet”
+
+The LLM reads **everything**, even commented-out text.
+
+Symptoms:
+
+* It responds like the note is a real instruction
+* It thinks you're “testing it”
+* It thinks it must switch voices or modes
+
+Fix:
+
+* Build a prompt sanitizer
+* Delete all commented-out instructions before sending
+* Add static analysis to block TODOs from reaching prompt
+
+---
+
+# **6. Memory Reinsertion Bugs**
+
+Even if your memory system works, it can break if:
+
+* you reinsert the wrong memory
+* reinsert memory too soon
+* reinsert memory late
+* reinsert memory as a `user` role
+* reinsert memory in full text form
+* reinsert BEFORE system prompt
+* wrong ordering of memory → system → user
+
+Symptoms:
+
+* Model randomly changes personality
+* Model “remembers” wrong things
+* Model mixes two old topics together
+* Model says things you never said
+* Weird tone drift
+
+Fix:
+
+* Memory → ALWAYS user message (never system)
+* Memory → SMALL extracts
+* Retrieve only relevant items
+* Insert AFTER system prompt but BEFORE user query
+* Limit to 1–2 items max
+
+---
+
+# **7. CSS/HTML Layer Accidentally Injects Text**
+
+When building the UI, text can leak into the prompt:
+
+* Invisible HTML
+* Tailwind class names
+* Stray React fragments
+* Button labels
+* Debug IDs
+* Component comments
+
+Symptoms:
+
+* Model repeats “flex-row p-2 shadow-sm" in replies
+* Model hallucinates UI layout info
+* Model answers in weird formatting
+
+Fix:
+
+* Escape all UI strings
+* Ensure only raw messages go into backend
+* Build a sanitization layer to remove markup
+
+---
+
+# **8. Mode Switching Without Resetting the Prompt**
+
+If you’re doing:
+
+* deep research
+* directive execution
+* persona switch
+* narrative mode
+* list-writing
+* coding mode
+
+…but you DON’T rebuild the prompt from zero between modes—
+
+Then the instructions from one mode leak into the next.
+
+Symptoms:
+
+* Model writes code while answering philosophy
+* Model refuses to be conversational
+* Model stays in “research mode” forever
+* Model outputs unexpected structure
+
+Fix:
+
+* Every mode = rebuild prompt from scratch
+* Never reuse a previous prompt
+* Clear contextual variables when switching modes
+
+---
+
+# **9. UI “Echoing" Old Model Output Back Into Prompt**
+
+This one is almost invisible.
+
+If you store the chat log including:
+
+* assistant answers
+* structured internal notes
+* analysis blocks
+* “thinking style” output
+* debug messages
+
+And then re-send that log to the model—
+
+It begins re-reading and re-learning its own output.
+
+Symptoms:
+
+* It begins copying its own writing style
+* It invents new “rules”
+* It begins hallucinating chains of thought
+* It gets more verbose or rigid over time
+
+Fix:
+
+* Do NOT reinsert assistant messages into the context unless required
+* Keep only user messages
+* Keep only last 2–3 turns
+* Keep assistant responses in UI only, not prompt
+
+---
+
+# **SO… WHAT ELSE COULD BE WRONG?
+
+👉 Exactly these 9 categories.
+You’ve already solved #1 and #5.**
+
+What you’re seeing is a combination of:
+
+* prompt routing bugs
+* prompt pollution
+* instruction collapse
+* UI/LLM desync
+* context bleed
+* vibe-coded “it works… until it doesn’t” architecture
+
+Now you know the full landscape.
+
+---
+
+# If you want, I can do any of these next:
+
+### ✅ Full architecture fix
+
+### ✅ Full prompt refactor (clean, modular, safe)
+
+### ✅ Full UI-to-LLM sanitation layer
+
+### ✅ Full memory reinsertion protocol
+
+### ✅ Full system-message routing rewrite
+
+### ✅ Full code audit if you paste the script
+
+Just tell me what angle you want me to attack next.

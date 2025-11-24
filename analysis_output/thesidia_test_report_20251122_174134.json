@@ -1,0 +1,240 @@
+{
+  "session_id": "20251122_174134",
+  "timestamp": "2025-11-22T17:44:22.531417",
+  "summary": {
+    "total_tests": 4,
+    "successful_tests": 4,
+    "failed_tests": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 38.89,
+    "avg_response_length": 3136.0
+  },
+  "by_category": {
+    "mind_body_connection": [
+      {
+        "session_id": "20251122_174134",
+        "timestamp": "2025-11-22T17:42:04.556398",
+        "category": "mind_body_connection",
+        "prompt": "Explain the mind-body connection and how thoughts affect physical health.",
+        "response": "The mind-body connection refers to the intricate relationship between our thoughts, emotions, and physical health. This interplay is a multidimensional phenomenon that spans various realms, including psychology, neuroscience, and sociology.\n\nThoughts have a profound influence on physical health due to several pathways:\n\n1. **Neuroendocrine Pathway**: Our thoughts stimulate the release of certain hormones and neurotransmitters like cortisol, adrenaline, serotonin, and dopamine which can affect ph...",
+        "response_length": 2378,
+        "elapsed_time": 29.63,
+        "keywords_expected": [
+          "mind",
+          "body",
+          "connection",
+          "health",
+          "thoughts"
+        ],
+        "keywords_found": [
+          "mind",
+          "body",
+          "connection",
+          "health",
+          "thoughts"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "mind_body_nervous": [
+      {
+        "session_id": "20251122_174134",
+        "timestamp": "2025-11-22T17:43:02.842974",
+        "category": "mind_body_nervous",
+        "prompt": "What is the role of the nervous system in the mind-body connection?",
+        "response": "The role of the nervous system in the mind-body connection is a fascinating and multifaceted topic that involves exploring various dimensions such as evolutionary history, anatomical structure, physiological function, cultural narratives, and philosophical interpretations.\n\nThe nervous system acts as the communication network between the body and the brain, facilitating the transmission of signals that govern every aspect of our being, from our thoughts to our movements. In essence, it is the pr...",
+        "response_length": 5974,
+        "elapsed_time": 55.28,
+        "keywords_expected": [
+          "nervous system",
+          "brain",
+          "body",
+          "connection"
+        ],
+        "keywords_found": [
+          "nervous system",
+          "brain",
+          "body",
+          "connection"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "mind_body_practices": [
+      {
+        "session_id": "20251122_174134",
+        "timestamp": "2025-11-22T17:43:47.081389",
+        "category": "mind_body_practices",
+        "prompt": "How do practices like yoga, tai chi, and chi gong integrate mind and body?",
+        "response": "Ah, cool question! These practices are great examples of mind-body integration, and they've been around for thousands of years. Let's break it down: 1. Yoga: Originating in ancient India around the 5th century BCE, yoga is a spiritual and physical practice that aims to unite the body, mind, and spirit. There are different styles of yoga, but they all typically involve postures, breathing exercises, and meditation. The physical poses help align and strengthen your body, while the mental aspects e...",
+        "response_length": 1589,
+        "elapsed_time": 41.23,
+        "keywords_expected": [
+          "yoga",
+          "tai chi",
+          "chi gong",
+          "integration",
+          "practice"
+        ],
+        "keywords_found": [
+          "yoga",
+          "tai chi",
+          "chi gong",
+          "integration",
+          "practice"
+        ],
+        "has_citations": false,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "mind_body_science": [
+      {
+        "session_id": "20251122_174134",
+        "timestamp": "2025-11-22T17:44:19.525911",
+        "category": "mind_body_science",
+        "prompt": "What is the scientific evidence for the mind-body connection?",
+        "response": "The scientific evidence for the mind-body connection is substantial and multifaceted, spanning various fields such as psychology, neuroscience, and medicine. This connection, often referred to as psychosomatic or holistic medicine, recognizes that our thoughts, feelings, and behaviors can influence our physical health and vice versa.\n\nOne of the most compelling pieces of evidence comes from studies on stress and its impact on the body. Chronic stress has been linked to a variety of health issues...",
+        "response_length": 2603,
+        "elapsed_time": 29.44,
+        "keywords_expected": [
+          "scientific",
+          "evidence",
+          "research",
+          "studies"
+        ],
+        "keywords_found": [
+          "scientific",
+          "evidence",
+          "research",
+          "studies"
+        ],
+        "has_citations": false,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ]
+  },
+  "all_results": [
+    {
+      "session_id": "20251122_174134",
+      "timestamp": "2025-11-22T17:42:04.556398",
+      "category": "mind_body_connection",
+      "prompt": "Explain the mind-body connection and how thoughts affect physical health.",
+      "response": "The mind-body connection refers to the intricate relationship between our thoughts, emotions, and physical health. This interplay is a multidimensional phenomenon that spans various realms, including psychology, neuroscience, and sociology.\n\nThoughts have a profound influence on physical health due to several pathways:\n\n1. **Neuroendocrine Pathway**: Our thoughts stimulate the release of certain hormones and neurotransmitters like cortisol, adrenaline, serotonin, and dopamine which can affect ph...",
+      "response_length": 2378,
+      "elapsed_time": 29.63,
+      "keywords_expected": [
+        "mind",
+        "body",
+        "connection",
+        "health",
+        "thoughts"
+      ],
+      "keywords_found": [
+        "mind",
+        "body",
+        "connection",
+        "health",
+        "thoughts"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174134",
+      "timestamp": "2025-11-22T17:43:02.842974",
+      "category": "mind_body_nervous",
+      "prompt": "What is the role of the nervous system in the mind-body connection?",
+      "response": "The role of the nervous system in the mind-body connection is a fascinating and multifaceted topic that involves exploring various dimensions such as evolutionary history, anatomical structure, physiological function, cultural narratives, and philosophical interpretations.\n\nThe nervous system acts as the communication network between the body and the brain, facilitating the transmission of signals that govern every aspect of our being, from our thoughts to our movements. In essence, it is the pr...",
+      "response_length": 5974,
+      "elapsed_time": 55.28,
+      "keywords_expected": [
+        "nervous system",
+        "brain",
+        "body",
+        "connection"
+      ],
+      "keywords_found": [
+        "nervous system",
+        "brain",
+        "body",
+        "connection"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174134",
+      "timestamp": "2025-11-22T17:43:47.081389",
+      "category": "mind_body_practices",
+      "prompt": "How do practices like yoga, tai chi, and chi gong integrate mind and body?",
+      "response": "Ah, cool question! These practices are great examples of mind-body integration, and they've been around for thousands of years. Let's break it down: 1. Yoga: Originating in ancient India around the 5th century BCE, yoga is a spiritual and physical practice that aims to unite the body, mind, and spirit. There are different styles of yoga, but they all typically involve postures, breathing exercises, and meditation. The physical poses help align and strengthen your body, while the mental aspects e...",
+      "response_length": 1589,
+      "elapsed_time": 41.23,
+      "keywords_expected": [
+        "yoga",
+        "tai chi",
+        "chi gong",
+        "integration",
+        "practice"
+      ],
+      "keywords_found": [
+        "yoga",
+        "tai chi",
+        "chi gong",
+        "integration",
+        "practice"
+      ],
+      "has_citations": false,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174134",
+      "timestamp": "2025-11-22T17:44:19.525911",
+      "category": "mind_body_science",
+      "prompt": "What is the scientific evidence for the mind-body connection?",
+      "response": "The scientific evidence for the mind-body connection is substantial and multifaceted, spanning various fields such as psychology, neuroscience, and medicine. This connection, often referred to as psychosomatic or holistic medicine, recognizes that our thoughts, feelings, and behaviors can influence our physical health and vice versa.\n\nOne of the most compelling pieces of evidence comes from studies on stress and its impact on the body. Chronic stress has been linked to a variety of health issues...",
+      "response_length": 2603,
+      "elapsed_time": 29.44,
+      "keywords_expected": [
+        "scientific",
+        "evidence",
+        "research",
+        "studies"
+      ],
+      "keywords_found": [
+        "scientific",
+        "evidence",
+        "research",
+        "studies"
+      ],
+      "has_citations": false,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "session_id": "20251122_173515",
+  "timestamp": "2025-11-22T17:38:37.914958",
+  "summary": {
+    "total_tests": 4,
+    "successful_tests": 4,
+    "failed_tests": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 47.5,
+    "avg_response_length": 2582.0
+  },
+  "by_category": {
+    "meditation_basics": [
+      {
+        "session_id": "20251122_173515",
+        "timestamp": "2025-11-22T17:36:28.088076",
+        "category": "meditation_basics",
+        "prompt": "What is meditation and how does it work?",
+        "response": "Meditation, man, it's like hitting the reset button for your brain. It's an age-old practice that originates from different cultures around the world, and modern science is catching up to what ancient wisdom already knew: meditation is freaking amazing. Basically, meditation involves focusing your attention on a particular object, thought, or activity, often for extended periods. The point isn't necessarily to empty your mind (although some forms of meditation do aim for this), but rather to cul...",
+        "response_length": 3646,
+        "elapsed_time": 72.17,
+        "keywords_expected": [
+          "meditation",
+          "mind",
+          "awareness",
+          "practice"
+        ],
+        "keywords_found": [
+          "meditation",
+          "mind",
+          "practice"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": false,
+        "success": true,
+        "error": null
+      }
+    ],
+    "meditation_types": [
+      {
+        "session_id": "20251122_173515",
+        "timestamp": "2025-11-22T17:37:11.219079",
+        "category": "meditation_types",
+        "prompt": "Explain different types of meditation: mindfulness, transcendental, vipassana, and zen.",
+        "response": "Hey there! Great question about the different types of meditation! I'll run through a few popular ones - mindfulness, transcendental, Vipassana, and Zen. 1. **Mindfulness**: Mindfulness is all about focusing on your present moment experiences with openness and curiosity, accepting whatever comes up without judgment. This can involve paying attention to your breath, bodily sensations, or thoughts as they arise. It's a simple yet powerful practice that originated in Buddhism but has become popular...",
+        "response_length": 1889,
+        "elapsed_time": 40.13,
+        "keywords_expected": [
+          "mindfulness",
+          "transcendental",
+          "vipassana",
+          "zen"
+        ],
+        "keywords_found": [
+          "mindfulness",
+          "transcendental",
+          "vipassana",
+          "zen"
+        ],
+        "has_citations": false,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "meditation_science": [
+      {
+        "session_id": "20251122_173515",
+        "timestamp": "2025-11-22T17:37:56.011009",
+        "category": "meditation_science",
+        "prompt": "What are the scientific benefits of meditation?",
+        "response": "In the realm of scientific research, meditation has been extensively studied and found to offer numerous benefits, both physiological and psychological. These benefits are not only transformative for individuals but also contribute significantly to our understanding of human consciousness, neuroplasticity, and overall well-being.\n\nPhysiologically, meditation has been shown to reduce stress levels by altering the body's response to stress. This is achieved through changes in the autonomic nervous...",
+        "response_length": 3634,
+        "elapsed_time": 41.79,
+        "keywords_expected": [
+          "benefits",
+          "brain",
+          "stress",
+          "research"
+        ],
+        "keywords_found": [
+          "benefits",
+          "brain",
+          "stress",
+          "research"
+        ],
+        "has_citations": false,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "meditation_neuroscience": [
+      {
+        "session_id": "20251122_173515",
+        "timestamp": "2025-11-22T17:38:34.909526",
+        "category": "meditation_neuroscience",
+        "prompt": "How does meditation affect the brain and nervous system?",
+        "response": "Meditation can have some pretty cool effects on your brain and nervous system! It's like a workout for your mental health. When you meditate, your brain produces more alpha waves which are linked to relaxed wakefulness. This wave pattern is most prominent when you're daydreaming or in a light trance-like state (source: http://www.ncbi.nlm.nih.gov/pubmed/24198053). In addition, meditation can also help reduce stress and anxiety by lowering levels of the stress hormone cortisol. It's been shown to...",
+        "response_length": 1157,
+        "elapsed_time": 35.89,
+        "keywords_expected": [
+          "brain",
+          "nervous system",
+          "neural",
+          "neuroplasticity"
+        ],
+        "keywords_found": [
+          "brain",
+          "nervous system"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ]
+  },
+  "all_results": [
+    {
+      "session_id": "20251122_173515",
+      "timestamp": "2025-11-22T17:36:28.088076",
+      "category": "meditation_basics",
+      "prompt": "What is meditation and how does it work?",
+      "response": "Meditation, man, it's like hitting the reset button for your brain. It's an age-old practice that originates from different cultures around the world, and modern science is catching up to what ancient wisdom already knew: meditation is freaking amazing. Basically, meditation involves focusing your attention on a particular object, thought, or activity, often for extended periods. The point isn't necessarily to empty your mind (although some forms of meditation do aim for this), but rather to cul...",
+      "response_length": 3646,
+      "elapsed_time": 72.17,
+      "keywords_expected": [
+        "meditation",
+        "mind",
+        "awareness",
+        "practice"
+      ],
+      "keywords_found": [
+        "meditation",
+        "mind",
+        "practice"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": false,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_173515",
+      "timestamp": "2025-11-22T17:37:11.219079",
+      "category": "meditation_types",
+      "prompt": "Explain different types of meditation: mindfulness, transcendental, vipassana, and zen.",
+      "response": "Hey there! Great question about the different types of meditation! I'll run through a few popular ones - mindfulness, transcendental, Vipassana, and Zen. 1. **Mindfulness**: Mindfulness is all about focusing on your present moment experiences with openness and curiosity, accepting whatever comes up without judgment. This can involve paying attention to your breath, bodily sensations, or thoughts as they arise. It's a simple yet powerful practice that originated in Buddhism but has become popular...",
+      "response_length": 1889,
+      "elapsed_time": 40.13,
+      "keywords_expected": [
+        "mindfulness",
+        "transcendental",
+        "vipassana",
+        "zen"
+      ],
+      "keywords_found": [
+        "mindfulness",
+        "transcendental",
+        "vipassana",
+        "zen"
+      ],
+      "has_citations": false,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_173515",
+      "timestamp": "2025-11-22T17:37:56.011009",
+      "category": "meditation_science",
+      "prompt": "What are the scientific benefits of meditation?",
+      "response": "In the realm of scientific research, meditation has been extensively studied and found to offer numerous benefits, both physiological and psychological. These benefits are not only transformative for individuals but also contribute significantly to our understanding of human consciousness, neuroplasticity, and overall well-being.\n\nPhysiologically, meditation has been shown to reduce stress levels by altering the body's response to stress. This is achieved through changes in the autonomic nervous...",
+      "response_length": 3634,
+      "elapsed_time": 41.79,
+      "keywords_expected": [
+        "benefits",
+        "brain",
+        "stress",
+        "research"
+      ],
+      "keywords_found": [
+        "benefits",
+        "brain",
+        "stress",
+        "research"
+      ],
+      "has_citations": false,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_173515",
+      "timestamp": "2025-11-22T17:38:34.909526",
+      "category": "meditation_neuroscience",
+      "prompt": "How does meditation affect the brain and nervous system?",
+      "response": "Meditation can have some pretty cool effects on your brain and nervous system! It's like a workout for your mental health. When you meditate, your brain produces more alpha waves which are linked to relaxed wakefulness. This wave pattern is most prominent when you're daydreaming or in a light trance-like state (source: http://www.ncbi.nlm.nih.gov/pubmed/24198053). In addition, meditation can also help reduce stress and anxiety by lowering levels of the stress hormone cortisol. It's been shown to...",
+      "response_length": 1157,
+      "elapsed_time": 35.89,
+      "keywords_expected": [
+        "brain",
+        "nervous system",
+        "neural",
+        "neuroplasticity"
+      ],
+      "keywords_found": [
+        "brain",
+        "nervous system"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    }
+  ]
+}

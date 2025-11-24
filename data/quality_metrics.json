@@ -1,0 +1,390 @@
+{
+  "interactions": [
+    {
+      "query": "What is photosynthesis?",
+      "response_length": 641,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-11-22T22:24:24.449772"
+    },
+    {
+      "query": "Who wrote the book \"1984\"?",
+      "response_length": 268,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-11-22T22:25:00.617195"
+    },
+    {
+      "query": "What is the capital of France?",
+      "response_length": 1220,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.3333333333333333,
+        "overall": 0.31333333333333335
+      },
+      "timestamp": "2025-11-22T22:25:40.263392"
+    },
+    {
+      "query": "Explain the theory of relativity in simple terms",
+      "response_length": 1561,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.35000000000000003
+      },
+      "timestamp": "2025-11-22T22:26:31.341510"
+    },
+    {
+      "query": "What is meditation and how does it work?",
+      "response_length": 1168,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.0,
+        "overall": 0.06
+      },
+      "timestamp": "2025-11-22T22:27:16.703159"
+    },
+    {
+      "query": "Explain different types of meditation: mindfulness, transcendental, vipassana, and zen.",
+      "response_length": 1235,
+      "scores": {
+        "depth": 0.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.08000000000000002
+      },
+      "timestamp": "2025-11-22T22:28:02.313065"
+    },
+    {
+      "query": "How does meditation affect the brain and nervous system?",
+      "response_length": 1582,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.2733333333333333
+      },
+      "timestamp": "2025-11-22T22:29:51.766016"
+    },
+    {
+      "query": "What is chi gong and how does it work?",
+      "response_length": 1177,
+      "scores": {
+        "depth": 0.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.08000000000000002
+      },
+      "timestamp": "2025-11-22T22:30:43.869720"
+    },
+    {
+      "query": "Explain the concept of chi or qi in traditional Chinese medicine and energy work.",
+      "response_length": 796,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-11-22T22:31:28.204715"
+    },
+    {
+      "query": "How does chi gong relate to meditation and mindfulness?",
+      "response_length": 962,
+      "scores": {
+        "depth": 0.0,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-11-22T22:32:48.425948"
+    },
+    {
+      "query": "How do practices like yoga, tai chi, and chi gong integrate mind and body?",
+      "response_length": 2047,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.2733333333333333
+      },
+      "timestamp": "2025-11-22T22:35:05.292529"
+    },
+    {
+      "query": "How can I balance my energy and improve my bioelectric health?",
+      "response_length": 671,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-11-22T22:37:35.480489"
+    },
+    {
+      "query": "What is photosynthesis?",
+      "response_length": 1110,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-11-22T23:04:24.555558"
+    },
+    {
+      "query": "Who wrote the book \"1984\"?",
+      "response_length": 423,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.2733333333333333
+      },
+      "timestamp": "2025-11-22T23:05:04.119755"
+    },
+    {
+      "query": "What is the capital of France?",
+      "response_length": 420,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-11-22T23:05:28.927976"
+    },
+    {
+      "query": "Explain the theory of relativity in simple terms",
+      "response_length": 1277,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-11-22T23:06:21.097660"
+    },
+    {
+      "query": "What is meditation and how does it work?",
+      "response_length": 998,
+      "scores": {
+        "depth": 0.0,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-11-22T23:07:06.217848"
+    },
+    {
+      "query": "Explain different types of meditation: mindfulness, transcendental, vipassana, and zen.",
+      "response_length": 1049,
+      "scores": {
+        "depth": 0.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.08000000000000002
+      },
+      "timestamp": "2025-11-22T23:07:54.229540"
+    },
+    {
+      "query": "How does meditation work? Explain the mechanisms.",
+      "response_length": 822,
+      "scores": {
+        "depth": 0.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.08000000000000002
+      },
+      "timestamp": "2025-11-22T23:09:34.972732"
+    },
+    {
+      "query": "How does meditation work? Explain the mechanisms.",
+      "response_length": 822,
+      "scores": {
+        "depth": 0.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.08000000000000002
+      },
+      "timestamp": "2025-11-22T23:09:34.980489"
+    },
+    {
+      "query": "What are the hidden connections between ancient Egyptian, Sumerian, and Vedic knowledge systems?",
+      "response_length": 3800,
+      "scores": {
+        "depth": 1.0,
+        "pattern_recognition": 0.8,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.7533333333333334
+      },
+      "timestamp": "2025-11-22T23:10:18.912028"
+    },
+    {
+      "query": "How does meditation work? Explain the mechanisms.",
+      "response_length": 2744,
+      "scores": {
+        "depth": 1.0,
+        "pattern_recognition": 0.6,
+        "truth_seeking": 0.2,
+        "overall": 0.56
+      },
+      "timestamp": "2025-11-22T23:13:29.350690"
+    },
+    {
+      "query": "What are the hidden connections between ancient Egyptian, Sumerian, and Vedic knowledge systems?",
+      "response_length": 3072,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 1.0,
+        "truth_seeking": 1.0,
+        "overall": 0.91
+      },
+      "timestamp": "2025-11-22T23:14:05.791367"
+    },
+    {
+      "query": "How does meditation work? Explain the mechanisms.",
+      "response_length": 2486,
+      "scores": {
+        "depth": 1.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.38
+      },
+      "timestamp": "2025-11-22T23:14:41.245944"
+    },
+    {
+      "query": "What are the hidden connections between ancient Egyptian, Sumerian, and Vedic knowledge systems?",
+      "response_length": 3247,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.8,
+        "truth_seeking": 1.0,
+        "overall": 0.85
+      },
+      "timestamp": "2025-11-22T23:15:16.670092"
+    }
+  ],
+  "quality_trends": {
+    "depth_scores": [
+      0.4,
+      0.2,
+      0.4,
+      0.7,
+      0.2,
+      0.0,
+      0.2,
+      0.0,
+      0.4,
+      0.0,
+      0.2,
+      0.4,
+      0.4,
+      0.2,
+      0.2,
+      0.4,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      0.7,
+      1.0,
+      0.7
+    ],
+    "pattern_scores": [
+      0.2,
+      0.0,
+      0.2,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.4,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.8,
+      0.6,
+      1.0,
+      0.0,
+      0.8
+    ],
+    "truth_seeking_scores": [
+      0.2,
+      0.2,
+      0.3333333333333333,
+      0.2,
+      0.0,
+      0.2,
+      0.5333333333333333,
+      0.2,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.2,
+      1.0,
+      0.2,
+      1.0
+    ],
+    "overall_scores": [
+      0.26,
+      0.14,
+      0.31333333333333335,
+      0.35000000000000003,
+      0.06,
+      0.08000000000000002,
+      0.2733333333333333,
+      0.08000000000000002,
+      0.2,
+      0.2,
+      0.2733333333333333,
+      0.2,
+      0.26,
+      0.2733333333333333,
+      0.14,
+      0.2,
+      0.14,
+      0.08000000000000002,
+      0.08000000000000002,
+      0.08000000000000002,
+      0.7533333333333334,
+      0.56,
+      0.91,
+      0.38,
+      0.85
+    ]
+  },
+  "last_updated": "2025-11-22T23:15:16.670107"
+}

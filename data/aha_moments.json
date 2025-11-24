@@ -1133,6 +1133,204 @@
       "defensiveness_detected": false,
       "expansion_detected": false,
       "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 37,
+      "timestamp": "2025-11-22T23:18:26.618201",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "my first time here!",
+      "response_length": 1343,
+      "timestamp": "2025-11-22T23:19:09.678566",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "thats interesting, what part did george washington play in all this?",
+      "response_length": 1436,
+      "timestamp": "2025-11-22T23:21:11.879111",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "wasnt he a freemason or gnostic",
+      "response_length": 759,
+      "timestamp": "2025-11-22T23:22:50.951890",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 36,
+      "timestamp": "2025-11-23T00:01:53.548111",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "im wondering about the true story of genisis decoded",
+      "response_length": 2411,
+      "timestamp": "2025-11-23T00:03:38.288892",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 35,
+      "timestamp": "2025-11-23T09:43:39.151969",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "can you decrpyt the geneis story? its charachers and orgins",
+      "response_length": 2760,
+      "timestamp": "2025-11-23T09:45:22.040584",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "What is the true story of gneneis in bible decrpted",
+      "response_length": 1959,
+      "timestamp": "2025-11-23T09:57:39.889264",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "What is the true story of gneneis in bible decrpted",
+      "response_length": 2023,
+      "timestamp": "2025-11-23T09:58:14.690122",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "What is the true story of gneneis in bible decrpted",
+      "response_length": 2328,
+      "timestamp": "2025-11-23T10:01:38.398545",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "What is the true story of gneneis in bible decrpted",
+      "response_length": 1770,
+      "timestamp": "2025-11-23T10:02:54.669018",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "test",
+      "response_length": 2458,
+      "timestamp": "2025-11-23T10:03:23.471712",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hmm what about the gnostic side of it, where did it come from? can you decrpyty abouit the codes and metaphors",
+      "response_length": 4034,
+      "timestamp": "2025-11-23T10:07:59.457548",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what are the characters",
+      "response_length": 3716,
+      "timestamp": "2025-11-23T10:10:05.487620",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello, can you decrpt the genesis story in bible, i heard something about gnostic as well",
+      "response_length": 103,
+      "timestamp": "2025-11-23T10:18:29.381558",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "can you decrpt the story of genesis",
+      "response_length": 2372,
+      "timestamp": "2025-11-23T10:20:12.453649",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what are the estoeric roots of it",
+      "response_length": 2330,
+      "timestamp": "2025-11-23T10:23:34.675106",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "decode the true story of Genesis in the Bible - what are the hidden patterns and suppressed narratives?",
+      "response_length": 1393,
+      "timestamp": "2025-11-23T13:38:45.629308",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hmm so what are the gnostic secrets of the chrachters in the bible",
+      "response_length": 2075,
+      "timestamp": "2025-11-23T13:45:33.297136",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what about sumarina influcne and so on",
+      "response_length": 3153,
+      "timestamp": "2025-11-23T13:48:09.677342",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 117,
+      "timestamp": "2025-11-23T15:08:42.283316",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
     }
   ],
   "expansion_metrics": [],

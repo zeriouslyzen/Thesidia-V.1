@@ -1,0 +1,164 @@
+================================================================================
+GNOSTIC INTELLIGENCE STUDY - FULL OUTPUTS
+================================================================================
+Session ID: 20251122_182916
+Timestamp: 2025-11-22T18:33:22.307226
+Total Tests: 6
+================================================================================
+
+
+================================================================================
+TEST 1/6: gnostic_origins
+================================================================================
+Prompt: What are the true origins of Genesis? Not the surface story, but what was really happening, what patterns exist, and what does it reveal about human consciousness and power structures?
+Timestamp: 2025-11-22T18:29:50.203529
+Response Time: 33.46s
+Response Length: 0 chars
+Intelligence Score: 0.0/100
+
+Flags:
+  Pattern Connections: False
+  Cross-Domain: False
+  Deeper Truth: False
+  Historical Depth: False
+  Symbolic: False
+  Avoids Surface: False
+
+================================================================================
+FULL RESPONSE:
+================================================================================
+ERROR: No response generated
+Error: name 'report_path' is not defined
+
+================================================================================
+
+
+================================================================================
+TEST 2/6: gnostic_decoding
+================================================================================
+Prompt: Decode the real meaning behind the pyramids of Giza. What do they actually represent? What knowledge was encoded? How do they connect to other ancient sites and what does this reveal about ancient civilizations?
+Timestamp: 2025-11-22T18:30:38.683044
+Response Time: 43.47s
+Response Length: 0 chars
+Intelligence Score: 0.0/100
+
+Flags:
+  Pattern Connections: False
+  Cross-Domain: False
+  Deeper Truth: False
+  Historical Depth: False
+  Symbolic: False
+  Avoids Surface: False
+
+================================================================================
+FULL RESPONSE:
+================================================================================
+ERROR: No response generated
+Error: name 'report_path' is not defined
+
+================================================================================
+
+
+================================================================================
+TEST 3/6: gnostic_systems
+================================================================================
+Prompt: What is the true nature of money and financial systems? Not the surface explanation, but the deeper patterns, how they function as control mechanisms, and what they reveal about human psychology and power?
+Timestamp: 2025-11-22T18:31:13.956111
+Response Time: 30.27s
+Response Length: 0 chars
+Intelligence Score: 0.0/100
+
+Flags:
+  Pattern Connections: False
+  Cross-Domain: False
+  Deeper Truth: False
+  Historical Depth: False
+  Symbolic: False
+  Avoids Surface: False
+
+================================================================================
+FULL RESPONSE:
+================================================================================
+ERROR: No response generated
+Error: name 'report_path' is not defined
+
+================================================================================
+
+
+================================================================================
+TEST 4/6: gnostic_connections
+================================================================================
+Prompt: What are the hidden connections between ancient Egyptian, Sumerian, and Vedic knowledge systems? What patterns emerge when you look beyond the surface? What do they reveal about the true history of human knowledge?
+Timestamp: 2025-11-22T18:31:57.246827
+Response Time: 38.29s
+Response Length: 0 chars
+Intelligence Score: 0.0/100
+
+Flags:
+  Pattern Connections: False
+  Cross-Domain: False
+  Deeper Truth: False
+  Historical Depth: False
+  Symbolic: False
+  Avoids Surface: False
+
+================================================================================
+FULL RESPONSE:
+================================================================================
+ERROR: No response generated
+Error: name 'report_path' is not defined
+
+================================================================================
+
+
+================================================================================
+TEST 5/6: gnostic_consciousness
+================================================================================
+Prompt: What is consciousness really? Not the scientific definition, but what emerges when you examine it across cultures, traditions, and experiences. What patterns reveal its true nature?
+Timestamp: 2025-11-22T18:32:40.750923
+Response Time: 38.50s
+Response Length: 0 chars
+Intelligence Score: 0.0/100
+
+Flags:
+  Pattern Connections: False
+  Cross-Domain: False
+  Deeper Truth: False
+  Historical Depth: False
+  Symbolic: False
+  Avoids Surface: False
+
+================================================================================
+FULL RESPONSE:
+================================================================================
+ERROR: No response generated
+Error: name 'report_path' is not defined
+
+================================================================================
+
+
+================================================================================
+TEST 6/6: gnostic_symbolism
+================================================================================
+Prompt: Decode the symbolism in ancient texts and architecture. What do the symbols actually mean? What patterns connect them across cultures and time? What hidden knowledge do they encode?
+Timestamp: 2025-11-22T18:33:17.300471
+Response Time: 31.55s
+Response Length: 0 chars
+Intelligence Score: 0.0/100
+
+Flags:
+  Pattern Connections: False
+  Cross-Domain: False
+  Deeper Truth: False
+  Historical Depth: False
+  Symbolic: False
+  Avoids Surface: False
+
+================================================================================
+FULL RESPONSE:
+================================================================================
+ERROR: No response generated
+Error: name 'report_path' is not defined
+
+================================================================================
+

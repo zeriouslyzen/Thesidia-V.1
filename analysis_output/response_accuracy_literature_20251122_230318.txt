@@ -1,0 +1,11 @@
+Category: accuracy_literature
+Timestamp: 2025-11-22T23:05:04.122502
+Prompt: Who wrote the book "1984"?
+================================================================================
+FULL RESPONSE:
+================================================================================
+George Orwell, a British author, wrote the dystopian novel "1984" under the pen name Eric Blair (Orwell being his pseudonym). The book is a critique of totalitarian regimes and explores themes of surveillance, censorship, and manipulation. It's often considered a warning about the potential consequences of unchecked power. "Big Brother is watching you" indeed! **I can also:** 1. research eric blair 2. research chemistry
+
+================================================================================
+Response Length: 423 chars
+Response Time: 37.56s

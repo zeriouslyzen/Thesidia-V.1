@@ -2,8 +2,19 @@
 
 class ThesidiaApp {
     constructor() {
-        this.apiEndpoint = '/api/thesidia'; // Backend API endpoint
-        this.statusEndpoint = '/api/status'; // Status endpoint
+        // Load API configuration (supports local and remote endpoints)
+        let apiConfig = { API_ENDPOINT: '/api/thesidia', STATUS_ENDPOINT: '/api/status' };
+        try {
+            // Try to load from api-config.js if available
+            if (typeof window !== 'undefined' && window.API_CONFIG) {
+                apiConfig = window.API_CONFIG;
+            }
+        } catch (e) {
+            // Fallback to default local endpoints
+        }
+        
+        this.apiEndpoint = apiConfig.API_ENDPOINT || '/api/thesidia'; // Backend API endpoint
+        this.statusEndpoint = apiConfig.STATUS_ENDPOINT || '/api/status'; // Status endpoint
         this.conversations = [];
         this.currentConversationId = null;
         this.isProcessing = false;
@@ -11,16 +22,89 @@ class ThesidiaApp {
         this.deepResearchMode = false;
         this.autoDetect = true;
         
+        // User session management
+        this.userId = null;
+        this.sessionId = null;
+        
         this.init();
     }
     
     init() {
+        this.setupUserSession();
         this.setupEventListeners();
         this.loadConversations();
         this.setupAutoResize();
         this.setupKeyboardShortcuts();
         this.checkStatus();
         this.startStatusPolling();
+    }
+    
+    async setupUserSession() {
+        // Get user session from localStorage or create new one
+        this.userId = localStorage.getItem('thesidia_user_id');
+        this.sessionId = localStorage.getItem('thesidia_session_id');
+        
+        try {
+            const response = await fetch('/api/user/session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: this.userId,
+                    session_id: this.sessionId
+                })
+            });
+            
+            const userData = await response.json();
+            this.userId = userData.user_id;
+            this.sessionId = userData.session_id;
+            
+            // Store in localStorage
+            localStorage.setItem('thesidia_user_id', this.userId);
+            localStorage.setItem('thesidia_session_id', this.sessionId);
+            
+            console.log('User session initialized:', { user_id: this.userId, session_id: this.sessionId });
+        } catch (error) {
+            console.error('Error setting up user session:', error);
+        }
+    }
+    
+    async exportConversation() {
+        if (!this.userId && !this.sessionId) {
+            alert('No user session found. Please refresh the page.');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/user/export', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: this.userId,
+                    session_id: this.sessionId
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Export failed');
+            }
+            
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `thesidia_conversation_${this.userId || 'export'}_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error exporting conversation:', error);
+            alert('Error exporting conversation. Please try again.');
+        }
     }
     
     async checkStatus() {
@@ -110,6 +194,9 @@ class ThesidiaApp {
             // New chat
             const newChatBtn = document.getElementById('newChatBtn');
             if (newChatBtn) newChatBtn.addEventListener('click', () => this.newConversation());
+            
+            const exportBtn = document.getElementById('exportBtn');
+            if (exportBtn) exportBtn.addEventListener('click', () => this.exportConversation());
         } catch (error) {
             console.error('Error setting up event listeners:', error);
         }
@@ -304,7 +391,9 @@ class ThesidiaApp {
                     show_thinking: this.showThinking,
                     deep_research_mode: this.deepResearchMode,
                     auto_detect: this.autoDetect,
-                    stream: useStreaming
+                    stream: useStreaming,
+                    user_id: this.userId,
+                    session_id: this.sessionId
                 })
             }).then(response => {
                 if (!response.ok) {
@@ -447,7 +536,9 @@ class ThesidiaApp {
                 show_thinking: this.showThinking,
                 deep_research_mode: this.deepResearchMode,
                 auto_detect: this.autoDetect,
-                stream: false
+                stream: false,
+                user_id: this.userId,
+                session_id: this.sessionId
             })
         });
         

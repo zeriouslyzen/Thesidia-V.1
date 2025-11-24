@@ -1,0 +1,236 @@
+{
+  "session_id": "20251122_173841",
+  "timestamp": "2025-11-22T17:41:27.277217",
+  "summary": {
+    "total_tests": 4,
+    "successful_tests": 4,
+    "failed_tests": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 38.55,
+    "avg_response_length": 1870.0
+  },
+  "by_category": {
+    "chi_gong_basics": [
+      {
+        "session_id": "20251122_173841",
+        "timestamp": "2025-11-22T17:39:16.765262",
+        "category": "chi_gong_basics",
+        "prompt": "What is chi gong and how does it work?",
+        "response": "Hey there! Chi Gong, also known as Qigong, is an ancient practice originating from traditional Chinese medicine. It's all about focusing the mind, regulating breathing, and coordinating slow movements or postures to stimulate energy flow and promote healing. In Chinese philosophy, 'Qi' represents life force energy that flows through our bodies. Gong means work or skill. So, Chi Gong is a method of cultivating, directing, and balancing this Qi for wellbeing and spiritual growth. The practice typi...",
+        "response_length": 1358,
+        "elapsed_time": 35.73,
+        "keywords_expected": [
+          "chi",
+          "qigong",
+          "energy",
+          "movement"
+        ],
+        "keywords_found": [
+          "chi",
+          "qigong",
+          "energy",
+          "movement"
+        ],
+        "has_citations": false,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "chi_gong_energy": [
+      {
+        "session_id": "20251122_173841",
+        "timestamp": "2025-11-22T17:40:01.369156",
+        "category": "chi_gong_energy",
+        "prompt": "Explain the concept of chi or qi in traditional Chinese medicine and energy work.",
+        "response": "Hey there! So \"chi\" (also known as \"qi\") is a fundamental concept in traditional Chinese medicine and many forms of energy work. It essentially refers to the life force or vital energy that flows through all living things, including our bodies. This energy is believed to be responsible for maintaining health, well-being, and overall balance within an individual. Chi is thought to circulate throughout the body along specific pathways called meridians, each associated with different bodily functio...",
+        "response_length": 985,
+        "elapsed_time": 41.6,
+        "keywords_expected": [
+          "chi",
+          "qi",
+          "energy",
+          "chinese medicine",
+          "meridian"
+        ],
+        "keywords_found": [
+          "chi",
+          "qi",
+          "energy",
+          "chinese medicine",
+          "meridian"
+        ],
+        "has_citations": false,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "chi_gong_health": [
+      {
+        "session_id": "20251122_173841",
+        "timestamp": "2025-11-22T17:40:47.715447",
+        "category": "chi_gong_health",
+        "prompt": "What are the health benefits of chi gong practice?",
+        "response": "Chi Gong, an ancient Chinese practice that combines meditation, movement, and breathing techniques, is believed to have numerous health benefits based on research and traditional practices. Here's a comprehensive analysis of the potential advantages of Chi Gong practice:\n\n1. **Physical Health Benefits**: Chi Gong promotes overall physical well-being by enhancing balance, flexibility, and strength. Regular practice can help improve posture, increase stamina, and reduce stress levels. Some studies...",
+        "response_length": 4017,
+        "elapsed_time": 43.34,
+        "keywords_expected": [
+          "health",
+          "benefits",
+          "wellness",
+          "balance"
+        ],
+        "keywords_found": [
+          "health",
+          "benefits",
+          "wellness",
+          "balance"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "chi_gong_meditation": [
+      {
+        "session_id": "20251122_173841",
+        "timestamp": "2025-11-22T17:41:24.271994",
+        "category": "chi_gong_meditation",
+        "prompt": "How does chi gong relate to meditation and mindfulness?",
+        "response": "Hey there! So Chi Gong is like a powerful tool for practicing mindfulness and meditation, and it's often used together with those practices. By focusing on your breath, movements, and the flow of energy within your body during Chi Gong exercises, you can cultivate a deeper sense of awareness and presence\u2014essentially being mindful in action. This heightened state of awareness is what helps to balance the flow of Qi, promoting physical, emotional, and mental well-being. The connection between Chi ...",
+        "response_length": 1120,
+        "elapsed_time": 33.55,
+        "keywords_expected": [
+          "meditation",
+          "mindfulness",
+          "awareness",
+          "practice"
+        ],
+        "keywords_found": [
+          "meditation",
+          "mindfulness",
+          "awareness",
+          "practice"
+        ],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ]
+  },
+  "all_results": [
+    {
+      "session_id": "20251122_173841",
+      "timestamp": "2025-11-22T17:39:16.765262",
+      "category": "chi_gong_basics",
+      "prompt": "What is chi gong and how does it work?",
+      "response": "Hey there! Chi Gong, also known as Qigong, is an ancient practice originating from traditional Chinese medicine. It's all about focusing the mind, regulating breathing, and coordinating slow movements or postures to stimulate energy flow and promote healing. In Chinese philosophy, 'Qi' represents life force energy that flows through our bodies. Gong means work or skill. So, Chi Gong is a method of cultivating, directing, and balancing this Qi for wellbeing and spiritual growth. The practice typi...",
+      "response_length": 1358,
+      "elapsed_time": 35.73,
+      "keywords_expected": [
+        "chi",
+        "qigong",
+        "energy",
+        "movement"
+      ],
+      "keywords_found": [
+        "chi",
+        "qigong",
+        "energy",
+        "movement"
+      ],
+      "has_citations": false,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_173841",
+      "timestamp": "2025-11-22T17:40:01.369156",
+      "category": "chi_gong_energy",
+      "prompt": "Explain the concept of chi or qi in traditional Chinese medicine and energy work.",
+      "response": "Hey there! So \"chi\" (also known as \"qi\") is a fundamental concept in traditional Chinese medicine and many forms of energy work. It essentially refers to the life force or vital energy that flows through all living things, including our bodies. This energy is believed to be responsible for maintaining health, well-being, and overall balance within an individual. Chi is thought to circulate throughout the body along specific pathways called meridians, each associated with different bodily functio...",
+      "response_length": 985,
+      "elapsed_time": 41.6,
+      "keywords_expected": [
+        "chi",
+        "qi",
+        "energy",
+        "chinese medicine",
+        "meridian"
+      ],
+      "keywords_found": [
+        "chi",
+        "qi",
+        "energy",
+        "chinese medicine",
+        "meridian"
+      ],
+      "has_citations": false,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_173841",
+      "timestamp": "2025-11-22T17:40:47.715447",
+      "category": "chi_gong_health",
+      "prompt": "What are the health benefits of chi gong practice?",
+      "response": "Chi Gong, an ancient Chinese practice that combines meditation, movement, and breathing techniques, is believed to have numerous health benefits based on research and traditional practices. Here's a comprehensive analysis of the potential advantages of Chi Gong practice:\n\n1. **Physical Health Benefits**: Chi Gong promotes overall physical well-being by enhancing balance, flexibility, and strength. Regular practice can help improve posture, increase stamina, and reduce stress levels. Some studies...",
+      "response_length": 4017,
+      "elapsed_time": 43.34,
+      "keywords_expected": [
+        "health",
+        "benefits",
+        "wellness",
+        "balance"
+      ],
+      "keywords_found": [
+        "health",
+        "benefits",
+        "wellness",
+        "balance"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_173841",
+      "timestamp": "2025-11-22T17:41:24.271994",
+      "category": "chi_gong_meditation",
+      "prompt": "How does chi gong relate to meditation and mindfulness?",
+      "response": "Hey there! So Chi Gong is like a powerful tool for practicing mindfulness and meditation, and it's often used together with those practices. By focusing on your breath, movements, and the flow of energy within your body during Chi Gong exercises, you can cultivate a deeper sense of awareness and presence\u2014essentially being mindful in action. This heightened state of awareness is what helps to balance the flow of Qi, promoting physical, emotional, and mental well-being. The connection between Chi ...",
+      "response_length": 1120,
+      "elapsed_time": 33.55,
+      "keywords_expected": [
+        "meditation",
+        "mindfulness",
+        "awareness",
+        "practice"
+      ],
+      "keywords_found": [
+        "meditation",
+        "mindfulness",
+        "awareness",
+        "practice"
+      ],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "session_id": "20251122_174915",
+  "timestamp": "2025-11-22T17:51:37.905231",
+  "summary": {
+    "total_tests": 3,
+    "successful_tests": 3,
+    "failed_tests": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 42.36,
+    "avg_response_length": 3870.0
+  },
+  "by_category": {
+    "stress_complex": [
+      {
+        "session_id": "20251122_174915",
+        "timestamp": "2025-11-22T17:49:58.739060",
+        "category": "stress_complex",
+        "prompt": "Explain quantum mechanics, string theory, and the multiverse hypothesis in detail, including how they relate to consciousness and the nature of reality.",
+        "response": "Quantum Mechanics, String Theory, and the Multiverse Hypothesis form the foundational pillars of modern theoretical physics, each attempting to shed light on some of the most fundamental questions about our universe's nature and origins. Let us delve into each concept before exploring their relationships with consciousness and reality.\n\n**Quantum Mechanics:**\n\nOriginating from the work of Max Planck, Niels Bohr, Albert Einstein, Werner Heisenberg, Erwin Schr\u00f6dinger, and others in the early 20th ...",
+        "response_length": 4014,
+        "elapsed_time": 42.93,
+        "keywords_expected": [],
+        "keywords_found": [],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "stress_deep_research": [
+      {
+        "session_id": "20251122_174915",
+        "timestamp": "2025-11-22T17:50:48.093770",
+        "category": "stress_deep_research",
+        "prompt": "What are the origins of the Torah, the Bible, and the Quran? How do they relate to ancient Egyptian, Sumerian, and Babylonian texts?",
+        "response": "The origins and relationships between the Torah, Bible, Quran, and ancient Egyptian, Sumerian, and Babylonian texts present a complex tapestry of history, religion, and cultural exchange that spans millennia. Let's delve into this intricate web of connections.\n\nThe Torah, the first five books of the Hebrew Bible, is traditionally attributed to Moses, who lived around the 13th century BCE. However, it is widely accepted among scholars that the Torah was not written in its entirety during this tim...",
+        "response_length": 4154,
+        "elapsed_time": 44.35,
+        "keywords_expected": [],
+        "keywords_found": [],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ],
+    "stress_pattern_analysis": [
+      {
+        "session_id": "20251122_174915",
+        "timestamp": "2025-11-22T17:51:32.901458",
+        "category": "stress_pattern_analysis",
+        "prompt": "Analyze the patterns in ancient architecture, specifically the pyramids of Giza, Stonehenge, and the Mayan temples. What do they reveal about ancient knowledge?",
+        "response": "In this query, we are asked to analyze patterns in ancient architecture, specifically focusing on the pyramids of Giza, Stonehenge, and Mayan temples, to reveal what they might suggest about ancient knowledge. To address this comprehensive and deeply complex question, let's dive into each monument and compare their architectural patterns, while also considering historical context, power structures, and potential implications.\n\n**The Pyramids of Giza:**\nConstructed around 2560 BCE during the Old ...",
+        "response_length": 3442,
+        "elapsed_time": 39.8,
+        "keywords_expected": [],
+        "keywords_found": [],
+        "has_citations": true,
+        "has_structure": true,
+        "response_time_ok": true,
+        "success": true,
+        "error": null
+      }
+    ]
+  },
+  "all_results": [
+    {
+      "session_id": "20251122_174915",
+      "timestamp": "2025-11-22T17:49:58.739060",
+      "category": "stress_complex",
+      "prompt": "Explain quantum mechanics, string theory, and the multiverse hypothesis in detail, including how they relate to consciousness and the nature of reality.",
+      "response": "Quantum Mechanics, String Theory, and the Multiverse Hypothesis form the foundational pillars of modern theoretical physics, each attempting to shed light on some of the most fundamental questions about our universe's nature and origins. Let us delve into each concept before exploring their relationships with consciousness and reality.\n\n**Quantum Mechanics:**\n\nOriginating from the work of Max Planck, Niels Bohr, Albert Einstein, Werner Heisenberg, Erwin Schr\u00f6dinger, and others in the early 20th ...",
+      "response_length": 4014,
+      "elapsed_time": 42.93,
+      "keywords_expected": [],
+      "keywords_found": [],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174915",
+      "timestamp": "2025-11-22T17:50:48.093770",
+      "category": "stress_deep_research",
+      "prompt": "What are the origins of the Torah, the Bible, and the Quran? How do they relate to ancient Egyptian, Sumerian, and Babylonian texts?",
+      "response": "The origins and relationships between the Torah, Bible, Quran, and ancient Egyptian, Sumerian, and Babylonian texts present a complex tapestry of history, religion, and cultural exchange that spans millennia. Let's delve into this intricate web of connections.\n\nThe Torah, the first five books of the Hebrew Bible, is traditionally attributed to Moses, who lived around the 13th century BCE. However, it is widely accepted among scholars that the Torah was not written in its entirety during this tim...",
+      "response_length": 4154,
+      "elapsed_time": 44.35,
+      "keywords_expected": [],
+      "keywords_found": [],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "session_id": "20251122_174915",
+      "timestamp": "2025-11-22T17:51:32.901458",
+      "category": "stress_pattern_analysis",
+      "prompt": "Analyze the patterns in ancient architecture, specifically the pyramids of Giza, Stonehenge, and the Mayan temples. What do they reveal about ancient knowledge?",
+      "response": "In this query, we are asked to analyze patterns in ancient architecture, specifically focusing on the pyramids of Giza, Stonehenge, and Mayan temples, to reveal what they might suggest about ancient knowledge. To address this comprehensive and deeply complex question, let's dive into each monument and compare their architectural patterns, while also considering historical context, power structures, and potential implications.\n\n**The Pyramids of Giza:**\nConstructed around 2560 BCE during the Old ...",
+      "response_length": 3442,
+      "elapsed_time": 39.8,
+      "keywords_expected": [],
+      "keywords_found": [],
+      "has_citations": true,
+      "has_structure": true,
+      "response_time_ok": true,
+      "success": true,
+      "error": null
+    }
+  ]
+}
