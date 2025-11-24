@@ -9,6 +9,14 @@ Shared utility functions used across modules.
 import re
 from typing import List
 
+# Optional web dependencies
+try:
+    import requests
+    from bs4 import BeautifulSoup
+    WEB_AVAILABLE = True
+except ImportError:
+    WEB_AVAILABLE = False
+
 # Meta noise patterns for cleaning text
 META_REGEX_PATTERNS = [
     r'::?CONVERSATION HISTORY::?.*?(?=::|\Z)',
