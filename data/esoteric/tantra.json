@@ -1,0 +1,88 @@
+{
+    "chakras": {
+        "root": {
+            "name": "Muladhara",
+            "meaning": "Root Support",
+            "description": "Foundation, grounding, survival, earth element",
+            "indicators": ["root chakra", "muladhara", "earth", "grounding", "survival"],
+            "location": "Base of spine",
+            "element": "Earth",
+            "color": "Red"
+        },
+        "sacral": {
+            "name": "Svadhisthana",
+            "meaning": "Sweetness",
+            "description": "Creativity, sexuality, pleasure, water element",
+            "indicators": ["sacral chakra", "svadhisthana", "water", "creativity", "sexuality"],
+            "location": "Lower abdomen",
+            "element": "Water",
+            "color": "Orange"
+        },
+        "solar_plexus": {
+            "name": "Manipura",
+            "meaning": "Lustrous Gem",
+            "description": "Power, will, transformation, fire element",
+            "indicators": ["solar plexus", "manipura", "fire", "power", "will"],
+            "location": "Upper abdomen",
+            "element": "Fire",
+            "color": "Yellow"
+        },
+        "heart": {
+            "name": "Anahata",
+            "meaning": "Unstruck",
+            "description": "Love, compassion, connection, air element",
+            "indicators": ["heart chakra", "anahata", "air", "love", "compassion"],
+            "location": "Heart center",
+            "element": "Air",
+            "color": "Green"
+        },
+        "throat": {
+            "name": "Vishuddha",
+            "meaning": "Purification",
+            "description": "Communication, expression, truth, ether element",
+            "indicators": ["throat chakra", "vishuddha", "ether", "communication", "expression"],
+            "location": "Throat",
+            "element": "Ether",
+            "color": "Blue"
+        },
+        "third_eye": {
+            "name": "Ajna",
+            "meaning": "Command",
+            "description": "Intuition, insight, vision, light element",
+            "indicators": ["third eye", "ajna", "light", "intuition", "insight"],
+            "location": "Forehead",
+            "element": "Light",
+            "color": "Indigo"
+        },
+        "crown": {
+            "name": "Sahasrara",
+            "meaning": "Thousand-petaled",
+            "description": "Consciousness, divine connection, unity, thought element",
+            "indicators": ["crown chakra", "sahasrara", "consciousness", "divine", "unity"],
+            "location": "Top of head",
+            "element": "Thought",
+            "color": "Violet/White"
+        }
+    },
+    "kundalini": {
+        "description": "Serpent power, dormant spiritual energy at the base of the spine",
+        "indicators": ["kundalini", "serpent power", "awakening", "energy", "shakti"],
+        "stages": {
+            "dormant": "Energy at root chakra",
+            "awakening": "Energy begins to rise",
+            "rising": "Energy moves through chakras",
+            "union": "Energy reaches crown, union with divine"
+        }
+    },
+    "energy_systems": {
+        "prana": {
+            "description": "Life force, vital energy, breath",
+            "indicators": ["prana", "life force", "breath", "vital energy"]
+        },
+        "nadis": {
+            "description": "Energy channels in the subtle body",
+            "indicators": ["nadi", "energy channel", "pathway", "meridian"]
+        }
+    }
+}
+

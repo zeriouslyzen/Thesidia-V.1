@@ -1,0 +1,46 @@
+{
+    "patterns": {
+        "golden_ratio": {
+            "description": "Divine proportion, approximately 1.618, found throughout nature",
+            "indicators": ["golden ratio", "phi", "1.618", "divine proportion", "fibonacci"],
+            "applications": ["architecture", "art", "nature", "spiral patterns"]
+        },
+        "flower_of_life": {
+            "description": "Sacred geometric pattern of overlapping circles forming flower-like pattern",
+            "indicators": ["flower of life", "sacred geometry", "pattern", "circles"],
+            "applications": ["temple design", "sacred art", "symbolism"]
+        },
+        "platonic_solids": {
+            "description": "Five regular polyhedra: tetrahedron, cube, octahedron, dodecahedron, icosahedron",
+            "indicators": ["platonic solid", "tetrahedron", "cube", "octahedron", "dodecahedron", "icosahedron"],
+            "correspondences": {
+                "tetrahedron": {"element": "Fire"},
+                "cube": {"element": "Earth"},
+                "octahedron": {"element": "Air"},
+                "dodecahedron": {"element": "Ether"},
+                "icosahedron": {"element": "Water"}
+            }
+        },
+        "vesica_piscis": {
+            "description": "Intersection of two circles, almond-shaped sacred symbol",
+            "indicators": ["vesica piscis", "mandorla", "almond", "intersection", "two circles"],
+            "applications": ["sacred art", "architecture", "symbolism"]
+        },
+        "metatron_cube": {
+            "description": "Sacred geometric pattern containing all platonic solids",
+            "indicators": ["metatron cube", "sacred geometry", "pattern", "geometric"],
+            "applications": ["meditation", "visualization", "sacred art"]
+        },
+        "sri_yantra": {
+            "description": "Sacred geometric diagram of nine interlocking triangles",
+            "indicators": ["sri yantra", "yantra", "sacred diagram", "triangles", "geometric"],
+            "applications": ["meditation", "worship", "visualization"]
+        },
+        "merkaba": {
+            "description": "Star tetrahedron, light body, vehicle of ascension",
+            "indicators": ["merkaba", "star tetrahedron", "light body", "ascension"],
+            "applications": ["meditation", "spiritual practice", "energy work"]
+        }
+    }
+}
+

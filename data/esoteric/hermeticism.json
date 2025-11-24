@@ -1,0 +1,87 @@
+{
+    "seven_principles": {
+        "mentalism": {
+            "principle": "All is Mind",
+            "description": "The universe is mental - all phenomena are mental manifestations",
+            "indicators": ["mind", "mental", "thought", "consciousness", "mentalism"],
+            "correspondences": {
+                "element": "Fire",
+                "planet": "Sun",
+                "chakra": "Crown"
+            }
+        },
+        "correspondence": {
+            "principle": "As above, so below; as below, so above",
+            "description": "There is harmony, agreement, and correspondence between different planes of existence",
+            "indicators": ["correspondence", "as above", "so below", "macrocosm", "microcosm", "correspondence"],
+            "correspondences": {
+                "element": "Air",
+                "planet": "Mercury",
+                "chakra": "Third Eye"
+            }
+        },
+        "vibration": {
+            "principle": "Nothing rests; everything moves; everything vibrates",
+            "description": "All matter and energy are in constant motion and vibration",
+            "indicators": ["vibration", "frequency", "resonance", "oscillation", "vibrate"],
+            "correspondences": {
+                "element": "Fire",
+                "planet": "Mars",
+                "chakra": "Solar Plexus"
+            }
+        },
+        "polarity": {
+            "principle": "Everything is dual; everything has poles; everything has its pair of opposites",
+            "description": "All truths are but half-truths; all opposites are identical in nature, differing only in degree",
+            "indicators": ["polarity", "opposites", "duality", "pairs", "dual"],
+            "correspondences": {
+                "element": "Water",
+                "planet": "Venus",
+                "chakra": "Heart"
+            }
+        },
+        "rhythm": {
+            "principle": "Everything flows, out and in; everything has its tides",
+            "description": "All things rise and fall; the pendulum-swing manifests in everything",
+            "indicators": ["rhythm", "cycle", "flow", "pendulum", "tide", "rhythm"],
+            "correspondences": {
+                "element": "Water",
+                "planet": "Moon",
+                "chakra": "Sacral"
+            }
+        },
+        "cause_and_effect": {
+            "principle": "Every cause has its effect; every effect has its cause",
+            "description": "Nothing happens by chance; chance is but a name for law not recognized",
+            "indicators": ["cause", "effect", "karma", "consequence", "law"],
+            "correspondences": {
+                "element": "Earth",
+                "planet": "Saturn",
+                "chakra": "Root"
+            }
+        },
+        "gender": {
+            "principle": "Gender is in everything; everything has its masculine and feminine principles",
+            "description": "Gender manifests on all planes - physical, mental, and spiritual",
+            "indicators": ["gender", "masculine", "feminine", "yin", "yang", "polarity"],
+            "correspondences": {
+                "element": "All",
+                "planet": "Venus/Mars",
+                "chakra": "All"
+            }
+        }
+    },
+    "emerald_tablet": {
+        "text": "As above, so below; as below, so above. That which is below is like that which is above, and that which is above is like that which is below, to accomplish the miracles of the one thing.",
+        "interpretations": [
+            "Macrocosm-microcosm correspondence",
+            "Unity of all things",
+            "Hermetic principle of correspondence"
+        ],
+        "correspondences": {
+            "principle": "Correspondence",
+            "application": "Alchemy, astrology, magic"
+        }
+    }
+}
+

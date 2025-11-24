@@ -1,0 +1,30 @@
+{
+    "patterns": {
+        "temple_design": {
+            "description": "Sacred architecture designed for ritual and spiritual practice",
+            "indicators": ["temple", "sacred space", "architecture", "design", "sanctuary"],
+            "principles": ["alignment", "proportion", "resonance", "symbolism"]
+        },
+        "alignment": {
+            "description": "Astronomical alignment with solstices, equinoxes, stars",
+            "indicators": ["alignment", "astronomical", "solstice", "equinox", "star alignment"],
+            "examples": ["Stonehenge", "Pyramids", "Newgrange", "Chichen Itza"]
+        },
+        "resonance": {
+            "description": "Acoustic resonance, frequency, sound healing",
+            "indicators": ["resonance", "acoustic", "frequency", "sound", "vibration"],
+            "applications": ["temple acoustics", "sound healing", "frequency work"]
+        },
+        "sacred_sites": {
+            "description": "Power spots, ley lines, energy vortices",
+            "indicators": ["sacred site", "power spot", "ley line", "vortex", "energy center"],
+            "types": ["vortex", "ley line", "power spot", "sacred mountain", "sacred spring"]
+        },
+        "proportion": {
+            "description": "Sacred proportions, golden ratio, harmonic ratios",
+            "indicators": ["proportion", "ratio", "harmony", "sacred measure"],
+            "principles": ["golden ratio", "harmonic ratios", "sacred geometry"]
+        }
+    }
+}
+

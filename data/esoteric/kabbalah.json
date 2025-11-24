@@ -1,0 +1,112 @@
+{
+    "tree_of_life": {
+        "description": "The Tree of Life is a diagram of the ten Sephirot (emanations) and 22 paths connecting them",
+        "sephirot": {
+            "keter": {
+                "meaning": "Crown",
+                "description": "Divine will, pure consciousness, source of all",
+                "indicators": ["keter", "crown", "divine will", "source"],
+                "correspondences": {
+                    "element": "Divine",
+                    "planet": "None",
+                    "chakra": "Crown"
+                }
+            },
+            "chokhmah": {
+                "meaning": "Wisdom",
+                "description": "Pure creative force, masculine principle, active energy",
+                "indicators": ["chokhmah", "wisdom", "masculine", "creative force"],
+                "correspondences": {
+                    "element": "Fire",
+                    "planet": "Uranus",
+                    "chakra": "Crown"
+                }
+            },
+            "binah": {
+                "meaning": "Understanding",
+                "description": "Receptive principle, feminine, form and structure",
+                "indicators": ["binah", "understanding", "feminine", "form"],
+                "correspondences": {
+                    "element": "Water",
+                    "planet": "Saturn",
+                    "chakra": "Third Eye"
+                }
+            },
+            "chesed": {
+                "meaning": "Mercy",
+                "description": "Love, compassion, expansion, grace",
+                "indicators": ["chesed", "mercy", "love", "compassion"],
+                "correspondences": {
+                    "element": "Water",
+                    "planet": "Jupiter",
+                    "chakra": "Heart"
+                }
+            },
+            "gevurah": {
+                "meaning": "Severity",
+                "description": "Judgment, restriction, discipline, strength",
+                "indicators": ["gevurah", "severity", "judgment", "discipline"],
+                "correspondences": {
+                    "element": "Fire",
+                    "planet": "Mars",
+                    "chakra": "Solar Plexus"
+                }
+            },
+            "tiferet": {
+                "meaning": "Beauty",
+                "description": "Harmony, balance, beauty, the heart center",
+                "indicators": ["tiferet", "beauty", "harmony", "balance"],
+                "correspondences": {
+                    "element": "Fire",
+                    "planet": "Sun",
+                    "chakra": "Heart"
+                }
+            },
+            "netzach": {
+                "meaning": "Victory",
+                "description": "Eternity, victory, endurance, nature",
+                "indicators": ["netzach", "victory", "eternity", "endurance"],
+                "correspondences": {
+                    "element": "Fire",
+                    "planet": "Venus",
+                    "chakra": "Heart"
+                }
+            },
+            "hod": {
+                "meaning": "Glory",
+                "description": "Splendor, glory, form, structure",
+                "indicators": ["hod", "glory", "splendor", "form"],
+                "correspondences": {
+                    "element": "Water",
+                    "planet": "Mercury",
+                    "chakra": "Throat"
+                }
+            },
+            "yesod": {
+                "meaning": "Foundation",
+                "description": "Foundation, basis, astral plane, imagination",
+                "indicators": ["yesod", "foundation", "basis", "astral"],
+                "correspondences": {
+                    "element": "Air",
+                    "planet": "Moon",
+                    "chakra": "Sacral"
+                }
+            },
+            "malkuth": {
+                "meaning": "Kingdom",
+                "description": "Physical manifestation, material world, kingdom",
+                "indicators": ["malkuth", "kingdom", "manifestation", "physical"],
+                "correspondences": {
+                    "element": "Earth",
+                    "planet": "Earth",
+                    "chakra": "Root"
+                }
+            }
+        },
+        "paths": {
+            "description": "22 paths connecting the Sephirot, corresponding to the 22 letters of the Hebrew alphabet and 22 Major Arcana",
+            "indicators": ["path", "kabbalistic path", "tree of life path", "sephirotic path"]
+        }
+    }
+}
+

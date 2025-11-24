@@ -1,0 +1,110 @@
+{
+    "stages": {
+        "calcination": {
+            "description": "Burning away impurities, purification by fire",
+            "indicators": ["calcination", "fire", "burning", "purification", "ash"],
+            "correspondences": {
+                "element": "Fire",
+                "planet": "Mars",
+                "metal": "Lead"
+            }
+        },
+        "dissolution": {
+            "description": "Breaking down, dissolving in water",
+            "indicators": ["dissolution", "water", "dissolving", "breaking down", "liquefaction"],
+            "correspondences": {
+                "element": "Water",
+                "planet": "Moon",
+                "metal": "Silver"
+            }
+        },
+        "separation": {
+            "description": "Distilling, separating pure from impure",
+            "indicators": ["separation", "air", "distillation", "purification", "separation"],
+            "correspondences": {
+                "element": "Air",
+                "planet": "Mercury",
+                "metal": "Mercury"
+            }
+        },
+        "conjunction": {
+            "description": "Union, merging opposites",
+            "indicators": ["conjunction", "union", "merging", "combination", "marriage"],
+            "correspondences": {
+                "element": "All",
+                "planet": "Venus",
+                "metal": "Copper"
+            }
+        },
+        "fermentation": {
+            "description": "Decay, putrefaction, transformation",
+            "indicators": ["fermentation", "decay", "transformation", "putrefaction", "rot"],
+            "correspondences": {
+                "element": "Earth",
+                "planet": "Jupiter",
+                "metal": "Tin"
+            }
+        },
+        "distillation": {
+            "description": "Purification, refinement, sublimation",
+            "indicators": ["distillation", "purification", "refinement", "sublimation", "refining"],
+            "correspondences": {
+                "element": "Air",
+                "planet": "Mercury",
+                "metal": "Mercury"
+            }
+        },
+        "coagulation": {
+            "description": "Solidification, crystallization, completion",
+            "indicators": ["coagulation", "solidification", "crystallization", "completion", "stone"],
+            "correspondences": {
+                "element": "Earth",
+                "planet": "Saturn",
+                "metal": "Gold"
+            }
+        }
+    },
+    "elements": {
+        "fire": {
+            "description": "Active, masculine, transformative principle",
+            "indicators": ["fire", "sulfur", "spirit", "will", "active"],
+            "correspondences": {
+                "planet": "Mars",
+                "direction": "South",
+                "quality": "Hot and Dry"
+            }
+        },
+        "water": {
+            "description": "Receptive, feminine, fluid principle",
+            "indicators": ["water", "mercury", "soul", "emotion", "receptive"],
+            "correspondences": {
+                "planet": "Moon",
+                "direction": "West",
+                "quality": "Cold and Wet"
+            }
+        },
+        "air": {
+            "description": "Mediating, intellectual, movement principle",
+            "indicators": ["air", "salt", "body", "matter", "intellectual"],
+            "correspondences": {
+                "planet": "Mercury",
+                "direction": "East",
+                "quality": "Hot and Wet"
+            }
+        },
+        "earth": {
+            "description": "Stable, material, foundation principle",
+            "indicators": ["earth", "quintessence", "philosopher's stone", "stable"],
+            "correspondences": {
+                "planet": "Saturn",
+                "direction": "North",
+                "quality": "Cold and Dry"
+            }
+        }
+    },
+    "philosophers_stone": {
+        "description": "The ultimate goal of alchemy - transformation, perfection, immortality",
+        "indicators": ["philosopher's stone", "elixir", "immortality", "perfection", "transmutation"]
+    }
+}
+

@@ -329,12 +329,38 @@ class TruthEngine:
         """
         Score based on esoteric truth (Hermeticism, Kabbalah, sacred geometry, energy systems).
         
+        Uses EsotericKnowledgeBase for more accurate detection.
+        
         Returns:
             Score 0.0-1.0 based on esoteric knowledge
         """
         if not sources:
             return 0.0
         
+        # Try to use EsotericKnowledgeBase if available
+        try:
+            from .esoteric_knowledge_base import EsotericKnowledgeBase
+            kb = EsotericKnowledgeBase()
+            
+            # Analyze all sources
+            total_score = 0.0
+            analyzed_count = 0
+            
+            for source in sources:
+                content = self._get_source_content(source)
+                if content:
+                    analysis = kb.analyze_esoteric(content, claim)
+                    if analysis.get("esoteric_score", 0) > 0:
+                        total_score += analysis["esoteric_score"]
+                        analyzed_count += 1
+            
+            if analyzed_count > 0:
+                return round(min(1.0, total_score / analyzed_count), 3)
+        except Exception:
+            # Fallback to simple keyword detection
+            pass
+        
+        # Fallback: Simple keyword detection
         esoteric_indicators = [
             "esoteric", "hermetic", "kabbalah", "tantra", "alchemy",
             "sacred geometry", "energy", "chakra", "kundalini", "prana",
