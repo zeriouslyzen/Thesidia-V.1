@@ -20,7 +20,7 @@ Thesidia currently operates according to a 7-layer epistemology model, but the l
 
 ### 1.1 Create TruthEngine Class
 
-**File**: `src/truth_engine.py`
+**File**: `src/synthesis/truth_engine.py` (aligned with V6 modular architecture)
 
 **Purpose**: Calculate truth scores using weighted 7-layer validation
 
@@ -159,7 +159,7 @@ class TruthEngine:
 
 ### 2.1 Create ArchetypalAnalyzer Class
 
-**File**: `src/archetypal_analyzer.py`
+**File**: `src/synthesis/archetypal_analyzer.py` (aligned with V6 modular architecture)
 
 **Purpose**: Formalize archetypal pattern recognition (Layer 4)
 
@@ -292,7 +292,7 @@ class ArchetypalAnalyzer:
 
 ### 3.1 Create EsotericKnowledgeBase Class
 
-**File**: `src/esoteric_knowledge_base.py`
+**File**: `src/synthesis/esoteric_knowledge_base.py` (aligned with V6 modular architecture)
 
 **Purpose**: Structure esoteric knowledge systems (Layer 6)
 
@@ -420,7 +420,7 @@ class EsotericKnowledgeBase:
 
 ### 4.1 Integrate TruthEngine into DataSynthesizer
 
-**File**: `src/thesidia_hybrid_adaptive.py`
+**File**: `src/synthesis/data_synthesizer.py` (after V6 extraction)
 
 **Changes**:
 ```python
@@ -534,36 +534,79 @@ If only 1 layer aligns, confidence is LOW.
 
 ---
 
-## Implementation Timeline
+## Integration with V6 Refactoring Plan
 
-### Week 1-2: Truth Engine Core
-- [ ] Create `TruthEngine` class
+**IMPORTANT**: This plan integrates with the V6 modular architecture refactoring. The epistemology formalization will be implemented **during** the V6 refactoring, not as a separate effort.
+
+### V6 Phase Alignment
+
+**V6 Phase 2: Modular Architecture (Weeks 3-5)** - When we extract `DataSynthesizer`:
+- Extract `DataSynthesizer` to `src/synthesis/data_synthesizer.py` (V6 plan)
+- **Add**: `TruthEngine` to `src/synthesis/truth_engine.py` (Epistemology plan)
+- **Add**: `ArchetypalAnalyzer` to `src/synthesis/archetypal_analyzer.py` (Epistemology plan)
+- **Add**: `EsotericKnowledgeBase` to `src/synthesis/esoteric_knowledge_base.py` (Epistemology plan)
+
+**V6 Phase 3: Performance Optimization (Weeks 6-7)** - After modularization:
+- Integrate Truth Engine into DataSynthesizer
+- Add layer scoring to synthesis pipeline
+- Optimize truth scoring performance
+
+**V6 Phase 4: Testing & Validation (Week 8)**:
+- Test epistemology system
+- Validate truth scores
+- Performance benchmarks
+
+---
+
+## Implementation Timeline (Integrated with V6)
+
+### V6 Phase 1: Vibecode Compliance (Weeks 1-2)
+- [x] Request queue system
+- [x] Prompt budget system
+- [x] Memory reinsertion protocol
+- [x] Mode reset
+- [x] UI sanitization
+- **Epistemology**: No changes needed (foundation work)
+
+### V6 Phase 2: Modular Architecture + Epistemology (Weeks 3-5)
+
+**Week 3: Extract Core Classes + Truth Engine**
+- [ ] Extract `DataSynthesizer` to `src/synthesis/data_synthesizer.py` (V6)
+- [ ] Create `TruthEngine` class in `src/synthesis/truth_engine.py` (Epistemology)
 - [ ] Implement 7-layer scoring methods
 - [ ] Add weighted validation formula
 - [ ] Unit tests for scoring
 
-### Week 3-4: Archetypal Analysis
-- [ ] Create `ArchetypalAnalyzer` class
-- [ ] Build archetypal knowledge base
+**Week 4: Archetypal Analysis**
+- [ ] Create `ArchetypalAnalyzer` class in `src/synthesis/archetypal_analyzer.py`
+- [ ] Build archetypal knowledge base (`data/archetypal_patterns.json`)
 - [ ] Integrate with Truth Engine
 - [ ] Unit tests
 
-### Week 5-6: Esoteric Knowledge
-- [ ] Create `EsotericKnowledgeBase` class
-- [ ] Build esoteric knowledge data files
+**Week 5: Esoteric Knowledge**
+- [ ] Create `EsotericKnowledgeBase` class in `src/synthesis/esoteric_knowledge_base.py`
+- [ ] Build esoteric knowledge data files (`data/esoteric/`)
 - [ ] Integrate with Truth Engine
 - [ ] Unit tests
 
-### Week 7: Integration
+### V6 Phase 3: Performance Optimization (Weeks 6-7)
+
+**Week 6: Integration**
 - [ ] Integrate Truth Engine into DataSynthesizer
-- [ ] Update synthesis prompts
-- [ ] Add optional layer display
+- [ ] Update synthesis prompts with layer awareness
+- [ ] Add optional layer display to responses
+- [ ] Performance optimization (cache layer scores)
+
+**Week 7: Performance & Optimization**
+- [ ] Optimize truth scoring (< 200ms overhead)
+- [ ] Cache archetypal patterns
+- [ ] Lazy load esoteric knowledge
 - [ ] Integration tests
 
-### Week 8: Testing and Validation
+### V6 Phase 4: Testing & Validation (Week 8)
 - [ ] Comprehensive test suite
 - [ ] Validation against known high-confidence claims
-- [ ] Performance testing
+- [ ] Performance testing (< 500ms total overhead)
 - [ ] Documentation
 
 ---
