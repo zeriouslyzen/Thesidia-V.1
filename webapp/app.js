@@ -257,8 +257,8 @@ class ThesidiaApp {
         if (researchDepth) {
             researchDepth.addEventListener('input', (e) => {
                 this.researchDepth = parseInt(e.target.value);
-                // Update depth labels
-                document.querySelectorAll('.depth-label-item').forEach((item, index) => {
+                // Update depth labels (both selectors for compatibility)
+                document.querySelectorAll('.depth-labels span, .depth-label-item').forEach((item, index) => {
                     if (index + 1 === this.researchDepth) {
                         item.classList.add('active');
                     } else {
