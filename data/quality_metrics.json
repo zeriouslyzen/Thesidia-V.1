@@ -318,6 +318,39 @@
         "overall": 0.14
       },
       "timestamp": "2025-11-24T01:57:48.716584"
+    },
+    {
+      "query": "who are you?",
+      "response_length": 47,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-11-24T02:26:52.132409"
+    },
+    {
+      "query": "what can you do?",
+      "response_length": 47,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-11-24T02:27:15.574296"
+    },
+    {
+      "query": "who are you?",
+      "response_length": 652,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-11-24T02:38:47.255149"
     }
   ],
   "quality_trends": {
@@ -350,7 +383,10 @@
       0.2,
       0.2,
       0.2,
-      0.2
+      0.2,
+      0.2,
+      0.2,
+      0.4
     ],
     "pattern_scores": [
       0.2,
@@ -378,6 +414,9 @@
       1.0,
       0.0,
       0.8,
+      0.0,
+      0.0,
+      0.0,
       0.0,
       0.0,
       0.0,
@@ -412,6 +451,9 @@
       0.2,
       0.2,
       0.2,
+      0.2,
+      0.2,
+      0.2,
       0.2
     ],
     "overall_scores": [
@@ -443,8 +485,11 @@
       0.14,
       0.14,
       0.14,
-      0.14
+      0.14,
+      0.14,
+      0.14,
+      0.2
     ]
   },
-  "last_updated": "2025-11-24T01:57:48.716599"
+  "last_updated": "2025-11-24T02:38:47.255161"
 }

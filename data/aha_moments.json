@@ -1325,8 +1325,80 @@
     },
     {
       "query": "hello",
-      "response_length": 29,
-      "timestamp": "2025-11-24T02:06:15.662023",
+      "response_length": 117,
+      "timestamp": "2025-11-23T15:08:42.283316",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hey!",
+      "response_length": 47,
+      "timestamp": "2025-11-24T01:47:18.946571",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi howre you",
+      "response_length": 47,
+      "timestamp": "2025-11-24T01:50:39.291396",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi howre you",
+      "response_length": 47,
+      "timestamp": "2025-11-24T01:57:05.869365",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi howre you",
+      "response_length": 47,
+      "timestamp": "2025-11-24T01:57:48.717474",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 121,
+      "timestamp": "2025-11-24T02:00:02.243588",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 122,
+      "timestamp": "2025-11-24T02:00:05.642735",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 159,
+      "timestamp": "2025-11-24T02:00:20.129521",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 118,
+      "timestamp": "2025-11-24T02:26:33.848001",
       "recognition_detected": false,
       "defensiveness_detected": false,
       "expansion_detected": false,
@@ -1334,17 +1406,26 @@
     },
     {
       "query": "who are you?",
-      "response_length": 540,
-      "timestamp": "2025-11-24T02:07:18.667687",
+      "response_length": 47,
+      "timestamp": "2025-11-24T02:26:52.134073",
       "recognition_detected": false,
       "defensiveness_detected": false,
       "expansion_detected": false,
       "user_feedback": null
     },
     {
-      "query": "What is the true story of genesis from the biible",
-      "response_length": 1266,
-      "timestamp": "2025-11-24T02:09:25.539410",
+      "query": "what can you do?",
+      "response_length": 47,
+      "timestamp": "2025-11-24T02:27:15.575468",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "who are you?",
+      "response_length": 652,
+      "timestamp": "2025-11-24T02:38:47.259182",
       "recognition_detected": false,
       "defensiveness_detected": false,
       "expansion_detected": false,

@@ -170,9 +170,9 @@
       ]
     },
     "consciousness": {
-      "count": 12,
+      "count": 13,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-11-22T23:09:34.970014",
+      "last_seen": "2025-11-24T02:38:47.253257",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -222,9 +222,9 @@
       ]
     },
     "physics": {
-      "count": 8,
+      "count": 9,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-11-22T23:06:21.096509",
+      "last_seen": "2025-11-24T02:38:47.253257",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -398,9 +398,9 @@
       ]
     },
     "history": {
-      "count": 8,
+      "count": 9,
       "first_seen": "2025-11-22T22:25:40.260946",
-      "last_seen": "2025-11-22T23:07:06.216827",
+      "last_seen": "2025-11-24T02:38:47.253257",
       "related_topics": [
         "code_cracking",
         "chemistry",
@@ -1155,20 +1155,22 @@
       ]
     },
     "error": {
-      "count": 4,
+      "count": 6,
       "first_seen": "2025-11-24T01:47:18.941089",
-      "last_seen": "2025-11-24T01:57:48.714893",
+      "last_seen": "2025-11-24T02:27:15.572870",
       "related_topics": []
     }
   },
   "research_threads": [],
   "technical_domains": {},
   "journey_context": {
-    "primary_focus": "error",
+    "primary_focus": "consciousness",
     "active_threads": [],
     "recent_topics": [
-      "error"
+      "consciousness",
+      "history",
+      "physics"
     ]
   },
-  "last_updated": "2025-11-24T01:57:48.715007"
+  "last_updated": "2025-11-24T02:38:47.253354"
 }

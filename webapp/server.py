@@ -194,6 +194,8 @@ def thesidia_api():
     
     show_thinking = data.get('show_thinking', False)
     stream = data.get('stream', True)  # Default to streaming
+    format_mode = data.get('format', 'natural')  # 'natural' or 'structured' - from UI selection
+    research_depth = data.get('research_depth', 2)  # 1=Quick, 2=Deep, 3=Forensic - from UI slider
     
     # Get user session info
     user_id = data.get('user_id')
@@ -247,7 +249,8 @@ def thesidia_api():
     # NOTE: We use thesidia.process() which handles all routing/forensic analysis, then stream the result
     if stream:
         return Response(
-            stream_with_context(_stream_thesidia_response(message, show_thinking, user_id=user_id, session_id=session_id)),
+            stream_with_context(_stream_thesidia_response(message, show_thinking, user_id=user_id, session_id=session_id,
+                                                         format_mode=format_mode, research_depth=research_depth)),
             mimetype='text/event-stream',
             headers={
                 'Cache-Control': 'no-cache',
@@ -297,7 +300,9 @@ def thesidia_api():
         
         # CRITICAL: Pass the ORIGINAL message (not normalized) to process()
         # The process() method will do its own normalization and routing
-        response = thesidia.process(message, user_id=user_id, session_id=session_id)
+        # Pass format_mode and research_depth from UI selection (not auto-detection)
+        response = thesidia.process(message, user_id=user_id, session_id=session_id, 
+                                   format_mode=format_mode, research_depth=research_depth)
         print(f"🔪 SERVER: Response length: {len(response)}, has transmission: {'::TRANSMISSION:' in response}", flush=True)
         
         # Store interaction in user memory
@@ -340,7 +345,7 @@ def thesidia_api():
             'message': str(e)
         }), 500
 
-def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None):
+def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None, format_mode='natural', research_depth=2):
     """Stream Thesidia response with progress updates - USES FULL THESIDIA PROCESS"""
     global thesidia
     
@@ -434,7 +439,8 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
         # This ensures all routing, forensic analysis, and synthesis happens
         # NOTE: Currently process() returns complete response (non-streaming)
         # TODO: Implement true token-by-token streaming in process() method
-        response = thesidia.process(message, user_id=user_id, session_id=session_id)
+        response = thesidia.process(message, user_id=user_id, session_id=session_id,
+                                   format_mode=format_mode, research_depth=research_depth)
         
         # Phase 4: Stream the response in chunks
         # CURRENT LIMITATION: This is fake streaming (chunking completed response)
