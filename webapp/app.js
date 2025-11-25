@@ -234,57 +234,7 @@ class ThesidiaApp {
             });
         }
         
-        // Format selector
-        const formatNatural = document.getElementById('formatNatural');
-        const formatStructured = document.getElementById('formatStructured');
-        if (formatNatural) {
-            formatNatural.addEventListener('click', () => {
-                this.currentFormat = 'natural';
-                formatNatural.classList.add('active');
-                formatStructured?.classList.remove('active');
-            });
-        }
-        if (formatStructured) {
-            formatStructured.addEventListener('click', () => {
-                this.currentFormat = 'structured';
-                formatStructured.classList.add('active');
-                formatNatural?.classList.remove('active');
-            });
-        }
-        
-        // Research depth slider
-        const researchDepth = document.getElementById('researchDepth');
-        if (researchDepth) {
-            researchDepth.addEventListener('input', (e) => {
-                this.researchDepth = parseInt(e.target.value);
-                // Update depth labels (both selectors for compatibility)
-                document.querySelectorAll('.depth-labels span, .depth-label-item').forEach((item, index) => {
-                    if (index + 1 === this.researchDepth) {
-                        item.classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                    }
-                });
-            });
-        }
-        
-        // Template chips
-        document.querySelectorAll('.template-chip').forEach(chip => {
-            chip.addEventListener('click', (e) => {
-                const template = e.target.dataset.template;
-                const templates = {
-                    'genesis': 'What is the true story of genesis from the bible',
-                    'power': 'Analyze the power structures behind modern institutions',
-                    'pattern': 'What patterns connect ancient texts to modern systems',
-                    'ancient': 'Decode the hidden meanings in ancient texts'
-                };
-                if (templates[template]) {
-                    promptInput.value = templates[template];
-                    promptInput.focus();
-                    this.autoResizeTextarea(promptInput);
-                }
-            });
-        });
+        // Format selector and depth slider are handled in advanced options section below
         
         // Toggle thinking display
         const toggleThinking = document.getElementById('toggleThinking');
