@@ -19,9 +19,9 @@ class ThesidiaApp {
         this.currentConversationId = null;
         this.isProcessing = false;
         this.showThinking = false;
-        this.deepResearchMode = false;
         this.currentFormat = 'natural'; // 'natural' or 'structured'
         this.researchDepth = 2; // 1=Quick, 2=Deep, 3=Forensic
+        this.attachedFiles = []; // Store attached files
         
         // User session management
         this.userId = null;
@@ -305,6 +305,77 @@ class ThesidiaApp {
         
         // Auto-resize textarea
         promptInput.addEventListener('input', () => this.autoResizeTextarea(promptInput));
+        
+        // Advanced options toggle
+        const advancedToggle = document.getElementById('advancedToggle');
+        const advancedOptions = document.getElementById('advancedOptions');
+        if (advancedToggle && advancedOptions) {
+            advancedToggle.addEventListener('click', () => {
+                const isVisible = advancedOptions.style.display !== 'none';
+                advancedOptions.style.display = isVisible ? 'none' : 'block';
+                advancedToggle.classList.toggle('active', !isVisible);
+            });
+        }
+        
+        // File upload
+        const fileInput = document.getElementById('fileInput');
+        const attachBtn = document.getElementById('attachBtn');
+        const attachedFiles = document.getElementById('attachedFiles');
+        if (attachBtn && fileInput) {
+            attachBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                this.handleFileUpload(e.target.files, attachedFiles);
+            });
+        }
+        
+        // Format selector
+        const formatNatural = document.getElementById('formatNatural');
+        const formatStructured = document.getElementById('formatStructured');
+        if (formatNatural && formatStructured) {
+            [formatNatural, formatStructured].forEach(btn => {
+                btn.addEventListener('click', () => {
+                    this.currentFormat = btn.dataset.format;
+                    formatNatural.classList.toggle('active', this.currentFormat === 'natural');
+                    formatStructured.classList.toggle('active', this.currentFormat === 'structured');
+                });
+            });
+        }
+        
+        // Research depth slider
+        const researchDepth = document.getElementById('researchDepth');
+        if (researchDepth) {
+            researchDepth.addEventListener('input', (e) => {
+                this.researchDepth = parseInt(e.target.value);
+                document.querySelectorAll('.depth-labels span').forEach((span, index) => {
+                    span.classList.toggle('active', index + 1 === this.researchDepth);
+                });
+            });
+        }
+    }
+    
+    handleFileUpload(files, container) {
+        if (!files || files.length === 0) return;
+        
+        container.style.display = 'flex';
+        container.innerHTML = '';
+        
+        Array.from(files).forEach((file, index) => {
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'attached-file';
+            fileDiv.innerHTML = `
+                <span>${file.name}</span>
+                <button onclick="this.parentElement.remove(); if(document.getElementById('attachedFiles').children.length === 0) document.getElementById('attachedFiles').style.display = 'none';" aria-label="Remove file">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            `;
+            container.appendChild(fileDiv);
+        });
+        
+        // Store files for sending
+        this.attachedFiles = Array.from(files);
     }
     
     setupAutoResize() {
