@@ -328,16 +328,23 @@ class ThesidiaApp {
             });
         }
         
-        // Format selector
+        // Format selector (in advanced options)
         const formatNatural = document.getElementById('formatNatural');
         const formatStructured = document.getElementById('formatStructured');
         if (formatNatural && formatStructured) {
-            [formatNatural, formatStructured].forEach(btn => {
-                btn.addEventListener('click', () => {
-                    this.currentFormat = btn.dataset.format;
-                    formatNatural.classList.toggle('active', this.currentFormat === 'natural');
-                    formatStructured.classList.toggle('active', this.currentFormat === 'structured');
-                });
+            formatNatural.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.currentFormat = 'natural';
+                formatNatural.classList.add('active');
+                formatStructured.classList.remove('active');
+            });
+            formatStructured.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.currentFormat = 'structured';
+                formatStructured.classList.add('active');
+                formatNatural.classList.remove('active');
             });
         }
         
