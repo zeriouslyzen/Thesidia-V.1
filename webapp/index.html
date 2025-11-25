@@ -147,6 +147,38 @@
                             </button>
                         </div>
                     </div>
+                    <!-- Format Selector & Controls -->
+                    <div class="prompt-controls-row">
+                        <div class="format-selector">
+                            <label class="format-label">Format:</label>
+                            <div class="format-segmented-control">
+                                <button class="format-btn active" data-format="natural" id="formatNatural" title="Natural flowing prose">
+                                    <span class="format-icon">📝</span>
+                                    <span class="format-text">Natural</span>
+                                </button>
+                                <button class="format-btn" data-format="structured" id="formatStructured" title="Structured ::EXPOSURE:: format">
+                                    <span class="format-icon">🔍</span>
+                                    <span class="format-text">Structured</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="research-depth-control">
+                            <label class="depth-label">Depth:</label>
+                            <div class="depth-slider-container">
+                                <input type="range" id="researchDepth" class="depth-slider" min="1" max="3" value="2" step="1">
+                                <div class="depth-labels">
+                                    <span class="depth-label-item" data-depth="1">Quick</span>
+                                    <span class="depth-label-item active" data-depth="2">Deep</span>
+                                    <span class="depth-label-item" data-depth="3">Forensic</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="context-indicator" id="contextIndicator" style="display: none;">
+                            <span class="context-icon">🧠</span>
+                            <span class="context-text" id="contextText">0 stored</span>
+                            <button class="context-btn" id="viewContextBtn" title="View stored context">View</button>
+                        </div>
+                    </div>
                     <div class="feature-controls">
                         <label class="feature-toggle">
                             <input type="checkbox" id="showThinkingToggle">
@@ -156,10 +188,15 @@
                             <input type="checkbox" id="deepResearchToggle">
                             <span>Deep Research</span>
                         </label>
-                        <label class="feature-toggle">
-                            <input type="checkbox" id="autoDetectToggle" checked>
-                            <span>Auto-Detect</span>
-                        </label>
+                    </div>
+                    <div class="prompt-templates" id="promptTemplates">
+                        <div class="templates-header">Quick Templates:</div>
+                        <div class="template-chips">
+                            <button class="template-chip" data-template="genesis">Decode Genesis</button>
+                            <button class="template-chip" data-template="power">Analyze Power Structures</button>
+                            <button class="template-chip" data-template="pattern">Pattern Recognition</button>
+                            <button class="template-chip" data-template="ancient">Ancient Texts</button>
+                        </div>
                     </div>
                     <div class="prompt-suggestions" id="promptSuggestions"></div>
                 </div>

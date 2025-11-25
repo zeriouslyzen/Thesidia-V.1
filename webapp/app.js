@@ -20,7 +20,8 @@ class ThesidiaApp {
         this.isProcessing = false;
         this.showThinking = false;
         this.deepResearchMode = false;
-        this.autoDetect = true;
+        this.currentFormat = 'natural'; // 'natural' or 'structured'
+        this.researchDepth = 2; // 1=Quick, 2=Deep, 3=Forensic
         
         // User session management
         this.userId = null;
@@ -233,21 +234,57 @@ class ThesidiaApp {
             });
         }
         
-        // Auto-detect toggle
-        const autoDetectToggle = document.getElementById('autoDetectToggle');
-        if (autoDetectToggle) {
-            autoDetectToggle.addEventListener('change', (e) => {
-                this.autoDetect = e.target.checked;
-                // Disable deep research when auto-detect is enabled
-                if (this.autoDetect) {
-                    const deepResearchToggle = document.getElementById('deepResearchToggle');
-                    if (deepResearchToggle) {
-                        deepResearchToggle.checked = false;
-                        this.deepResearchMode = false;
-                    }
-                }
+        // Format selector
+        const formatNatural = document.getElementById('formatNatural');
+        const formatStructured = document.getElementById('formatStructured');
+        if (formatNatural) {
+            formatNatural.addEventListener('click', () => {
+                this.currentFormat = 'natural';
+                formatNatural.classList.add('active');
+                formatStructured?.classList.remove('active');
             });
         }
+        if (formatStructured) {
+            formatStructured.addEventListener('click', () => {
+                this.currentFormat = 'structured';
+                formatStructured.classList.add('active');
+                formatNatural?.classList.remove('active');
+            });
+        }
+        
+        // Research depth slider
+        const researchDepth = document.getElementById('researchDepth');
+        if (researchDepth) {
+            researchDepth.addEventListener('input', (e) => {
+                this.researchDepth = parseInt(e.target.value);
+                // Update depth labels
+                document.querySelectorAll('.depth-label-item').forEach((item, index) => {
+                    if (index + 1 === this.researchDepth) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            });
+        }
+        
+        // Template chips
+        document.querySelectorAll('.template-chip').forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                const template = e.target.dataset.template;
+                const templates = {
+                    'genesis': 'What is the true story of genesis from the bible',
+                    'power': 'Analyze the power structures behind modern institutions',
+                    'pattern': 'What patterns connect ancient texts to modern systems',
+                    'ancient': 'Decode the hidden meanings in ancient texts'
+                };
+                if (templates[template]) {
+                    promptInput.value = templates[template];
+                    promptInput.focus();
+                    this.autoResizeTextarea(promptInput);
+                }
+            });
+        });
         
         // Toggle thinking display
         const toggleThinking = document.getElementById('toggleThinking');
@@ -334,15 +371,7 @@ class ThesidiaApp {
         // Security: Sanitize input
         let sanitizedMessage = this.sanitizeInput(message);
         
-        // Apply deep research mode if enabled
-        if (this.deepResearchMode && !this.autoDetect) {
-            // Prepend deep research prefix if not already present
-            const deepPrefixes = ['deep research:', 'research deeply:', 'deep research ', 'research deeply ', 'comprehensive research:', 'research comprehensively:'];
-            const hasPrefix = deepPrefixes.some(prefix => sanitizedMessage.toLowerCase().startsWith(prefix));
-            if (!hasPrefix) {
-                sanitizedMessage = `deep research: ${sanitizedMessage}`;
-            }
-        }
+        // Format and depth are now controlled by UI, not auto-detection
         
         // Use streaming by default
         return new Promise((resolve, reject) => {
@@ -389,8 +418,8 @@ class ThesidiaApp {
                     message: sanitizedMessage,
                     conversation_id: this.currentConversationId,
                     show_thinking: this.showThinking,
-                    deep_research_mode: this.deepResearchMode,
-                    auto_detect: this.autoDetect,
+                    format: this.currentFormat, // 'natural' or 'structured'
+                    research_depth: this.researchDepth, // 1=Quick, 2=Deep, 3=Forensic
                     stream: useStreaming,
                     user_id: this.userId,
                     session_id: this.sessionId
@@ -534,8 +563,8 @@ class ThesidiaApp {
                 message: message,
                 conversation_id: this.currentConversationId,
                 show_thinking: this.showThinking,
-                deep_research_mode: this.deepResearchMode,
-                auto_detect: this.autoDetect,
+                format: this.currentFormat, // 'natural' or 'structured'
+                research_depth: this.researchDepth, // 1=Quick, 2=Deep, 3=Forensic
                 stream: false,
                 user_id: this.userId,
                 session_id: this.sessionId
