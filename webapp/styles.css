@@ -440,8 +440,8 @@ body {
     position: fixed; /* Always fixed to avoid reflow glitches */
     top: 0;
     left: 0;
-    width: 75%;
-    max-width: 300px;
+    width: 55%; /* Narrower for panoramic main content view */
+    max-width: 240px; /* Compact sidebar */
     height: 100vh;
     height: 100dvh;
     background: var(--bg-primary);
@@ -457,18 +457,15 @@ body {
     pointer-events: none; /* Prevent interaction when hidden */
 }
 
-.left-sidebar.open {
-    pointer-events: auto; /* Re-enable interaction when open */
-}
-
+/* Sidebar open state - show sidebar */
 .left-sidebar.open {
     transform: translateX(0) !important;
     z-index: 150;
-    pointer-events: auto; /* Re-enable interaction when open */
+    pointer-events: auto !important; /* Re-enable interaction when open */
 }
 
 .sidebar-content {
-    padding: 20px 16px !important; /* Match reference image spacing */
+    padding: 20px 12px !important; /* Slightly reduced padding for narrower sidebar */
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -590,6 +587,8 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0; /* Allow flex items to shrink */
+    overflow: hidden;
     padding: 12px 0 !important;
     margin: 0 !important;
     color: var(--text-secondary);
@@ -627,6 +626,11 @@ body {
 .nav-title {
     font-size: var(--font-size-sm);
     font-weight: 500;
+    flex: 1;
+    min-width: 0; /* Allow text to shrink */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Sidebar Settings */
@@ -671,14 +675,15 @@ body {
     color: var(--text-primary);
 }
 
-/* App Content Push When Sidebar Open - Push content to the right */
+/* App Content Push When Sidebar Open - Push content to the right, SAME SIZE, just moves over */
 #app.sidebar-pushed {
     -webkit-transform: none !important;
     transform: none !important;
-    margin-left: 300px !important; /* Exactly sidebar width, no extra space */
+    margin-left: 240px !important; /* Push content over by sidebar width */
     overflow-x: visible;
     position: relative;
-    width: calc(100% - 300px) !important;
+    width: 100% !important; /* STAYS FULL WIDTH - doesn't shrink */
+    max-width: 100% !important;
     height: 100vh;
     height: 100dvh;
     will-change: margin-left;
@@ -687,22 +692,37 @@ body {
     background-image: none !important;
 }
 
-/* Sidebar stays at viewport left:0 when open - already fixed, just transform */
+/* Sidebar stays at viewport left:0 when open - ensure it's visible */
 #app.sidebar-pushed .left-sidebar {
     transform: translateX(0) !important;
-    pointer-events: auto !important; /* Re-enable interaction when open */
+    pointer-events: auto !important;
+    z-index: 150 !important;
 }
 
-/* Mobile: 75% width */
+/* Mobile: Sidebar pushes content over, content STAYS SAME SIZE */
 @media (max-width: 767px) {
+    .left-sidebar {
+        width: 55% !important;
+        max-width: 240px !important; /* Compact sidebar */
+    }
+    
     #app.sidebar-pushed {
-        margin-left: 75% !important;
-        width: 25% !important;
+        margin-left: 55% !important; /* Push content over by sidebar width */
+        width: 100% !important; /* STAYS FULL WIDTH - doesn't shrink or compress */
+        max-width: 100% !important;
     }
     
     #app.sidebar-pushed .left-sidebar {
         left: 0 !important;
-        position: absolute !important;
+        position: fixed !important;
+    }
+    
+    /* Main content stays exact same size - just moves over */
+    #app.sidebar-pushed main,
+    #app.sidebar-pushed .stream-page-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: visible;
     }
 }
 

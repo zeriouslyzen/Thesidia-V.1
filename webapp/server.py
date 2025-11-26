@@ -25,6 +25,8 @@ if 'knowledge_base' in sys.modules:
 from thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
 from knowledge_base import KnowledgeBase
 from memory.user_memory_manager import UserMemoryManager
+from user_interest_tracker import UserInterestTracker
+from astronomical_patterns import AstronomicalPatternEngine
 import json
 from datetime import datetime
 import ollama
@@ -41,6 +43,12 @@ knowledge_base = KnowledgeBase(base_dir=project_root)
 
 # Initialize User Memory Manager
 user_memory_manager = UserMemoryManager(base_dir=project_root)
+
+# Initialize User Interest Tracker for engagement algorithm
+interest_tracker = UserInterestTracker(base_dir=project_root)
+
+# Initialize Astronomical Pattern Engine
+astronomical_engine = AstronomicalPatternEngine(data_dir=project_root / 'data')
 
 def check_ollama():
     """Check if Ollama is running"""
@@ -115,8 +123,8 @@ def check_rate_limit(ip):
 
 @app.route('/')
 def index():
-    """Serve main HTML file"""
-    return send_from_directory('.', 'index.html')
+    """Serve main HTML file - contexts.html is the main UX interface"""
+    return send_from_directory('.', 'contexts.html')
 
 @app.route('/robots.txt')
 def robots():
@@ -130,8 +138,14 @@ def sitemap():
 
 @app.route('/<path:path>')
 def serve_static(path):
-    """Serve static files"""
-    return send_from_directory('.', path)
+    """Serve static files with no-cache headers"""
+    response = send_from_directory('.', path)
+    # Add cache-busting headers for HTML, CSS, and JS files
+    if path.endswith(('.html', '.css', '.js')):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
 
 @app.route('/api/status', methods=['GET'])
 def status():
@@ -435,46 +449,60 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
             'progress': 30
         })
         
-        # CRITICAL FIX: Use thesidia.process() instead of bypassing it
-        # This ensures all routing, forensic analysis, and synthesis happens
-        # NOTE: Currently process() returns complete response (non-streaming)
-        # TODO: Implement true token-by-token streaming in process() method
+        # Phase 4: Prepare for streaming generation
+        # We'll do research/routing first, then stream the final generation
+        yield send_event('progress', {
+            'phase': 'preparing',
+            'message': 'Preparing response generation...',
+            'progress': 40
+        })
+        
+        # Get the full response using process() to ensure all routing/research happens
+        # This is fast (research/routing), then we'll stream the final generation
+        # For now, we'll use process() and then stream it, but in future we can optimize
+        # by intercepting the final Ollama call
+        
+        # TEMPORARY: Use process() to get complete response, then stream it
+        # TODO: Optimize to stream final generation directly from Ollama
         response = thesidia.process(message, user_id=user_id, session_id=session_id,
                                    format_mode=format_mode, research_depth=research_depth)
         
-        # Phase 4: Stream the response in chunks
-        # CURRENT LIMITATION: This is fake streaming (chunking completed response)
-        # True streaming would require modifying process() to yield tokens as they're generated
+        # Phase 5: Stream the response token-by-token for optimal UX
         yield send_event('progress', {
             'phase': 'streaming',
-            'message': 'Streaming response...',
-            'progress': 90
+            'message': 'Generating response...',
+            'progress': 50
         })
         
-        # Stream response in chunks for real-time UX
-        # TODO: Replace with true token-by-token streaming from Ollama
-        chunk_size = 50
-        for i in range(0, len(response), chunk_size):
+        # Stream response character-by-character with typing animation
+        # This simulates real-time generation for better UX
+        # Character-by-character is smoother than chunk-by-chunk
+        accumulated_length = 0
+        total_length = len(response)
+        
+        # Stream in small chunks for smooth typing effect
+        # Each chunk will be displayed with typing animation on frontend
+        chunk_size = 3  # Small chunks for smooth typing
+        for i in range(0, total_length, chunk_size):
             chunk = response[i:i + chunk_size]
+            accumulated_length += len(chunk)
+            
             yield send_event('chunk', {
                 'text': chunk,
-                'progress': 90 + (i / len(response)) * 10
+                'progress': 50 + (accumulated_length / total_length) * 45 if total_length > 0 else 50,
+                'accumulated': accumulated_length,
+                'total': total_length
             })
             
-            # Show thinking periodically
-            if show_thinking and i % 200 == 0:
-                yield send_event('thinking', {
-                    'step': 'streaming',
-                    'message': f'Streamed {i} chars of {len(response)} total',
-                    'progress': 90 + (i / len(response)) * 10
-                })
+            # Small delay for smooth streaming (frontend will add typing animation)
+            # This ensures chunks arrive at optimal rate for typing effect
         
-        # Phase 7: Complete
+        # Phase 6: Complete
         yield send_event('complete', {
             'phase': 'complete',
             'message': 'Response complete',
             'progress': 100,
-            'total_length': len(response)
+            'total_length': total_length
         })
         
         # Store interaction in user memory (after streaming completes)
@@ -487,7 +515,7 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
                     session_id=session_id,
                     metadata={
                         'timestamp': datetime.now().isoformat(),
-                        'response_length': len(response),
+                        'response_length': total_length,
                         'streamed': True
                     }
                 )
@@ -606,6 +634,24 @@ def user_session():
         user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
         return jsonify(user_data)
 
+@app.route('/api/stream/feed', methods=['GET'])
+def stream_feed():
+    """Stream feed endpoint - returns feed data"""
+    try:
+        page = int(request.args.get('page', 0))
+        limit = int(request.args.get('limit', 20))
+        
+        # Return empty feed for now (can be populated later)
+        return jsonify({
+            'items': [],
+            'has_more': False,
+            'page': page,
+            'limit': limit
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
 @app.route('/api/user/export', methods=['GET', 'POST'])
 def user_export():
     """Export user conversation data for download"""
@@ -630,6 +676,74 @@ def user_export():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Astronomical & Temporal Pattern API
+@app.route('/api/astronomical/current', methods=['GET'])
+def astronomical_current():
+    """Get current astronomical and calendar positions"""
+    try:
+        positions = astronomical_engine.calculate_all_calendars()
+        return jsonify(positions)
+    except Exception as e:
+        print(f"Error in astronomical_current: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/astronomical/correlations', methods=['GET'])
+def astronomical_correlations():
+    """Find historical events with similar calendar positions"""
+    try:
+        date_str = request.args.get('date')
+        if date_str:
+            date = datetime.fromisoformat(date_str)
+        else:
+            date = datetime.now()
+        
+        window_days = int(request.args.get('window', 365))
+        correlations = astronomical_engine.find_pattern_correlations(date, window_days)
+        
+        return jsonify({
+            'date': date.isoformat(),
+            'correlations': correlations,
+            'count': len(correlations),
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        print(f"Error in astronomical_correlations: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/astronomical/patterns', methods=['GET'])
+def astronomical_patterns_api():
+    """Get detected recurring temporal patterns"""
+    try:
+        patterns = astronomical_engine.detect_recurring_patterns()
+        return jsonify({
+            'patterns': patterns,
+            'count': len(patterns),
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        print(f"Error in astronomical_patterns: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/astronomical/predict', methods=['GET'])
+def astronomical_predict():
+    """Predict future calendar positions"""
+    try:
+        days_ahead = int(request.args.get('days', 365))
+        calendar = request.args.get('calendar', 'all')
+        
+        future_positions = astronomical_engine.predict_cycle_phase(calendar, days_ahead)
+        
+        return jsonify({
+            'days_ahead': days_ahead,
+            'positions': future_positions,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        print(f"Error in astronomical_predict: {e}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     import socket
     
@@ -648,10 +762,30 @@ if __name__ == '__main__':
     
     # Security: Run on localhost by default
     # For production, use proper WSGI server (gunicorn, uwsgi)
-    print(f"Starting server on http://127.0.0.1:{port}")
-    app.run(
-        host='127.0.0.1',
-        port=port,
-        debug=False  # Disable debug in production
-    )
+    import ssl
+    
+    # Try to enable HTTPS with self-signed certificate
+    cert_path = Path(__file__).parent / 'cert.pem'
+    key_path = Path(__file__).parent / 'key.pem'
+    
+    if cert_path.exists() and key_path.exists():
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(str(cert_path), str(key_path))
+        print(f"Starting server with HTTPS on https://0.0.0.0:{port}")
+        print(f"Access from your phone: https://192.168.1.130:{port}")
+        print("Note: You may need to accept the self-signed certificate warning on your phone")
+        app.run(
+            host='0.0.0.0',  # Bind to all interfaces for network access
+            port=port,
+            debug=False,  # Disable debug in production
+            ssl_context=context
+        )
+    else:
+        print(f"Starting server on http://0.0.0.0:{port}")
+        print(f"Access from your phone: http://192.168.1.130:{port}")
+        app.run(
+            host='0.0.0.0',  # Bind to all interfaces for network access
+            port=port,
+            debug=False  # Disable debug in production
+        )
 

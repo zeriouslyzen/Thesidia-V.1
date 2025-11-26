@@ -76,9 +76,12 @@ thesidia ice/
 │   └── ...
 │
 ├── webapp/                   # Web interface
-│   ├── server.py             # Flask API server
-│   ├── index.html            # Main UI
-│   ├── app.js                # Frontend logic
+│   ├── server.py             # Flask API server (HTTPS support)
+│   ├── index.html            # Main contexts page
+│   ├── stream.html           # Stream/social feed page
+│   ├── app.js                # Frontend logic (sidebar, themes)
+│   ├── styles.css            # Global styles with color themes
+│   ├── README.md             # Webapp documentation
 │   └── ...
 │
 └── tests/                    # Tests
@@ -133,10 +136,21 @@ cd webapp
 python3 server.py
 
 # Or use start script
-./start_server.sh
+./start.sh
 ```
 
-Access at: `http://localhost:5005`
+**Access:**
+- Local: `https://localhost:5002` (HTTPS with self-signed cert)
+- Network: `https://<your-ip>:5002` (for mobile access)
+
+**Features:**
+- Slide-over sidebar (panoramic content view)
+- Global color themes (5 neon options)
+- Mobile-first responsive design
+- HTTPS support for secure access
+- Real-time streaming responses
+
+See `webapp/README.md` for detailed webapp documentation.
 
 ## Features
 
