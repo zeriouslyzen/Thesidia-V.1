@@ -146,11 +146,17 @@ def index():
 @app.route('/robots.txt')
 def robots():
     """Serve robots.txt for SEO"""
+    static_dir = Path(__file__).parent.parent / 'public'
+    if static_dir.exists() and (static_dir / 'robots.txt').exists():
+        return send_from_directory(str(static_dir), 'robots.txt'), 200, {'Content-Type': 'text/plain'}
     return send_from_directory('.', 'robots.txt'), 200, {'Content-Type': 'text/plain'}
 
 @app.route('/sitemap.xml')
 def sitemap():
     """Serve sitemap.xml for SEO"""
+    static_dir = Path(__file__).parent.parent / 'public'
+    if static_dir.exists() and (static_dir / 'sitemap.xml').exists():
+        return send_from_directory(str(static_dir), 'sitemap.xml'), 200, {'Content-Type': 'application/xml'}
     return send_from_directory('.', 'sitemap.xml'), 200, {'Content-Type': 'application/xml'}
 
 @app.route('/<path:path>')
@@ -567,11 +573,17 @@ def health():
 @app.route('/knowledge_base.html')
 def knowledge_base_page():
     """Serve knowledge base HTML"""
+    static_dir = Path(__file__).parent.parent / 'public'
+    if static_dir.exists() and (static_dir / 'knowledge_base.html').exists():
+        return send_from_directory(str(static_dir), 'knowledge_base.html')
     return send_from_directory('.', 'knowledge_base.html')
 
 @app.route('/metrics_dashboard.html')
 def metrics_dashboard():
     """Serve metrics dashboard HTML"""
+    static_dir = Path(__file__).parent.parent / 'public'
+    if static_dir.exists() and (static_dir / 'metrics_dashboard.html').exists():
+        return send_from_directory(str(static_dir), 'metrics_dashboard.html')
     return send_from_directory('.', 'metrics_dashboard.html')
 
 @app.route('/api/knowledge/stats', methods=['GET'])
