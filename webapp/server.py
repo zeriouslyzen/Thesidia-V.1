@@ -32,7 +32,12 @@ from datetime import datetime
 import ollama
 import importlib
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+# For Vercel: serve from public/ if it exists, otherwise current directory
+static_dir = Path(__file__).parent.parent / 'public'
+if static_dir.exists():
+    app = Flask(__name__, static_folder=str(static_dir), static_url_path='')
+else:
+    app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)  # Enable CORS for security
 
 # Initialize Thesidia

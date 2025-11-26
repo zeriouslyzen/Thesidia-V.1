@@ -10,15 +10,17 @@
     {
       "src": "/api/(.*)",
       "dest": "/api/server.py"
-    },
+    }
+  ],
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/public/$1"
+      "source": "/(.*)",
+      "destination": "/api/server.py"
     }
   ],
   "functions": {
     "api/server.py": {
-      "includeFiles": "webapp/**"
+      "includeFiles": "public/**"
     }
   }
 }
