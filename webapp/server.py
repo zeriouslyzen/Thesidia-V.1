@@ -129,7 +129,16 @@ def check_rate_limit(ip):
 @app.route('/')
 def index():
     """Serve main HTML file - index.html is the main entry point"""
-    # Try index.html first, fallback to contexts.html
+    # Check public/ directory first (for Vercel), then current directory
+    static_dir = Path(__file__).parent.parent / 'public'
+    if static_dir.exists():
+        index_path = static_dir / 'index.html'
+        if index_path.exists():
+            return send_from_directory(str(static_dir), 'index.html')
+        contexts_path = static_dir / 'contexts.html'
+        if contexts_path.exists():
+            return send_from_directory(str(static_dir), 'contexts.html')
+    # Fallback to current directory
     if Path('index.html').exists():
         return send_from_directory('.', 'index.html')
     return send_from_directory('.', 'contexts.html')
@@ -147,7 +156,12 @@ def sitemap():
 @app.route('/<path:path>')
 def serve_static(path):
     """Serve static files with no-cache headers"""
-    response = send_from_directory('.', path)
+    # Check public/ directory first (for Vercel), then current directory
+    static_dir = Path(__file__).parent.parent / 'public'
+    if static_dir.exists() and (static_dir / path).exists():
+        response = send_from_directory(str(static_dir), path)
+    else:
+        response = send_from_directory('.', path)
     # Add cache-busting headers for HTML, CSS, and JS files
     if path.endswith(('.html', '.css', '.js')):
         response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
