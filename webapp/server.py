@@ -123,7 +123,10 @@ def check_rate_limit(ip):
 
 @app.route('/')
 def index():
-    """Serve main HTML file - contexts.html is the main UX interface"""
+    """Serve main HTML file - index.html is the main entry point"""
+    # Try index.html first, fallback to contexts.html
+    if Path('index.html').exists():
+        return send_from_directory('.', 'index.html')
     return send_from_directory('.', 'contexts.html')
 
 @app.route('/robots.txt')
