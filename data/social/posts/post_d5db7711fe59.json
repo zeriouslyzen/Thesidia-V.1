@@ -1,0 +1,18 @@
+{
+  "id": "post_d5db7711fe59",
+  "author_id": "user_test",
+  "content": "Test post via API",
+  "media": [],
+  "created_at": "2025-11-26T11:33:54.548578",
+  "updated_at": "2025-11-26T11:33:54.551067",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.76,
+  "tags": [],
+  "visibility": "public",
+  "moderation_status": "approved"
+}

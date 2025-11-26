@@ -1,0 +1,16 @@
+{
+  "_schema_version": "1.0",
+  "_description": "Index mapping user IDs to their post IDs for fast lookup",
+  "_last_updated": "2025-01-26T00:00:00Z",
+  "index": {
+    "user_test": [
+      "post_d5db7711fe59"
+    ],
+    "user_3818ee6699ca": [
+      "post_cdc6c9f6cf38"
+    ],
+    "user_1409613f42ef": [
+      "post_5f74d2b3d736"
+    ]
+  }
+}

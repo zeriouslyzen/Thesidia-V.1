@@ -1,0 +1,7 @@
+{
+  "_schema_version": "1.0",
+  "_description": "Index mapping usernames to user IDs for fast username lookup",
+  "_last_updated": "2025-01-26T00:00:00Z",
+  "index": {}
+}
+

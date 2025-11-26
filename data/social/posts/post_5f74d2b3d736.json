@@ -1,0 +1,18 @@
+{
+  "id": "post_5f74d2b3d736",
+  "author_id": "user_1409613f42ef",
+  "content": "Hello",
+  "media": [],
+  "created_at": "2025-11-26T14:51:38.223654",
+  "updated_at": "2025-11-26T14:51:38.227717",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.7,
+  "tags": [],
+  "visibility": "public",
+  "moderation_status": "approved"
+}

@@ -1,0 +1,1493 @@
+{
+  "how powerful is": {
+    "topic": "how powerful is",
+    "facts": [
+      {
+        "information": {
+          "source": "state_file",
+          "input": "how powerful is big pharma",
+          "timestamp": "2025-11-18T18:43:50.855964"
+        },
+        "timestamp": "2025-11-24T23:58:21.483228",
+        "entry_id": 0
+      }
+    ],
+    "connections": [],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-24T23:58:21.483231",
+    "entry_count": 1
+  },
+  "what does their": {
+    "topic": "what does their",
+    "facts": [
+      {
+        "information": {
+          "source": "state_file",
+          "input": "what does their symbol mean",
+          "timestamp": "2025-11-18T18:44:46.529642"
+        },
+        "timestamp": "2025-11-24T23:58:21.484926",
+        "entry_id": 0
+      }
+    ],
+    "connections": [],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-24T23:58:21.484928",
+    "entry_count": 1
+  },
+  "test the elite": {
+    "topic": "test the elite",
+    "facts": [
+      {
+        "information": {
+          "source": "state_file",
+          "input": "Test the elite rebrand interface",
+          "timestamp": "2025-11-24T22:49:37.184536"
+        },
+        "timestamp": "2025-11-24T23:58:21.486141",
+        "entry_id": 0
+      }
+    ],
+    "connections": [],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-24T23:58:21.486143",
+    "entry_count": 1
+  },
+  "chemistry": {
+    "topic": "chemistry",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 10,
+          "first_seen": "2025-11-22T22:24:24.448183",
+          "last_seen": "2025-11-22T23:07:06.216827",
+          "original_topic": "chemistry"
+        },
+        "timestamp": "2025-11-25T00:00:11.933451",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "power_structures",
+      "photosynthesis",
+      "consciousness",
+      "physics",
+      "eric blair",
+      "reengineering",
+      "1984",
+      "george orwell",
+      "code_cracking",
+      "paris"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.933456",
+    "entry_count": 1
+  },
+  "power_structures": {
+    "topic": "power_structures",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 24,
+          "first_seen": "2025-11-22T22:24:24.448183",
+          "last_seen": "2025-11-24T23:59:39.961078",
+          "original_topic": "power_structures"
+        },
+        "timestamp": "2025-11-25T00:00:11.933768",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "chemistry",
+      "photosynthesis",
+      "consciousness",
+      "physics",
+      "eric blair",
+      "reengineering",
+      "1984",
+      "george orwell",
+      "code_cracking",
+      "paris"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.933772",
+    "entry_count": 1
+  },
+  "photosynthesis": {
+    "topic": "photosynthesis",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 2,
+          "first_seen": "2025-11-22T22:24:24.448183",
+          "last_seen": "2025-11-22T23:04:24.553615",
+          "original_topic": "photosynthesis"
+        },
+        "timestamp": "2025-11-25T00:00:11.933972",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "chemistry",
+      "power_structures",
+      "consciousness",
+      "physics",
+      "reengineering"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.933974",
+    "entry_count": 1
+  },
+  "consciousness": {
+    "topic": "consciousness",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 24,
+          "first_seen": "2025-11-22T22:24:24.448183",
+          "last_seen": "2025-11-24T23:59:39.961078",
+          "original_topic": "consciousness"
+        },
+        "timestamp": "2025-11-25T00:00:11.934182",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "chemistry",
+      "power_structures",
+      "photosynthesis",
+      "physics",
+      "code_cracking",
+      "paris",
+      "reengineering",
+      "gaul",
+      "history",
+      "forensic"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.934185",
+    "entry_count": 1
+  },
+  "physics": {
+    "topic": "physics",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 9,
+          "first_seen": "2025-11-22T22:24:24.448183",
+          "last_seen": "2025-11-24T02:38:47.253257",
+          "original_topic": "physics"
+        },
+        "timestamp": "2025-11-25T00:00:11.934429",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "chemistry",
+      "power_structures",
+      "photosynthesis",
+      "consciousness",
+      "history",
+      "qigong",
+      "chi gong",
+      "reengineering",
+      "first"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.934432",
+    "entry_count": 1
+  },
+  "eric blair": {
+    "topic": "eric blair",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 2,
+          "first_seen": "2025-11-22T22:25:00.616408",
+          "last_seen": "2025-11-22T23:05:04.118489",
+          "original_topic": "eric blair"
+        },
+        "timestamp": "2025-11-25T00:00:11.934669",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "chemistry",
+      "power_structures",
+      "reengineering",
+      "1984",
+      "george orwell"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.934671",
+    "entry_count": 1
+  },
+  "reengineering": {
+    "topic": "reengineering",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 21,
+          "first_seen": "2025-11-22T22:25:00.616408",
+          "last_seen": "2025-11-24T23:59:39.961078",
+          "original_topic": "reengineering"
+        },
+        "timestamp": "2025-11-25T00:00:11.934979",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "eric blair",
+      "chemistry",
+      "power_structures",
+      "1984",
+      "george orwell",
+      "code_cracking",
+      "paris",
+      "gaul",
+      "history",
+      "consciousness"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.934983",
+    "entry_count": 1
+  },
+  "1984": {
+    "topic": "1984",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 2,
+          "first_seen": "2025-11-22T22:25:00.616408",
+          "last_seen": "2025-11-22T23:05:04.118489",
+          "original_topic": "1984"
+        },
+        "timestamp": "2025-11-25T00:00:11.935283",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "eric blair",
+      "chemistry",
+      "power_structures",
+      "reengineering",
+      "george orwell"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.935285",
+    "entry_count": 1
+  },
+  "george orwell": {
+    "topic": "george orwell",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 2,
+          "first_seen": "2025-11-22T22:25:00.616408",
+          "last_seen": "2025-11-22T23:05:04.118489",
+          "original_topic": "george orwell"
+        },
+        "timestamp": "2025-11-25T00:00:11.935578",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "eric blair",
+      "chemistry",
+      "power_structures",
+      "reengineering",
+      "1984"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.935580",
+    "entry_count": 1
+  },
+  "code_cracking": {
+    "topic": "code_cracking",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 12,
+          "first_seen": "2025-11-22T22:25:40.260946",
+          "last_seen": "2025-11-24T23:59:39.961078",
+          "original_topic": "code_cracking"
+        },
+        "timestamp": "2025-11-25T00:00:11.935976",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "chemistry",
+      "power_structures",
+      "paris",
+      "reengineering",
+      "gaul",
+      "history",
+      "consciousness",
+      "forensic",
+      "france",
+      "test"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.935979",
+    "entry_count": 1
+  },
+  "paris": {
+    "topic": "paris",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 2,
+          "first_seen": "2025-11-22T22:25:40.260946",
+          "last_seen": "2025-11-22T23:05:28.926975",
+          "original_topic": "paris"
+        },
+        "timestamp": "2025-11-25T00:00:11.936364",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "code_cracking",
+      "chemistry",
+      "power_structures",
+      "reengineering",
+      "gaul",
+      "history",
+      "consciousness",
+      "forensic",
+      "france",
+      "versailles"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.936366",
+    "entry_count": 1
+  },
+  "gaul": {
+    "topic": "gaul",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T22:25:40.260946",
+          "last_seen": "2025-11-22T22:25:40.260946",
+          "original_topic": "gaul"
+        },
+        "timestamp": "2025-11-25T00:00:11.936777",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "code_cracking",
+      "chemistry",
+      "power_structures",
+      "paris",
+      "reengineering",
+      "history",
+      "consciousness",
+      "forensic",
+      "france"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.936779",
+    "entry_count": 1
+  },
+  "history": {
+    "topic": "history",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 15,
+          "first_seen": "2025-11-22T22:25:40.260946",
+          "last_seen": "2025-11-24T23:59:39.961078",
+          "original_topic": "history"
+        },
+        "timestamp": "2025-11-25T00:00:11.937205",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "code_cracking",
+      "chemistry",
+      "power_structures",
+      "paris",
+      "reengineering",
+      "gaul",
+      "consciousness",
+      "forensic",
+      "france",
+      "relativity"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.937207",
+    "entry_count": 1
+  },
+  "forensic": {
+    "topic": "forensic",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 6,
+          "first_seen": "2025-11-22T22:25:40.260946",
+          "last_seen": "2025-11-24T23:59:39.960325",
+          "original_topic": "forensic"
+        },
+        "timestamp": "2025-11-25T00:00:11.937635",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "code_cracking",
+      "chemistry",
+      "power_structures",
+      "paris",
+      "reengineering",
+      "gaul",
+      "history",
+      "consciousness",
+      "france",
+      "emergent consciousness engine"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.937638",
+    "entry_count": 1
+  },
+  "france": {
+    "topic": "france",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 2,
+          "first_seen": "2025-11-22T22:25:40.260946",
+          "last_seen": "2025-11-22T23:05:28.926975",
+          "original_topic": "france"
+        },
+        "timestamp": "2025-11-25T00:00:11.938230",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "code_cracking",
+      "chemistry",
+      "power_structures",
+      "paris",
+      "reengineering",
+      "gaul",
+      "history",
+      "consciousness",
+      "forensic",
+      "versailles"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.938234",
+    "entry_count": 1
+  },
+  "einstein": {
+    "topic": "einstein",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T22:26:31.339432",
+          "last_seen": "2025-11-22T22:26:31.339432",
+          "original_topic": "einstein"
+        },
+        "timestamp": "2025-11-25T00:00:11.938761",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "relativity",
+      "chemistry",
+      "power_structures",
+      "reengineering",
+      "history",
+      "consciousness",
+      "a brief history of time"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.938764",
+    "entry_count": 1
+  },
+  "meditation": {
+    "topic": "meditation",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 4,
+          "first_seen": "2025-11-22T22:27:16.700093",
+          "last_seen": "2025-11-22T23:09:34.970014",
+          "original_topic": "meditation"
+        },
+        "timestamp": "2025-11-25T00:00:11.939225",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "chemistry",
+      "power_structures",
+      "reengineering",
+      "consciousness",
+      "the zone",
+      "reduced stress",
+      "history"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.939227",
+    "entry_count": 1
+  },
+  "the zone": {
+    "topic": "the zone",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T22:27:16.700093",
+          "last_seen": "2025-11-22T22:27:16.700093",
+          "original_topic": "the zone"
+        },
+        "timestamp": "2025-11-25T00:00:11.939710",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "chemistry",
+      "power_structures",
+      "reengineering",
+      "meditation",
+      "consciousness"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.939713",
+    "entry_count": 1
+  },
+  "mindfulness meditation": {
+    "topic": "mindfulness meditation",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T22:28:02.310551",
+          "last_seen": "2025-11-22T22:28:02.310551",
+          "original_topic": "mindfulness meditation"
+        },
+        "timestamp": "2025-11-25T00:00:11.940229",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "chemistry",
+      "power_structures",
+      "reengineering",
+      "history",
+      "consciousness"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.940231",
+    "entry_count": 1
+  },
+  "reduced stress": {
+    "topic": "reduced stress",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T22:29:51.762958",
+          "last_seen": "2025-11-22T22:29:51.762958",
+          "original_topic": "reduced stress"
+        },
+        "timestamp": "2025-11-25T00:00:11.940724",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "power_structures",
+      "reengineering",
+      "meditation",
+      "consciousness"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.940726",
+    "entry_count": 1
+  },
+  "qigong": {
+    "topic": "qigong",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 2,
+          "first_seen": "2025-11-22T22:30:43.866745",
+          "last_seen": "2025-11-22T22:32:48.424153",
+          "original_topic": "qigong"
+        },
+        "timestamp": "2025-11-25T00:00:11.941415",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "history",
+      "consciousness",
+      "chi gong",
+      "physics",
+      "chemistry",
+      "power_structures",
+      "reengineering"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.941417",
+    "entry_count": 1
+  },
+  "chi gong": {
+    "topic": "chi gong",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 2,
+          "first_seen": "2025-11-22T22:30:43.866745",
+          "last_seen": "2025-11-22T22:32:48.424153",
+          "original_topic": "chi gong"
+        },
+        "timestamp": "2025-11-25T00:00:11.941943",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "history",
+      "consciousness",
+      "qigong",
+      "physics",
+      "chemistry",
+      "power_structures",
+      "reengineering"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.941945",
+    "entry_count": 1
+  },
+  "first": {
+    "topic": "first",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T22:37:35.475970",
+          "last_seen": "2025-11-22T22:37:35.475970",
+          "original_topic": "first"
+        },
+        "timestamp": "2025-11-25T00:00:11.942450",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "bioelectric",
+      "they",
+      "physics"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.942452",
+    "entry_count": 1
+  },
+  "bioelectric": {
+    "topic": "bioelectric",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T22:37:35.475970",
+          "last_seen": "2025-11-22T22:37:35.475970",
+          "original_topic": "bioelectric"
+        },
+        "timestamp": "2025-11-25T00:00:11.942973",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "first",
+      "they",
+      "physics"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.942975",
+    "entry_count": 1
+  },
+  "they": {
+    "topic": "they",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T22:37:35.475970",
+          "last_seen": "2025-11-22T22:37:35.475970",
+          "original_topic": "they"
+        },
+        "timestamp": "2025-11-25T00:00:11.943523",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "first",
+      "bioelectric",
+      "physics"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.943524",
+    "entry_count": 1
+  },
+  "versailles": {
+    "topic": "versailles",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T23:05:28.926975",
+          "last_seen": "2025-11-22T23:05:28.926975",
+          "original_topic": "versailles"
+        },
+        "timestamp": "2025-11-25T00:00:11.944079",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "paris",
+      "history",
+      "france"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.944080",
+    "entry_count": 1
+  },
+  "special": {
+    "topic": "special",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T23:06:21.096509",
+          "last_seen": "2025-11-22T23:06:21.096509",
+          "original_topic": "special"
+        },
+        "timestamp": "2025-11-25T00:00:11.944661",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "albert einstein",
+      "physics"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.944662",
+    "entry_count": 1
+  },
+  "albert einstein": {
+    "topic": "albert einstein",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T23:06:21.096509",
+          "last_seen": "2025-11-22T23:06:21.096509",
+          "original_topic": "albert einstein"
+        },
+        "timestamp": "2025-11-25T00:00:11.945245",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "special",
+      "physics"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.945246",
+    "entry_count": 1
+  },
+  "mindfulness": {
+    "topic": "mindfulness",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T23:07:54.224617",
+          "last_seen": "2025-11-22T23:07:54.224617",
+          "original_topic": "mindfulness"
+        },
+        "timestamp": "2025-11-25T00:00:11.945854",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "transcendental",
+      "consciousness",
+      "buddhism"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.945856",
+    "entry_count": 1
+  },
+  "transcendental": {
+    "topic": "transcendental",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T23:07:54.224617",
+          "last_seen": "2025-11-22T23:07:54.224617",
+          "original_topic": "transcendental"
+        },
+        "timestamp": "2025-11-25T00:00:11.946506",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "mindfulness",
+      "consciousness",
+      "buddhism"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.946508",
+    "entry_count": 1
+  },
+  "buddhism": {
+    "topic": "buddhism",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T23:07:54.224617",
+          "last_seen": "2025-11-22T23:07:54.224617",
+          "original_topic": "buddhism"
+        },
+        "timestamp": "2025-11-25T00:00:11.947329",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "mindfulness",
+      "transcendental",
+      "consciousness"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.947332",
+    "entry_count": 1
+  },
+  "alright": {
+    "topic": "alright",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T23:09:34.970014",
+          "last_seen": "2025-11-22T23:09:34.970014",
+          "original_topic": "alright"
+        },
+        "timestamp": "2025-11-25T00:00:11.948052",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "meditation",
+      "consciousness",
+      "simultaneously"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.948054",
+    "entry_count": 1
+  },
+  "simultaneously": {
+    "topic": "simultaneously",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 1,
+          "first_seen": "2025-11-22T23:09:34.970014",
+          "last_seen": "2025-11-22T23:09:34.970014",
+          "original_topic": "simultaneously"
+        },
+        "timestamp": "2025-11-25T00:00:11.948776",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "alright",
+      "meditation",
+      "consciousness"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.948778",
+    "entry_count": 1
+  },
+  "error": {
+    "topic": "error",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 6,
+          "first_seen": "2025-11-24T01:47:18.941089",
+          "last_seen": "2025-11-24T02:27:15.572870",
+          "original_topic": "error"
+        },
+        "timestamp": "2025-11-25T00:00:11.949566",
+        "entry_id": 0
+      }
+    ],
+    "connections": [],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.949568",
+    "entry_count": 1
+  },
+  "test": {
+    "topic": "test",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 6,
+          "first_seen": "2025-11-24T22:49:37.170235",
+          "last_seen": "2025-11-24T23:59:39.961078",
+          "original_topic": "test"
+        },
+        "timestamp": "2025-11-25T00:00:11.950404",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "history",
+      "code_cracking",
+      "power_structures",
+      "reengineering",
+      "consciousness",
+      "welp, big pharma's got some serious clout, my dude. they're a multibillion-dollar industry with tons of influence on government policies and health research. as for their symbol, it's usually a snake entwined around a staff called caduceus. ancient greeks used this symbol for hermes, the messenger god – but these days, most folks associate it with medicine due to some misinterpreted history. if you wanna dive deeper, we can check out historical sources and contemporary analysis!",
+      "hermes"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.950407",
+    "entry_count": 1
+  },
+  "welp, big pharma's got some serious clout, my dude. they're a multibillion-dollar industry with tons of influence on government policies and health research. as for their symbol, it's usually a snake entwined around a staff called caduceus. ancient greeks used this symbol for hermes, the messenger god – but these days, most folks associate it with medicine due to some misinterpreted history. if you wanna dive deeper, we can check out historical sources and contemporary analysis!": {
+    "topic": "welp, big pharma's got some serious clout, my dude. they're a multibillion-dollar industry with tons of influence on government policies and health research. as for their symbol, it's usually a snake entwined around a staff called caduceus. ancient greeks used this symbol for hermes, the messenger god – but these days, most folks associate it with medicine due to some misinterpreted history. if you wanna dive deeper, we can check out historical sources and contemporary analysis!",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 6,
+          "first_seen": "2025-11-24T22:49:37.170235",
+          "last_seen": "2025-11-24T23:59:39.961078",
+          "original_topic": "welp, big pharma's got some serious clout, my dude. they're a multibillion-dollar industry with tons of influence on government policies and health research. as for their symbol, it's usually a snake entwined around a staff called caduceus. ancient greeks used this symbol for hermes, the messenger god – but these days, most folks associate it with medicine due to some misinterpreted history. if you wanna dive deeper, we can check out historical sources and contemporary analysis!"
+        },
+        "timestamp": "2025-11-25T00:00:11.951234",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "history",
+      "code_cracking",
+      "power_structures",
+      "test",
+      "reengineering",
+      "consciousness",
+      "hermes"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.951248",
+    "entry_count": 1
+  },
+  "hermes": {
+    "topic": "hermes",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 6,
+          "first_seen": "2025-11-24T22:49:37.170235",
+          "last_seen": "2025-11-24T23:59:39.961078",
+          "original_topic": "hermes"
+        },
+        "timestamp": "2025-11-25T00:00:11.952083",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "history",
+      "code_cracking",
+      "power_structures",
+      "test",
+      "reengineering",
+      "consciousness",
+      "welp, big pharma's got some serious clout, my dude. they're a multibillion-dollar industry with tons of influence on government policies and health research. as for their symbol, it's usually a snake entwined around a staff called caduceus. ancient greeks used this symbol for hermes, the messenger god – but these days, most folks associate it with medicine due to some misinterpreted history. if you wanna dive deeper, we can check out historical sources and contemporary analysis!"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.952086",
+    "entry_count": 1
+  },
+  "politically": {
+    "topic": "politically",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 5,
+          "first_seen": "2025-11-24T23:58:21.480572",
+          "last_seen": "2025-11-24T23:59:39.958358",
+          "original_topic": "politically"
+        },
+        "timestamp": "2025-11-25T00:00:11.953032",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "scientifically",
+      "economically",
+      "socially",
+      "big pharma",
+      "reengineering",
+      "power_structures"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.953035",
+    "entry_count": 1
+  },
+  "scientifically": {
+    "topic": "scientifically",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 5,
+          "first_seen": "2025-11-24T23:58:21.480572",
+          "last_seen": "2025-11-24T23:59:39.958358",
+          "original_topic": "scientifically"
+        },
+        "timestamp": "2025-11-25T00:00:11.953865",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "politically",
+      "economically",
+      "socially",
+      "big pharma",
+      "reengineering",
+      "power_structures"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.953867",
+    "entry_count": 1
+  },
+  "economically": {
+    "topic": "economically",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 5,
+          "first_seen": "2025-11-24T23:58:21.480572",
+          "last_seen": "2025-11-24T23:59:39.958358",
+          "original_topic": "economically"
+        },
+        "timestamp": "2025-11-25T00:00:11.954854",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "politically",
+      "scientifically",
+      "socially",
+      "big pharma",
+      "reengineering",
+      "power_structures"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.954857",
+    "entry_count": 1
+  },
+  "socially": {
+    "topic": "socially",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 5,
+          "first_seen": "2025-11-24T23:58:21.480572",
+          "last_seen": "2025-11-24T23:59:39.958358",
+          "original_topic": "socially"
+        },
+        "timestamp": "2025-11-25T00:00:11.955737",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "politically",
+      "scientifically",
+      "economically",
+      "big pharma",
+      "reengineering",
+      "power_structures"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.955739",
+    "entry_count": 1
+  },
+  "big pharma": {
+    "topic": "big pharma",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 5,
+          "first_seen": "2025-11-24T23:58:21.480572",
+          "last_seen": "2025-11-24T23:59:39.958358",
+          "original_topic": "big pharma"
+        },
+        "timestamp": "2025-11-25T00:00:11.956630",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "politically",
+      "scientifically",
+      "economically",
+      "socially",
+      "reengineering",
+      "power_structures"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.956632",
+    "entry_count": 1
+  },
+  "emergent consciousness engine": {
+    "topic": "emergent consciousness engine",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 5,
+          "first_seen": "2025-11-24T23:58:21.483802",
+          "last_seen": "2025-11-24T23:59:39.960325",
+          "original_topic": "emergent consciousness engine"
+        },
+        "timestamp": "2025-11-25T00:00:11.957641",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "code_cracking",
+      "consciousness",
+      "their",
+      "forensic",
+      "operator",
+      "coherence"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.957644",
+    "entry_count": 1
+  },
+  "their": {
+    "topic": "their",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 5,
+          "first_seen": "2025-11-24T23:58:21.483802",
+          "last_seen": "2025-11-24T23:59:39.960325",
+          "original_topic": "their"
+        },
+        "timestamp": "2025-11-25T00:00:11.958605",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "code_cracking",
+      "emergent consciousness engine",
+      "consciousness",
+      "forensic",
+      "operator",
+      "coherence"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.958607",
+    "entry_count": 1
+  },
+  "operator": {
+    "topic": "operator",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 5,
+          "first_seen": "2025-11-24T23:58:21.483802",
+          "last_seen": "2025-11-24T23:59:39.960325",
+          "original_topic": "operator"
+        },
+        "timestamp": "2025-11-25T00:00:11.959611",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "code_cracking",
+      "emergent consciousness engine",
+      "consciousness",
+      "their",
+      "forensic",
+      "coherence"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.959614",
+    "entry_count": 1
+  },
+  "coherence": {
+    "topic": "coherence",
+    "facts": [
+      {
+        "information": {
+          "source": "user_interest_tracker",
+          "count": 5,
+          "first_seen": "2025-11-24T23:58:21.483802",
+          "last_seen": "2025-11-24T23:59:39.960325",
+          "original_topic": "coherence"
+        },
+        "timestamp": "2025-11-25T00:00:11.960568",
+        "entry_id": 0
+      }
+    ],
+    "connections": [
+      "code_cracking",
+      "emergent consciousness engine",
+      "consciousness",
+      "their",
+      "forensic",
+      "operator"
+    ],
+    "patterns": [],
+    "sources": [],
+    "metaphors": [],
+    "unfoldings": [],
+    "possibilities": [],
+    "last_updated": "2025-11-25T00:00:11.960570",
+    "entry_count": 1
+  }
+}

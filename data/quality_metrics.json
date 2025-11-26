@@ -351,6 +351,116 @@
         "overall": 0.2
       },
       "timestamp": "2025-11-24T02:38:47.255149"
+    },
+    {
+      "query": "Test the elite rebrand interface",
+      "response_length": 554,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-11-24T22:49:37.172832"
+    },
+    {
+      "query": "so what is the dollar made from",
+      "response_length": 675,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-11-25T00:30:59.592370"
+    },
+    {
+      "query": "oh nice",
+      "response_length": 791,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.32
+      },
+      "timestamp": "2025-11-25T19:14:11.245954"
+    },
+    {
+      "query": "who designed you?",
+      "response_length": 591,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-11-25T19:15:16.561042"
+    },
+    {
+      "query": "hello thesidia",
+      "response_length": 596,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-11-26T02:50:24.576086"
+    },
+    {
+      "query": "what do you do?",
+      "response_length": 230,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-11-26T02:51:13.063591"
+    },
+    {
+      "query": "thesidia what do you do?",
+      "response_length": 810,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-11-26T02:52:13.477246"
+    },
+    {
+      "query": "hmm what about the corperate america",
+      "response_length": 741,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-11-26T02:53:42.484523"
+    },
+    {
+      "query": "hi thesidia",
+      "response_length": 674,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.3933333333333333
+      },
+      "timestamp": "2025-11-26T09:10:26.731062"
+    },
+    {
+      "query": "Hello thesidia!",
+      "response_length": 1314,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-11-26T10:11:36.382833"
     }
   ],
   "quality_trends": {
@@ -386,7 +496,17 @@
       0.2,
       0.2,
       0.2,
-      0.4
+      0.4,
+      0.2,
+      0.4,
+      0.4,
+      0.2,
+      0.4,
+      0.2,
+      0.4,
+      0.4,
+      0.4,
+      0.7
     ],
     "pattern_scores": [
       0.2,
@@ -420,6 +540,16 @@
       0.0,
       0.0,
       0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.4,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.2,
       0.0
     ],
     "truth_seeking_scores": [
@@ -454,6 +584,16 @@
       0.2,
       0.2,
       0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.5333333333333333,
       0.2
     ],
     "overall_scores": [
@@ -488,8 +628,18 @@
       0.14,
       0.14,
       0.14,
-      0.2
+      0.2,
+      0.14,
+      0.2,
+      0.32,
+      0.14,
+      0.2,
+      0.14,
+      0.2,
+      0.26,
+      0.3933333333333333,
+      0.29000000000000004
     ]
   },
-  "last_updated": "2025-11-24T02:38:47.255161"
+  "last_updated": "2025-11-26T10:11:36.382850"
 }

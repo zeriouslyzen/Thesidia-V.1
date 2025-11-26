@@ -1,0 +1,7 @@
+{
+  "_schema_version": "1.0",
+  "_description": "Posts flagged by users or AI for moderation review",
+  "_last_updated": "2025-01-26T00:00:00Z",
+  "flagged_posts": []
+}
+

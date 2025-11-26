@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>THESIDIA // Archive</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Archive Specific Styles */
+        .kb-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: var(--spacing-lg) var(--spacing-md);
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .kb-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .kb-header-section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .kb-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+        
+        .kb-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .kb-search {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .kb-search-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            transition: var(--transition);
+        }
+        
+        .kb-search-input:focus {
+            outline: none;
+            border-color: var(--accent-active);
+        }
+        
+        .kb-search-input::placeholder {
+            color: var(--text-tertiary);
+        }
+        
+        .kb-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .kb-stat-card {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            transition: var(--transition);
+        }
+        
+        .kb-stat-card:hover {
+            border-color: var(--text-secondary);
+        }
+        
+        .kb-stat-label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-xs);
+            margin-bottom: var(--spacing-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .kb-stat-value {
+            color: var(--text-primary);
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+        }
+        
+        .kb-topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .kb-topic-card {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .kb-topic-card:hover {
+            border-color: var(--text-secondary);
+        }
+        
+        .kb-topic-title {
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .kb-topic-meta {
+            color: var(--text-secondary);
+            font-size: var(--font-size-xs);
+        }
+        
+        .kb-detail-view {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            display: none;
+        }
+        
+        .kb-detail-view.active {
+            display: block;
+        }
+        
+        .kb-back-btn {
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            color: var(--text-primary);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            font-family: var(--font-family);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition);
+        }
+        
+        .kb-back-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+        
+        .kb-detail-title {
+            color: var(--text-primary);
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .kb-section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .kb-section-title {
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+        
+        .kb-fact-item {
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-left: var(--border-width-thick) solid var(--accent-active);
+            border-radius: var(--border-radius-sm);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .kb-fact-content {
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+            line-height: var(--line-height-normal);
+            margin-bottom: var(--spacing-sm);
+            white-space: pre-wrap;
+        }
+        
+        .kb-fact-timestamp {
+            color: var(--text-tertiary);
+            font-size: var(--font-size-xs);
+        }
+        
+        .kb-connection-item {
+            color: var(--text-primary);
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .kb-connection-item:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+        
+        .kb-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .kb-tag {
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-lg);
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+        
+        .kb-empty {
+            text-align: center;
+            padding: 60px var(--spacing-lg);
+            color: var(--text-secondary);
+        }
+        
+        .kb-loading {
+            text-align: center;
+            padding: var(--spacing-xxl);
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>THESIDIA</span>
+                </div>
+                <div class="status-indicators">
+                    <div class="status-indicator" id="kbStatus" title="Archive Status">
+                        <span class="status-dot online" id="kbStatusDot"></span>
+                        <span class="status-label">Archive</span>
+                    </div>
+                </div>
+                <nav class="global-nav" id="globalNav">
+                    <a href="/" class="nav-item" data-page="contexts">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        <span>Contexts</span>
+                    </a>
+                    <a href="/stream.html" class="nav-item" data-page="stream">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                        </svg>
+                        <span>Signal Stream</span>
+                    </a>
+                    <a href="/atlas.html" class="nav-item" data-page="atlas">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Pattern Atlas</span>
+                    </a>
+                    <a href="/reactor.html" class="nav-item" data-page="reactor">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                        </svg>
+                        <span>Research Reactor</span>
+                    </a>
+                    <a href="/application.html" class="nav-item" data-page="application">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                        </svg>
+                        <span>Application Layer</span>
+                    </a>
+                    <a href="/archive.html" class="nav-item active" data-page="archive">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            <path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/>
+                        </svg>
+                        <span>Archive</span>
+                    </a>
+                    <a href="/metrics_dashboard.html" class="nav-item" data-page="metrics">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        <span>System Metrics</span>
+                    </a>
+                </nav>
+                <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="kb-container">
+            <div class="kb-content">
+                <div class="kb-header-section">
+                    <h1 class="kb-title">Archive</h1>
+                    <p class="kb-subtitle">Persistent knowledge repository of patterns, connections, and discoveries</p>
+                </div>
+                
+                <div class="kb-search">
+                    <input type="text" id="searchInput" class="kb-search-input" placeholder="Search entries, patterns, connections...">
+                </div>
+                
+                <div class="kb-stats" id="stats">
+                    <div class="kb-stat-card">
+                        <div class="kb-stat-label">Entries</div>
+                        <div class="kb-stat-value" id="statTopics">-</div>
+                    </div>
+                    <div class="kb-stat-card">
+                        <div class="kb-stat-label">Facts</div>
+                        <div class="kb-stat-value" id="statFacts">-</div>
+                    </div>
+                    <div class="kb-stat-card">
+                        <div class="kb-stat-label">Connections</div>
+                        <div class="kb-stat-value" id="statConnections">-</div>
+                    </div>
+                </div>
+                
+                <div id="topicsGrid" class="kb-topics-grid"></div>
+                
+                <div id="detailView" class="kb-detail-view">
+                    <button class="kb-back-btn" onclick="showTopics()">← Back to Entries</button>
+                    <div id="detailContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        let allTopics = [];
+        let currentView = 'topics';
+        
+        async function loadKnowledgeBase() {
+            try {
+                const response = await fetch('/api/knowledge/stats');
+                const stats = await response.json();
+                
+                document.getElementById('statTopics').textContent = stats.total_topics || 0;
+                document.getElementById('statFacts').textContent = stats.total_facts || 0;
+                document.getElementById('statConnections').textContent = stats.total_connections || 0;
+                
+                const topicsResponse = await fetch('/api/knowledge/topics');
+                allTopics = await topicsResponse.json();
+                
+                displayTopics(allTopics);
+                
+                // Update status
+                document.getElementById('kbStatusDot').classList.add('ready');
+            } catch (error) {
+                console.error('Error loading archive:', error);
+                document.getElementById('topicsGrid').innerHTML = '<div class="kb-loading">Error loading archive</div>';
+            }
+        }
+        
+        function displayTopics(topics) {
+            const grid = document.getElementById('topicsGrid');
+            grid.innerHTML = '';
+            
+            if (topics.length === 0) {
+                grid.innerHTML = '<div class="kb-empty">No entries yet. Thesidia will build knowledge as contexts unfold.</div>';
+                return;
+            }
+            
+            topics.forEach(topic => {
+                const card = document.createElement('div');
+                card.className = 'kb-topic-card';
+                card.onclick = () => showTopicDetail(topic);
+                
+                card.innerHTML = `
+                    <div class="kb-topic-title">${escapeHtml(topic)}</div>
+                    <div class="kb-topic-meta">Click to explore</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        async function showTopicDetail(topic) {
+            currentView = 'detail';
+            document.getElementById('topicsGrid').style.display = 'none';
+            document.getElementById('detailView').classList.add('active');
+            
+            try {
+                const response = await fetch(`/api/knowledge/topic/${encodeURIComponent(topic)}`);
+                const data = await response.json();
+                
+                if (!data || data.error) {
+                    document.getElementById('detailContent').innerHTML = '<div class="kb-loading">Entry not found</div>';
+                    return;
+                }
+                
+                let html = `
+                    <div class="kb-detail-title">${escapeHtml(data.topic || topic)}</div>
+                    <div class="kb-topic-meta" style="margin-bottom: 24px;">Last updated: ${new Date(data.last_updated).toLocaleString()}</div>
+                `;
+                
+                if (data.facts && data.facts.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Facts & Information</div>';
+                    data.facts.slice().reverse().forEach(fact => {
+                        const info = typeof fact.information === 'object' 
+                            ? JSON.stringify(fact.information, null, 2)
+                            : fact.information;
+                        html += `
+                            <div class="kb-fact-item">
+                                <div class="kb-fact-content">${escapeHtml(info)}</div>
+                                <div class="kb-fact-timestamp">${new Date(fact.timestamp).toLocaleString()}</div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.connections && data.connections.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Connections</div>';
+                    data.connections.forEach(conn => {
+                        html += `<div class="kb-connection-item" onclick="showTopicDetail('${escapeHtml(conn)}')">→ ${escapeHtml(conn)}</div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.patterns && data.patterns.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Patterns</div>';
+                    html += '<div class="kb-tags">';
+                    data.patterns.forEach(pattern => {
+                        html += `<span class="kb-tag">${escapeHtml(pattern)}</span>`;
+                    });
+                    html += '</div></div>';
+                }
+                
+                if (data.sources && data.sources.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Sources</div>';
+                    data.sources.forEach(source => {
+                        html += `<div class="kb-fact-item"><div class="kb-fact-content">${escapeHtml(source)}</div></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.metaphors && data.metaphors.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Metaphors</div>';
+                    data.metaphors.forEach(metaphor => {
+                        html += `<div class="kb-fact-item"><div class="kb-fact-content">${escapeHtml(metaphor)}</div></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.unfoldings && data.unfoldings.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Unfoldings</div>';
+                    data.unfoldings.forEach(unfolding => {
+                        html += `<div class="kb-fact-item"><div class="kb-fact-content">${escapeHtml(unfolding)}</div></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                if (data.possibilities && data.possibilities.length > 0) {
+                    html += '<div class="kb-section"><div class="kb-section-title">Possibilities</div>';
+                    data.possibilities.forEach(possibility => {
+                        html += `<div class="kb-fact-item"><div class="kb-fact-content">${escapeHtml(possibility)}</div></div>`;
+                    });
+                    html += '</div>';
+                }
+                
+                document.getElementById('detailContent').innerHTML = html;
+            } catch (error) {
+                console.error('Error loading entry detail:', error);
+                document.getElementById('detailContent').innerHTML = '<div class="kb-loading">Error loading entry</div>';
+            }
+        }
+        
+        function showTopics() {
+            currentView = 'topics';
+            document.getElementById('topicsGrid').style.display = 'grid';
+            document.getElementById('detailView').classList.remove('active');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            if (query === '') {
+                displayTopics(allTopics);
+            } else {
+                const filtered = allTopics.filter(topic => 
+                    topic.toLowerCase().includes(query)
+                );
+                displayTopics(filtered);
+            }
+        });
+        
+        // Load on page load
+        loadKnowledgeBase();
+        
+        // Refresh every 30 seconds
+        setInterval(loadKnowledgeBase, 30000);
+    </script>
+    <script src="nav.js"></script>
+</body>
+</html>
+

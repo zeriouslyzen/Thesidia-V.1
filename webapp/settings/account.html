@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>Account Settings - Thesidia</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .settings-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+        }
+        
+        .settings-content {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .settings-header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .settings-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .settings-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .settings-section {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .settings-section-title {
+            font-size: var(--font-size-md);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+            font-family: var(--font-family);
+            transition: var(--transition);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-active);
+            background: var(--bg-secondary);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-help {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .form-error {
+            font-size: var(--font-size-xs);
+            color: var(--status-error);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .avatar-upload {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: var(--border-width-thin) solid var(--border-color);
+        }
+        
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-active);
+        }
+        
+        .btn-primary {
+            background: var(--accent-active);
+            color: var(--color-void);
+            border-color: var(--accent-active);
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .settings-nav {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+        
+        .settings-nav-link {
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            transition: var(--transition);
+        }
+        
+        .settings-nav-link:hover {
+            border-color: var(--accent-active);
+            color: var(--text-primary);
+        }
+        
+        .settings-nav-link.active {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-active);
+            color: var(--text-primary);
+        }
+        
+        .success-message {
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--accent-active);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Thesidia</span>
+                </div>
+                <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="settings-container">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h1 class="settings-title">Settings</h1>
+                    <p class="settings-subtitle">Manage your account and preferences</p>
+                </div>
+
+                <!-- Settings Navigation -->
+                <nav class="settings-nav">
+                    <a href="account.html" class="settings-nav-link active">Account</a>
+                    <a href="security.html" class="settings-nav-link">Security</a>
+                    <a href="privacy.html" class="settings-nav-link">Privacy</a>
+                    <a href="notifications.html" class="settings-nav-link">Notifications</a>
+                    <a href="content.html" class="settings-nav-link">Content</a>
+                    <a href="advanced.html" class="settings-nav-link">Advanced</a>
+                </nav>
+
+                <!-- Success Message -->
+                <div class="success-message" id="successMessage">
+                    Settings saved successfully!
+                </div>
+
+                <!-- Account Section -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">Profile Information</h2>
+                    
+                    <!-- Avatar Upload -->
+                    <div class="form-group">
+                        <label class="form-label">Profile Picture</label>
+                        <div class="avatar-upload">
+                            <img src="" alt="Avatar" class="avatar-preview" id="avatarPreview" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\'%3E%3Ccircle cx=\'40\' cy=\'40\' r=\'40\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'40\' cy=\'30\' r=\'10\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M20 70 Q40 60 60 70\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                            <div>
+                                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                                <button class="btn" onclick="document.getElementById('avatarInput').click()">Change Avatar</button>
+                                <p class="form-help">JPG, PNG or GIF. Max size 5MB.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" id="username" class="form-input" placeholder="@username">
+                        <p class="form-help">Your unique username. Can only contain letters, numbers, underscores, and hyphens.</p>
+                        <p class="form-error" id="usernameError"></p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="your.email@example.com">
+                        <p class="form-help">Your email address for account recovery and notifications.</p>
+                        <p class="form-error" id="emailError"></p>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="tel" id="phoneNumber" class="form-input" placeholder="+1 (555) 123-4567">
+                        <p class="form-help">Your phone number for account security and two-factor authentication.</p>
+                        <p class="form-error" id="phoneError"></p>
+                    </div>
+
+                    <!-- Display Name -->
+                    <div class="form-group">
+                        <label for="displayName" class="form-label">Display Name</label>
+                        <input type="text" id="displayName" class="form-input" placeholder="Your display name">
+                        <p class="form-help">This is how your name appears to other users.</p>
+                    </div>
+
+                    <!-- Bio -->
+                    <div class="form-group">
+                        <label for="bio" class="form-label">Bio</label>
+                        <textarea id="bio" class="form-input form-textarea" placeholder="Tell us about yourself..." maxlength="500"></textarea>
+                        <p class="form-help"><span id="bioCharCount">0</span>/500 characters</p>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" id="location" class="form-input" placeholder="City, Country">
+                    </div>
+
+                    <!-- Website -->
+                    <div class="form-group">
+                        <label for="website" class="form-label">Website</label>
+                        <input type="url" id="website" class="form-input" placeholder="https://example.com">
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="saveBtn">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../app.js"></script>
+    <script src="settings.js"></script>
+    <script>
+        // Account page specific initialization
+        if (window.SettingsPage) {
+            window.settingsPage = new SettingsPage('account');
+        }
+    </script>
+</body>
+</html>
+

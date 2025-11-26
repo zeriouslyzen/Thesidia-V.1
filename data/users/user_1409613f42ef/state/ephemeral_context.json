@@ -1,0 +1,17 @@
+{
+  "interactions": [
+    {
+      "user": "",
+      "assistant": "there! I'm here to help you dig into whatever you throw at me - history, supplements, code, whatever - and connect the real dots.",
+      "timestamp": "2025-11-26T14:08:03.507195",
+      "metadata": {
+        "timestamp": "2025-11-26T14:08:03.506878",
+        "response_length": 133,
+        "streamed": true,
+        "user_id": "user_1409613f42ef",
+        "session_id": "361744ae-6ca3-4471-bb35-96cedf44c894"
+      }
+    }
+  ],
+  "last_updated": "2025-11-26T14:08:03.507201"
+}

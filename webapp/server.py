@@ -8,6 +8,8 @@ import sys
 import os
 from pathlib import Path
 
+# Ensure os is available for environment variables
+
 # Add project root and src to path
 project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
@@ -29,8 +31,15 @@ from user_interest_tracker import UserInterestTracker
 from astronomical_patterns import AstronomicalPatternEngine
 import json
 from datetime import datetime
-import ollama
 import importlib
+
+# Ollama import - optional for Vercel deployment
+try:
+    import ollama
+    OLLAMA_AVAILABLE = True
+except ImportError:
+    OLLAMA_AVAILABLE = False
+    ollama = None
 
 # For Vercel: serve from public/ if it exists, otherwise current directory
 static_dir = Path(__file__).parent.parent / 'public'
@@ -39,6 +48,27 @@ if static_dir.exists():
 else:
     app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)  # Enable CORS for security
+
+# Security headers middleware
+from webapp.config.security import is_security_headers_enabled, is_https_required
+
+@app.after_request
+def add_security_headers(response):
+    """Add security headers to responses"""
+    if is_security_headers_enabled():
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        
+        if is_https_required():
+            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        
+        # Content Security Policy
+        csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'"
+        response.headers['Content-Security-Policy'] = csp
+    
+    return response
 
 # Initialize Thesidia
 thesidia = None
@@ -55,8 +85,24 @@ interest_tracker = UserInterestTracker(base_dir=project_root)
 # Initialize Astronomical Pattern Engine
 astronomical_engine = AstronomicalPatternEngine(data_dir=project_root / 'data')
 
+# Initialize Settings Manager
+try:
+    from webapp.settings.settings_manager import SettingsManager
+    settings_manager = SettingsManager(base_dir=project_root)
+except ImportError:
+    settings_manager = None
+
+# Initialize Auth Manager
+try:
+    from webapp.auth.auth_manager import AuthManager
+    auth_manager = AuthManager(base_dir=project_root)
+except ImportError:
+    auth_manager = None
+
 def check_ollama():
     """Check if Ollama is running"""
+    if not OLLAMA_AVAILABLE:
+        return False
     try:
         ollama.list()
         return True
@@ -66,6 +112,11 @@ def check_ollama():
 def init_thesidia():
     """Initialize Thesidia - FORCE FRESH INSTANCE"""
     global thesidia, thesidia_ready, ollama_status
+    
+    # Check if Ollama is available first
+    if not OLLAMA_AVAILABLE:
+        ollama_status = False
+        return False
     
     # Force reload module to ensure latest code
     import thesidia_hybrid_adaptive
@@ -228,7 +279,9 @@ def thesidia_api():
     if not request.is_json:
         return jsonify({'error': 'Invalid content type'}), 400
     
-    data = request.get_json()
+    # Security: Input sanitization
+    from webapp.middleware.security import sanitize_request_data
+    data = sanitize_request_data(request.get_json())
     raw_message = data.get('message', '').strip()
     
     # CRITICAL FIX #1: Log RAW user input BEFORE any processing
@@ -659,6 +712,9 @@ def user_session():
         session_id = data.get('session_id')
         
         user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        # Convert Path objects to strings for JSON serialization
+        if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
+            user_data['user_dir'] = str(user_data['user_dir'])
         return jsonify(user_data)
     else:
         # Get session from query params
@@ -666,6 +722,9 @@ def user_session():
         session_id = request.args.get('session_id')
         
         user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        # Convert Path objects to strings for JSON serialization
+        if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
+            user_data['user_dir'] = str(user_data['user_dir'])
         return jsonify(user_data)
 
 @app.route('/api/stream/feed', methods=['GET'])
@@ -707,6 +766,669 @@ def user_export():
         response = jsonify(export_data)
         response.headers['Content-Disposition'] = f'attachment; filename=thesidia_conversation_{export_data.get("user_id", "export")}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
         return response
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Settings API
+@app.route('/api/settings', methods=['GET'])
+def get_settings():
+    """Get all user settings"""
+    if not settings_manager:
+        return jsonify({'error': 'Settings manager not available'}), 503
+    
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data to find user_id
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        settings = settings_manager.get_settings(user_id)
+        return jsonify(settings)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/settings/account', methods=['POST'])
+def update_account_settings():
+    """Update account settings"""
+    if not settings_manager:
+        return jsonify({'error': 'Settings manager not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Update account section
+        account_data = {
+            'username': data.get('username', ''),
+            'email': data.get('email', ''),
+            'phone_number': data.get('phone_number', ''),
+            'display_name': data.get('display_name', ''),
+            'bio': data.get('bio', ''),
+            'location': data.get('location', ''),
+            'website': data.get('website', '')
+        }
+        
+        # Validate username if provided
+        if account_data['username']:
+            is_valid, error = settings_manager.validate_username(account_data['username'], user_id)
+            if not is_valid:
+                return jsonify({'error': error}), 400
+        
+        success, error = settings_manager.update_settings_section(user_id, 'account', account_data)
+        
+        if not success:
+            return jsonify({'error': error}), 400
+        
+        return jsonify({'success': True, 'message': 'Account settings updated'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/settings/security', methods=['POST'])
+def update_security_settings():
+    """Update security settings (password change)"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Handle password change
+        if 'current_password' in data and 'new_password' in data:
+            if not auth_manager:
+                return jsonify({'error': 'Auth manager not available'}), 503
+            success = auth_manager.change_password(
+                user_id,
+                data['current_password'],
+                data['new_password']
+            )
+            if not success:
+                return jsonify({'error': 'Invalid current password'}), 400
+        
+        # Update security section
+        security_data = {
+            'two_factor_enabled': data.get('two_factor_enabled', False),
+            'login_notifications': data.get('login_notifications', True)
+        }
+        
+        # Handle password change if provided
+        if data.get('current_password') and data.get('new_password'):
+            from webapp.auth.auth_manager import AuthManager
+            from webapp.config.security import is_auth_required
+            
+            if is_auth_required():
+                # In production mode, verify and update password
+                auth_manager = AuthManager(user_manager=user_memory_manager.user_manager)
+                
+                # Verify current password
+                user_info = user_memory_manager.user_manager._load_user_info(user_id)
+                if not auth_manager.verify_password(data.get('current_password'), user_info.get('password_hash', '')):
+                    return jsonify({'error': 'Current password is incorrect'}), 400
+                
+                # Hash and save new password
+                new_password_hash = auth_manager.hash_password(data.get('new_password'))
+                user_info['password_hash'] = new_password_hash
+                user_memory_manager.user_manager._save_user_info(user_id, user_info)
+            else:
+                # In dev mode, just store it
+                user_info = user_memory_manager.user_manager._load_user_info(user_id)
+                user_info['password_hash'] = data.get('new_password')
+                user_memory_manager.user_manager._save_user_info(user_id, user_info)
+        
+        success, error = settings_manager.update_settings_section(user_id, 'security', security_data)
+        
+        if not success:
+            return jsonify({'error': error}), 400
+        
+        return jsonify({'success': True, 'message': 'Security settings updated'})
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/settings/privacy', methods=['POST'])
+def update_privacy_settings():
+    """Update privacy settings"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Update privacy section
+        privacy_data = {
+            'profile_visibility': data.get('profile_visibility', 'public'),
+            'private_account': data.get('private_account', False),
+            'dm_enabled': data.get('dm_enabled', True),
+            'show_online_status': data.get('show_online_status', True),
+            'blocked_users': data.get('blocked_users', []),
+            'muted_users': data.get('muted_users', [])
+        }
+        
+        success, error = settings_manager.update_settings_section(user_id, 'privacy', privacy_data)
+        
+        if not success:
+            return jsonify({'error': error}), 400
+        
+        return jsonify({'success': True, 'message': 'Privacy settings updated'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/settings/notifications', methods=['POST'])
+def update_notification_settings():
+    """Update notification settings"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Update notifications section
+        notifications_data = {
+            'email_enabled': data.get('email_enabled', False),
+            'push_enabled': data.get('push_enabled', True),
+            'mentions': data.get('mentions', True),
+            'follows': data.get('follows', True),
+            'likes': data.get('likes', True),
+            'comments': data.get('comments', True),
+            'reposts': data.get('reposts', False)
+        }
+        
+        success, error = settings_manager.update_settings_section(user_id, 'notifications', notifications_data)
+        
+        if not success:
+            return jsonify({'error': error}), 400
+        
+        return jsonify({'success': True, 'message': 'Notification settings updated'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/settings/content', methods=['POST'])
+def update_content_settings():
+    """Update content settings"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Update content section
+        content_data = {
+            'auto_play_videos': data.get('auto_play_videos', False),
+            'content_filter': data.get('content_filter', 'moderate'),
+            'language': data.get('language', 'en'),
+            'timezone': data.get('timezone', 'UTC')
+        }
+        
+        success, error = settings_manager.update_settings_section(user_id, 'content', content_data)
+        
+        if not success:
+            return jsonify({'error': error}), 400
+        
+        return jsonify({'success': True, 'message': 'Content settings updated'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/settings/avatar', methods=['POST'])
+def upload_avatar():
+    """Upload avatar image"""
+    # TODO: Implement file upload handling
+    return jsonify({'error': 'Not implemented yet'}), 501
+
+@app.route('/api/settings/banner', methods=['POST'])
+def upload_banner():
+    """Upload banner image"""
+    # TODO: Implement file upload handling
+    return jsonify({'error': 'Not implemented yet'}), 501
+
+@app.route('/api/settings/delete-account', methods=['POST'])
+def delete_account():
+    """Delete user account"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    password = data.get('password', '')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Verify password if in production mode
+        from webapp.config.security import is_auth_required
+        if is_auth_required() and password:
+            from webapp.auth.auth_manager import AuthManager
+            auth_manager = AuthManager(user_manager=user_memory_manager.user_manager)
+            user_info = user_memory_manager.user_manager._load_user_info(user_id)
+            if not auth_manager.verify_password(password, user_info.get('password_hash', '')):
+                return jsonify({'error': 'Password is incorrect'}), 400
+        
+        # Delete user data
+        user_dir = project_root / "data" / "users" / user_id
+        if user_dir.exists():
+            import shutil
+            shutil.rmtree(user_dir)
+        
+        # Delete user posts
+        if post_manager:
+            user_posts = post_manager.get_posts_by_user(user_id)
+            for post in user_posts:
+                post_manager.delete_post(post['id'])
+        
+        return jsonify({'success': True, 'message': 'Account deleted successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/users/<target_username>/block', methods=['POST'])
+def block_user(target_username):
+    """Block a user"""
+    if not social_graph:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        # Find target user by username
+        # TODO: Implement username lookup
+        # For now, assume target_username is a user_id
+        target_user_id = target_username.lstrip('@')
+        
+        success = social_graph.block_user(user_id, target_user_id)
+        if success:
+            return jsonify({'success': True, 'message': 'User blocked'})
+        return jsonify({'error': 'Failed to block user'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/users/<target_username>/mute', methods=['POST'])
+def mute_user(target_username):
+    """Mute a user"""
+    if not social_graph:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        # Find target user by username
+        target_user_id = target_username.lstrip('@')
+        
+        success = social_graph.mute_user(user_id, target_user_id)
+        if success:
+            return jsonify({'success': True, 'message': 'User muted'})
+        return jsonify({'error': 'Failed to mute user'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Social Media API
+try:
+    from webapp.social.post_manager import PostManager
+    from webapp.social.feed_manager import FeedManager
+    from webapp.social.social_graph import SocialGraph
+    from webapp.social.interaction_manager import InteractionManager
+    from webapp.social.moderation_manager import ModerationManager
+    from webapp.social.ai_quality_scorer import AIQualityScorer
+    
+    # Initialize social managers
+    post_manager = PostManager(base_dir=project_root)
+    feed_manager = FeedManager(base_dir=project_root)
+    social_graph = SocialGraph(base_dir=project_root)
+    interaction_manager = InteractionManager(base_dir=project_root)
+    moderation_manager = ModerationManager(base_dir=project_root)
+    quality_scorer = AIQualityScorer(base_dir=project_root)
+except ImportError as e:
+    print(f"Warning: Social media features not available: {e}")
+    post_manager = None
+    feed_manager = None
+    social_graph = None
+    interaction_manager = None
+    moderation_manager = None
+    quality_scorer = None
+
+@app.route('/api/posts', methods=['POST'])
+def create_post():
+    """Create a new post"""
+    if not post_manager or not moderation_manager or not feed_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Create post
+        post = post_manager.create_post(
+            author_id=user_id,
+            content=data.get('content', ''),
+            media=data.get('media', []),
+            tags=data.get('tags', []),
+            visibility=data.get('visibility', 'public')
+        )
+        
+        # Moderate post
+        moderation_result = moderation_manager.moderate_post(post['id'])
+        
+        # Invalidate feed cache
+        feed_manager.invalidate_cache(user_id)
+        
+        return jsonify(post)
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/posts/<post_id>', methods=['GET'])
+def get_post(post_id):
+    """Get a post by ID"""
+    if not post_manager or not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    try:
+        post = post_manager.get_post(post_id)
+        if not post:
+            return jsonify({'error': 'Post not found'}), 404
+        
+        # Get interactions
+        interactions = interaction_manager.get_interactions(post_id)
+        post['interactions'] = interactions
+        
+        return jsonify(post)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/posts/<post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    """Delete a post"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        success = post_manager.delete_post(post_id, user_id)
+        if not success:
+            return jsonify({'error': 'Post not found'}), 404
+        
+        # Invalidate feed cache
+        feed_manager.invalidate_cache()
+        
+        return jsonify({'success': True})
+    except PermissionError as e:
+        return jsonify({'error': str(e)}), 403
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/feed', methods=['GET'])
+def get_feed():
+    """Get user feed"""
+    if not feed_manager or not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    feed_type = request.args.get('type', 'chronological')  # chronological, quality, personalized
+    limit = int(request.args.get('limit', 20))
+    offset = int(request.args.get('offset', 0))
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Get feed
+        posts = feed_manager.get_feed(user_id, feed_type, limit, offset)
+        
+        # Add interactions to each post
+        for post in posts:
+            interactions = interaction_manager.get_interactions(post['id'])
+            post['interactions'] = interactions
+        
+        return jsonify({
+            'items': posts,
+            'has_more': len(posts) == limit,
+            'page': offset // limit,
+            'limit': limit
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/posts/<post_id>/like', methods=['POST'])
+def like_post(post_id):
+    """Like or unlike a post"""
+    if not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        liked = interaction_manager.like_post(post_id, user_id)
+        interactions = interaction_manager.get_interactions(post_id)
+        
+        return jsonify({
+            'liked': liked,
+            'interactions': interactions
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/posts/<post_id>/comment', methods=['POST'])
+def comment_post(post_id):
+    """Comment on a post"""
+    if not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    content = data.get('content', '')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    if not content:
+        return jsonify({'error': 'Comment content required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        comment = interaction_manager.comment_post(post_id, user_id, content)
+        interactions = interaction_manager.get_interactions(post_id)
+        
+        return jsonify({
+            'comment': comment,
+            'interactions': interactions
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/users/<target_user_id>/follow', methods=['POST'])
+def follow_user(target_user_id):
+    """Follow or unfollow a user"""
+    if not social_graph or not feed_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Check if already following
+        is_following = social_graph.is_following(user_id, target_user_id)
+        
+        if is_following:
+            social_graph.unfollow_user(user_id, target_user_id)
+            following = False
+        else:
+            social_graph.follow_user(user_id, target_user_id)
+            following = True
+        
+        # Invalidate feed cache
+        feed_manager.invalidate_cache(user_id)
+        
+        return jsonify({
+            'following': following,
+            'target_user_id': target_user_id
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/users/<user_id>/profile', methods=['GET'])
+def get_user_profile(user_id):
+    """Get user profile"""
+    if not settings_manager or not social_graph or not post_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    try:
+        settings = settings_manager.get_settings(user_id)
+        profile = settings.get('account', {})
+        
+        # Get social graph
+        graph = social_graph.get_social_graph(user_id)
+        
+        # Get post count
+        posts = post_manager.get_posts_by_user(user_id, limit=1)
+        
+        profile_data = {
+            'user_id': user_id,
+            'username': profile.get('username', ''),
+            'display_name': profile.get('display_name', ''),
+            'bio': profile.get('bio', ''),
+            'avatar_url': profile.get('avatar_url', ''),
+            'stats': {
+                'posts': len(posts),
+                'followers': len(graph.get('followers', [])),
+                'following': len(graph.get('following', []))
+            }
+        }
+        
+        return jsonify(profile_data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -792,7 +1514,10 @@ if __name__ == '__main__':
                 continue
         return 5000  # Fallback
     
-    port = find_free_port(5002)  # Use 5002 to match frontend
+    # Use PORT from environment (Railway, Heroku, etc.) or find available port
+    port = int(os.getenv('PORT', 0))
+    if not port:
+        port = find_free_port(5002)  # Use 5002 to match frontend
     
     # Security: Run on localhost by default
     # For production, use proper WSGI server (gunicorn, uwsgi)

@@ -48,6 +48,9 @@ class ThesidiaApp {
             this.loadConversations();
             this.setupAutoResize();
             this.setupKeyboardShortcuts();
+        } else if (this.currentPage === 'settings') {
+            // Settings pages don't need any special setup - they have their own JS
+            // Just ensure sidebar infrastructure is available
         } else {
             // Minimal setup for other pages (stream, profile, etc.)
             this.setupMinimalListeners();
@@ -62,6 +65,7 @@ class ThesidiaApp {
         if (path.includes('stream.html') || path === '/stream.html') return 'stream';
         if (path.includes('profile.html') || path === '/profile.html') return 'profile';
         if (path.includes('archive.html') || path === '/archive.html') return 'archive';
+        if (path.includes('settings/') || path.includes('/settings')) return 'settings';
         return 'contexts'; // Default to contexts
     }
     
@@ -70,11 +74,23 @@ class ThesidiaApp {
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('leftSidebar');
         const app = document.getElementById('app');
+        const thesidiaTitle = document.getElementById('thesidiaTitle');
         
         if (!menuBtn || !sidebar || !app) return;
         
         // Menu toggle
         menuBtn.addEventListener('click', () => this.toggleLeftSidebar());
+        
+        // Click THESIDIA title to go to stream page
+        if (thesidiaTitle) {
+            thesidiaTitle.style.cursor = 'pointer';
+            thesidiaTitle.addEventListener('click', () => {
+                window.location.href = '/stream.html';
+            });
+        }
+        
+        // Swipe gesture handlers for sidebar
+        this.setupSwipeGestures();
         
         // Close on escape key
         document.addEventListener('keydown', (e) => {
@@ -92,6 +108,50 @@ class ThesidiaApp {
                 this.closeLeftSidebar();
             }
         });
+    }
+    
+    setupSwipeGestures() {
+        const sidebar = document.getElementById('leftSidebar');
+        if (!sidebar) return;
+        
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        
+        // Touch start
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        
+        // Touch end - detect swipe
+        document.addEventListener('touchend', (e) => {
+            if (!touchStartX) return;
+            
+            touchEndX = e.changedTouches[0].clientX;
+            touchEndY = e.changedTouches[0].clientY;
+            
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = Math.abs(touchEndY - touchStartY);
+            const absDeltaX = Math.abs(deltaX);
+            
+            // Only trigger if horizontal swipe is dominant and significant
+            if (absDeltaX > 50 && absDeltaX > deltaY) {
+                const isOpen = sidebar.classList.contains('open');
+                
+                if (deltaX > 0 && !isOpen) {
+                    // Swipe right to open
+                    this.toggleLeftSidebar();
+                } else if (deltaX < 0 && isOpen) {
+                    // Swipe left to close
+                    this.closeLeftSidebar();
+                }
+            }
+            
+            // Reset
+            touchStartX = 0;
+        }, { passive: true });
     }
     
     initColorTheme() {
@@ -630,6 +690,7 @@ class ThesidiaApp {
     
     setupAutoResize() {
         const promptInput = document.getElementById('promptInput');
+        if (!promptInput) return; // Element doesn't exist on this page
         promptInput.addEventListener('input', () => {
             promptInput.style.height = 'auto';
             promptInput.style.height = Math.min(promptInput.scrollHeight, 200) + 'px';
@@ -1159,6 +1220,8 @@ class ThesidiaApp {
             if (isOpen) {
                 this.closeLeftSidebar();
             } else {
+                // Adjust prompt bar position
+                this.adjustPromptBarForSidebar(true);
                 // Apply classes immediately for smooth single motion
                 sidebar.classList.add('open');
                 app.classList.add('sidebar-pushed');
@@ -1173,11 +1236,36 @@ class ThesidiaApp {
         const app = document.getElementById('app');
         
         if (sidebar && app) {
+            // Adjust prompt bar position
+            this.adjustPromptBarForSidebar(false);
             // Apply classes immediately for smooth single motion
             sidebar.classList.remove('open');
             app.classList.remove('sidebar-pushed');
             // Restore body scroll
             document.body.style.overflow = '';
+        }
+    }
+    
+    adjustPromptBarForSidebar(isOpen) {
+        // Handle both prompt bar types
+        const hudPromptBar = document.querySelector('.hud-prompt-container');
+        const promptBar = document.querySelector('.prompt-bar-container');
+        const targetBar = hudPromptBar || promptBar;
+        
+        if (!targetBar) return;
+        
+        // Get sidebar width
+        const sidebar = document.getElementById('leftSidebar');
+        const sidebarWidth = sidebar ? (sidebar.offsetWidth || 240) : 240;
+        
+        if (isOpen) {
+            // Adjust left and remove right to allow proper width calculation
+            targetBar.style.left = `${sidebarWidth}px`;
+            targetBar.style.right = '0';
+        } else {
+            // Reset to full width
+            targetBar.style.left = '0';
+            targetBar.style.right = '0';
         }
     }
     

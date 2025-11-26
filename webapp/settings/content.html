@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>Content Settings - Thesidia</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .settings-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+        }
+        
+        .settings-content {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .settings-header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .settings-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .settings-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .settings-section {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .settings-section-title {
+            font-size: var(--font-size-md);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+            font-family: var(--font-family);
+        }
+        
+        .form-help {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            transition: var(--transition);
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--text-secondary);
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--accent-active);
+            border-color: var(--accent-active);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+            background-color: var(--color-void);
+        }
+        
+        .form-group-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .form-label-group {
+            flex: 1;
+        }
+        
+        .settings-nav {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+        
+        .settings-nav-link {
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            transition: var(--transition);
+        }
+        
+        .settings-nav-link:hover {
+            border-color: var(--accent-active);
+            color: var(--text-primary);
+        }
+        
+        .settings-nav-link.active {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-active);
+            color: var(--text-primary);
+        }
+        
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn-primary {
+            background: var(--accent-active);
+            color: var(--color-void);
+            border-color: var(--accent-active);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Thesidia</span>
+                </div>
+                <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <main class="settings-container">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h1 class="settings-title">Settings</h1>
+                    <p class="settings-subtitle">Customize your content preferences</p>
+                </div>
+
+                <nav class="settings-nav">
+                    <a href="account.html" class="settings-nav-link">Account</a>
+                    <a href="security.html" class="settings-nav-link">Security</a>
+                    <a href="privacy.html" class="settings-nav-link">Privacy</a>
+                    <a href="notifications.html" class="settings-nav-link">Notifications</a>
+                    <a href="content.html" class="settings-nav-link active">Content</a>
+                    <a href="advanced.html" class="settings-nav-link">Advanced</a>
+                </nav>
+
+                <!-- Media Settings -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">Media</h2>
+                    
+                    <div class="form-group form-group-toggle">
+                        <div class="form-label-group">
+                            <label class="form-label">Auto-play Videos</label>
+                            <p class="form-help">Automatically play videos in your feed</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoPlayVideos">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Content Filter -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">Content Filter</h2>
+                    
+                    <div class="form-group">
+                        <label for="contentFilter" class="form-label">Content Filter Level</label>
+                        <select id="contentFilter" class="form-select">
+                            <option value="none">None</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="strict">Strict</option>
+                        </select>
+                        <p class="form-help">Control what content appears in your feed</p>
+                    </div>
+                </div>
+
+                <!-- Language & Region -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">Language & Region</h2>
+                    
+                    <div class="form-group">
+                        <label for="language" class="form-label">Language</label>
+                        <select id="language" class="form-select">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="ja">Japanese</option>
+                            <option value="zh">Chinese</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone" class="form-label">Timezone</label>
+                        <select id="timezone" class="form-select">
+                            <option value="UTC">UTC</option>
+                            <option value="America/New_York">Eastern Time</option>
+                            <option value="America/Chicago">Central Time</option>
+                            <option value="America/Denver">Mountain Time</option>
+                            <option value="America/Los_Angeles">Pacific Time</option>
+                            <option value="Europe/London">London</option>
+                            <option value="Europe/Paris">Paris</option>
+                            <option value="Asia/Tokyo">Tokyo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <button class="btn btn-primary" id="saveContentBtn">Save Changes</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../app.js"></script>
+    <script src="settings.js"></script>
+    <script>
+        if (window.SettingsPage) {
+            window.settingsPage = new SettingsPage('content');
+        }
+    </script>
+</body>
+</html>
+

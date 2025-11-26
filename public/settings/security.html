@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>Security Settings - Thesidia</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .settings-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+        }
+        
+        .settings-content {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .settings-header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .settings-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .settings-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .settings-section {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .settings-section-title {
+            font-size: var(--font-size-md);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-label {
+            display: block;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+            font-family: var(--font-family);
+            transition: var(--transition);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-active);
+            background: var(--bg-secondary);
+        }
+        
+        .form-help {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .form-error {
+            font-size: var(--font-size-xs);
+            color: var(--status-error);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .password-strength {
+            margin-top: var(--spacing-xs);
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            transition: var(--transition);
+        }
+        
+        .password-strength-weak { background: #ff4444; width: 33%; }
+        .password-strength-medium { background: #ffaa00; width: 66%; }
+        .password-strength-strong { background: #00ff44; width: 100%; }
+        
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-active);
+        }
+        
+        .btn-primary {
+            background: var(--accent-active);
+            color: var(--color-void);
+            border-color: var(--accent-active);
+        }
+        
+        .btn-danger {
+            background: transparent;
+            border-color: var(--status-error);
+            color: var(--status-error);
+        }
+        
+        .btn-danger:hover {
+            background: var(--status-error);
+            color: var(--text-primary);
+        }
+        
+        .settings-nav {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+        
+        .settings-nav-link {
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            transition: var(--transition);
+        }
+        
+        .settings-nav-link:hover {
+            border-color: var(--accent-active);
+            color: var(--text-primary);
+        }
+        
+        .settings-nav-link.active {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-active);
+            color: var(--text-primary);
+        }
+        
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .session-info {
+            flex: 1;
+        }
+        
+        .session-title {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .session-meta {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            transition: var(--transition);
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--text-secondary);
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--accent-active);
+            border-color: var(--accent-active);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+            background-color: var(--color-void);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Thesidia</span>
+                </div>
+                <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <main class="settings-container">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h1 class="settings-title">Settings</h1>
+                    <p class="settings-subtitle">Manage your security and privacy</p>
+                </div>
+
+                <nav class="settings-nav">
+                    <a href="account.html" class="settings-nav-link">Account</a>
+                    <a href="security.html" class="settings-nav-link active">Security</a>
+                    <a href="privacy.html" class="settings-nav-link">Privacy</a>
+                    <a href="notifications.html" class="settings-nav-link">Notifications</a>
+                    <a href="content.html" class="settings-nav-link">Content</a>
+                    <a href="advanced.html" class="settings-nav-link">Advanced</a>
+                </nav>
+
+                <!-- Password Change -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">Change Password</h2>
+                    
+                    <div class="form-group">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" id="currentPassword" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" id="newPassword" class="form-input">
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                        </div>
+                        <p class="form-help">Password must be at least 12 characters long and contain letters and numbers.</p>
+                        <p class="form-error" id="passwordError"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" class="form-input">
+                        <p class="form-error" id="confirmPasswordError"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                    </div>
+                </div>
+
+                <!-- Two-Factor Authentication -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">Two-Factor Authentication</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Enable 2FA</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="twoFactorEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <p class="form-help">Add an extra layer of security to your account.</p>
+                    </div>
+                </div>
+
+                <!-- Active Sessions -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">Active Sessions</h2>
+                    <div id="sessionsList">
+                        <p class="form-help">Loading sessions...</p>
+                    </div>
+                </div>
+
+                <!-- Login History -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">Login History</h2>
+                    <div id="loginHistory">
+                        <p class="form-help">Loading login history...</p>
+                    </div>
+                </div>
+
+                <!-- Delete Account -->
+                <div class="settings-section">
+                    <h2 class="settings-section-title">Delete Account</h2>
+                    <p class="form-help" style="margin-bottom: var(--spacing-md);">Permanently delete your account and all associated data. This action cannot be undone.</p>
+                    
+                    <div class="form-group">
+                        <label for="deleteConfirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" id="deleteConfirmPassword" class="form-input" placeholder="Enter your password to confirm">
+                        <p class="form-error" id="deleteAccountError"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-danger" id="deleteAccountBtn">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../app.js"></script>
+    <script src="settings.js"></script>
+    <script>
+        if (window.SettingsPage) {
+            window.settingsPage = new SettingsPage('security');
+        }
+    </script>
+</body>
+</html>
+

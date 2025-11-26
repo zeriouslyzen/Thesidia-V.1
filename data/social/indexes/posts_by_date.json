@@ -1,0 +1,10 @@
+{
+  "_schema_version": "1.0",
+  "_description": "Index of post IDs sorted by creation date for chronological feeds",
+  "_last_updated": "2025-01-26T00:00:00Z",
+  "index": [
+    "post_5f74d2b3d736",
+    "post_cdc6c9f6cf38",
+    "post_d5db7711fe59"
+  ]
+}
