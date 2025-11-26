@@ -31,13 +31,177 @@ class ThesidiaApp {
     }
     
     init() {
+        // Detect current page
+        this.currentPage = this.detectPage();
+        
         this.setupUserSession();
-        this.setupEventListeners();
-        this.loadConversations();
-        this.setupAutoResize();
-        this.setupKeyboardShortcuts();
+        
+        // Initialize color theme
+        this.initColorTheme();
+        
+        // Universal sidebar infrastructure - setup for ALL pages
+        this.setupSidebarInfrastructure();
+        
+        // Only setup context-specific features if on contexts page
+        if (this.currentPage === 'contexts') {
+            this.setupEventListeners();
+            this.loadConversations();
+            this.setupAutoResize();
+            this.setupKeyboardShortcuts();
+        } else {
+            // Minimal setup for other pages (stream, profile, etc.)
+            this.setupMinimalListeners();
+        }
+        
         this.checkStatus();
         this.startStatusPolling();
+    }
+    
+    detectPage() {
+        const path = window.location.pathname;
+        if (path.includes('stream.html') || path === '/stream.html') return 'stream';
+        if (path.includes('profile.html') || path === '/profile.html') return 'profile';
+        if (path.includes('archive.html') || path === '/archive.html') return 'archive';
+        return 'contexts'; // Default to contexts
+    }
+    
+    // Universal sidebar setup - called once for ALL pages
+    setupSidebarInfrastructure() {
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('leftSidebar');
+        const app = document.getElementById('app');
+        
+        if (!menuBtn || !sidebar || !app) return;
+        
+        // Menu toggle
+        menuBtn.addEventListener('click', () => this.toggleLeftSidebar());
+        
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                this.closeLeftSidebar();
+            }
+        });
+        
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (sidebar.classList.contains('open') && 
+                !sidebar.contains(e.target) && 
+                !menuBtn.contains(e.target) &&
+                app.contains(e.target)) {
+                this.closeLeftSidebar();
+            }
+        });
+    }
+    
+    initColorTheme() {
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem('thesidia_color_theme') || 'default';
+        this.setColorTheme(savedTheme);
+        
+        // Setup theme selector in sidebar if it exists
+        this.setupThemeSelector();
+    }
+    
+    setColorTheme(theme) {
+        // Remove all theme classes
+        document.body.classList.remove('theme-yellow', 'theme-green', 'theme-purple', 'theme-pink');
+        document.documentElement.classList.remove('theme-yellow', 'theme-green', 'theme-purple', 'theme-pink');
+        
+        // Apply new theme (default doesn't need a class)
+        if (theme !== 'default') {
+            document.body.classList.add(`theme-${theme}`);
+            document.documentElement.classList.add(`theme-${theme}`);
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('thesidia_color_theme', theme);
+    }
+    
+    setupThemeSelector() {
+        // Find or create theme selector in sidebar settings
+        const settingsNav = document.querySelector('.settings-nav');
+        if (!settingsNav) return;
+        
+        // Check if theme selector already exists
+        if (document.getElementById('themeSelector')) return;
+        
+        // Create theme selector
+        const themeSelector = document.createElement('div');
+        themeSelector.id = 'themeSelector';
+        themeSelector.className = 'theme-selector';
+        themeSelector.innerHTML = `
+            <div class="settings-label" style="margin-top: 16px;">Color Theme</div>
+            <div class="theme-options">
+                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'default' ? 'active' : ''}" data-theme="default" title="Default White">
+                    <span class="theme-color" style="background: #ffffff; box-shadow: 0 0 8px rgba(255,255,255,0.6);"></span>
+                    <span>Default</span>
+                </button>
+                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'yellow' ? 'active' : ''}" data-theme="yellow" title="Yellow Neon">
+                    <span class="theme-color" style="background: #ffff00; box-shadow: 0 0 8px rgba(255,255,0,0.6);"></span>
+                    <span>Yellow</span>
+                </button>
+                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'green' ? 'active' : ''}" data-theme="green" title="Green Neon">
+                    <span class="theme-color" style="background: #00ff00; box-shadow: 0 0 8px rgba(0,255,0,0.6);"></span>
+                    <span>Green</span>
+                </button>
+                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'purple' ? 'active' : ''}" data-theme="purple" title="Purple Neon">
+                    <span class="theme-color" style="background: #ff00ff; box-shadow: 0 0 8px rgba(255,0,255,0.6);"></span>
+                    <span>Purple</span>
+                </button>
+                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'pink' ? 'active' : ''}" data-theme="pink" title="Pink Neon">
+                    <span class="theme-color" style="background: #ff00aa; box-shadow: 0 0 8px rgba(255,0,170,0.6);"></span>
+                    <span>Pink</span>
+                </button>
+            </div>
+        `;
+        
+        // Insert after settings nav
+        settingsNav.parentElement.appendChild(themeSelector);
+        
+        // Add click handlers
+        themeSelector.querySelectorAll('.theme-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                this.setColorTheme(theme);
+                
+                // Update active state
+                themeSelector.querySelectorAll('.theme-option').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    }
+    
+    setupMinimalListeners() {
+        try {
+            // Profile picture upload (if on pages with sidebar)
+            const profilePictureContainer = document.getElementById('profilePictureContainer');
+            const profileImageInput = document.getElementById('profileImageInput');
+            const profilePicture = document.getElementById('profilePicture');
+            
+            if (profilePictureContainer && profileImageInput) {
+                // Load saved profile picture from localStorage
+                const savedProfileImage = localStorage.getItem('profileImage');
+                if (savedProfileImage && profilePicture) {
+                    profilePicture.src = savedProfileImage;
+                }
+                
+                // Click to upload
+                profilePictureContainer.addEventListener('click', () => {
+                    profileImageInput.click();
+                });
+                
+                // Handle image selection
+                profileImageInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file && file.type.startsWith('image/') && profilePicture) {
+                        this.handleProfileImageUpload(file, profilePicture);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error setting up minimal listeners:', error);
+        }
     }
     
     async setupUserSession() {
@@ -127,8 +291,8 @@ class ThesidiaApp {
         const ollamaStatus = document.getElementById('ollamaStatus');
         const thesidiaStatus = document.getElementById('thesidiaStatus');
         
+        // Status indicators only exist on contexts page - silently return if not found
         if (!ollamaStatus || !thesidiaStatus) {
-            console.error('Status indicators not found in DOM');
             return;
         }
         
@@ -183,14 +347,37 @@ class ThesidiaApp {
                 }
             });
             
-            // Menu toggle
-            const menuBtn = document.getElementById('menuBtn');
-            const closeSidebar = document.getElementById('closeSidebar');
-            const overlay = document.getElementById('overlay');
+            // Auto-resize textarea
+            promptInput.addEventListener('input', () => this.autoResizeTextarea(promptInput));
             
-            if (menuBtn) menuBtn.addEventListener('click', () => this.toggleSidebar());
-            if (closeSidebar) closeSidebar.addEventListener('click', () => this.toggleSidebar());
-            if (overlay) overlay.addEventListener('click', () => this.toggleSidebar());
+            // Set active nav item based on current page
+            this.setActiveNavItem();
+            
+            // Profile picture upload
+            const profilePictureContainer = document.getElementById('profilePictureContainer');
+            const profileImageInput = document.getElementById('profileImageInput');
+            const profilePicture = document.getElementById('profilePicture');
+            
+            if (profilePictureContainer && profileImageInput) {
+                // Load saved profile picture from localStorage
+                const savedProfileImage = localStorage.getItem('profileImage');
+                if (savedProfileImage && profilePicture) {
+                    profilePicture.src = savedProfileImage;
+                }
+                
+                // Click to upload
+                profilePictureContainer.addEventListener('click', () => {
+                    profileImageInput.click();
+                });
+                
+                // Handle image selection
+                profileImageInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file && file.type.startsWith('image/') && profilePicture) {
+                        this.handleProfileImageUpload(file, profilePicture);
+                    }
+                });
+            }
             
             // New chat
             const newChatBtn = document.getElementById('newChatBtn');
@@ -253,17 +440,77 @@ class ThesidiaApp {
             });
         }
         
-        // Auto-resize textarea
-        promptInput.addEventListener('input', () => this.autoResizeTextarea(promptInput));
+        // HUD Module Panel Toggle with Animation
+        const hudModuleToggle = document.getElementById('hudModuleToggle');
+        const hudModulePanel = document.getElementById('hudModulePanel');
+        const hudModules = document.querySelectorAll('.hud-module[data-module]');
         
-        // Advanced options toggle
-        const advancedToggle = document.getElementById('advancedToggle');
-        const advancedOptions = document.getElementById('advancedOptions');
-        if (advancedToggle && advancedOptions) {
-            advancedToggle.addEventListener('click', () => {
-                const isVisible = advancedOptions.style.display !== 'none';
-                advancedOptions.style.display = isVisible ? 'none' : 'block';
-                advancedToggle.classList.toggle('active', !isVisible);
+        // Load saved panel state
+        const savedPanelState = localStorage.getItem('hudPanelOpen') === 'true';
+        
+        const togglePanel = (show) => {
+            if (!hudModulePanel) return;
+            
+            if (show) {
+                hudModulePanel.style.display = 'block';
+                // Trigger reflow for animation
+                setTimeout(() => {
+                    hudModulePanel.classList.add('show');
+                }, 10);
+                hudModuleToggle?.classList.add('active');
+                localStorage.setItem('hudPanelOpen', 'true');
+            } else {
+                hudModulePanel.classList.remove('show');
+                setTimeout(() => {
+                    hudModulePanel.style.display = 'none';
+                }, 300);
+                hudModuleToggle?.classList.remove('active');
+                localStorage.setItem('hudPanelOpen', 'false');
+            }
+        };
+        
+        if (hudModuleToggle && hudModulePanel) {
+            // Initialize panel state
+            if (savedPanelState) {
+                togglePanel(true);
+            }
+            
+            hudModuleToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isVisible = hudModulePanel.classList.contains('show');
+                togglePanel(!isVisible);
+            });
+            
+            // Make modules clickable to open panel
+            hudModules.forEach(module => {
+                module.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!hudModulePanel.classList.contains('show')) {
+                        togglePanel(true);
+                    }
+                });
+            });
+            
+            // Click outside to close
+            document.addEventListener('click', (e) => {
+                if (hudModulePanel.classList.contains('show') && 
+                    !hudModulePanel.contains(e.target) && 
+                    !hudModuleToggle.contains(e.target) &&
+                    !Array.from(hudModules).some(m => m.contains(e.target))) {
+                    togglePanel(false);
+                }
+            });
+            
+            // Auto-hide after selection (2s delay)
+            const controlButtons = document.querySelectorAll('.hud-control-btn');
+            controlButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setTimeout(() => {
+                        if (hudModulePanel.classList.contains('show')) {
+                            togglePanel(false);
+                        }
+                    }, 2000);
+                });
             });
         }
         
@@ -278,9 +525,10 @@ class ThesidiaApp {
             });
         }
         
-        // Format selector (in advanced options)
+        // Format selector (HUD controls)
         const formatNatural = document.getElementById('formatNatural');
         const formatStructured = document.getElementById('formatStructured');
+        const formatDisplay = document.getElementById('formatDisplay');
         if (formatNatural && formatStructured) {
             formatNatural.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -288,6 +536,7 @@ class ThesidiaApp {
                 this.currentFormat = 'natural';
                 formatNatural.classList.add('active');
                 formatStructured.classList.remove('active');
+                if (formatDisplay) formatDisplay.textContent = 'NAT';
             });
             formatStructured.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -295,17 +544,60 @@ class ThesidiaApp {
                 this.currentFormat = 'structured';
                 formatStructured.classList.add('active');
                 formatNatural.classList.remove('active');
+                if (formatDisplay) formatDisplay.textContent = 'STR';
             });
         }
         
-        // Research depth slider
-        const researchDepth = document.getElementById('researchDepth');
-        if (researchDepth) {
-            researchDepth.addEventListener('input', (e) => {
-                this.researchDepth = parseInt(e.target.value);
-                document.querySelectorAll('.depth-labels span').forEach((span, index) => {
-                    span.classList.toggle('active', index + 1 === this.researchDepth);
-                });
+        // Research depth controls (HUD buttons)
+        const depthButtons = document.querySelectorAll('.hud-control-btn[data-depth]');
+        const depthDisplay = document.getElementById('depthDisplay');
+        depthButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.researchDepth = parseInt(btn.dataset.depth);
+                depthButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (depthDisplay) depthDisplay.textContent = this.researchDepth.toString();
+            });
+        });
+        
+        // Initialize HUD displays
+        if (formatDisplay) formatDisplay.textContent = this.currentFormat === 'natural' ? 'NAT' : 'STR';
+        if (depthDisplay) depthDisplay.textContent = this.researchDepth.toString();
+        
+        // Character count tracking
+        const charDisplay = document.getElementById('charDisplay');
+        const promptInput = document.getElementById('promptInput');
+        if (promptInput && charDisplay) {
+            promptInput.addEventListener('input', () => {
+                const count = promptInput.value.length;
+                charDisplay.textContent = count > 999 ? '999+' : count.toString();
+            });
+        }
+        
+        // Status display updates
+        const statusDisplay = document.getElementById('statusDisplay');
+        if (statusDisplay) {
+            // Update status based on connection
+            this.updateHUDStatus = (status) => {
+                if (statusDisplay) {
+                    const statusMap = {
+                        'ready': 'RDY',
+                        'processing': 'PRC',
+                        'streaming': 'STR',
+                        'error': 'ERR',
+                        'offline': 'OFF'
+                    };
+                    statusDisplay.textContent = statusMap[status] || 'RDY';
+                }
+            };
+            
+            // Check initial status
+            this.checkStatus().then(() => {
+                this.updateHUDStatus('ready');
+            }).catch(() => {
+                this.updateHUDStatus('offline');
             });
         }
     }
@@ -318,11 +610,12 @@ class ThesidiaApp {
         
         Array.from(files).forEach((file, index) => {
             const fileDiv = document.createElement('div');
-            fileDiv.className = 'attached-file';
+            fileDiv.className = 'hud-attached-file';
+            const fileName = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
             fileDiv.innerHTML = `
-                <span>${file.name}</span>
+                <span>${fileName}</span>
                 <button onclick="this.parentElement.remove(); if(document.getElementById('attachedFiles').children.length === 0) document.getElementById('attachedFiles').style.display = 'none';" aria-label="Remove file">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
@@ -353,7 +646,7 @@ class ThesidiaApp {
             
             // Escape to close sidebar
             if (e.key === 'Escape') {
-                this.closeSidebar();
+                this.closeLeftSidebar();
             }
         });
     }
@@ -377,6 +670,7 @@ class ThesidiaApp {
         // Disable send button
         this.isProcessing = true;
         this.updateSendButton();
+        if (this.updateHUDStatus) this.updateHUDStatus('processing');
         
         try {
             // Send to backend (streaming handles UI updates)
@@ -389,9 +683,11 @@ class ThesidiaApp {
             console.error('Error:', error);
             this.hideTypingIndicator();
             this.addMessage('thesidia', 'Error: Could not process request. Please try again.');
+            if (this.updateHUDStatus) this.updateHUDStatus('error');
         } finally {
             this.isProcessing = false;
             this.updateSendButton();
+            if (this.updateHUDStatus) this.updateHUDStatus('ready');
         }
     }
     
@@ -505,16 +801,24 @@ class ThesidiaApp {
                                             progressDiv.className = 'progress-indicator active';
                                             this.scrollToBottom();
                                         } else if (data.text || currentEvent === 'chunk') {
-                                            // Stream text chunk - real-time token streaming
+                                            // Stream text chunk with typing animation
                                             const chunk = data.text || '';
-                                            textElement.textContent += chunk;
-                                            this.scrollToBottom();
                                             fullResponse += chunk;
+                                            
+                                            // Update status to streaming
+                                            if (this.updateHUDStatus && chunk.length > 0) {
+                                                this.updateHUDStatus('streaming');
+                                            }
                                             
                                             // Hide progress when streaming starts
                                             if (chunk.length > 0 && progressDiv.style.display !== 'none') {
                                                 progressDiv.style.display = 'none';
                                             }
+                                            
+                                            // Add chunk to typing queue for smooth character-by-character display
+                                            this.typeText(textElement, chunk, () => {
+                                                this.scrollToBottom();
+                                            });
                                         } else if (currentEvent === 'thinking' || data.thinking) {
                                             // Show thinking steps
                                             if (this.showThinking) {
@@ -530,6 +834,7 @@ class ThesidiaApp {
                                             // Complete
                                             progressDiv.style.display = 'none';
                                             this.hideTypingIndicator();
+                                            if (this.updateHUDStatus) this.updateHUDStatus('ready');
                                         } else if (data.error || currentEvent === 'error') {
                                             // Error
                                             throw new Error(data.message || data.error || 'Unknown error');
@@ -770,6 +1075,65 @@ class ThesidiaApp {
         typingIndicator.style.display = 'none';
     }
     
+    // Typing animation queue for smooth character-by-character display
+    typingQueues = new Map();
+    
+    typeText(element, text, onComplete = null) {
+        // Get or create typing queue for this element
+        if (!this.typingQueues.has(element)) {
+            this.typingQueues.set(element, {
+                queue: '',
+                isTyping: false,
+                speed: 20,  // milliseconds per character (50 chars/sec - optimal for UX)
+                callbacks: []
+            });
+        }
+        
+        const queue = this.typingQueues.get(element);
+        queue.queue += text;
+        
+        // Add callback if provided
+        if (onComplete) {
+            queue.callbacks.push(onComplete);
+        }
+        
+        // Start typing if not already typing
+        if (!queue.isTyping) {
+            this._processTypingQueue(element, queue);
+        }
+    }
+    
+    _processTypingQueue(element, queue) {
+        if (queue.queue.length === 0) {
+            queue.isTyping = false;
+            // Call all pending callbacks
+            queue.callbacks.forEach(cb => cb());
+            queue.callbacks = [];
+            return;
+        }
+        
+        queue.isTyping = true;
+        
+        // Type one character
+        const char = queue.queue[0];
+        queue.queue = queue.queue.slice(1);
+        
+        // Handle special characters
+        if (char === '\n') {
+            element.innerHTML += '<br>';
+        } else {
+            element.textContent += char;
+        }
+        
+        // Scroll to bottom as text appears
+        this.scrollToBottom();
+        
+        // Continue typing next character
+        setTimeout(() => {
+            this._processTypingQueue(element, queue);
+        }, queue.speed);
+    }
+    
     scrollToBottom() {
         const chatContainer = document.getElementById('chatContainer');
         setTimeout(() => {
@@ -785,20 +1149,113 @@ class ThesidiaApp {
         sendBtn.disabled = this.isProcessing;
     }
     
-    toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
+    toggleLeftSidebar() {
+        const sidebar = document.getElementById('leftSidebar');
+        const app = document.getElementById('app');
         
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
+        if (sidebar && app) {
+            const isOpen = sidebar.classList.contains('open');
+            
+            if (isOpen) {
+                this.closeLeftSidebar();
+            } else {
+                // Apply classes immediately for smooth single motion
+                sidebar.classList.add('open');
+                app.classList.add('sidebar-pushed');
+                // Prevent body scroll when sidebar is open
+                document.body.style.overflow = 'hidden';
+            }
+        }
     }
     
-    closeSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
+    closeLeftSidebar() {
+        const sidebar = document.getElementById('leftSidebar');
+        const app = document.getElementById('app');
         
-        sidebar.classList.remove('open');
-        overlay.classList.remove('show');
+        if (sidebar && app) {
+            // Apply classes immediately for smooth single motion
+            sidebar.classList.remove('open');
+            app.classList.remove('sidebar-pushed');
+            // Restore body scroll
+            document.body.style.overflow = '';
+        }
+    }
+    
+    handleProfileImageUpload(file, imgElement) {
+        if (!file || !imgElement) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                // Create canvas to resize and crop image
+                const canvas = document.createElement('canvas');
+                const size = 120; // 2x for retina displays
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                
+                // Calculate crop to make it square (center crop)
+                let sourceX = 0;
+                let sourceY = 0;
+                let sourceSize = Math.min(img.width, img.height);
+                
+                if (img.width > img.height) {
+                    sourceX = (img.width - img.height) / 2;
+                } else {
+                    sourceY = (img.height - img.width) / 2;
+                }
+                
+                // Draw image centered and cropped to square
+                ctx.drawImage(
+                    img,
+                    sourceX, sourceY, sourceSize, sourceSize, // Source (cropped square)
+                    0, 0, size, size // Destination (canvas)
+                );
+                
+                // Convert to data URL and set as image source
+                const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+                imgElement.src = dataURL;
+                
+                // Save to localStorage for persistence
+                localStorage.setItem('profileImage', dataURL);
+                
+                // Also update header profile picture if it exists
+                const headerProfile = document.getElementById('headerProfilePicture');
+                if (headerProfile) {
+                    const headerImg = headerProfile.querySelector('img');
+                    if (headerImg) {
+                        headerImg.src = dataURL;
+                    }
+                }
+                
+                console.log('Profile picture updated');
+            };
+            img.onerror = () => {
+                console.error('Error loading image');
+            };
+            img.src = e.target.result;
+        };
+        reader.onerror = () => {
+            console.error('Error reading file');
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    setActiveNavItem() {
+        const navItems = document.querySelectorAll('.nav-item');
+        const currentPath = window.location.pathname;
+        
+        navItems.forEach(item => {
+            const href = item.getAttribute('href');
+            if (href === currentPath || 
+                (currentPath === '/' && href === '/') ||
+                (currentPath === '/contexts.html' && href === '/')) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
     }
     
     newConversation() {
@@ -811,7 +1268,7 @@ class ThesidiaApp {
                 </div>
             </div>
         `;
-        this.closeSidebar();
+        this.closeLeftSidebar();
     }
     
     saveConversation(userMessage, thesidiaResponse) {
@@ -852,6 +1309,7 @@ class ThesidiaApp {
     
     updateConversationsList() {
         const listContainer = document.getElementById('conversationsList');
+        if (!listContainer) return; // Not on contexts page
         listContainer.innerHTML = '';
         
         this.conversations.forEach(conv => {
@@ -884,7 +1342,7 @@ class ThesidiaApp {
         });
         
         this.updateConversationsList();
-        this.closeSidebar();
+        this.closeLeftSidebar();
     }
     
     escapeHtml(text) {
@@ -906,6 +1364,16 @@ try {
             try {
                 window.thesidiaApp = new ThesidiaApp();
                 console.log('Thesidia app initialized');
+                
+                // Initialize nano dust and header profile
+                initNanoDust();
+                loadHeaderProfileImage();
+                
+                // Initialize astrological time
+                initAstrologicalTime();
+                
+                // Initialize star notepad
+                initStarNotepad();
             } catch (error) {
                 console.error('Error initializing Thesidia app:', error);
                 // Show error message to user
@@ -925,6 +1393,16 @@ try {
         try {
             window.thesidiaApp = new ThesidiaApp();
             console.log('Thesidia app initialized');
+            
+            // Initialize nano dust and header profile
+            initNanoDust();
+            loadHeaderProfileImage();
+            
+            // Initialize astrological time
+            initAstrologicalTime();
+            
+            // Initialize star notepad
+            initStarNotepad();
         } catch (error) {
             console.error('Error initializing Thesidia app:', error);
             const app = document.getElementById('app');
@@ -941,6 +1419,201 @@ try {
     }
 } catch (error) {
     console.error('Fatal error:', error);
+}
+
+// Nano Dust Particles Animation - Fine particles emanating from letters
+function initNanoDust() {
+    const canvas = document.getElementById('nanoDustCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const particles = [];
+    const particleCount = 80; // More particles for finer effect
+    
+    // Set canvas size
+    canvas.width = 200;
+    canvas.height = 60;
+    
+    // Text position (centered)
+    const textCenterX = canvas.width / 2;
+    const textCenterY = canvas.height / 2;
+    const textWidth = 140; // Approximate width of "THESIDIA"
+    const textHeight = 30; // Approximate height
+    
+    // Create particles emanating from text area
+    for (let i = 0; i < particleCount; i++) {
+        // Start particles near the text (within text bounds)
+        const startX = textCenterX + (Math.random() - 0.5) * textWidth;
+        const startY = textCenterY + (Math.random() - 0.5) * textHeight;
+        
+        // Calculate direction away from center
+        const angle = Math.atan2(startY - textCenterY, startX - textCenterX);
+        const speed = Math.random() * 0.3 + 0.1; // Slow, fine movement
+        
+        particles.push({
+            x: startX,
+            y: startY,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: Math.random() * 0.8 + 0.3, // Much finer particles (0.3-1.1px)
+            opacity: Math.random() * 0.4 + 0.1, // Very subtle (0.1-0.5)
+            life: Math.random() * 100,
+            maxDistance: Math.random() * 40 + 20 // Distance before respawn
+        });
+    }
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(particle => {
+            // Update position - moving away from text
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            particle.life += 0.3;
+            
+            // Calculate distance from text center
+            const dx = particle.x - textCenterX;
+            const dy = particle.y - textCenterY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Respawn particle near text if it moves too far
+            if (distance > particle.maxDistance) {
+                // Respawn near text with new random position
+                particle.x = textCenterX + (Math.random() - 0.5) * textWidth;
+                particle.y = textCenterY + (Math.random() - 0.5) * textHeight;
+                
+                // New direction away from center
+                const angle = Math.atan2(particle.y - textCenterY, particle.x - textCenterX);
+                const speed = Math.random() * 0.3 + 0.1;
+                particle.vx = Math.cos(angle) * speed;
+                particle.vy = Math.sin(angle) * speed;
+                particle.life = 0;
+            }
+            
+            // Fade out as particles move away
+            const fadeDistance = Math.min(distance / particle.maxDistance, 1);
+            const pulse = Math.sin(particle.life * 0.1) * 0.2 + 0.8;
+            const alpha = particle.opacity * (1 - fadeDistance * 0.7) * pulse;
+            
+            // Draw very fine particle
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+            ctx.fill();
+        });
+        
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+}
+
+// Load header profile image
+function loadHeaderProfileImage() {
+    const headerProfile = document.getElementById('headerProfilePicture');
+    if (!headerProfile) return;
+    
+    const img = headerProfile.querySelector('img');
+    if (!img) return;
+    
+    const savedImage = localStorage.getItem('profileImage');
+    if (savedImage) {
+        img.src = savedImage;
+    }
+    
+    // Click to open sidebar
+    headerProfile.addEventListener('click', () => {
+        if (window.thesidiaApp) {
+            window.thesidiaApp.toggleLeftSidebar();
+        }
+    });
+}
+
+// Initialize Astrological Time
+async function initAstrologicalTime() {
+    const indicator = document.getElementById('astroTimeIndicator');
+    const timeText = document.getElementById('astroTimeText');
+    if (!indicator || !timeText) return;
+    
+    async function updateAstroTime() {
+        try {
+            const response = await fetch('/api/astronomical/current');
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Get current time in a format that shows astronomical significance
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                
+                // Format: HH:MM (very faint, small)
+                timeText.textContent = `${hours}:${minutes}`;
+            } else {
+                // Fallback to regular time
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                timeText.textContent = `${hours}:${minutes}`;
+            }
+        } catch (error) {
+            // Fallback to regular time
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            timeText.textContent = `${hours}:${minutes}`;
+        }
+    }
+    
+    // Update immediately and then every minute
+    updateAstroTime();
+    setInterval(updateAstroTime, 60000);
+}
+
+// Initialize Star Notepad
+function initStarNotepad() {
+    const notepadBtn = document.getElementById('starNotepadBtn');
+    const notepadPanel = document.getElementById('starNotepadPanel');
+    const notepadClose = document.getElementById('notepadClose');
+    const notepadTextarea = document.getElementById('notepadTextarea');
+    
+    if (!notepadBtn || !notepadPanel || !notepadClose || !notepadTextarea) return;
+    
+    // Load saved notes from localStorage
+    const savedNotes = localStorage.getItem('thesidia_notes');
+    if (savedNotes) {
+        notepadTextarea.value = savedNotes;
+    }
+    
+    // Save notes on input
+    notepadTextarea.addEventListener('input', () => {
+        localStorage.setItem('thesidia_notes', notepadTextarea.value);
+    });
+    
+    // Toggle notepad
+    notepadBtn.addEventListener('click', () => {
+        notepadPanel.classList.toggle('open');
+    });
+    
+    // Close notepad
+    notepadClose.addEventListener('click', () => {
+        notepadPanel.classList.remove('open');
+    });
+    
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && notepadPanel.classList.contains('open')) {
+            notepadPanel.classList.remove('open');
+        }
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+        if (notepadPanel.classList.contains('open') && 
+            !notepadPanel.contains(e.target) && 
+            !notepadBtn.contains(e.target)) {
+            notepadPanel.classList.remove('open');
+        }
+    });
 }
 
 // Service Worker for PWA (optional)
