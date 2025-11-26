@@ -12,28 +12,8 @@
       "dest": "/api/server.py"
     },
     {
-      "src": "/stream.html",
-      "dest": "/webapp/stream.html"
-    },
-    {
-      "src": "/index.html",
-      "dest": "/webapp/index.html"
-    },
-    {
-      "src": "/contexts.html",
-      "dest": "/webapp/contexts.html"
-    },
-    {
-      "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|json|txt|xml))",
-      "dest": "/webapp/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/webapp/index.html"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/api/server.py"
+      "dest": "/$1"
     }
   ],
   "functions": {

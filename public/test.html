@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesidia Test</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+        }
+        .success { border-color: #0f0; }
+        .error { border-color: #f00; }
+    </style>
+</head>
+<body>
+    <h1>Thesidia Test Page</h1>
+    
+    <div id="status" class="status">Loading...</div>
+    
+    <h2>File Check</h2>
+    <div id="files"></div>
+    
+    <h2>API Test</h2>
+    <div id="api"></div>
+    
+    <script>
+        // Check if files load
+        const files = ['styles.css', 'app.js'];
+        const fileStatus = {};
+        
+        files.forEach(file => {
+            const link = document.createElement(file === 'styles.css' ? 'link' : 'script');
+            if (file === 'styles.css') {
+                link.rel = 'stylesheet';
+                link.href = file;
+            } else {
+                link.src = file;
+            }
+            
+            link.onload = () => {
+                fileStatus[file] = 'loaded';
+                updateStatus();
+            };
+            link.onerror = () => {
+                fileStatus[file] = 'error';
+                updateStatus();
+            };
+            document.head.appendChild(link);
+        });
+        
+        // Test API
+        fetch('/api/status')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('api').innerHTML = 
+                    `<div class="status success">API Working: ${JSON.stringify(data)}</div>`;
+            })
+            .catch(err => {
+                document.getElementById('api').innerHTML = 
+                    `<div class="status error">API Error: ${err.message}</div>`;
+            });
+        
+        function updateStatus() {
+            const allLoaded = Object.values(fileStatus).every(s => s === 'loaded');
+            const allErrors = Object.values(fileStatus).every(s => s === 'error');
+            
+            if (allLoaded) {
+                document.getElementById('status').innerHTML = 
+                    '<div class="status success">All files loaded successfully!</div>';
+            } else if (allErrors) {
+                document.getElementById('status').innerHTML = 
+                    '<div class="status error">Files failed to load</div>';
+            }
+            
+            let html = '';
+            for (const [file, status] of Object.entries(fileStatus)) {
+                html += `<div class="status ${status === 'loaded' ? 'success' : 'error'}">${file}: ${status}</div>`;
+            }
+            document.getElementById('files').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
+

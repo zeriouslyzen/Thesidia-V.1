@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #app { background: red; width: 100%; height: 100vh; transition: transform 0.3s; }
+        #app.sidebar-pushed { transform: translateX(75%) !important; background: blue !important; }
+        .left-sidebar { position: fixed; left: 0; width: 75%; height: 100vh; background: green; transform: translateX(-100%); }
+        .left-sidebar.open { transform: translateX(0) !important; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="left-sidebar" id="leftSidebar">SIDEBAR</div>
+        <button onclick="document.getElementById('leftSidebar').classList.add('open'); document.getElementById('app').classList.add('sidebar-pushed');">TEST</button>
+    </div>
+</body>
+</html>

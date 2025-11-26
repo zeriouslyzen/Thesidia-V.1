@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THESIDIA // System Metrics</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        #app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .dashboard {
+            flex: 1;
+            overflow-y: auto;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+            width: 100%;
+        }
+        .dashboard .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: var(--border-width-thick) solid var(--border-color);
+        }
+        .header h1 {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--accent-active);
+        }
+        .refresh-info {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        .metric-card {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+        }
+        .metric-card h3 {
+            color: var(--accent-active);
+            font-size: var(--font-size-md);
+            margin-bottom: var(--spacing-md);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            padding-bottom: var(--spacing-sm);
+        }
+        .metric-value {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--accent-active);
+            margin: var(--spacing-sm) 0;
+        }
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        .chart-container {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        .chart-container h3 {
+            color: var(--accent-active);
+            font-size: var(--font-size-md);
+            margin-bottom: var(--spacing-md);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            padding-bottom: var(--spacing-sm);
+        }
+        .pattern-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .pattern-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm);
+            margin: var(--spacing-xs) 0;
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius-sm);
+        }
+        .trend-up { color: var(--text-primary); opacity: 0.9; }
+        .trend-down { color: var(--text-secondary); }
+        .trend-stable { color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>THESIDIA</span>
+                </div>
+                <div class="status-indicators">
+                    <div class="status-indicator" id="metricsStatus" title="Metrics Status">
+                        <span class="status-dot online" id="metricsStatusDot"></span>
+                        <span class="status-label">Metrics</span>
+                    </div>
+                </div>
+                <nav class="global-nav" id="globalNav">
+                    <a href="/" class="nav-item" data-page="contexts">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        <span>Contexts</span>
+                    </a>
+                    <a href="/stream.html" class="nav-item" data-page="stream">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                        </svg>
+                        <span>Signal Stream</span>
+                    </a>
+                    <a href="/atlas.html" class="nav-item" data-page="atlas">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Pattern Atlas</span>
+                    </a>
+                    <a href="/reactor.html" class="nav-item" data-page="reactor">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                        </svg>
+                        <span>Research Reactor</span>
+                    </a>
+                    <a href="/application.html" class="nav-item" data-page="application">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                        </svg>
+                        <span>Application Layer</span>
+                    </a>
+                    <a href="/archive.html" class="nav-item" data-page="archive">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            <path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/>
+                        </svg>
+                        <span>Archive</span>
+                    </a>
+                    <a href="/metrics_dashboard.html" class="nav-item active" data-page="metrics">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        <span>System Metrics</span>
+                    </a>
+                </nav>
+                <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+    <div class="dashboard">
+        <div class="header">
+            <h1>System Metrics</h1>
+            <div class="refresh-info">
+                Auto-refresh: <span id="refreshCountdown">5</span>s | 
+                Last update: <span id="lastUpdate">--</span>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>Performance</h3>
+                <div class="metric-value" id="avgResponseTime">--</div>
+                <div class="metric-label">Avg Response Time</div>
+                <div class="metric-row">
+                    <span>Min:</span>
+                    <span id="minResponseTime">--</span>
+                </div>
+                <div class="metric-row">
+                    <span>Max:</span>
+                    <span id="maxResponseTime">--</span>
+                </div>
+                <div class="metric-row">
+                    <span>Median:</span>
+                    <span id="medianResponseTime">--</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Tokens</h3>
+                <div class="metric-value" id="avgTokens">--</div>
+                <div class="metric-label">Avg Tokens per Response</div>
+                <div class="metric-row">
+                    <span>Total:</span>
+                    <span id="totalTokens">--</span>
+                </div>
+                <div class="metric-row">
+                    <span>Range:</span>
+                    <span id="tokenRange">--</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <h3>Session Stats</h3>
+                <div class="metric-value" id="totalQueries">--</div>
+                <div class="metric-label">Total Queries</div>
+                <div class="metric-row">
+                    <span>Total Time:</span>
+                    <span id="totalTime">--</span>
+                </div>
+                <div class="metric-row">
+                    <span>Session Start:</span>
+                    <span id="sessionStart">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patterns -->
+        <div class="chart-container">
+            <h3>Patterns Detected</h3>
+            <div class="pattern-list" id="patternsList"></div>
+        </div>
+
+        <!-- Linguistic Features -->
+        <div class="chart-container">
+            <h3>Linguistic Features</h3>
+            <div class="pattern-list" id="linguisticList"></div>
+        </div>
+
+        <!-- Pattern Trends -->
+        <div class="chart-container">
+            <h3>Pattern Trends</h3>
+            <div class="pattern-list" id="trendsList"></div>
+        </div>
+    </div>
+
+    <script>
+        let refreshInterval;
+        let countdownInterval;
+
+        async function loadMetrics() {
+            try {
+                const response = await fetch('/api/metrics/current');
+                const metrics = await response.json();
+
+                // Performance
+                if (metrics.performance) {
+                    document.getElementById('avgResponseTime').textContent = 
+                        metrics.performance.avg_response_time.toFixed(2) + 's';
+                    document.getElementById('minResponseTime').textContent = 
+                        metrics.performance.min_response_time.toFixed(2) + 's';
+                    document.getElementById('maxResponseTime').textContent = 
+                        metrics.performance.max_response_time.toFixed(2) + 's';
+                    document.getElementById('medianResponseTime').textContent = 
+                        metrics.performance.median_response_time.toFixed(2) + 's';
+                }
+
+                // Tokens
+                if (metrics.tokens) {
+                    document.getElementById('avgTokens').textContent = 
+                        Math.round(metrics.tokens.avg_tokens);
+                    document.getElementById('totalTokens').textContent = 
+                        metrics.tokens.total_tokens;
+                    document.getElementById('tokenRange').textContent = 
+                        `${metrics.tokens.min_tokens} - ${metrics.tokens.max_tokens}`;
+                }
+
+                // Session
+                document.getElementById('totalQueries').textContent = 
+                    metrics.total_queries || 0;
+                document.getElementById('totalTime').textContent = 
+                    (metrics.total_time || 0).toFixed(2) + 's';
+                document.getElementById('sessionStart').textContent = 
+                    new Date(metrics.start_time).toLocaleTimeString();
+
+                // Patterns
+                const patternsList = document.getElementById('patternsList');
+                patternsList.innerHTML = '';
+                if (metrics.patterns_detected) {
+                    for (const [pattern, count] of Object.entries(metrics.patterns_detected).sort((a, b) => b[1] - a[1])) {
+                        const item = document.createElement('div');
+                        item.className = 'pattern-item';
+                        item.innerHTML = `
+                            <span>${pattern.replace(/_/g, ' ')}</span>
+                            <strong>${count}</strong>
+                        `;
+                        patternsList.appendChild(item);
+                    }
+                }
+
+                // Linguistic
+                const linguisticList = document.getElementById('linguisticList');
+                linguisticList.innerHTML = '';
+                if (metrics.linguistic_features) {
+                    for (const [feature, value] of Object.entries(metrics.linguistic_features).sort((a, b) => {
+                        const aVal = typeof a[1] === 'number' ? a[1] : 0;
+                        const bVal = typeof b[1] === 'number' ? b[1] : 0;
+                        return bVal - aVal;
+                    })) {
+                        const item = document.createElement('div');
+                        item.className = 'pattern-item';
+                        const displayValue = typeof value === 'number' ? 
+                            (value % 1 === 0 ? value : value.toFixed(2)) : value;
+                        item.innerHTML = `
+                            <span>${feature.replace(/_/g, ' ')}</span>
+                            <strong>${displayValue}</strong>
+                        `;
+                        linguisticList.appendChild(item);
+                    }
+                }
+
+                // Trends
+                const trendsResponse = await fetch('/api/metrics/patterns');
+                const trends = await trendsResponse.json();
+                const trendsList = document.getElementById('trendsList');
+                trendsList.innerHTML = '';
+                if (trends) {
+                    for (const [pattern, stats] of Object.entries(trends).sort((a, b) => b[1].total - a[1].total)) {
+                        const item = document.createElement('div');
+                        item.className = 'pattern-item';
+                        const trendClass = stats.trend === 'increasing' ? 'trend-up' : 
+                                         stats.trend === 'decreasing' ? 'trend-down' : 'trend-stable';
+                        item.innerHTML = `
+                            <span>${pattern.replace(/_/g, ' ')}</span>
+                            <span class="${trendClass}">
+                                avg: ${stats.avg.toFixed(1)} | 
+                                freq: ${(stats.frequency * 100).toFixed(1)}% | 
+                                ${stats.trend}
+                            </span>
+                        `;
+                        trendsList.appendChild(item);
+                    }
+                }
+
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+            } catch (error) {
+                console.error('Error loading metrics:', error);
+            }
+        }
+
+        function startAutoRefresh() {
+            let countdown = 5;
+            document.getElementById('refreshCountdown').textContent = countdown;
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown <= 0) countdown = 5;
+                document.getElementById('refreshCountdown').textContent = countdown;
+            }, 1000);
+
+            refreshInterval = setInterval(() => {
+                loadMetrics();
+            }, 5000);
+        }
+
+        // Initial load
+        loadMetrics();
+        startAutoRefresh();
+    </script>
+    <script src="nav.js"></script>
+    </div>
+</body>
+</html>
+

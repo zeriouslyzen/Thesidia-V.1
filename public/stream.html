@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>THESIDIA // Signal Stream</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .stream-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: var(--spacing-lg) var(--spacing-md);
+            scroll-behavior: smooth;
+        }
+        
+        .stream-content {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .stream-header {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .stream-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+        
+        .stream-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .stream-feed {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+        
+        .stream-item {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            transition: var(--transition);
+        }
+        
+        .stream-item:hover {
+            border-color: var(--text-secondary);
+        }
+        
+        .stream-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .stream-item-title {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stream-item-meta {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+        
+        .stream-item-content {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            line-height: var(--line-height-normal);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .stream-item-connections {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: var(--border-width-thin) solid var(--border-color);
+        }
+        
+        .connection-tag {
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+        
+        .relevance-score {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            font-family: var(--font-mono);
+        }
+        
+        .stream-empty {
+            text-align: center;
+            padding: var(--spacing-xxl);
+            color: var(--text-secondary);
+        }
+        
+        .stream-loading {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <!-- Profile Picture - Left Corner -->
+                <div class="header-profile">
+                    <div class="header-profile-picture" id="headerProfilePicture">
+                        <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                    </div>
+                </div>
+                
+                <!-- THESIDIA Title - Center with Nano Dust -->
+                <div class="header-title">
+                    <h1 class="thesidia-title" id="thesidiaTitle">
+                        <span class="thesidia-text">THESIDIA</span>
+                        <canvas class="nano-dust-canvas" id="nanoDustCanvas"></canvas>
+                    </h1>
+                </div>
+                
+                <!-- Menu Button - Right -->
+                <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            
+            <!-- Sub Menu -->
+            <div class="header-submenu">
+                <!-- Astrological Time Indicator - Far Left -->
+                <div class="astro-time-indicator" id="astroTimeIndicator">
+                    <span class="astro-time-text" id="astroTimeText">00:00</span>
+                    <span class="astro-time-dot"></span>
+                </div>
+                
+                <a href="#" class="submenu-item">Friends</a>
+                <a href="#" class="submenu-item">Fans</a>
+                <a href="#" class="submenu-item">Communities</a>
+                <a href="#" class="submenu-item">Builds</a>
+                
+                <!-- Star Notepad Button - Far Right -->
+                <button class="star-notepad-btn" id="starNotepadBtn" aria-label="Notes">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Star Notepad Panel -->
+            <div class="notepad-panel" id="starNotepadPanel">
+                <div class="notepad-header">
+                    <h3>Notes</h3>
+                    <button class="notepad-close" id="notepadClose" aria-label="Close">×</button>
+                </div>
+                <textarea class="notepad-textarea" id="notepadTextarea" placeholder="Your notes here... They persist across pages."></textarea>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="stream-page-container">
+            <div class="stream-feed-container">
+                <!-- Stream Compose Area -->
+                <div class="stream-compose">
+                    <div class="compose-profile">
+                        <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                    </div>
+                    <div class="compose-input-area">
+                        <textarea class="compose-textarea" id="composeTextarea" placeholder="What's happening?"></textarea>
+                        <div class="compose-actions">
+                            <div class="compose-media-buttons">
+                                <button class="compose-media-btn" id="addImageBtn" aria-label="Add image">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <path d="M21 15l-5-5L5 21"/>
+                                    </svg>
+                                </button>
+                                <button class="compose-media-btn" id="addVideoBtn" aria-label="Add video">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="23 7 16 12 23 17 23 7"/>
+                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                                    </svg>
+                                </button>
+                                <button class="compose-media-btn" id="goLiveBtn" aria-label="Go live">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <button class="compose-post-btn" id="postBtn" disabled>Post</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stream Feed -->
+                <div class="stream-feed" id="streamFeed">
+                    <div class="stream-loading">Loading stream...</div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Left Sidebar -->
+        <div class="left-sidebar" id="leftSidebar">
+            <div class="sidebar-content">
+                <!-- Profile Section -->
+                <div class="sidebar-profile">
+                    <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                    <div class="profile-picture-container" id="profilePictureContainer">
+                        <div class="profile-picture" id="profilePicture">
+                            <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Ccircle cx=\'24\' cy=\'24\' r=\'24\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'24\' cy=\'18\' r=\'7\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M12 46 Q24 38 36 46\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                            <div class="profile-picture-overlay">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-name">Jack Danger</div>
+                        <div class="profile-tag">@jacksonadanger</div>
+                        <div class="profile-stats">
+                            <span class="stat-number">33</span>
+                            <span class="stat-label">Friends</span>
+                            <span class="stat-number">100</span>
+                            <span class="stat-label">Fans</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Navigation -->
+                <nav class="sidebar-nav">
+                    <a href="/profile.html" class="nav-menu-item">
+                        <div class="nav-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <span class="nav-title">Profile</span>
+                    </a>
+                    <a href="/stream.html" class="nav-menu-item active">
+                        <div class="nav-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="3" y1="12" x2="21" y2="12"/>
+                                <line x1="3" y1="6" x2="21" y2="6"/>
+                                <line x1="3" y1="18" x2="21" y2="18"/>
+                            </svg>
+                        </div>
+                        <span class="nav-title">Stream</span>
+                    </a>
+                    <a href="/" class="nav-menu-item">
+                        <div class="nav-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </div>
+                        <span class="nav-title">Thesidia</span>
+                    </a>
+                    <a href="/archive.html" class="nav-menu-item">
+                        <div class="nav-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            </svg>
+                        </div>
+                        <span class="nav-title">Archive</span>
+                    </a>
+                </nav>
+                
+                <!-- Settings Section -->
+                <div class="sidebar-settings">
+                    <div class="settings-label">Settings</div>
+                    <nav class="settings-nav">
+                        <a href="/settings/account.html" class="settings-item">Account</a>
+                        <a href="/settings/security.html" class="settings-item">Security</a>
+                        <a href="/settings/privacy.html" class="settings-item">Privacy</a>
+                        <a href="/settings/notifications.html" class="settings-item">Notifications</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+    <script>
+        // Stream Page Specific Script
+        class StreamPage {
+            constructor() {
+                this.posts = [];
+                this.currentPage = 0;
+                this.hasMore = true;
+                this.init();
+            }
+            
+            async init() {
+                console.log('Initializing stream page...');
+                await this.loadPosts();
+                this.setupEventListeners();
+            }
+            
+            async loadPosts(page = 0, limit = 20) {
+                console.log('Loading stream feed...', { page, limit });
+                try {
+                    const response = await fetch(`/api/stream/feed?page=${page}&limit=${limit}`);
+                    const data = await response.json();
+                    console.log('Stream data received:', data);
+                    
+                    if (data.items) {
+                        console.log('Items count:', data.items.length);
+                        if (page === 0) {
+                            this.posts = data.items;
+                        } else {
+                            this.posts = [...this.posts, ...data.items];
+                        }
+                        this.hasMore = data.has_more || false;
+                        this.currentPage = page;
+                        console.log('Posts loaded:', this.posts.length);
+                        this.renderPosts();
+                    }
+                } catch (error) {
+                    console.error('Error loading posts:', error);
+                    const feed = document.getElementById('streamFeed');
+                    if (feed) {
+                        feed.innerHTML = '<div class="stream-loading">Error loading stream. Please refresh.</div>';
+                    }
+                }
+            }
+            
+            renderPosts() {
+                const feed = document.getElementById('streamFeed');
+                if (!feed) return;
+                
+                console.log('Rendering posts:', this.posts.length);
+                
+                if (this.posts.length === 0) {
+                    feed.innerHTML = '<div class="stream-loading">No posts yet. Be the first to post!</div>';
+                    return;
+                }
+                
+                feed.innerHTML = this.posts.map(post => this.renderPost(post)).join('');
+                console.log('Posts rendered successfully');
+            }
+            
+            renderPost(post) {
+                const timeAgo = this.getTimeAgo(post.timestamp);
+                return `
+                    <div class="stream-post" data-post-id="${post.id}">
+                        <div class="post-header">
+                            <div class="post-author">
+                                <img src="${post.author?.avatar || '/profile-image.jpg'}" alt="${post.author?.name || 'User'}" class="post-avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                                <div class="post-author-info">
+                                    <div class="post-author-name">${post.author?.name || 'User'}</div>
+                                    <div class="post-author-handle">${post.author?.handle || '@user'}</div>
+                                </div>
+                            </div>
+                            <div class="post-time">${timeAgo}${post.is_live ? ' • LIVE' : ''}</div>
+                        </div>
+                        <div class="post-content">${this.escapeHtml(post.content || '')}</div>
+                        <div class="post-actions">
+                            <button class="post-action-btn" data-action="comment">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                <span>${post.replies || 0}</span>
+                            </button>
+                            <button class="post-action-btn" data-action="repost">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 1l4 4-4 4M21 5H11a4 4 0 0 0-4 4v6"/>
+                                    <path d="M7 23l-4-4 4-4M3 19h10a4 4 0 0 0 4-4V9"/>
+                                </svg>
+                                <span>${post.reposts || 0}</span>
+                            </button>
+                            <button class="post-action-btn" data-action="like">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                                <span>${post.likes || 0}</span>
+                            </button>
+                            <button class="post-action-btn" data-action="views">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                <span>${post.views || 0}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            getTimeAgo(timestamp) {
+                if (!timestamp) return 'now';
+                const now = new Date();
+                const postTime = new Date(timestamp);
+                const diffMs = now - postTime;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                if (diffMins < 1) return 'now';
+                if (diffMins < 60) return `${diffMins}m`;
+                if (diffHours < 24) return `${diffHours}h`;
+                if (diffDays < 7) return `${diffDays}d`;
+                return postTime.toLocaleDateString();
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            setupEventListeners() {
+                const composeTextarea = document.getElementById('composeTextarea');
+                const postBtn = document.getElementById('postBtn');
+                
+                if (composeTextarea && postBtn) {
+                    composeTextarea.addEventListener('input', () => {
+                        postBtn.disabled = !composeTextarea.value.trim();
+                    });
+                    
+                    postBtn.addEventListener('click', () => this.createPost());
+                }
+            }
+            
+            async createPost() {
+                const composeTextarea = document.getElementById('composeTextarea');
+                if (!composeTextarea || !composeTextarea.value.trim()) return;
+                
+                const content = composeTextarea.value.trim();
+                composeTextarea.value = '';
+                document.getElementById('postBtn').disabled = true;
+                
+                try {
+                    const response = await fetch('/api/stream/post', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ content })
+                    });
+                    
+                    if (response.ok) {
+                        await this.loadPosts(0, 20); // Reload from start
+                    }
+                } catch (error) {
+                    console.error('Error creating post:', error);
+                }
+            }
+        }
+        
+        // Initialize stream page when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.streamPage = new StreamPage();
+            });
+        } else {
+            window.streamPage = new StreamPage();
+        }
+    </script>
+        
+</body>
+</html>
+

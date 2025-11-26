@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    
+    <title>THESIDIA // Contexts</title>
+    <meta name="description" content="THESIDIA - The Research Operating System. Pattern intelligence for high-bandwidth thinking.">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <!-- Profile Picture - Left Corner -->
+                <div class="header-profile">
+                    <div class="header-profile-picture" id="headerProfilePicture">
+                        <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                    </div>
+                </div>
+                
+                <!-- THESIDIA Title - Center with Nano Dust -->
+                <div class="header-title">
+                    <h1 class="thesidia-title" id="thesidiaTitle">
+                        <span class="thesidia-text">THESIDIA</span>
+                        <canvas class="nano-dust-canvas" id="nanoDustCanvas"></canvas>
+                    </h1>
+                </div>
+                
+                <!-- Menu Button - Right -->
+                <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            
+            <!-- Sub Menu -->
+            <div class="header-submenu">
+                <!-- Astrological Time Indicator - Far Left -->
+                <div class="astro-time-indicator" id="astroTimeIndicator">
+                    <span class="astro-time-text" id="astroTimeText">00:00</span>
+                    <span class="astro-time-dot"></span>
+                </div>
+                
+                <a href="#" class="submenu-item">Friends</a>
+                <a href="#" class="submenu-item">Fans</a>
+                <a href="#" class="submenu-item">Communities</a>
+                <a href="#" class="submenu-item">Builds</a>
+                
+                <!-- Star Notepad Button - Far Right -->
+                <button class="star-notepad-btn" id="starNotepadBtn" aria-label="Notes">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Star Notepad Panel -->
+            <div class="notepad-panel" id="starNotepadPanel">
+                <div class="notepad-header">
+                    <h3>Notes</h3>
+                    <button class="notepad-close" id="notepadClose" aria-label="Close">×</button>
+                </div>
+                <textarea class="notepad-textarea" id="notepadTextarea" placeholder="Your notes here... They persist across pages."></textarea>
+            </div>
+        </header>
+
+        <!-- Main Chat Container -->
+        <main class="chat-container" id="chatContainer">
+            <div class="messages" id="messages">
+                <div class="message system-message">
+                    <div class="message-content">
+                        <p>Execute directives directly. Build websites, devices, blueprints, training programs.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Indicators (for contexts page only) -->
+            <div class="status-indicators" style="position: fixed; top: 60px; right: 16px; z-index: 99;">
+                <div class="status-indicator" id="ollamaStatus" title="Ollama Status">
+                    <span class="status-dot"></span>
+                    <span class="status-label">Ollama</span>
+                </div>
+                <div class="status-indicator" id="thesidiaStatus" title="Thesidia Status">
+                    <span class="status-dot"></span>
+                    <span class="status-label">Thesidia</span>
+                </div>
+            </div>
+
+            <!-- Typing indicator -->
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </main>
+
+        <!-- HUD Prompt Bar -->
+        <div class="hud-prompt-container">
+            <div class="hud-prompt-wrapper">
+                <!-- HUD Status Modules (Left Side) -->
+                <div class="hud-modules-left">
+                    <!-- Status Module -->
+                    <div class="hud-module" data-module="status">
+                        <div class="hud-module-label">STAT</div>
+                        <div class="hud-module-value" id="statusDisplay">RDY</div>
+                    </div>
+                    
+                    <!-- Format Module -->
+                    <div class="hud-module" data-module="format">
+                        <div class="hud-module-label">FMT</div>
+                        <div class="hud-module-value" id="formatDisplay">NAT</div>
+                    </div>
+                    
+                    <!-- Depth Module -->
+                    <div class="hud-module" data-module="depth">
+                        <div class="hud-module-label">DEP</div>
+                        <div class="hud-module-value" id="depthDisplay">2</div>
+                    </div>
+                </div>
+
+                <!-- Main Input Area -->
+                <div class="hud-input-area">
+                    <div class="hud-input-container" id="promptContainer">
+                        <!-- File Upload Button -->
+                        <input type="file" id="fileInput" multiple accept="*/*" style="display: none;">
+                        <button class="hud-btn hud-btn-attach" id="attachBtn" aria-label="Attach" title="Attach">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Text Input -->
+                        <textarea 
+                            id="promptInput" 
+                            class="hud-input" 
+                            placeholder="Execute directive..."
+                            rows="1"
+                            autocomplete="off"
+                            autocorrect="off"
+                            autocapitalize="off"
+                            spellcheck="false"
+                        ></textarea>
+                        
+                        <!-- Send Button -->
+                        <button class="hud-btn hud-btn-send" id="sendBtn" aria-label="Execute" title="Execute (Enter)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Attached Files Indicator (Compact) -->
+                    <div class="hud-attached" id="attachedFiles" style="display: none;"></div>
+                </div>
+
+                <!-- HUD Control Modules (Right Side) -->
+                <div class="hud-modules-right">
+                    <!-- Character Count Module -->
+                    <div class="hud-module hud-module-compact" data-module="char">
+                        <div class="hud-module-label">CHAR</div>
+                        <div class="hud-module-value" id="charDisplay">0</div>
+                    </div>
+                    
+                    <!-- Module Toggle -->
+                    <button class="hud-module-toggle" id="hudModuleToggle" aria-label="Modules" title="Modules">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- HUD Module Panel (Expandable) -->
+            <div class="hud-module-panel" id="hudModulePanel" style="display: none;">
+                <div class="hud-module-panel-content">
+                    <!-- Format Control -->
+                    <div class="hud-control-group">
+                        <div class="hud-control-label">Format</div>
+                        <div class="hud-control-buttons">
+                            <button class="hud-control-btn active" data-format="natural" id="formatNatural">NAT</button>
+                            <button class="hud-control-btn" data-format="structured" id="formatStructured">STR</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Depth Control -->
+                    <div class="hud-control-group">
+                        <div class="hud-control-label">Depth</div>
+                        <div class="hud-control-buttons">
+                            <button class="hud-control-btn" data-depth="1">1</button>
+                            <button class="hud-control-btn active" data-depth="2">2</button>
+                            <button class="hud-control-btn" data-depth="3">3</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Left Sidebar -->
+        <div class="left-sidebar" id="leftSidebar">
+            <div class="sidebar-content">
+                <!-- Profile Section -->
+                <div class="sidebar-profile">
+                    <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                    <div class="profile-picture-container" id="profilePictureContainer">
+                        <div class="profile-picture" id="profilePicture">
+                            <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Ccircle cx=\'24\' cy=\'24\' r=\'24\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'24\' cy=\'18\' r=\'7\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M12 46 Q24 38 36 46\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                            <div class="profile-picture-overlay">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-name">Jack Danger</div>
+                        <div class="profile-tag">@jacksonadanger</div>
+                        <div class="profile-stats">
+                            <span class="stat-number">33</span>
+                            <span class="stat-label">Friends</span>
+                            <span class="stat-number">100</span>
+                            <span class="stat-label">Fans</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Navigation -->
+                <nav class="sidebar-nav">
+                    <a href="/profile.html" class="nav-menu-item">
+                        <div class="nav-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <span class="nav-title">Profile</span>
+                    </a>
+                    <a href="/stream.html" class="nav-menu-item">
+                        <div class="nav-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="3" y1="12" x2="21" y2="12"/>
+                                <line x1="3" y1="6" x2="21" y2="6"/>
+                                <line x1="3" y1="18" x2="21" y2="18"/>
+                            </svg>
+                        </div>
+                        <span class="nav-title">Stream</span>
+                    </a>
+                    <a href="/" class="nav-menu-item active">
+                        <div class="nav-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </div>
+                        <span class="nav-title">Thesidia</span>
+                    </a>
+                    <a href="/archive.html" class="nav-menu-item">
+                        <div class="nav-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            </svg>
+                        </div>
+                        <span class="nav-title">Archive</span>
+                    </a>
+                </nav>
+                
+                <!-- Settings Section -->
+                <div class="sidebar-settings">
+                    <div class="settings-label">Settings</div>
+                    <nav class="settings-nav">
+                        <a href="/settings/account.html" class="settings-item">Account</a>
+                        <a href="/settings/security.html" class="settings-item">Security</a>
+                        <a href="/settings/privacy.html" class="settings-item">Privacy</a>
+                        <a href="/settings/notifications.html" class="settings-item">Notifications</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
