@@ -1604,6 +1604,32 @@ def get_recommendations():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/posts/suggest-hashtags', methods=['POST'])
+def suggest_hashtags():
+    """Get AI-powered hashtag suggestions for post content"""
+    if not content_insights:
+        return jsonify({'error': 'AI insights not available'}), 503
+    
+    data = request.get_json() or {}
+    content = data.get('content', '')
+    partial = data.get('partial', '')
+    
+    if not content:
+        return jsonify({'error': 'Content required'}), 400
+    
+    try:
+        # Create a temporary post object for suggestions
+        temp_post = {'content': content, 'tags': []}
+        suggestions = content_insights.suggest_related_topics(temp_post)
+        
+        # Filter suggestions based on partial match
+        if partial:
+            suggestions = [s for s in suggestions if s.lower().startswith(partial.lower())]
+        
+        return jsonify({'suggestions': suggestions[:5]})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/users/<user_id>/profile', methods=['GET'])
 def get_user_profile(user_id):
     """Get user profile"""
