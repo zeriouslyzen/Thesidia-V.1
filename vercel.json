@@ -1,27 +1,11 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/server.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/server.py"
-    }
-  ],
+  "buildCommand": "echo 'No build needed'",
+  "outputDirectory": "public",
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/api/server.py"
+      "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "api/server.py": {
-      "includeFiles": "public/**"
-    }
-  }
+  ]
 }
-

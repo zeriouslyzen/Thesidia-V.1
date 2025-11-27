@@ -24,11 +24,31 @@ if 'thesidia_hybrid_adaptive' in sys.modules:
 if 'knowledge_base' in sys.modules:
     del sys.modules['knowledge_base']
 
-from thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
-from knowledge_base import KnowledgeBase
-from memory.user_memory_manager import UserMemoryManager
-from user_interest_tracker import UserInterestTracker
-from astronomical_patterns import AstronomicalPatternEngine
+# Lazy imports - only import when needed to avoid Vercel deployment issues
+# These will be imported inside functions that need them
+ThesidiaHybridAdaptive = None
+KnowledgeBase = None
+UserMemoryManager = None
+UserInterestTracker = None
+AstronomicalPatternEngine = None
+
+def _lazy_import_modules():
+    """Lazy import modules - only when actually needed"""
+    global ThesidiaHybridAdaptive, KnowledgeBase, UserMemoryManager, UserInterestTracker, AstronomicalPatternEngine
+    
+    if ThesidiaHybridAdaptive is None:
+        try:
+            from thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
+            from knowledge_base import KnowledgeBase
+            from memory.user_memory_manager import UserMemoryManager
+            from user_interest_tracker import UserInterestTracker
+            from astronomical_patterns import AstronomicalPatternEngine
+        except ImportError as e:
+            # For Vercel: modules that require ollama will fail to import
+            print(f"Warning: Could not import Thesidia modules: {e}")
+            print("This is expected on Vercel - Ollama is not available")
+            return False
+    return True
 import json
 from datetime import datetime
 import importlib
@@ -74,16 +94,16 @@ def add_security_headers(response):
 thesidia = None
 thesidia_ready = False
 ollama_status = False
-knowledge_base = KnowledgeBase(base_dir=project_root)
 
-# Initialize User Memory Manager
-user_memory_manager = UserMemoryManager(base_dir=project_root)
+# Lazy initialization - will be created in init_thesidia() if modules import successfully
+knowledge_base = None
+user_memory_manager = None
 
-# Initialize User Interest Tracker for engagement algorithm
-interest_tracker = UserInterestTracker(base_dir=project_root)
+# Initialize User Interest Tracker for engagement algorithm (lazy)
+interest_tracker = None
 
-# Initialize Astronomical Pattern Engine
-astronomical_engine = AstronomicalPatternEngine(data_dir=project_root / 'data')
+# Initialize Astronomical Pattern Engine (lazy)
+astronomical_engine = None
 
 # Initialize Settings Manager
 try:
@@ -111,12 +131,28 @@ def check_ollama():
 
 def init_thesidia():
     """Initialize Thesidia - FORCE FRESH INSTANCE"""
-    global thesidia, thesidia_ready, ollama_status
+    global thesidia, thesidia_ready, ollama_status, knowledge_base, user_memory_manager, interest_tracker, astronomical_engine
+    
+    # Try to import modules first
+    if not _lazy_import_modules():
+        ollama_status = False
+        thesidia_ready = False
+        return False
     
     # Check if Ollama is available first
     if not OLLAMA_AVAILABLE:
         ollama_status = False
         return False
+    
+    # Initialize knowledge base and other managers
+    if knowledge_base is None:
+        knowledge_base = KnowledgeBase(base_dir=project_root)
+    if user_memory_manager is None:
+        user_memory_manager = UserMemoryManager(base_dir=project_root)
+    if interest_tracker is None:
+        interest_tracker = UserInterestTracker(base_dir=project_root)
+    if astronomical_engine is None:
+        astronomical_engine = AstronomicalPatternEngine(data_dir=project_root / 'data')
     
     # Force reload module to ensure latest code
     import thesidia_hybrid_adaptive
@@ -148,8 +184,14 @@ def init_thesidia():
         thesidia_ready = False
         return False
 
-# Try to initialize
-init_thesidia()
+# Try to initialize (will fail gracefully on Vercel)
+try:
+    init_thesidia()
+except Exception as e:
+    print(f"Warning: Could not initialize Thesidia: {e}")
+    print("This is expected on Vercel - Ollama is not available")
+    thesidia_ready = False
+    ollama_status = False
 
 # Security: Rate limiting (simple in-memory)
 request_counts = {}

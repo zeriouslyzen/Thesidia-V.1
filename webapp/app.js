@@ -15,6 +15,7 @@ class ThesidiaApp {
         
         this.apiEndpoint = apiConfig.API_ENDPOINT || '/api/thesidia'; // Backend API endpoint
         this.statusEndpoint = apiConfig.STATUS_ENDPOINT || '/api/status'; // Status endpoint
+        this.apiKey = apiConfig.API_KEY || null; // Optional API key
         this.conversations = [];
         this.currentConversationId = null;
         this.isProcessing = false;
@@ -794,8 +795,18 @@ class ThesidiaApp {
             
             // Use fetch - handle both streaming and non-streaming
             const useStreaming = true; // Enable streaming for better UX
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            
+            // Add API key if configured
+            if (this.apiKey) {
+                headers['X-API-Key'] = this.apiKey;
+            }
+            
             fetch(this.apiEndpoint, {
                 method: 'POST',
+                headers: headers,
                 headers: {
                     'Content-Type': 'application/json',
                 },
