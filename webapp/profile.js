@@ -1,46 +1,7 @@
 // Profile Page Functionality
 class ProfilePage {
     constructor() {
-        this.currentCropType = null;
-        this.userId = null;
-        this.sessionId = null;
-        this.init();
-    }
-    
-    async init() {
-        // Load user session
-        this.userId = localStorage.getItem('thesidia_user_id');
-        this.sessionId = localStorage.getItem('thesidia_session_id');
-        
-        if (!this.sessionId) {
-            try {
-                const response = await fetch('/api/user/session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({})
-                });
-                const data = await response.json();
-                if (data.user_id && data.session_id) {
-                    this.userId = data.user_id;
-                    this.sessionId = data.session_id;
-                    localStorage.setItem('thesidia_user_id', this.userId);
-                    localStorage.setItem('thesidia_session_id', this.sessionId);
-                }
-            } catch (error) {
-                console.error('Error loading session:', error);
-            }
-        }
-        
-        // Load timeline on init
-        this.loadTimeline();
-        
-        // Setup tab switching
-        document.querySelectorAll('.profile-nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const tab = item.dataset.tab;
-                this.switchTab(tab);
-            });
-        }); // 'profile' or 'banner'
+        this.currentCropType = null; // 'profile' or 'banner'
         this.cropCanvas = null;
         this.cropImage = null;
         this.cropContext = null;
@@ -320,57 +281,20 @@ class ProfilePage {
         // TODO: Implement tab switching logic
     }
 
-    async loadTimeline() {
-        // Load user's posts from API
+    loadTimeline() {
+        // Load user's posts
         const timeline = document.getElementById('profileTimeline');
-        if (!timeline) return;
+        const posts = JSON.parse(localStorage.getItem('profilePosts') || '[]');
         
-        // Show loading state
-        timeline.innerHTML = '<div class="profile-loading">Loading posts...</div>';
-        
-        try {
-            const userId = localStorage.getItem('thesidia_user_id');
-            const sessionId = localStorage.getItem('thesidia_session_id');
-            const profileUserId = this.getProfileUserId() || userId;
-            
-            // Fetch user posts
-            const response = await fetch(`/api/posts?user_id=${profileUserId}&limit=50`);
-            const data = await response.json();
-            
-            if (data.posts && data.posts.length > 0) {
-                timeline.innerHTML = '';
-                data.posts.forEach(post => {
-                    const postElement = this.createPostElement(post);
-                    timeline.appendChild(postElement);
-                });
-                
-                // Update post count
-                const postsCountEl = document.getElementById('profilePostsCount');
-                if (postsCountEl) {
-                    postsCountEl.textContent = data.posts.length;
-                }
-            } else {
-                timeline.innerHTML = `
-                    <div class="profile-empty">
-                        <div class="profile-empty-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                            </svg>
-                        </div>
-                        <p>No posts yet. Start sharing your thoughts!</p>
-                    </div>
-                `;
-            }
-        } catch (error) {
-            console.error('Error loading timeline:', error);
-            timeline.innerHTML = '<div class="profile-error">Error loading posts. Please try again.</div>';
+        if (posts.length === 0) {
+            return; // Show empty state
         }
-    }
-    
-    getProfileUserId() {
-        // Get user ID from URL or use current user
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('user_id') || localStorage.getItem('thesidia_user_id');
+        
+        timeline.innerHTML = '';
+        posts.forEach(post => {
+            const postElement = this.createPostElement(post);
+            timeline.appendChild(postElement);
+        });
     }
 
     createPostElement(post) {

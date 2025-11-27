@@ -60,15 +60,6 @@ class FeedManager:
         Returns:
             List of post data dictionaries
         """
-        # Enforce pagination limits
-        max_limit = 100
-        if limit > max_limit:
-            limit = max_limit
-        if limit < 1:
-            limit = 20
-        if offset < 0:
-            offset = 0
-        
         # Check cache
         cache_key = f"{user_id}_{feed_type}_{limit}_{offset}"
         cached = self._get_cached_feed(cache_key)
@@ -92,22 +83,13 @@ class FeedManager:
     
     def _get_chronological_feed(self, user_id: str, limit: int, offset: int) -> List[Dict[str, Any]]:
         """Get chronological feed (following + public)"""
-        # Enforce pagination limits
-        max_limit = 100
-        if limit > max_limit:
-            limit = max_limit
-        if limit < 1:
-            limit = 20
-        
         # Get following list
         following = self.social_graph.get_following(user_id)
         blocked = self.social_graph.get_social_graph(user_id).get('blocked', [])
         muted = self.social_graph.get_social_graph(user_id).get('muted', [])
         
-        # Get posts with reasonable limit to avoid loading too many
-        # Load more than needed to account for filtering
-        fetch_limit = min(limit * 3, 300)  # Cap at 300 posts max
-        all_posts = self.post_manager.get_posts_by_date(limit=fetch_limit, offset=0)
+        # Get all posts
+        all_posts = self.post_manager.get_posts_by_date(limit=limit * 3, offset=0)
         
         # Filter: following + public, exclude blocked/muted
         filtered_posts = []
@@ -123,18 +105,10 @@ class FeedManager:
             if author_id in following or visibility == 'public':
                 filtered_posts.append(post)
         
-        # Apply offset and limit
         return filtered_posts[offset:offset + limit]
     
     def _get_quality_feed(self, user_id: str, limit: int, offset: int) -> List[Dict[str, Any]]:
         """Get AI-ranked quality feed"""
-        # Enforce pagination limits
-        max_limit = 100
-        if limit > max_limit:
-            limit = max_limit
-        if limit < 1:
-            limit = 20
-        
         # Get all posts sorted by score
         score_index_file = self.base_dir / "data" / "social" / "indexes" / "posts_by_score.json"
         if not score_index_file.exists():
@@ -147,42 +121,27 @@ class FeedManager:
         blocked = self.social_graph.get_social_graph(user_id).get('blocked', [])
         muted = self.social_graph.get_social_graph(user_id).get('muted', [])
         
-        # Batch load posts to avoid N+1 queries
-        # Load more than needed to account for filtering
-        fetch_count = min(limit * 2, 200)  # Cap at 200 posts max
-        candidate_ids = post_ids[offset:offset + fetch_count]
-        posts = self.post_manager.get_posts_batch(candidate_ids)
+        # Get posts, filter blocked/muted
+        posts = []
+        for post_id in post_ids[offset:offset + limit * 2]:
+            post = self.post_manager.get_post(post_id)
+            if post:
+                author_id = post.get('author_id')
+                if author_id not in blocked and author_id not in muted:
+                    posts.append(post)
+                    if len(posts) >= limit:
+                        break
         
-        # Filter blocked/muted
-        filtered_posts = []
-        for post in posts:
-            if not post:
-                continue
-            author_id = post.get('author_id')
-            if author_id not in blocked and author_id not in muted:
-                filtered_posts.append(post)
-                if len(filtered_posts) >= limit:
-                    break
-        
-        return filtered_posts
+        return posts
     
     def _get_personalized_feed(self, user_id: str, limit: int, offset: int) -> List[Dict[str, Any]]:
         """Get personalized feed using AI ranking"""
-        # Enforce pagination limits
-        max_limit = 100
-        if limit > max_limit:
-            limit = max_limit
-        if limit < 1:
-            limit = 20
-        
-        # Get posts (with reasonable limit)
-        fetch_limit = min(limit * 2, 200)  # Cap at 200 posts max
-        posts = self._get_chronological_feed(user_id, fetch_limit, 0)
+        # Get posts
+        posts = self._get_chronological_feed(user_id, limit * 2, 0)
         
         # Rank posts
         ranked_posts = self.feed_ranker.rank_posts(posts, user_id)
         
-        # Apply offset and limit
         return ranked_posts[offset:offset + limit]
     
     def _get_cached_feed(self, cache_key: str) -> Optional[list]:

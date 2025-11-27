@@ -316,12 +316,6 @@ def sanitize_request_data(data: Dict[str, Any], fields_to_sanitize: Optional[lis
     Returns:
         Sanitized data dictionary
     """
-    if data is None:
-        return {}
-    
-    if not isinstance(data, dict):
-        return data
-    
     sanitized = {}
     
     for key, value in data.items():
