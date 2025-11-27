@@ -8,6 +8,7 @@ from typing import Dict, Any, Optional
 from pathlib import Path
 from datetime import datetime, timedelta
 import sys
+import re
 
 # Add project root to path
 project_root = Path(__file__).resolve().parent.parent.parent
@@ -16,6 +17,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from webapp.social.post_manager import PostManager
 from webapp.social.social_graph import SocialGraph
 
+# Try to import Thesidia for AI-powered bot detection
+try:
+    from src.thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
+    THESIDIA_AVAILABLE = True
+except ImportError:
+    THESIDIA_AVAILABLE = False
+    ThesidiaHybridAdaptive = None
+
 
 class BotDetector:
     """
@@ -23,20 +32,29 @@ class BotDetector:
     Detects bot accounts using multiple signals
     """
     
-    def __init__(self, base_dir: Path = None):
+    def __init__(self, base_dir: Path = None, thesidia: Optional[Any] = None):
         """
         Initialize bot detector
         
         Args:
             base_dir: Base directory for data storage
+            thesidia: Optional ThesidiaHybridAdaptive instance for AI analysis
         """
         self.base_dir = base_dir or Path(".")
         self.post_manager = PostManager(base_dir=base_dir)
         self.social_graph = SocialGraph(base_dir=base_dir)
+        self.thesidia = thesidia
+        
+        # Initialize Thesidia if available and not provided
+        if not self.thesidia and THESIDIA_AVAILABLE:
+            try:
+                self.thesidia = ThesidiaHybridAdaptive()
+            except Exception:
+                self.thesidia = None
     
     def detect_bot(self, user_id: str) -> tuple[float, Dict[str, Any]]:
         """
-        Detect if user is a bot
+        Detect if user is a bot using multi-signal analysis + AI
         
         Args:
             user_id: User ID to check
@@ -48,6 +66,7 @@ class BotDetector:
             "post_frequency": self._check_post_frequency(user_id),
             "content_repetition": self._check_content_repetition(user_id),
             "engagement_patterns": self._check_engagement_patterns(user_id),
+            "ai_analysis": self._ai_bot_analysis(user_id),
             "network_anomalies": self._check_network_anomalies(user_id),
             "account_age": self._check_account_age(user_id)
         }

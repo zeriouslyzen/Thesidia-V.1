@@ -1558,6 +1558,38 @@ def follow_user(target_user_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/recommendations', methods=['GET'])
+def get_recommendations():
+    """Get AI-powered content recommendations"""
+    if not ai_recommendations:
+        return jsonify({'error': 'AI recommendations not available'}), 503
+    
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    limit = int(request.args.get('limit', 10))
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        # Get recommendations
+        recommended_posts = ai_recommendations.recommend_posts(user_id, limit)
+        suggested_topics = ai_recommendations.suggest_content_topics(user_id)
+        
+        return jsonify({
+            'recommended_posts': recommended_posts,
+            'suggested_topics': suggested_topics
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/users/<user_id>/profile', methods=['GET'])
 def get_user_profile(user_id):
     """Get user profile"""

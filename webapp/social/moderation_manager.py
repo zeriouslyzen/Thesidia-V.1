@@ -36,7 +36,7 @@ class ModerationManager:
         self.moderation_dir = self.base_dir / "data" / "social" / "moderation"
         self.moderation_dir.mkdir(parents=True, exist_ok=True)
         self.quality_scorer = AIQualityScorer(base_dir=base_dir)
-        self.bot_detector = BotDetector(base_dir=base_dir)
+        self.bot_detector = BotDetector(base_dir=base_dir)  # Will be set with AI if available
         self.post_manager = PostManager(base_dir=base_dir)
     
     def moderate_post(self, post_id: str) -> Dict[str, Any]:
