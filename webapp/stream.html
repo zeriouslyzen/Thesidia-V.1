@@ -287,6 +287,105 @@
             padding: var(--spacing-xl);
             color: var(--text-secondary);
         }
+        
+        .pull-refresh-indicator {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xs);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .refresh-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--text-primary);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        
+        .refresh-spinner.spinning {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .refresh-text {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+        
+        .skeleton-loader {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .skeleton-line {
+            height: 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .skeleton-line.short {
+            width: 60%;
+        }
+        
+        .skeleton-line.medium {
+            width: 80%;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .feed-filter {
+            display: flex;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            background: var(--bg-primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .feed-filter-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .feed-filter-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--text-secondary);
+        }
+        
+        .feed-filter-btn.active {
+            background: var(--bg-tertiary);
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -535,6 +634,68 @@
                 observer.observe(sentinel);
             }
             
+            setupPullToRefresh() {
+                const feedContainer = document.querySelector('.stream-feed-container');
+                if (!feedContainer) return;
+                
+                let startY = 0;
+                let currentY = 0;
+                let isDragging = false;
+                let pullDistance = 0;
+                
+                const refreshIndicator = document.createElement('div');
+                refreshIndicator.className = 'pull-refresh-indicator';
+                refreshIndicator.innerHTML = '<div class="refresh-spinner"></div><div class="refresh-text">Pull to refresh</div>';
+                feedContainer.insertBefore(refreshIndicator, feedContainer.firstChild);
+                
+                feedContainer.addEventListener('touchstart', (e) => {
+                    if (window.scrollY === 0) {
+                        startY = e.touches[0].clientY;
+                        isDragging = true;
+                    }
+                });
+                
+                feedContainer.addEventListener('touchmove', (e) => {
+                    if (!isDragging || window.scrollY > 0) return;
+                    
+                    currentY = e.touches[0].clientY;
+                    pullDistance = currentY - startY;
+                    
+                    if (pullDistance > 0 && pullDistance < 100) {
+                        refreshIndicator.style.transform = `translateY(${pullDistance}px)`;
+                        refreshIndicator.style.opacity = Math.min(pullDistance / 100, 1);
+                        
+                        if (pullDistance > 60) {
+                            refreshIndicator.querySelector('.refresh-text').textContent = 'Release to refresh';
+                        } else {
+                            refreshIndicator.querySelector('.refresh-text').textContent = 'Pull to refresh';
+                        }
+                    }
+                });
+                
+                feedContainer.addEventListener('touchend', async () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    
+                    if (pullDistance > 60) {
+                        refreshIndicator.querySelector('.refresh-text').textContent = 'Refreshing...';
+                        refreshIndicator.querySelector('.refresh-spinner').classList.add('spinning');
+                        
+                        await this.loadPosts(0, 20);
+                        
+                        refreshIndicator.style.transform = 'translateY(0)';
+                        refreshIndicator.style.opacity = '0';
+                        refreshIndicator.querySelector('.refresh-spinner').classList.remove('spinning');
+                        refreshIndicator.querySelector('.refresh-text').textContent = 'Pull to refresh';
+                    } else {
+                        refreshIndicator.style.transform = 'translateY(0)';
+                        refreshIndicator.style.opacity = '0';
+                    }
+                    
+                    pullDistance = 0;
+                });
+            }
+            
             async loadMorePosts() {
                 if (this.loading || !this.hasMore) return;
                 this.loading = true;
@@ -679,9 +840,44 @@
                 if (composeTextarea && postBtn) {
                     composeTextarea.addEventListener('input', () => {
                         postBtn.disabled = !composeTextarea.value.trim();
+                        this.updateCharacterCount(composeTextarea.value.length);
+                    });
+                    
+                    // Auto-resize textarea
+                    composeTextarea.addEventListener('input', () => {
+                        composeTextarea.style.height = 'auto';
+                        composeTextarea.style.height = composeTextarea.scrollHeight + 'px';
+                    });
+                    
+                    // Handle mentions and hashtags
+                    composeTextarea.addEventListener('input', (e) => {
+                        this.handleMentionsAndHashtags(e.target);
                     });
                     
                     postBtn.addEventListener('click', () => this.createPost());
+                }
+                
+                // Feed filter buttons
+                const filterButtons = document.querySelectorAll('.feed-filter-btn');
+                filterButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const feedType = btn.dataset.type;
+                        filterButtons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        localStorage.setItem('feed_type', feedType);
+                        this.loadPosts(0, 20);
+                    });
+                });
+                
+                // Media upload buttons
+                const addImageBtn = document.getElementById('addImageBtn');
+                const addVideoBtn = document.getElementById('addVideoBtn');
+                
+                if (addImageBtn) {
+                    addImageBtn.addEventListener('click', () => this.handleMediaUpload('image'));
+                }
+                if (addVideoBtn) {
+                    addVideoBtn.addEventListener('click', () => this.handleMediaUpload('video'));
                 }
                 
                 // Delegate event listeners for post actions
@@ -703,6 +899,91 @@
                         }
                     });
                 }
+            }
+            
+            updateCharacterCount(length) {
+                let counter = document.getElementById('charCount');
+                if (!counter) {
+                    counter = document.createElement('div');
+                    counter.id = 'charCount';
+                    counter.className = 'char-count';
+                    const composeActions = document.querySelector('.compose-actions');
+                    if (composeActions) {
+                        composeActions.appendChild(counter);
+                    }
+                }
+                
+                const maxLength = 10000;
+                counter.textContent = `${length}/${maxLength}`;
+                counter.style.color = length > maxLength * 0.9 ? 'var(--error-color, #ff4444)' : 'var(--text-tertiary)';
+            }
+            
+            handleMentionsAndHashtags(textarea) {
+                const text = textarea.value;
+                const cursorPos = textarea.selectionStart;
+                
+                // Check for @ mentions
+                const mentionMatch = text.substring(0, cursorPos).match(/@(\w*)$/);
+                if (mentionMatch) {
+                    // Could show autocomplete dropdown here
+                    console.log('Mention detected:', mentionMatch[1]);
+                }
+                
+                // Check for # hashtags
+                const hashtagMatch = text.substring(0, cursorPos).match(/#(\w*)$/);
+                if (hashtagMatch) {
+                    // Could show hashtag suggestions here
+                    console.log('Hashtag detected:', hashtagMatch[1]);
+                }
+            }
+            
+            handleMediaUpload(type) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = type === 'image' ? 'image/*' : 'video/*';
+                input.multiple = false;
+                
+                input.addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const preview = document.createElement('div');
+                        preview.className = 'media-preview';
+                        preview.innerHTML = `
+                            <${type === 'image' ? 'img' : 'video'} src="${event.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                            <button class="remove-media" onclick="this.parentElement.remove()">×</button>
+                        `;
+                        const composeArea = document.querySelector('.compose-input-area');
+                        if (composeArea) {
+                            composeArea.insertBefore(preview, composeArea.firstChild);
+                        }
+                    };
+                    
+                    if (type === 'image') {
+                        reader.readAsDataURL(file);
+                    } else {
+                        reader.readAsDataURL(file);
+                    }
+                });
+                
+                input.click();
+            }
+            
+            renderSkeletonLoaders(count = 3) {
+                const feed = document.getElementById('streamFeed');
+                if (!feed) return;
+                
+                feed.innerHTML = Array(count).fill(0).map(() => `
+                    <div class="skeleton-loader">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                `).join('');
             }
             
             async createPost() {
