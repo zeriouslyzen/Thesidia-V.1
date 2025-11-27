@@ -1400,6 +1400,54 @@ def comment_post(post_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/posts/<post_id>/repost', methods=['POST'])
+def repost_post(post_id):
+    """Repost or unrepost a post"""
+    if not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        reposted = interaction_manager.repost(post_id, user_id)
+        interactions = interaction_manager.get_interactions(post_id)
+        
+        return jsonify({
+            'reposted': reposted,
+            'interactions': interactions
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/posts/<post_id>/comments', methods=['GET'])
+def get_post_comments(post_id):
+    """Get comments for a post"""
+    if not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    try:
+        interactions = interaction_manager.get_interactions(post_id)
+        comments = interactions.get('comments_list', [])
+        
+        return jsonify({
+            'comments': comments,
+            'count': len(comments)
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/users/<target_user_id>/follow', methods=['POST'])
 def follow_user(target_user_id):
     """Follow or unfollow a user"""

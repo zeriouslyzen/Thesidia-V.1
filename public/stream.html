@@ -144,6 +144,144 @@
             color: var(--text-secondary);
         }
         
+        .comments-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: var(--spacing-lg);
+        }
+        
+        .comments-modal-content {
+            background: var(--bg-primary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .comments-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+        
+        .comments-modal-header h3 {
+            margin: 0;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .comments-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+        
+        .comments-close:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+        
+        .comment-item {
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-md);
+            border: var(--border-width-thin) solid var(--border-color);
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-sm);
+        }
+        
+        .comment-content {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xs);
+            line-height: var(--line-height-normal);
+        }
+        
+        .comment-time {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+        
+        .comment-form {
+            padding: var(--spacing-lg);
+            border-top: var(--border-width-thin) solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        
+        .comment-input {
+            width: 100%;
+            min-height: 80px;
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: var(--font-size-sm);
+            resize: vertical;
+        }
+        
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+        }
+        
+        .comment-submit {
+            align-self: flex-end;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .comment-submit:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+        
         .stream-loading {
             text-align: center;
             padding: var(--spacing-xl);
@@ -625,13 +763,111 @@
             }
             
             async toggleRepost(postId, btn) {
-                // TODO: Implement repost functionality
-                console.log('Repost not yet implemented');
+                try {
+                    const response = await fetch(`/api/posts/${postId}/repost`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user_id: this.userId,
+                            session_id: this.sessionId
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const repostCount = btn.querySelector('.repost-count');
+                        if (repostCount) {
+                            repostCount.textContent = data.interactions.reposts;
+                        }
+                        btn.classList.toggle('active', data.reposted);
+                    }
+                } catch (error) {
+                    console.error('Error toggling repost:', error);
+                }
             }
             
-            showComments(postId) {
-                // TODO: Implement comment thread display
-                console.log('Comments not yet implemented');
+            async showComments(postId) {
+                try {
+                    const response = await fetch(`/api/posts/${postId}/comments`);
+                    const data = await response.json();
+                    
+                    // Create comment modal/panel
+                    const modal = document.createElement('div');
+                    modal.className = 'comments-modal';
+                    modal.innerHTML = `
+                        <div class="comments-modal-content">
+                            <div class="comments-modal-header">
+                                <h3>Comments</h3>
+                                <button class="comments-close" onclick="this.closest('.comments-modal').remove()">×</button>
+                            </div>
+                            <div class="comments-list" id="commentsList${postId}">
+                                ${data.comments.map(comment => `
+                                    <div class="comment-item">
+                                        <div class="comment-author">${this.escapeHtml(comment.author_name || 'User')}</div>
+                                        <div class="comment-content">${this.escapeHtml(comment.content)}</div>
+                                        <div class="comment-time">${this.getTimeAgo(comment.timestamp)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="comment-form">
+                                <textarea id="commentInput${postId}" placeholder="Write a comment..." class="comment-input"></textarea>
+                                <button onclick="window.streamPage.addComment('${postId}')" class="comment-submit">Post</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                    
+                    // Close on backdrop click
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.remove();
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading comments:', error);
+                    alert('Error loading comments');
+                }
+            }
+            
+            async addComment(postId) {
+                const input = document.getElementById(`commentInput${postId}`);
+                if (!input || !input.value.trim()) return;
+                
+                const content = input.value.trim();
+                input.value = '';
+                
+                try {
+                    const response = await fetch(`/api/posts/${postId}/comment`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            content: content,
+                            user_id: this.userId,
+                            session_id: this.sessionId
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Reload comments
+                        await this.showComments(postId);
+                        // Update comment count in post
+                        const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+                        if (postElement) {
+                            const commentBtn = postElement.querySelector('[data-action="comment"]');
+                            const commentCount = commentBtn?.querySelector('.comment-count');
+                            if (commentCount) {
+                                commentCount.textContent = data.interactions.comments;
+                            }
+                        }
+                    } else {
+                        const error = await response.json();
+                        alert('Error posting comment: ' + (error.error || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error adding comment:', error);
+                    alert('Error posting comment');
+                }
             }
         }
         
