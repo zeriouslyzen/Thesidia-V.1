@@ -1194,7 +1194,21 @@ try:
     
     # Initialize quality scorer with Thesidia AI if available
     quality_scorer = AIQualityScorer(base_dir=project_root, thesidia=thesidia if thesidia_ready else None)
-    moderation_manager = ModerationManager(base_dir=project_root)
+    
+    # Initialize bot detector with AI
+    from webapp.social.bot_detector import BotDetector
+    bot_detector = BotDetector(base_dir=project_root, thesidia=thesidia if thesidia_ready else None)
+    
+    # Initialize moderation manager with AI-powered components
+    moderation_manager = ModerationManager(
+        base_dir=project_root,
+        quality_scorer=quality_scorer,
+        bot_detector=bot_detector
+    )
+    
+    # Initialize AI content insights and recommendations
+    content_insights = AIContentInsights(base_dir=project_root, thesidia=thesidia if thesidia_ready else None)
+    ai_recommendations = AIRecommendations(base_dir=project_root, thesidia=thesidia if thesidia_ready else None)
 except ImportError as e:
     print(f"Warning: Social media features not available: {e}")
     post_manager = None

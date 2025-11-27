@@ -25,18 +25,20 @@ class ModerationManager:
     Handles content moderation, user reporting, and automatic flagging
     """
     
-    def __init__(self, base_dir: Path = None):
+    def __init__(self, base_dir: Path = None, quality_scorer: Optional[Any] = None, bot_detector: Optional[Any] = None):
         """
         Initialize moderation manager
         
         Args:
             base_dir: Base directory for data storage
+            quality_scorer: Optional AIQualityScorer instance (with AI)
+            bot_detector: Optional BotDetector instance (with AI)
         """
         self.base_dir = base_dir or Path(".")
         self.moderation_dir = self.base_dir / "data" / "social" / "moderation"
         self.moderation_dir.mkdir(parents=True, exist_ok=True)
-        self.quality_scorer = AIQualityScorer(base_dir=base_dir)
-        self.bot_detector = BotDetector(base_dir=base_dir)  # Will be set with AI if available
+        self.quality_scorer = quality_scorer or AIQualityScorer(base_dir=base_dir)
+        self.bot_detector = bot_detector or BotDetector(base_dir=base_dir)
         self.post_manager = PostManager(base_dir=base_dir)
     
     def moderate_post(self, post_id: str) -> Dict[str, Any]:
