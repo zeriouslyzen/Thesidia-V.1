@@ -175,6 +175,22 @@ class PostManager:
         
         return True
     
+    def get_posts_batch(self, post_ids: List[str]) -> List[Optional[Dict[str, Any]]]:
+        """
+        Get multiple posts by IDs in batch (avoids N+1 queries)
+        
+        Args:
+            post_ids: List of post IDs
+            
+        Returns:
+            List of post data dictionaries (None for missing posts)
+        """
+        posts = []
+        for post_id in post_ids:
+            post = self.get_post(post_id)
+            posts.append(post)
+        return posts
+    
     def get_posts_by_user(self, user_id: str, limit: int = 20, offset: int = 0) -> List[Dict[str, Any]]:
         """
         Get posts by user
@@ -198,14 +214,12 @@ class PostManager:
             
             post_ids = index_data.get('index', {}).get(user_id, [])
             
-            # Get posts
-            posts = []
-            for post_id in post_ids[offset:offset + limit]:
-                post = self.get_post(post_id)
-                if post:
-                    posts.append(post)
+            # Batch load posts to avoid N+1 queries
+            candidate_ids = post_ids[offset:offset + limit]
+            posts = self.get_posts_batch(candidate_ids)
             
-            return posts
+            # Filter out None values
+            return [post for post in posts if post is not None]
         except Exception:
             return []
     
@@ -231,14 +245,12 @@ class PostManager:
             
             post_ids = index_data.get('index', [])
             
-            # Get posts
-            posts = []
-            for post_id in post_ids[offset:offset + limit]:
-                post = self.get_post(post_id)
-                if post:
-                    posts.append(post)
+            # Batch load posts to avoid N+1 queries
+            candidate_ids = post_ids[offset:offset + limit]
+            posts = self.get_posts_batch(candidate_ids)
             
-            return posts
+            # Filter out None values
+            return [post for post in posts if post is not None]
         except Exception:
             return []
     

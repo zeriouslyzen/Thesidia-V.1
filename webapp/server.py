@@ -84,9 +84,14 @@ def add_security_headers(response):
         if is_https_required():
             response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         
-        # Content Security Policy
-        csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'"
+        # Content Security Policy - tightened (no unsafe-inline)
+        # Generate nonce for inline scripts if needed
+        import secrets
+        nonce = secrets.token_urlsafe(16)
+        csp = f"default-src 'self'; script-src 'self' 'nonce-{nonce}'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
         response.headers['Content-Security-Policy'] = csp
+        # Store nonce in response for use in templates (if needed)
+        response.headers['X-CSP-Nonce'] = nonce
     
     return response
 
@@ -1253,12 +1258,49 @@ def create_post():
     if not post_manager or not moderation_manager or not feed_manager:
         return jsonify({'error': 'Social features not available'}), 503
     
+    # Import validation utilities
+    from webapp.utils.validation import (
+        validate_user_id, validate_session_id, validate_post_content,
+        validate_media, validate_tags, validate_visibility
+    )
+    
     data = request.get_json() or {}
     user_id = data.get('user_id') or request.args.get('user_id')
     session_id = data.get('session_id') or request.args.get('session_id')
+    content = data.get('content', '')
+    media = data.get('media', [])
+    tags = data.get('tags', [])
+    visibility = data.get('visibility', 'public')
+    
+    # Validate inputs
+    if user_id:
+        is_valid, error = validate_user_id(user_id)
+        if not is_valid:
+            return jsonify({'error': error}), 400
+    
+    if session_id:
+        is_valid, error = validate_session_id(session_id)
+        if not is_valid:
+            return jsonify({'error': error}), 400
     
     if not user_id and not session_id:
         return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    is_valid, error = validate_post_content(content)
+    if not is_valid:
+        return jsonify({'error': error}), 400
+    
+    is_valid, error = validate_media(media)
+    if not is_valid:
+        return jsonify({'error': error}), 400
+    
+    is_valid, error = validate_tags(tags)
+    if not is_valid:
+        return jsonify({'error': error}), 400
+    
+    is_valid, error = validate_visibility(visibility)
+    if not is_valid:
+        return jsonify({'error': error}), 400
     
     try:
         # Get user data
@@ -1271,10 +1313,10 @@ def create_post():
         # Create post
         post = post_manager.create_post(
             author_id=user_id,
-            content=data.get('content', ''),
-            media=data.get('media', []),
-            tags=data.get('tags', []),
-            visibility=data.get('visibility', 'public')
+            content=content,
+            media=media,
+            tags=tags,
+            visibility=visibility
         )
         
         # Moderate post (AI-powered)
@@ -1297,7 +1339,7 @@ def create_post():
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Internal server error'}), 500
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
@@ -1383,14 +1425,39 @@ def get_feed():
     if not feed_manager or not interaction_manager:
         return jsonify({'error': 'Social features not available'}), 503
     
+    # Import validation utilities
+    from webapp.utils.validation import (
+        validate_user_id, validate_session_id, validate_feed_type,
+        validate_pagination
+    )
+    
     user_id = request.args.get('user_id')
     session_id = request.args.get('session_id')
-    feed_type = request.args.get('type', 'chronological')  # chronological, quality, personalized
-    limit = int(request.args.get('limit', 20))
-    offset = int(request.args.get('offset', 0))
+    feed_type = request.args.get('type', 'chronological')
+    limit = request.args.get('limit', 20)
+    offset = request.args.get('offset', 0)
+    
+    # Validate inputs
+    if user_id:
+        is_valid, error = validate_user_id(user_id)
+        if not is_valid:
+            return jsonify({'error': error}), 400
+    
+    if session_id:
+        is_valid, error = validate_session_id(session_id)
+        if not is_valid:
+            return jsonify({'error': error}), 400
     
     if not user_id and not session_id:
         return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    is_valid, error, limit_num, offset_num = validate_pagination(limit, offset, max_limit=100)
+    if not is_valid:
+        return jsonify({'error': error}), 400
+    
+    is_valid, error = validate_feed_type(feed_type)
+    if not is_valid:
+        return jsonify({'error': error}), 400
     
     try:
         # Get user data
@@ -1401,7 +1468,7 @@ def get_feed():
             return jsonify({'error': 'User not found'}), 404
         
         # Get feed
-        posts = feed_manager.get_feed(user_id, feed_type, limit, offset)
+        posts = feed_manager.get_feed(user_id, feed_type, limit_num, offset_num)
         
         # Add interactions to each post
         for post in posts:
@@ -1410,12 +1477,12 @@ def get_feed():
         
         return jsonify({
             'items': posts,
-            'has_more': len(posts) == limit,
-            'page': offset // limit,
-            'limit': limit
+            'has_more': len(posts) == limit_num,
+            'page': offset_num // limit_num if limit_num > 0 else 0,
+            'limit': limit_num
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Internal server error'}), 500
 
 @app.route('/api/posts/<post_id>/like', methods=['POST'])
 def like_post(post_id):
@@ -1423,9 +1490,29 @@ def like_post(post_id):
     if not interaction_manager:
         return jsonify({'error': 'Social features not available'}), 503
     
+    # Import validation utilities
+    from webapp.utils.validation import (
+        validate_user_id, validate_session_id, validate_post_id
+    )
+    
     data = request.get_json() or {}
     user_id = data.get('user_id') or request.args.get('user_id')
     session_id = data.get('session_id') or request.args.get('session_id')
+    
+    # Validate inputs
+    is_valid, error = validate_post_id(post_id)
+    if not is_valid:
+        return jsonify({'error': error}), 400
+    
+    if user_id:
+        is_valid, error = validate_user_id(user_id)
+        if not is_valid:
+            return jsonify({'error': error}), 400
+    
+    if session_id:
+        is_valid, error = validate_session_id(session_id)
+        if not is_valid:
+            return jsonify({'error': error}), 400
     
     if not user_id and not session_id:
         return jsonify({'error': 'user_id or session_id required'}), 400
@@ -1446,7 +1533,7 @@ def like_post(post_id):
             'interactions': interactions
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Internal server error'}), 500
 
 @app.route('/api/posts/<post_id>/comment', methods=['POST'])
 def comment_post(post_id):
@@ -1454,16 +1541,38 @@ def comment_post(post_id):
     if not interaction_manager:
         return jsonify({'error': 'Social features not available'}), 503
     
+    # Import validation utilities
+    from webapp.utils.validation import (
+        validate_user_id, validate_session_id, validate_post_id,
+        validate_comment_content
+    )
+    
     data = request.get_json() or {}
     user_id = data.get('user_id') or request.args.get('user_id')
     session_id = data.get('session_id') or request.args.get('session_id')
     content = data.get('content', '')
     
+    # Validate inputs
+    is_valid, error = validate_post_id(post_id)
+    if not is_valid:
+        return jsonify({'error': error}), 400
+    
+    if user_id:
+        is_valid, error = validate_user_id(user_id)
+        if not is_valid:
+            return jsonify({'error': error}), 400
+    
+    if session_id:
+        is_valid, error = validate_session_id(session_id)
+        if not is_valid:
+            return jsonify({'error': error}), 400
+    
     if not user_id and not session_id:
         return jsonify({'error': 'user_id or session_id required'}), 400
     
-    if not content:
-        return jsonify({'error': 'Comment content required'}), 400
+    is_valid, error = validate_comment_content(content)
+    if not is_valid:
+        return jsonify({'error': error}), 400
     
     try:
         # Get user data
