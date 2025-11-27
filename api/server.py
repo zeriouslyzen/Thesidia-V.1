@@ -34,7 +34,9 @@ try:
 except (ImportError, Exception) as e:
     # Fallback: Create minimal Flask app if import fails
     from flask import Flask, jsonify
+    from flask_cors import CORS
     app = Flask(__name__)
+    CORS(app)
     
     @app.route('/')
     def index():
@@ -45,12 +47,13 @@ except (ImportError, Exception) as e:
             'import_error': str(e) if e else None
         }), 503
     
-    @app.route('/api/<path:path>', methods=['GET', 'POST'])
+    @app.route('/api/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
     def api_fallback(path):
         return jsonify({
             'error': 'Ollama not available',
             'message': 'Thesidia requires Ollama running locally. Vercel serverless functions cannot run Ollama.',
-            'recommendation': 'Use a platform that supports persistent services'
+            'recommendation': 'Use a platform that supports persistent services like Railway, Render, or Fly.io',
+            'note': 'For full functionality, deploy the API to Railway and configure the frontend to use that API endpoint'
         }), 503
 
 # Export app for Vercel
