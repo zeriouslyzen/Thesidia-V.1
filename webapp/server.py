@@ -84,14 +84,10 @@ def add_security_headers(response):
         if is_https_required():
             response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         
-        # Content Security Policy - tightened (no unsafe-inline)
-        # Generate nonce for inline scripts if needed
-        import secrets
-        nonce = secrets.token_urlsafe(16)
-        csp = f"default-src 'self'; script-src 'self' 'nonce-{nonce}'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+        # Content Security Policy - allow unsafe-inline for now (until we add nonces to all scripts)
+        # TODO: Add nonces to all inline scripts in HTML files
+        csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
         response.headers['Content-Security-Policy'] = csp
-        # Store nonce in response for use in templates (if needed)
-        response.headers['X-CSP-Nonce'] = nonce
     
     return response
 
@@ -327,9 +323,18 @@ def thesidia_api():
         return jsonify({'error': 'Invalid content type'}), 400
     
     # Security: Input sanitization
-    from webapp.middleware.security import sanitize_request_data
-    data = sanitize_request_data(request.get_json())
-    raw_message = data.get('message', '').strip()
+    try:
+        from webapp.middleware.security import sanitize_request_data
+        request_data = request.get_json()
+        if request_data is None:
+            return jsonify({'error': 'Invalid JSON in request body'}), 400
+        data = sanitize_request_data(request_data)
+        raw_message = data.get('message', '').strip()
+    except Exception as e:
+        print(f"Error sanitizing request data: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': 'Invalid request data'}), 400
     
     # CRITICAL FIX #1: Log RAW user input BEFORE any processing
     print(f"🔍 RAW USER INPUT: '{raw_message}'", flush=True)
