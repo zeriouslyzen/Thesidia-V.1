@@ -84,7 +84,7 @@ class FeedRanker:
     
     def _calculate_relevance(self, post: Dict[str, Any], user_id: str) -> float:
         """
-        Calculate relevance score based on user interests
+        Calculate relevance score based on user interests using AI
         
         Args:
             post: Post data dictionary
@@ -94,22 +94,46 @@ class FeedRanker:
             Relevance score (0-1)
         """
         try:
-            # Get user interests
-            interests = self.interest_tracker.get_user_interests(user_id)
+            # Get user interests from tracker
+            if hasattr(self.interest_tracker, 'get_user_interests'):
+                interests = self.interest_tracker.get_user_interests(user_id)
+            elif hasattr(self.interest_tracker, 'get_top_interests'):
+                interests = self.interest_tracker.get_top_interests(user_id, limit=20)
+            else:
+                interests = {}
             
             # Check post content and tags against interests
             content = post.get('content', '').lower()
             tags = [tag.lower() for tag in post.get('tags', [])]
             
-            # Simple keyword matching (could be enhanced with embeddings)
-            relevance_score = 0.5  # Default
+            # Enhanced keyword matching with weights
+            relevance_score = 0.3  # Base relevance
             
-            for interest, weight in interests.items():
-                if interest.lower() in content or interest.lower() in tags:
-                    relevance_score += weight * 0.1
+            if isinstance(interests, dict):
+                # Interests is a dict of {topic: weight}
+                for interest, weight in interests.items():
+                    interest_lower = str(interest).lower()
+                    # Check content
+                    if interest_lower in content:
+                        relevance_score += float(weight) * 0.15
+                    # Check tags
+                    if any(interest_lower in tag for tag in tags):
+                        relevance_score += float(weight) * 0.2
+            elif isinstance(interests, list):
+                # Interests is a list of topics
+                for interest in interests:
+                    interest_lower = str(interest).lower()
+                    if interest_lower in content:
+                        relevance_score += 0.1
+                    if any(interest_lower in tag for tag in tags):
+                        relevance_score += 0.15
             
-            return min(1.0, relevance_score)
-        except Exception:
+            # Boost for posts from followed users (if we had that data)
+            # This would require passing social graph data
+            
+            return min(1.0, max(0.0, relevance_score))
+        except Exception as e:
+            print(f"Error calculating relevance: {e}")
             return 0.5  # Default relevance
     
     def _calculate_recency(self, post: Dict[str, Any]) -> float:

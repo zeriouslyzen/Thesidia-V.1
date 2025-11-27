@@ -1191,8 +1191,10 @@ try:
     feed_manager = FeedManager(base_dir=project_root)
     social_graph = SocialGraph(base_dir=project_root)
     interaction_manager = InteractionManager(base_dir=project_root)
+    
+    # Initialize quality scorer with Thesidia AI if available
+    quality_scorer = AIQualityScorer(base_dir=project_root, thesidia=thesidia if thesidia_ready else None)
     moderation_manager = ModerationManager(base_dir=project_root)
-    quality_scorer = AIQualityScorer(base_dir=project_root)
 except ImportError as e:
     print(f"Warning: Social media features not available: {e}")
     post_manager = None
