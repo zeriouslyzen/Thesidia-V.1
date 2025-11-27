@@ -1202,34 +1202,6 @@ except ImportError as e:
     moderation_manager = None
     quality_scorer = None
 
-@app.route('/api/posts', methods=['GET'])
-def get_posts():
-    """Get posts with optional filters"""
-    if not post_manager:
-        return jsonify({'error': 'Social features not available'}), 503
-    
-    user_id = request.args.get('user_id')
-    limit = int(request.args.get('limit', 20))
-    offset = int(request.args.get('offset', 0))
-    
-    try:
-        if user_id:
-            # Get posts by user
-            posts = post_manager.get_posts_by_user(user_id, limit, offset)
-        else:
-            # Get all posts by date
-            posts = post_manager.get_posts_by_date(limit, offset)
-        
-        # Add interactions to each post
-        if interaction_manager:
-            for post in posts:
-                interactions = interaction_manager.get_interactions(post['id'])
-                post['interactions'] = interactions
-        
-        return jsonify({'posts': posts, 'count': len(posts)})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/api/posts', methods=['POST'])
 def create_post():
     """Create a new post"""
