@@ -31,6 +31,15 @@ class InteractionManager:
         self.base_dir = base_dir or Path(".")
         self.interactions_dir = self.base_dir / "data" / "social" / "interactions"
         self.interactions_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Initialize interest tracker for AI-powered recommendations
+        if INTEREST_TRACKER_AVAILABLE:
+            try:
+                self.interest_tracker = UserInterestTracker(base_dir=base_dir)
+            except Exception:
+                self.interest_tracker = None
+        else:
+            self.interest_tracker = None
     
     def _get_interaction_file(self, post_id: str) -> Path:
         """Get interaction file path for post"""

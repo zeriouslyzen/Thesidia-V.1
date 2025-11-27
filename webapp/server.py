@@ -1203,6 +1203,7 @@ except ImportError as e:
     interaction_manager = None
     moderation_manager = None
     quality_scorer = None
+    content_insights = None
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
@@ -1262,8 +1263,18 @@ def create_post():
             visibility=data.get('visibility', 'public')
         )
         
-        # Moderate post
+        # Moderate post (AI-powered)
         moderation_result = moderation_manager.moderate_post(post['id'])
+        
+        # Track user interests from post creation (AI-powered)
+        if interest_tracker:
+            try:
+                interest_tracker.track_topic(
+                    query=f"Created post: {post.get('content', '')[:200]}",
+                    response=post.get('content', '')[:500]
+                )
+            except Exception:
+                pass  # Fail silently
         
         # Invalidate feed cache
         feed_manager.invalidate_cache(user_id)
