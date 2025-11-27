@@ -28,14 +28,16 @@ Thesidia's social media platform is built as a lightweight, AI-first system with
 
 **Location**: `webapp/social/`
 
-- **Post Manager** (`post_manager.py`): Create, update, delete posts with content sanitization
-- **Feed Manager** (`feed_manager.py`): Chronological, quality, and personalized feeds
+- **Post Manager** (`post_manager.py`): Create, update, delete posts with content sanitization, hashtag/mention extraction
+- **Feed Manager** (`feed_manager.py`): Chronological, quality, and personalized feeds with caching
 - **Feed Ranker** (`feed_ranker.py`): AI-powered feed ranking (quality, relevance, recency, diversity)
 - **Social Graph** (`social_graph.py`): Follow/unfollow, blocking, muting
-- **Interaction Manager** (`interaction_manager.py`): Likes, comments, reposts, views
-- **AI Quality Scorer** (`ai_quality_scorer.py`): Multi-factor quality scoring
-- **Bot Detector** (`bot_detector.py`): Multi-signal bot detection
+- **Interaction Manager** (`interaction_manager.py`): Likes, comments, reposts, views with AI interest tracking
+- **AI Quality Scorer** (`ai_quality_scorer.py`): Multi-factor quality scoring with Thesidia AI integration
+- **Bot Detector** (`bot_detector.py`): Multi-signal bot detection enhanced with AI analysis
 - **Moderation Manager** (`moderation_manager.py`): Content moderation, user reporting
+- **AI Content Insights** (`ai_content_insights.py`): Generate summaries, key points, sentiment analysis
+- **AI Recommendations** (`ai_recommendations.py`): Personalized content recommendations and topic suggestions
 
 ### 4. Settings System
 
