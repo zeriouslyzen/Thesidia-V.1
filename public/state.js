@@ -1,5 +1,5 @@
 /**
- * THESIDIA // State Management
+ * Katanx // State Management
  * Client-side state management with localStorage persistence
  */
 

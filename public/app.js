@@ -1,4 +1,4 @@
-// Thesidia Web App - Security-First, High-End Mobile Interface
+// Katanx Web App - Security-First, High-End Mobile Interface
 
 class ThesidiaApp {
     constructor() {
@@ -259,6 +259,45 @@ class ThesidiaApp {
                     }
                 });
             }
+            
+            // Submenu filter items (Friends, Fans, Communities, Labs)
+            const submenuFilters = document.querySelectorAll('.submenu-item[data-filter]');
+            submenuFilters.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const filterType = item.dataset.filter;
+                    
+                    // Update active state
+                    submenuFilters.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Set filter type in localStorage
+                    localStorage.setItem('feed_type', filterType);
+                    
+                    // If on stream page, reload feed; otherwise navigate to stream
+                    if (this.currentPage === 'stream') {
+                        // Trigger reload if stream page is loaded
+                        const streamPage = window.streamPage;
+                        if (streamPage && typeof streamPage.loadPosts === 'function') {
+                            streamPage.currentPage = 0;
+                            streamPage.posts = [];
+                            streamPage.loadPosts(0, 20);
+                        }
+                    } else {
+                        // Navigate to stream page with filter applied
+                        window.location.href = '/stream.html';
+                    }
+                });
+            });
+            
+            // Set active filter on page load
+            const currentFilter = localStorage.getItem('feed_type');
+            if (currentFilter && ['friends', 'fans', 'communities', 'labs'].includes(currentFilter)) {
+                const activeFilter = document.querySelector(`.submenu-item[data-filter="${currentFilter}"]`);
+                if (activeFilter) {
+                    activeFilter.classList.add('active');
+                }
+            }
         } catch (error) {
             console.error('Error setting up minimal listeners:', error);
         }
@@ -268,6 +307,9 @@ class ThesidiaApp {
         // Get user session from localStorage or create new one
         this.userId = localStorage.getItem('thesidia_user_id');
         this.sessionId = localStorage.getItem('thesidia_session_id');
+        
+        // AUTHENTICATION DISABLED: Auto-create session if none exists
+        // No redirect to auth page - allow anonymous access
         
         try {
             const response = await fetch('/api/user/session', {
@@ -281,17 +323,92 @@ class ThesidiaApp {
                 })
             });
             
-            const userData = await response.json();
-            this.userId = userData.user_id;
-            this.sessionId = userData.session_id;
+            if (!response.ok) {
+                // Session invalid - create new anonymous session instead of redirecting
+                console.log('Session invalid, creating new anonymous session');
+                this.userId = null;
+                this.sessionId = null;
+                // Try again with null values to create new session
+                const retryResponse = await fetch('/api/user/session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: null,
+                        session_id: null
+                    })
+                });
+                
+                if (retryResponse.ok) {
+                    const userData = await retryResponse.json();
+                    this.userId = userData.user_id;
+                    this.sessionId = userData.session_id;
+                    localStorage.setItem('thesidia_user_id', this.userId);
+                    localStorage.setItem('thesidia_session_id', this.sessionId);
+                    console.log('Created new anonymous session:', { user_id: this.userId, session_id: this.sessionId });
+                } else {
+                    // If session creation fails, continue without session (graceful degradation)
+                    console.warn('Could not create session, continuing without authentication');
+                    this.userId = 'anonymous_' + Date.now();
+                    this.sessionId = 'session_' + Date.now();
+                }
+            } else {
+                const userData = await response.json();
+                this.userId = userData.user_id;
+                this.sessionId = userData.session_id;
+                
+                // Store in localStorage
+                localStorage.setItem('thesidia_user_id', this.userId);
+                localStorage.setItem('thesidia_session_id', this.sessionId);
+            }
             
-            // Store in localStorage
-            localStorage.setItem('thesidia_user_id', this.userId);
-            localStorage.setItem('thesidia_session_id', this.sessionId);
+            // Load user profile (if available)
+            await this.loadUserProfile();
             
             console.log('User session initialized:', { user_id: this.userId, session_id: this.sessionId });
         } catch (error) {
             console.error('Error setting up user session:', error);
+            // AUTHENTICATION DISABLED: Continue without session instead of redirecting
+            // Create fallback anonymous session
+            if (!this.userId || !this.sessionId) {
+                this.userId = 'anonymous_' + Date.now();
+                this.sessionId = 'session_' + Date.now();
+                localStorage.setItem('thesidia_user_id', this.userId);
+                localStorage.setItem('thesidia_session_id', this.sessionId);
+                console.log('Created fallback anonymous session:', { user_id: this.userId, session_id: this.sessionId });
+            }
+        }
+    }
+    
+    async loadUserProfile() {
+        if (!this.userId) return;
+        
+        try {
+            // Try to get profile from settings
+            const response = await fetch(`/api/settings?user_id=${this.userId}&session_id=${this.sessionId}`);
+            if (response.ok) {
+                const settings = await response.json();
+                const account = settings.get?.('account', {}) || settings.account || {};
+                
+                // Update sidebar profile if elements exist
+                const profileName = document.getElementById('sidebarProfileName');
+                const profileTag = document.getElementById('sidebarProfileTag');
+                
+                if (profileName) {
+                    profileName.textContent = account.display_name || account.username || 'User';
+                }
+                if (profileTag) {
+                    profileTag.textContent = account.username ? `@${account.username}` : '@user';
+                }
+            }
+        } catch (error) {
+            console.error('Error loading user profile:', error);
+            // Set defaults
+            const profileName = document.getElementById('sidebarProfileName');
+            const profileTag = document.getElementById('sidebarProfileTag');
+            if (profileName) profileName.textContent = 'User';
+            if (profileTag) profileTag.textContent = '@user';
         }
     }
     

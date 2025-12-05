@@ -1,5 +1,5 @@
 /**
- * THESIDIA // Client-Side Router
+ * Katanx // Client-Side Router
  * Lightweight routing for page transitions and active states
  */
 

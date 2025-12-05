@@ -6,15 +6,15 @@
     <meta name="theme-color" content="#000000">
     
     <!-- Primary Meta Tags -->
-    <title>THESIDIA // Signal Stream - Social Media Feed</title>
-    <meta name="title" content="THESIDIA // Signal Stream - Social Media Feed">
-    <meta name="description" content="THESIDIA Signal Stream - AI-curated social media feed with quality scoring and bot detection. Created by Jack Danger.">
-    <meta name="keywords" content="social media, AI feed, signal stream, thesidia, Jack Danger, AI curation">
+    <title>Katanx // Signal Stream - Social Media Feed</title>
+    <meta name="title" content="Katanx // Signal Stream - Social Media Feed">
+    <meta name="description" content="Katanx Signal Stream - AI-curated social media feed with quality scoring and bot detection. Created by Jack Danger.">
+    <meta name="keywords" content="social media, AI feed, signal stream, katanx, Jack Danger, AI curation">
     <meta name="author" content="Jack Danger">
     <meta name="robots" content="index, follow">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://www.thesidia.com/stream.html">
+    <link rel="canonical" href="https://www.katanx.com/stream.html">
     
     <!-- Cross-Domain Connections -->
     <link rel="author" href="https://www.jackdanger.dev">
@@ -23,16 +23,16 @@
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.thesidia.com/stream.html">
-    <meta property="og:title" content="THESIDIA // Signal Stream">
+    <meta property="og:url" content="https://www.katanx.com/stream.html">
+    <meta property="og:title" content="Katanx // Signal Stream">
     <meta property="og:description" content="AI-curated social media feed with quality scoring. Created by Jack Danger.">
-    <meta property="og:image" content="https://www.thesidia.com/og-image.jpg">
+    <meta property="og:image" content="https://www.katanx.com/og-image.jpg">
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="THESIDIA // Signal Stream">
+    <meta name="twitter:title" content="Katanx // Signal Stream">
     <meta name="twitter:description" content="AI-curated social media feed with quality scoring.">
-    <meta name="twitter:image" content="https://www.thesidia.com/twitter-image.jpg">
+    <meta name="twitter:image" content="https://www.katanx.com/twitter-image.jpg">
     
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -512,10 +512,10 @@
                     </div>
                 </div>
                 
-                <!-- THESIDIA Title - Center with Nano Dust -->
+                <!-- KATANX Title - Center with Nano Dust -->
                 <div class="header-title">
                     <h1 class="thesidia-title" id="thesidiaTitle">
-                        <span class="thesidia-text">THESIDIA</span>
+                        <span class="thesidia-text">KATANX</span>
                         <canvas class="nano-dust-canvas" id="nanoDustCanvas"></canvas>
                     </h1>
                 </div>
@@ -536,10 +536,10 @@
                     <span class="astro-time-dot"></span>
                 </div>
                 
-                <a href="#" class="submenu-item">Friends</a>
-                <a href="#" class="submenu-item">Fans</a>
-                <a href="#" class="submenu-item">Communities</a>
-                <a href="#" class="submenu-item">Builds</a>
+                <a href="#" class="submenu-item" data-filter="friends">Friends</a>
+                <a href="#" class="submenu-item" data-filter="fans">Fans</a>
+                <a href="#" class="submenu-item" data-filter="communities">Communities</a>
+                <a href="#" class="submenu-item" data-filter="labs">Labs</a>
                 
                 <!-- Star Notepad Button - Far Right -->
                 <button class="star-notepad-btn" id="starNotepadBtn" aria-label="Notes">
@@ -620,12 +620,12 @@
                         </div>
                     </div>
                     <div class="profile-info">
-                        <div class="profile-name">Jack Danger</div>
-                        <div class="profile-tag">@jacksonadanger</div>
+                        <div class="profile-name" id="sidebarProfileName">Loading...</div>
+                        <div class="profile-tag" id="sidebarProfileTag">@loading</div>
                         <div class="profile-stats">
-                            <span class="stat-number">33</span>
+                            <span class="stat-number" id="sidebarFriendsCount">0</span>
                             <span class="stat-label">Friends</span>
-                            <span class="stat-number">100</span>
+                            <span class="stat-number" id="sidebarFansCount">0</span>
                             <span class="stat-label">Fans</span>
                         </div>
                     </div>
@@ -823,7 +823,15 @@
                     // Get user session
                     const userId = localStorage.getItem('thesidia_user_id');
                     const sessionId = localStorage.getItem('thesidia_session_id');
-                    const feedType = localStorage.getItem('feed_type') || 'chronological';
+                    
+                    // Resolve feed type from URL first, then fallback to localStorage
+                    const params = new URLSearchParams(window.location.search);
+                    let feedType = params.get('type');
+                    if (!feedType) {
+                        feedType = localStorage.getItem('feed_type') || 'chronological';
+                    }
+                    // Persist chosen feed type for subsequent loads
+                    localStorage.setItem('feed_type', feedType);
                     
                     const response = await fetch(`/api/feed?user_id=${userId}&session_id=${sessionId}&type=${feedType}&limit=${limit}&offset=${page * limit}`);
                     const data = await response.json();
@@ -841,7 +849,8 @@
                         console.log('Posts loaded:', this.posts.length);
                         
                         // Add AI insights to posts if not present
-                        if (content_insights) {
+                        // (content_insights would be a global variable if available)
+                        if (typeof content_insights !== 'undefined' && content_insights) {
                             for (const post of this.posts) {
                                 if (!post.ai_summary) {
                                     try {
@@ -890,6 +899,11 @@
                 const liked = interactions.liked_by && interactions.liked_by.includes(this.userId);
                 const reposted = interactions.reposted_by && interactions.reposted_by.includes(this.userId);
                 
+                // Mastery / utility layer interactions
+                const validations = interactions.validations || 0;
+                const references = interactions.references || 0;
+                const contributions = interactions.contributions || 0;
+                
                 // AI insights
                 const aiScore = post.ai_score || 0;
                 const aiSummary = post.ai_summary || '';
@@ -917,35 +931,62 @@
                             </div>
                         </div>
                         <div class="post-content">${this.escapeHtml(post.content || '')}</div>
+                        ${post.tags && post.tags.length > 0 ? `
+                            <div class="post-tags">
+                                ${post.tags.map(tag => `
+                                    <span class="post-tag">#${this.escapeHtml(tag)}</span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        ${post.media && post.media.length > 0 ? `
+                            <div class="post-media">
+                                ${post.media.length > 1 ? `
+                                    <div class="post-media-carousel" style="grid-template-columns: repeat(${Math.min(post.media.length, 2)}, 1fr);">
+                                        ${post.media.map(mediaItem => {
+                                            if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
+                                                return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                            } else if (mediaItem.type === 'image') {
+                                                return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                            } else if (mediaItem.type === 'video') {
+                                                return `<video src="${mediaItem.url}" controls class="post-media-item"></video>`;
+                                            }
+                                            return '';
+                                        }).join('')}
+                                    </div>
+                                ` : `
+                                    ${post.media.map(mediaItem => {
+                                        if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
+                                            return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                        } else if (mediaItem.type === 'image') {
+                                            return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                        } else if (mediaItem.type === 'video') {
+                                            return `<video src="${mediaItem.url}" controls class="post-media-item"></video>`;
+                                        }
+                                        return '';
+                                    }).join('')}
+                                `}
+                            </div>
+                        ` : ''}
                         ${aiSummary ? `<div class="ai-summary">AI Summary: ${this.escapeHtml(aiSummary)}</div>` : ''}
                         ${aiSentiment.sentiment !== 'neutral' ? `<div class="ai-sentiment sentiment-${aiSentiment.sentiment}">${aiSentiment.sentiment} sentiment</div>` : ''}
                         <div class="post-actions">
-                            <button class="post-action-btn ${liked ? 'active' : ''}" data-action="like" data-post-id="${post.id}">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                                </svg>
-                                <span class="like-count">${likes}</span>
-                            </button>
-                            <button class="post-action-btn" data-action="comment" data-post-id="${post.id}">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                                </svg>
-                                <span class="comment-count">${comments}</span>
-                            </button>
-                            <button class="post-action-btn ${reposted ? 'active' : ''}" data-action="repost" data-post-id="${post.id}">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M17 1l4 4-4 4M21 5H11a4 4 0 0 0-4 4v6"/>
-                                    <path d="M7 23l-4-4 4-4M3 19h10a4 4 0 0 0 4-4V9"/>
-                                </svg>
-                                <span class="repost-count">${reposts}</span>
-                            </button>
-                            <button class="post-action-btn" data-action="views" data-post-id="${post.id}">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                    <circle cx="12" cy="12" r="3"/>
-                                </svg>
-                                <span class="view-count">${views}</span>
-                            </button>
+                            <div class="post-actions-mastery">
+                                <button class="post-action-chip" data-action="validate" data-post-id="${post.id}" title="Validate: confirm this is technically correct">
+                                    <span class="chip-label">Validate</span>
+                                    <span class="chip-count">${validations}</span>
+                                </button>
+                                <button class="post-action-chip" data-action="reference" data-post-id="${post.id}" title="Reference: add to your working library or other Blueprints">
+                                    <span class="chip-label">Reference</span>
+                                    <span class="chip-count">${references}</span>
+                                </button>
+                                <button class="post-action-chip" data-action="contribute" data-post-id="${post.id}" title="Contribute: suggest a small improvement or correction">
+                                    <span class="chip-label">Contribute</span>
+                                    <span class="chip-count">${contributions}</span>
+                                </button>
+                                <button class="post-action-chip" data-action="fork" data-post-id="${post.id}" title="FORK Blueprint: create your own applied version of this">
+                                    <span class="chip-label">FORK</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1013,6 +1054,34 @@
                     });
                 });
                 
+                // Submenu filter items (Friends, Fans, Communities, Labs)
+                const submenuFilters = document.querySelectorAll('.submenu-item[data-filter]');
+                submenuFilters.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const filterType = item.dataset.filter;
+                        
+                        // Update active state
+                        submenuFilters.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        
+                        // Set filter type and reload feed
+                        localStorage.setItem('feed_type', filterType);
+                        this.currentPage = 0;
+                        this.posts = [];
+                        this.loadPosts(0, 20);
+                    });
+                });
+                
+                // Set active filter on page load
+                const currentFilter = localStorage.getItem('feed_type');
+                if (currentFilter && ['friends', 'fans', 'communities', 'labs'].includes(currentFilter)) {
+                    const activeFilter = document.querySelector(`.submenu-item[data-filter="${currentFilter}"]`);
+                    if (activeFilter) {
+                        activeFilter.classList.add('active');
+                    }
+                }
+                
                 // Media upload buttons
                 const addImageBtn = document.getElementById('addImageBtn');
                 const addVideoBtn = document.getElementById('addVideoBtn');
@@ -1024,22 +1093,27 @@
                     addVideoBtn.addEventListener('click', () => this.handleMediaUpload('video'));
                 }
                 
-                // Delegate event listeners for post actions
+                // Delegate event listeners for post actions (mastery HUD)
                 const feed = document.getElementById('streamFeed');
                 if (feed) {
                     feed.addEventListener('click', (e) => {
-                        const btn = e.target.closest('.post-action-btn');
-                        if (!btn) return;
+                        const chip = e.target.closest('.post-action-chip');
+                        if (!chip) return;
                         
-                        const action = btn.dataset.action;
-                        const postId = btn.dataset.postId;
+                        const target = chip;
+                        const action = target.dataset.action;
+                        const postId = target.dataset.postId;
                         
-                        if (action === 'like') {
-                            this.toggleLike(postId, btn);
-                        } else if (action === 'comment') {
-                            this.showComments(postId);
-                        } else if (action === 'repost') {
-                            this.toggleRepost(postId, btn);
+                        if (!action || !postId) return;
+                        
+                        if (action === 'validate') {
+                            this.toggleValidate(postId, target);
+                        } else if (action === 'reference') {
+                            this.createReference(postId, target);
+                        } else if (action === 'contribute') {
+                            this.openContributionDialog(postId);
+                        } else if (action === 'fork') {
+                            this.handleFork(postId);
                         }
                     });
                 }
@@ -1114,6 +1188,146 @@
                 });
                 
                 input.click();
+            }
+            
+            // ------------------------------------------------------------------
+            // Mastery / utility interactions
+            // ------------------------------------------------------------------
+            
+            async toggleValidate(postId, target) {
+                try {
+                    const response = await fetch(`/api/posts/${postId}/validate`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_id: this.userId,
+                            session_id: this.sessionId
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to validate post', await response.text());
+                        return;
+                    }
+                    
+                    const data = await response.json();
+                    const interactions = data.interactions || {};
+                    
+                    // Update local post
+                    const postIndex = this.posts.findIndex(p => p.id === postId);
+                    if (postIndex !== -1) {
+                        this.posts[postIndex].interactions = {
+                            ...(this.posts[postIndex].interactions || {}),
+                            ...interactions
+                        };
+                    }
+                    
+                    // Update UI count
+                    const countSpan = target.querySelector('.chip-count');
+                    if (countSpan) {
+                        countSpan.textContent = interactions.validations || 0;
+                    }
+                } catch (error) {
+                    console.error('Error validating post:', error);
+                }
+            }
+            
+            async createReference(postId, target) {
+                try {
+                    // For now, simple reference without explicit context.
+                    // Later this can open a modal to choose collection / blueprint.
+                    const response = await fetch(`/api/posts/${postId}/reference`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_id: this.userId,
+                            session_id: this.sessionId,
+                            context: ''
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to reference post', await response.text());
+                        return;
+                    }
+                    
+                    const data = await response.json();
+                    const interactions = data.interactions || {};
+                    
+                    const postIndex = this.posts.findIndex(p => p.id === postId);
+                    if (postIndex !== -1) {
+                        this.posts[postIndex].interactions = {
+                            ...(this.posts[postIndex].interactions || {}),
+                            ...interactions
+                        };
+                    }
+                    
+                    const countSpan = target.querySelector('.chip-count');
+                    if (countSpan) {
+                        countSpan.textContent = interactions.references || 0;
+                    }
+                } catch (error) {
+                    console.error('Error referencing post:', error);
+                }
+            }
+            
+            openContributionDialog(postId) {
+                const content = prompt('Contribute a small improvement or correction to this Blueprint:');
+                if (!content || !content.trim()) return;
+                this.submitContribution(postId, content.trim());
+            }
+            
+            async submitContribution(postId, content) {
+                try {
+                    const response = await fetch(`/api/posts/${postId}/contribute`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_id: this.userId,
+                            session_id: this.sessionId,
+                            content
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to submit contribution', await response.text());
+                        return;
+                    }
+                    
+                    const data = await response.json();
+                    const interactions = data.interactions || {};
+                    
+                    const postIndex = this.posts.findIndex(p => p.id === postId);
+                    if (postIndex !== -1) {
+                        this.posts[postIndex].interactions = {
+                            ...(this.posts[postIndex].interactions || {}),
+                            ...interactions
+                        };
+                    }
+                    
+                    // Update contribution chip count
+                    const feed = document.getElementById('streamFeed');
+                    if (feed) {
+                        const chip = feed.querySelector(`.post-action-chip[data-action="contribute"][data-post-id="${postId}"] .chip-count`);
+                        if (chip) {
+                            chip.textContent = interactions.contributions || 0;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error submitting contribution:', error);
+                }
+            }
+            
+            handleFork(postId) {
+                // For now, Fork is conceptual: we can later wire this to a dedicated
+                // blueprint creation flow. Here we simply acknowledge the intent.
+                alert('FORK Blueprint: In a later build, this will create your own applied version of this post as a Blueprint with a Data Panel.');
             }
             
             renderSkeletonLoaders(count = 3) {

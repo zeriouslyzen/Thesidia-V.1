@@ -1,5 +1,5 @@
 /**
- * THESIDIA // Shared Components
+ * Katanx // Shared Components
  * Reusable UI components for all pages
  */
 
