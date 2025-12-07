@@ -1,0 +1,169 @@
+{
+  "thread_id": "thread_welcome_how_to_use",
+  "upvotes": [
+    "user_0",
+    "user_1",
+    "user_2",
+    "user_3",
+    "user_4",
+    "user_5",
+    "user_6",
+    "user_7",
+    "user_8",
+    "user_9"
+  ],
+  "downvotes": [],
+  "comment_votes": {
+    "comment_welcome_1": {
+      "upvotes": ["user_1", "user_2", "user_3", "user_4"],
+      "downvotes": []
+    },
+    "comment_welcome_2": {
+      "upvotes": ["user_5", "user_6", "user_7"],
+      "downvotes": []
+    },
+    "comment_welcome_3": {
+      "upvotes": ["user_8", "user_9"],
+      "downvotes": []
+    },
+    "comment_welcome_4": {
+      "upvotes": ["user_0", "user_1"],
+      "downvotes": []
+    },
+    "comment_welcome_5": {
+      "upvotes": ["user_2", "user_3", "user_4", "user_5"],
+      "downvotes": []
+    }
+  },
+  "comment_awards": {
+    "comment_welcome_1": [
+      {
+        "id": "award_comment_welcome_1_1",
+        "comment_id": "comment_welcome_1",
+        "user_id": "user_1",
+        "type": "helpful",
+        "created_at": "2024-01-15T10:30:00"
+      }
+    ],
+    "comment_welcome_3": [
+      {
+        "id": "award_comment_welcome_3_1",
+        "comment_id": "comment_welcome_3",
+        "user_id": "user_8",
+        "type": "insightful",
+        "created_at": "2024-01-15T11:00:00"
+      }
+    ]
+  },
+  "comments": [
+    {
+      "id": "comment_welcome_1",
+      "thread_id": "thread_welcome_how_to_use",
+      "parent_id": null,
+      "author": {
+        "user_id": "user_1",
+        "username": "explorer",
+        "display_name": "Explorer",
+        "avatar_url": ""
+      },
+      "content": "This is exactly what I needed! The navigation between sections is really intuitive. I especially appreciate how the Circles section works - it feels like a modern take on forum discussions.",
+      "created_at": "2024-01-15T10:25:00",
+      "score": 4,
+      "upvotes": 4,
+      "downvotes": 0,
+      "user_vote": null,
+      "replies": [
+        {
+          "id": "comment_welcome_4",
+          "thread_id": "thread_welcome_how_to_use",
+          "parent_id": "comment_welcome_1",
+          "author": {
+            "user_id": "user_0",
+            "username": "admin",
+            "display_name": "Admin",
+            "avatar_url": ""
+          },
+          "content": "Thank you! We designed the Circles to feel familiar yet fresh. Each circle represents a topic or community, and you can dive deep into discussions or start your own threads.",
+          "created_at": "2024-01-15T10:28:00",
+          "score": 2,
+          "upvotes": 2,
+          "downvotes": 0,
+          "user_vote": null,
+          "replies": [],
+          "awards": []
+        }
+      ],
+      "awards": [
+        {
+          "type": "helpful",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "comment_welcome_2",
+      "thread_id": "thread_welcome_how_to_use",
+      "parent_id": null,
+      "author": {
+        "user_id": "user_2",
+        "username": "thinker",
+        "display_name": "Thinker",
+        "avatar_url": ""
+      },
+      "content": "How do I create my own thread? I want to start a discussion about a specific topic but I'm not sure where to begin.",
+      "created_at": "2024-01-15T10:35:00",
+      "score": 3,
+      "upvotes": 3,
+      "downvotes": 0,
+      "user_vote": null,
+      "replies": [
+        {
+          "id": "comment_welcome_5",
+          "thread_id": "thread_welcome_how_to_use",
+          "parent_id": "comment_welcome_2",
+          "author": {
+            "user_id": "user_0",
+            "username": "admin",
+            "display_name": "Admin",
+            "avatar_url": ""
+          },
+          "content": "Great question! To create a thread, navigate to the Circles section, select a circle that matches your topic, and look for the 'New Thread' button. You can also browse existing threads to see how others structure their discussions.",
+          "created_at": "2024-01-15T10:40:00",
+          "score": 4,
+          "upvotes": 4,
+          "downvotes": 0,
+          "user_vote": null,
+          "replies": [],
+          "awards": []
+        }
+      ],
+      "awards": []
+    },
+    {
+      "id": "comment_welcome_3",
+      "thread_id": "thread_welcome_how_to_use",
+      "parent_id": null,
+      "author": {
+        "user_id": "user_3",
+        "username": "philosopher",
+        "display_name": "Philosopher",
+        "avatar_url": ""
+      },
+      "content": "I love the minimalist design. It reminds me of early Reddit but with a more refined aesthetic. The voting system and comment threading work seamlessly. One suggestion: it would be great to have keyboard shortcuts for navigation.",
+      "created_at": "2024-01-15T10:50:00",
+      "score": 2,
+      "upvotes": 2,
+      "downvotes": 0,
+      "user_vote": null,
+      "replies": [],
+      "awards": [
+        {
+          "type": "insightful",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "updated_at": "2024-01-15T12:00:00"
+}
+

@@ -1589,13 +1589,43 @@ def get_circles_section():
         
         # Generate mock threads
         author_ids = [f"user_{i}" for i in range(10)]
-        threads = generate_threads(count=limit, author_ids=author_ids, seed=456)
+        threads = generate_threads(count=limit-1, author_ids=author_ids, seed=456)  # -1 to make room for welcome thread
+        
+        # Add welcome thread at the beginning
+        welcome_thread = {
+            'id': 'thread_welcome_how_to_use',
+            'author_id': 'user_0',
+            'title': 'Welcome: How to Use This Platform',
+            'body': 'Welcome to our community platform. This guide will help you get started.\n\n**Navigation**\nThe platform is organized into sections accessible via the main navigation. Each section serves a specific purpose:\n\n- **Circles**: Community discussions organized by topic. Browse existing threads or start your own.\n- **Stream**: Your personalized feed of content and updates.\n- **Knowledge Base**: Curated information and resources.\n- **Studio**: Learning programs and mentorship opportunities.\n\n**Circles Section**\nCircles are topic-based communities where you can:\n- Browse discussions by category (Philosophy, Science, Business, etc.)\n- Click on any thread to view the full discussion\n- Upvote or downvote threads and comments\n- Reply to comments to create threaded discussions\n- Sort comments by Best, Top, New, or Controversial\n- Give awards to comments you find particularly valuable\n\n**Interacting with Content**\n- Use the upvote (^) button to support content you find valuable\n- Click the comment icon to view and participate in discussions\n- Click on any thread title to open the full discussion page\n- Use keyboard shortcuts: Cmd/Ctrl+Enter to submit comments, Escape to clear\n\n**Getting Started**\n1. Explore the Circles section to see what discussions are happening\n2. Click on a thread that interests you\n3. Read through the comments and replies\n4. Join the conversation by adding your own thoughts\n\nThis platform is designed for thoughtful, meaningful discussions. Take your time, engage authentically, and contribute value to the community.',
+            'created_at': (datetime.now() - timedelta(hours=2)).isoformat(),
+            'upvotes': 10,
+            'downvotes': 0,
+            'comment_count': 5,
+            'views': 150,
+            'circle': 'General',
+            'tags': ['welcome', 'guide', 'getting-started'],
+            'author': {
+                'user_id': 'user_0',
+                'username': 'admin',
+                'display_name': 'Admin',
+                'avatar_url': ''
+            }
+        }
+        threads.insert(0, welcome_thread)
         
         # Apply filter
         if filter_type == 'trending':
             threads.sort(key=lambda x: x['upvotes'] - x['downvotes'], reverse=True)
+            # Keep welcome thread at top even when sorting
+            if welcome_thread in threads:
+                threads.remove(welcome_thread)
+                threads.insert(0, welcome_thread)
         elif filter_type == 'recent':
             threads.sort(key=lambda x: x['created_at'], reverse=True)
+            # Keep welcome thread at top even when sorting
+            if welcome_thread in threads:
+                threads.remove(welcome_thread)
+                threads.insert(0, welcome_thread)
         
         # Attach author profiles
         for thread in threads:
@@ -1674,31 +1704,78 @@ def get_thread_detail(thread_id):
         author_ids = [f"user_{i}" for i in range(10)]
         all_threads = generate_threads(count=100, author_ids=author_ids, seed=456)
         
-        # Find thread by ID (or generate one if not found)
-        thread = None
-        for t in all_threads:
-            if t['id'] == thread_id:
-                thread = t
-                break
-        
-        # If not found, generate a new one with the ID
-        if not thread:
-            import random
-            random.seed(hash(thread_id) % 1000)
-            topic = random.choice(CIRCLE_TOPICS)
+        # Check for special welcome thread
+        if thread_id == 'thread_welcome_how_to_use':
             thread = {
-                'id': thread_id,
-                'author_id': random.choice(author_ids),
-                'title': f"Discussion: {topic}",
-                'body': f"I've been thinking about {topic} lately and wanted to get the community's perspective. What do you all think?",
-                'created_at': datetime.now().isoformat(),
-                'upvotes': random.randint(0, 500),
-                'downvotes': random.randint(0, 50),
-                'comment_count': random.randint(0, 100),
-                'views': random.randint(10, 5000),
-                'circle': topic,
-                'tags': [topic]
+                'id': 'thread_welcome_how_to_use',
+                'author_id': 'user_0',
+                'title': 'Welcome: How to Use This Platform',
+                'body': '''Welcome to our community platform. This guide will help you get started.
+
+**Navigation**
+The platform is organized into sections accessible via the main navigation. Each section serves a specific purpose:
+
+- **Circles**: Community discussions organized by topic. Browse existing threads or start your own.
+- **Stream**: Your personalized feed of content and updates.
+- **Knowledge Base**: Curated information and resources.
+- **Studio**: Learning programs and mentorship opportunities.
+
+**Circles Section**
+Circles are topic-based communities where you can:
+- Browse discussions by category (Philosophy, Science, Business, etc.)
+- Click on any thread to view the full discussion
+- Upvote or downvote threads and comments
+- Reply to comments to create threaded discussions
+- Sort comments by Best, Top, New, or Controversial
+- Give awards to comments you find particularly valuable
+
+**Interacting with Content**
+- Use the upvote (^) button to support content you find valuable
+- Click the comment icon to view and participate in discussions
+- Click on any thread title to open the full discussion page
+- Use keyboard shortcuts: Cmd/Ctrl+Enter to submit comments, Escape to clear
+
+**Getting Started**
+1. Explore the Circles section to see what discussions are happening
+2. Click on a thread that interests you
+3. Read through the comments and replies
+4. Join the conversation by adding your own thoughts
+
+This platform is designed for thoughtful, meaningful discussions. Take your time, engage authentically, and contribute value to the community.''',
+                'created_at': (datetime.now() - timedelta(hours=2)).isoformat(),
+                'upvotes': 10,
+                'downvotes': 0,
+                'comment_count': 5,
+                'views': 150,
+                'circle': 'General',
+                'tags': ['welcome', 'guide', 'getting-started']
             }
+        else:
+            # Find thread by ID (or generate one if not found)
+            thread = None
+            for t in all_threads:
+                if t['id'] == thread_id:
+                    thread = t
+                    break
+            
+            # If not found, generate a new one with the ID
+            if not thread:
+                import random
+                random.seed(hash(thread_id) % 1000)
+                topic = random.choice(CIRCLE_TOPICS)
+                thread = {
+                    'id': thread_id,
+                    'author_id': random.choice(author_ids),
+                    'title': f"Discussion: {topic}",
+                    'body': f"I've been thinking about {topic} lately and wanted to get the community's perspective. What do you all think?",
+                    'created_at': datetime.now().isoformat(),
+                    'upvotes': random.randint(0, 500),
+                    'downvotes': random.randint(0, 50),
+                    'comment_count': random.randint(0, 100),
+                    'views': random.randint(10, 5000),
+                    'circle': topic,
+                    'tags': [topic]
+                }
         
         # Attach author profile
         try:
