@@ -114,8 +114,21 @@ class ThreadDetailPage {
         if (commentInput) {
             commentInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
                     this.submitComment();
                 }
+                // Escape to clear
+                if (e.key === 'Escape') {
+                    commentInput.value = '';
+                    delete commentInput.dataset.parentId;
+                    commentInput.placeholder = 'Add a comment...';
+                }
+            });
+            
+            // Auto-resize textarea
+            commentInput.addEventListener('input', () => {
+                commentInput.style.height = 'auto';
+                commentInput.style.height = Math.min(commentInput.scrollHeight, 200) + 'px';
             });
         }
         
@@ -712,8 +725,12 @@ class ThreadDetailPage {
             const commentEl = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
             if (commentEl) {
                 commentEl.style.backgroundColor = 'var(--accent-subtle)';
+                commentEl.style.transition = 'background-color 0.3s ease';
                 setTimeout(() => {
                     commentEl.style.backgroundColor = '';
+                    setTimeout(() => {
+                        commentEl.style.transition = '';
+                    }, 300);
                 }, 2000);
             }
             
