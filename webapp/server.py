@@ -99,18 +99,24 @@ except ImportError:
 @app.after_request
 def add_security_headers(response):
     """Add security headers to responses"""
-    if is_security_headers_enabled():
-        response.headers['X-Content-Type-Options'] = 'nosniff'
-        response.headers['X-Frame-Options'] = 'DENY'
-        response.headers['X-XSS-Protection'] = '1; mode=block'
-        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        
-        if is_https_required():
-            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-        
-        # Content Security Policy
-        csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'"
-        response.headers['Content-Security-Policy'] = csp
+    try:
+        if is_security_headers_enabled():
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.headers['X-Frame-Options'] = 'DENY'
+            response.headers['X-XSS-Protection'] = '1; mode=block'
+            response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+            
+            if is_https_required():
+                response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+            
+            # Content Security Policy
+            csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'"
+            response.headers['Content-Security-Policy'] = csp
+    except Exception as e:
+        # Don't crash if security headers fail - just log and continue
+        print(f"Warning: Could not add security headers: {e}")
+        import traceback
+        traceback.print_exc()
     
     return response
 
@@ -260,19 +266,54 @@ def check_rate_limit(ip):
 @app.route('/')
 def index():
     """Serve main HTML file - index.html is the main entry point"""
-    # Check public/ directory first (for Vercel), then current directory
-    static_dir = Path(__file__).parent.parent / 'public'
-    if static_dir.exists():
-        index_path = static_dir / 'index.html'
-        if index_path.exists():
-            return send_from_directory(str(static_dir), 'index.html')
-        contexts_path = static_dir / 'contexts.html'
-        if contexts_path.exists():
-            return send_from_directory(str(static_dir), 'contexts.html')
-    # Fallback to current directory
-    if Path('index.html').exists():
-        return send_from_directory('.', 'index.html')
-    return send_from_directory('.', 'contexts.html')
+    try:
+        # Check public/ directory first (for Vercel), then current directory
+        static_dir = Path(__file__).parent.parent / 'public'
+        if static_dir.exists():
+            index_path = static_dir / 'index.html'
+            if index_path.exists():
+                return send_from_directory(str(static_dir), 'index.html')
+            contexts_path = static_dir / 'contexts.html'
+            if contexts_path.exists():
+                return send_from_directory(str(static_dir), 'contexts.html')
+        # Fallback to current directory
+        if Path('index.html').exists():
+            return send_from_directory('.', 'index.html')
+        if Path('contexts.html').exists():
+            return send_from_directory('.', 'contexts.html')
+    except Exception as e:
+        # If file serving fails, return a simple HTML response
+        import traceback
+        print(f"Error serving index file: {e}")
+        traceback.print_exc()
+        # Return a minimal HTML page
+        return f"""<!DOCTYPE html>
+<html>
+<head>
+    <title>Thesidia</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>Thesidia</h1>
+    <p>Application is loading...</p>
+    <script>window.location.href = '/stream.html';</script>
+</body>
+</html>""", 200, {'Content-Type': 'text/html'}
+    
+    # Final fallback if nothing works
+    return """<!DOCTYPE html>
+<html>
+<head>
+    <title>Thesidia</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>Thesidia</h1>
+    <p>Please navigate to <a href="/stream.html">/stream.html</a></p>
+</body>
+</html>""", 200, {'Content-Type': 'text/html'}
 
 @app.route('/robots.txt')
 def robots():
