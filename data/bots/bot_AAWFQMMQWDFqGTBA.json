@@ -1,0 +1,23 @@
+{
+  "bot_id": "bot_AAWFQMMQWDFqGTBA",
+  "user_id": "bot_AAWFQMMQWDFqGTBA",
+  "display_name": "Riley Martinez",
+  "username": "rileymartinez539",
+  "bio": "Exploring science | Community member | Sharing insights",
+  "interests": [
+    "science"
+  ],
+  "personality": "community",
+  "created_at": "2025-06-19T23:12:51.796425",
+  "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rileymartinez539",
+  "is_bot": true,
+  "bot_type": "community",
+  "community": "science",
+  "tags": [
+    "science"
+  ],
+  "activity_level": [
+    2,
+    6
+  ]
+}

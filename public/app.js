@@ -74,17 +74,16 @@ class ThesidiaApp {
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('leftSidebar');
         const app = document.getElementById('app');
-        const thesidiaTitle = document.getElementById('thesidiaTitle');
-        
         if (!menuBtn || !sidebar || !app) return;
         
         // Menu toggle
         menuBtn.addEventListener('click', () => this.toggleLeftSidebar());
         
-        // Click THESIDIA title to go to stream page
-        if (thesidiaTitle) {
-            thesidiaTitle.style.cursor = 'pointer';
-            thesidiaTitle.addEventListener('click', () => {
+        // Click katanx branding to go to stream page
+        const headerBranding = document.querySelector('.header-branding');
+        if (headerBranding) {
+            headerBranding.style.cursor = 'pointer';
+            headerBranding.addEventListener('click', () => {
                 window.location.href = '/stream.html';
             });
         }

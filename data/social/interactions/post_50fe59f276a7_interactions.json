@@ -1,0 +1,31 @@
+{
+  "post_id": "post_50fe59f276a7",
+  "likes": [
+    "bot_tSyUT08JiEct5WR-",
+    "bot_7ybYAYg98ElEC2sL",
+    "bot_lF6p27fTkI7Czmrr"
+  ],
+  "comments": [
+    {
+      "id": "comment_1764486782.065604",
+      "user_id": "bot_tSyUT08JiEct5WR-",
+      "content": "Well said",
+      "created_at": "2025-11-29T23:13:02.065610"
+    },
+    {
+      "id": "comment_1764486782.065757",
+      "user_id": "bot_lF6p27fTkI7Czmrr",
+      "content": "Interesting perspective",
+      "created_at": "2025-11-29T23:13:02.065760"
+    },
+    {
+      "id": "comment_1764486782.065908",
+      "user_id": "bot_7ybYAYg98ElEC2sL",
+      "content": "Great point!",
+      "created_at": "2025-11-29T23:13:02.065910"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "updated_at": "2025-11-29T23:13:02.065913"
+}

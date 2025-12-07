@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Neue Montreal / Gotham Book alternative: Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         .auth-container {
@@ -39,10 +41,34 @@
         
         .auth-logo {
             font-size: var(--font-size-xl);
-            font-weight: 600;
+            font-weight: 400; /* Regular/Book weight */
             color: var(--theme-neon);
-            letter-spacing: 2px;
+            letter-spacing: 3px; /* +2 to +4 range, using 3px */
             margin-bottom: var(--spacing-sm);
+            /* text-transform: uppercase; */ /* Removed - using lowercase */
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        /* Minimalist slash replacing the X for auth logo */
+        .auth-logo .x-slash {
+            position: relative;
+            display: inline-block;
+            color: transparent; /* Hide the X character */
+            width: 0.6em; /* Match approximate width of a character */
+        }
+        
+        .auth-logo .x-slash::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1.5px;
+            height: 70%;
+            background: var(--theme-neon);
+            transform: translate(-50%, -50%) rotate(45deg);
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 10;
         }
         
         .auth-subtitle {
@@ -307,7 +333,7 @@
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <div class="auth-logo">KATANX</div>
+                <div class="auth-logo">katanx</div>
                 <div class="auth-subtitle">Sign in to continue</div>
             </div>
             

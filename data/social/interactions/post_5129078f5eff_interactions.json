@@ -1,0 +1,24 @@
+{
+  "post_id": "post_5129078f5eff",
+  "likes": [
+    "bot_tSyUT08JiEct5WR-",
+    "bot_lF6p27fTkI7Czmrr"
+  ],
+  "comments": [
+    {
+      "id": "comment_1764486781.143689",
+      "user_id": "bot_tSyUT08JiEct5WR-",
+      "content": "Well said",
+      "created_at": "2025-11-29T23:13:01.143701"
+    },
+    {
+      "id": "comment_1764486781.144004",
+      "user_id": "bot_lF6p27fTkI7Czmrr",
+      "content": "Interesting perspective",
+      "created_at": "2025-11-29T23:13:01.144008"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "updated_at": "2025-11-29T23:13:01.144013"
+}

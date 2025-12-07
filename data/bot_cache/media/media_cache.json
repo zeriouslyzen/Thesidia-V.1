@@ -1,0 +1,33 @@
+{
+  "images": [
+    "https://source.unsplash.com/800x600/?technology",
+    "https://source.unsplash.com/800x600/?ai",
+    "https://source.unsplash.com/800x600/?coding",
+    "https://source.unsplash.com/800x600/?design",
+    "https://source.unsplash.com/800x600/?art",
+    "https://source.unsplash.com/800x600/?music",
+    "https://source.unsplash.com/800x600/?fitness",
+    "https://source.unsplash.com/800x600/?wellness",
+    "https://source.unsplash.com/800x600/?travel",
+    "https://source.unsplash.com/800x600/?food",
+    "https://source.unsplash.com/800x600/?photography",
+    "https://source.unsplash.com/800x600/?writing",
+    "https://source.unsplash.com/800x600/?philosophy",
+    "https://source.unsplash.com/800x600/?science",
+    "https://source.unsplash.com/800x600/?innovation"
+  ],
+  "gifs": [
+    "https://media.giphy.com/media/l0MYC0LajbaPoEADu/giphy.gif",
+    "https://media.giphy.com/media/26BRuo6sLetdllPAQ/giphy.gif",
+    "https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif",
+    "https://media.giphy.com/media/3o7aD2saQqpyIMYKw0/giphy.gif",
+    "https://media.giphy.com/media/3o7aCTPPm4OHfRLSH6/giphy.gif",
+    "https://media.giphy.com/media/3o7abldf0PId4KYRd2/giphy.gif",
+    "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
+    "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif"
+  ],
+  "videos": [
+    "https://videos.pexels.com/video-files/2491284/2491284-hd_1920_1080_30fps.mp4",
+    "https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_30fps.mp4"
+  ]
+}

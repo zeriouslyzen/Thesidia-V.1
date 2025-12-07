@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katanx Font Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&family=Overpass:wght@300;400;600;700&family=Overpass+Mono:wght@400;600&family=Red+Hat+Display:wght@400;500;600;700&family=Red+Hat+Text:wght@400;500;600&family=Archivo:wght@400;500;600;700&family=Archivo+Narrow:wght@400;500;600;700&family=Chivo:wght@300;400;700&family=Exo+2:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Aldrich&family=Electrolize&family=Share+Tech+Mono&family=VT323&family=Press+Start+2P&family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&family=Quicksand:wght@300;400;500;600;700&family=Karla:wght@300;400;500;600;700&family=Josefin+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&family=Merriweather:wght@300;400;700&family=Lora:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .category {
+            margin-bottom: 60px;
+        }
+        
+        .category-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+            color: #ffffff;
+        }
+        
+        .font-sample {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+        
+        .font-sample:hover {
+            border-color: #333;
+        }
+        
+        .font-name {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .font-preview {
+            font-size: 48px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+        }
+        
+        .font-subtitle {
+            font-size: 18px;
+            color: #a0a0a0;
+            font-weight: 400;
+        }
+        
+        .font-weights {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .weight-sample {
+            font-size: 14px;
+            padding: 5px 10px;
+            background: #141414;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Friendly Fonts */
+        .friendly-poppins { font-family: 'Poppins', sans-serif; }
+        .friendly-dm-sans { font-family: 'DM Sans', sans-serif; }
+        .friendly-manrope { font-family: 'Manrope', sans-serif; }
+        .friendly-outfit { font-family: 'Outfit', sans-serif; }
+        .friendly-comfortaa { font-family: 'Comfortaa', cursive; }
+        .friendly-nunito { font-family: 'Nunito', sans-serif; }
+        .friendly-quicksand { font-family: 'Quicksand', sans-serif; }
+        .friendly-karla { font-family: 'Karla', sans-serif; }
+        .friendly-rubik { font-family: 'Rubik', sans-serif; }
+        
+        /* Precision/Technical Fonts */
+        .precision-inter { font-family: 'Inter', sans-serif; }
+        .precision-ibm-plex { font-family: 'IBM Plex Sans', sans-serif; }
+        .precision-fira { font-family: 'Fira Sans', sans-serif; }
+        .precision-overpass { font-family: 'Overpass', sans-serif; }
+        .precision-work-sans { font-family: 'Work Sans', sans-serif; }
+        .precision-space-grotesk { font-family: 'Space Grotesk', sans-serif; }
+        .precision-archivo { font-family: 'Archivo', sans-serif; }
+        .precision-chivo { font-family: 'Chivo', sans-serif; }
+        .precision-exo { font-family: 'Exo 2', sans-serif; }
+        
+        /* Monospace/Code Fonts */
+        .mono-jetbrains { font-family: 'JetBrains Mono', monospace; }
+        .mono-ibm-plex-mono { font-family: 'IBM Plex Mono', monospace; }
+        .mono-fira-code { font-family: 'Fira Code', monospace; }
+        .mono-overpass-mono { font-family: 'Overpass Mono', monospace; }
+        .mono-share-tech { font-family: 'Share Tech Mono', monospace; }
+        
+        /* Futuristic/Tech Fonts */
+        .futuristic-orbitron { font-family: 'Orbitron', sans-serif; }
+        .futuristic-rajdhani { font-family: 'Rajdhani', sans-serif; }
+        .futuristic-aldrich { font-family: 'Aldrich', sans-serif; }
+        .futuristic-electrolize { font-family: 'Electrolize', sans-serif; }
+        .futuristic-vt323 { font-family: 'VT323', monospace; }
+        .futuristic-press-start { font-family: 'Press Start 2P', cursive; }
+        
+        /* Serif/Elegant Fonts */
+        .serif-playfair { font-family: 'Playfair Display', serif; }
+        .serif-crimson { font-family: 'Crimson Text', serif; }
+        .serif-merriweather { font-family: 'Merriweather', serif; }
+        .serif-lora { font-family: 'Lora', serif; }
+        .serif-libre { font-family: 'Libre Baskerville', serif; }
+        .serif-cormorant { font-family: 'Cormorant Garamond', serif; }
+        .serif-eb-garamond { font-family: 'EB Garamond', serif; }
+        
+        /* Other Interesting Fonts */
+        .other-josefin { font-family: 'Josefin Sans', sans-serif; }
+        .other-plus-jakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .other-red-hat-display { font-family: 'Red Hat Display', sans-serif; }
+        .other-archivo-narrow { font-family: 'Archivo Narrow', sans-serif; }
+        .other-roboto { font-family: 'Roboto', sans-serif; }
+        .other-open-sans { font-family: 'Open Sans', sans-serif; }
+        .other-source-sans { font-family: 'Source Sans Pro', sans-serif; }
+        .other-montserrat { font-family: 'Montserrat', sans-serif; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Katanx Font Preview</h1>
+        
+        <!-- Friendly Fonts -->
+        <div class="category">
+            <div class="category-title">Friendly & Approachable</div>
+            
+            <div class="font-sample">
+                <div class="font-name">Poppins</div>
+                <div class="font-preview friendly-poppins">Katanx</div>
+                <div class="font-subtitle friendly-poppins">Modern, geometric, friendly</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">DM Sans</div>
+                <div class="font-preview friendly-dm-sans">Katanx</div>
+                <div class="font-subtitle friendly-dm-sans">Clean, neutral, versatile</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Manrope</div>
+                <div class="font-preview friendly-manrope">Katanx</div>
+                <div class="font-subtitle friendly-manrope">Open, rounded, welcoming</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Outfit</div>
+                <div class="font-preview friendly-outfit">Katanx</div>
+                <div class="font-subtitle friendly-outfit">Contemporary, friendly</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Comfortaa</div>
+                <div class="font-preview friendly-comfortaa">Katanx</div>
+                <div class="font-subtitle friendly-comfortaa">Rounded, soft, approachable</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Nunito</div>
+                <div class="font-preview friendly-nunito">Katanx</div>
+                <div class="font-subtitle friendly-nunito">Rounded, friendly, readable</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Quicksand</div>
+                <div class="font-preview friendly-quicksand">Katanx</div>
+                <div class="font-subtitle friendly-quicksand">Light, rounded, casual</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Karla</div>
+                <div class="font-preview friendly-karla">Katanx</div>
+                <div class="font-subtitle friendly-karla">Humanist, warm, friendly</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Rubik</div>
+                <div class="font-preview friendly-rubik">Katanx</div>
+                <div class="font-subtitle friendly-rubik">Geometric, rounded, modern</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Precision/Technical Fonts -->
+        <div class="category">
+            <div class="category-title">Precision & Technical</div>
+            
+            <div class="font-sample">
+                <div class="font-name">Inter (Current)</div>
+                <div class="font-preview precision-inter">Katanx</div>
+                <div class="font-subtitle precision-inter">Optimized for screens, precise</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">IBM Plex Sans</div>
+                <div class="font-preview precision-ibm-plex">Katanx</div>
+                <div class="font-subtitle precision-ibm-plex">Corporate, precise, professional</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Fira Sans</div>
+                <div class="font-preview precision-fira">Katanx</div>
+                <div class="font-subtitle precision-fira">Humanist, technical, readable</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Overpass</div>
+                <div class="font-preview precision-overpass">Katanx</div>
+                <div class="font-subtitle precision-overpass">Open source inspired, technical</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Work Sans</div>
+                <div class="font-preview precision-work-sans">Katanx</div>
+                <div class="font-subtitle precision-work-sans">Professional, versatile, clean</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Space Grotesk</div>
+                <div class="font-preview precision-space-grotesk">Katanx</div>
+                <div class="font-subtitle precision-space-grotesk">Geometric, modern, precise</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Archivo</div>
+                <div class="font-preview precision-archivo">Katanx</div>
+                <div class="font-subtitle precision-archivo">Technical, condensed, strong</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Chivo</div>
+                <div class="font-preview precision-chivo">Katanx</div>
+                <div class="font-subtitle precision-chivo">Modern, geometric, technical</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Exo 2</div>
+                <div class="font-preview precision-exo">Katanx</div>
+                <div class="font-subtitle precision-exo">Futuristic, geometric, technical</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monospace/Code Fonts -->
+        <div class="category">
+            <div class="category-title">Monospace & Code</div>
+            
+            <div class="font-sample">
+                <div class="font-name">JetBrains Mono (Current)</div>
+                <div class="font-preview mono-jetbrains">Katanx</div>
+                <div class="font-subtitle mono-jetbrains">Developer-friendly, readable</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">IBM Plex Mono</div>
+                <div class="font-preview mono-ibm-plex-mono">Katanx</div>
+                <div class="font-subtitle mono-ibm-plex-mono">Corporate, technical, precise</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Fira Code</div>
+                <div class="font-preview mono-fira-code">Katanx</div>
+                <div class="font-subtitle mono-fira-code">Programming ligatures, technical</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Overpass Mono</div>
+                <div class="font-preview mono-overpass-mono">Katanx</div>
+                <div class="font-subtitle mono-overpass-mono">Open source, technical</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 600</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Share Tech Mono</div>
+                <div class="font-preview mono-share-tech">Katanx</div>
+                <div class="font-subtitle mono-share-tech">Retro tech, monospace</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weight: 400</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Futuristic/Tech Fonts -->
+        <div class="category">
+            <div class="category-title">Futuristic & Tech</div>
+            
+            <div class="font-sample">
+                <div class="font-name">Orbitron</div>
+                <div class="font-preview futuristic-orbitron">Katanx</div>
+                <div class="font-subtitle futuristic-orbitron">Sci-fi, geometric, bold</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600, 700, 900</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Rajdhani</div>
+                <div class="font-preview futuristic-rajdhani">Katanx</div>
+                <div class="font-subtitle futuristic-rajdhani">Condensed, modern, tech</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Aldrich</div>
+                <div class="font-preview futuristic-aldrich">Katanx</div>
+                <div class="font-subtitle futuristic-aldrich">Bold, tech, condensed</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weight: 400</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Electrolize</div>
+                <div class="font-preview futuristic-electrolize">Katanx</div>
+                <div class="font-subtitle futuristic-electrolize">Retro-futuristic, tech</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weight: 400</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">VT323</div>
+                <div class="font-preview futuristic-vt323">Katanx</div>
+                <div class="font-subtitle futuristic-vt323">Retro terminal, pixelated</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weight: 400</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Press Start 2P</div>
+                <div class="font-preview futuristic-press-start">Katanx</div>
+                <div class="font-subtitle futuristic-press-start">8-bit, pixel, retro</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weight: 400</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Serif/Elegant Fonts -->
+        <div class="category">
+            <div class="category-title">Serif & Elegant</div>
+            
+            <div class="font-sample">
+                <div class="font-name">Playfair Display</div>
+                <div class="font-preview serif-playfair">Katanx</div>
+                <div class="font-subtitle serif-playfair">Elegant, high contrast, sophisticated</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Crimson Text</div>
+                <div class="font-preview serif-crimson">Katanx</div>
+                <div class="font-subtitle serif-crimson">Classic, readable, elegant</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Merriweather</div>
+                <div class="font-preview serif-merriweather">Katanx</div>
+                <div class="font-subtitle serif-merriweather">Serif, readable, warm</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Lora</div>
+                <div class="font-preview serif-lora">Katanx</div>
+                <div class="font-subtitle serif-lora">Calligraphic, elegant, readable</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Libre Baskerville</div>
+                <div class="font-preview serif-libre">Katanx</div>
+                <div class="font-subtitle serif-libre">Classic serif, traditional</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Cormorant Garamond</div>
+                <div class="font-preview serif-cormorant">Katanx</div>
+                <div class="font-subtitle serif-cormorant">Elegant, high contrast, refined</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">EB Garamond</div>
+                <div class="font-preview serif-eb-garamond">Katanx</div>
+                <div class="font-subtitle serif-eb-garamond">Classic, elegant, traditional</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600, 700</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Other Interesting Fonts -->
+        <div class="category">
+            <div class="category-title">Other Interesting Options</div>
+            
+            <div class="font-sample">
+                <div class="font-name">Josefin Sans</div>
+                <div class="font-preview other-josefin">Katanx</div>
+                <div class="font-subtitle other-josefin">Geometric, elegant, modern</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Plus Jakarta Sans</div>
+                <div class="font-preview other-plus-jakarta">Katanx</div>
+                <div class="font-subtitle other-plus-jakarta">Modern, versatile, friendly</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Red Hat Display</div>
+                <div class="font-preview other-red-hat-display">Katanx</div>
+                <div class="font-subtitle other-red-hat-display">Open source, professional</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Archivo Narrow</div>
+                <div class="font-preview other-archivo-narrow">Katanx</div>
+                <div class="font-subtitle other-archivo-narrow">Condensed, bold, impactful</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 400, 500, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Roboto</div>
+                <div class="font-preview other-roboto">Katanx</div>
+                <div class="font-subtitle other-roboto">Google's default, versatile</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Open Sans</div>
+                <div class="font-preview other-open-sans">Katanx</div>
+                <div class="font-subtitle other-open-sans">Humanist, friendly, readable</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Source Sans Pro</div>
+                <div class="font-preview other-source-sans">Katanx</div>
+                <div class="font-subtitle other-source-sans">Adobe, professional, clean</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 600, 700</span>
+                </div>
+            </div>
+            
+            <div class="font-sample">
+                <div class="font-name">Montserrat</div>
+                <div class="font-preview other-montserrat">Katanx</div>
+                <div class="font-subtitle other-montserrat">Geometric, modern, versatile</div>
+                <div class="font-weights">
+                    <span class="weight-sample">Weights: 300, 400, 500, 600, 700</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

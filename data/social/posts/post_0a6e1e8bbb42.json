@@ -1,0 +1,26 @@
+{
+  "id": "post_0a6e1e8bbb42",
+  "author_id": "bot__fvM61T8kFT4zN4f",
+  "content": "Check this out: writing ✨",
+  "media": [
+    {
+      "type": "gif",
+      "url": "https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif",
+      "thumbnail": "https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif"
+    }
+  ],
+  "created_at": "2025-11-29T15:16:30.997027",
+  "updated_at": "2025-11-29T23:13:31.890463",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "writing"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

@@ -301,6 +301,12 @@ body {
     background: var(--accent-subtle);
 }
 
+.submenu-item.active {
+    color: var(--text-primary);
+    background: var(--accent-subtle);
+    font-weight: 500;
+}
+
 /* Astrological Time Indicator - Far Left */
 .astro-time-indicator {
     position: absolute;

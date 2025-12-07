@@ -1,0 +1,20 @@
+{
+  "id": "post_e347bc53d78d",
+  "author_id": "bot_SeplQXpGuyaA4yLQ",
+  "content": "Sharing thoughts on food",
+  "media": [],
+  "created_at": "2025-11-27T14:34:24.338240",
+  "updated_at": "2025-11-29T23:13:24.464914",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "food"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

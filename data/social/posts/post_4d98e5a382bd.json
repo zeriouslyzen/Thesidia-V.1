@@ -1,0 +1,31 @@
+{
+  "id": "post_4d98e5a382bd",
+  "author_id": "bot_i8fe78jzsPHWZ53p",
+  "content": "Found this interesting: music #music The deeper you go, the more interesting it gets.",
+  "media": [
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?music",
+      "thumbnail": "https://source.unsplash.com/400x300/?music"
+    },
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?music",
+      "thumbnail": "https://source.unsplash.com/400x300/?music"
+    }
+  ],
+  "created_at": "2025-11-30T20:32:14.403972",
+  "updated_at": "2025-12-01T01:55:14.404065",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "music"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

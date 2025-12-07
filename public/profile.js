@@ -58,8 +58,8 @@ class ProfilePage {
         const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
         
         // Set profile data
-        document.getElementById('profileNameLarge').textContent = profileData.name || 'Jack Danger';
-        document.getElementById('profileUsernameLarge').textContent = `@${profileData.username || 'jacksonadanger'}`;
+        document.getElementById('profileNameLarge').textContent = profileData.name || profileData.display_name || 'User';
+        document.getElementById('profileUsernameLarge').textContent = `@${profileData.username || 'user'}`;
         document.getElementById('profileBio').textContent = profileData.bio || 'Exploring the depths of consciousness and pattern recognition. Building Thesidia.';
         
         if (profileData.location) {
@@ -152,8 +152,8 @@ class ProfilePage {
         const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
         
         // Populate form
-        document.getElementById('editName').value = profileData.name || 'Jack Danger';
-        document.getElementById('editUsername').value = profileData.username || 'jacksonadanger';
+        document.getElementById('editName').value = profileData.name || profileData.display_name || '';
+        document.getElementById('editUsername').value = profileData.username || '';
         document.getElementById('editTag').value = profileData.tag || '';
         document.getElementById('editBio').value = profileData.bio || '';
         document.getElementById('editLocation').value = profileData.location || '';
@@ -386,8 +386,8 @@ class ProfilePage {
                 </div>
                 <div class="profile-post-info">
                     <div class="profile-post-author">
-                        <span class="profile-post-author-name">${post.authorName || 'Jack Danger'}</span>
-                        <span class="profile-post-author-handle">@${post.authorHandle || 'jacksonadanger'}</span>
+                        <span class="profile-post-author-name">${post.authorName || post.author?.display_name || 'User'}</span>
+                        <span class="profile-post-author-handle">@${post.authorHandle || post.author?.username || 'user'}</span>
                         ${isPinned ? '<span class="profile-post-pinned"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17v5M9 10V6a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v4M9 10H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-3M9 10h6"/></svg> Pinned</span>' : ''}
                     </div>
                     <div class="profile-post-content">${this.escapeHtml(post.content || '')}</div>

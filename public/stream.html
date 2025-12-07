@@ -39,6 +39,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Neue Montreal / Gotham Book alternative: Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .stream-container {
             flex: 1;
@@ -505,26 +507,14 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <!-- Profile Picture - Left Corner -->
-                <div class="header-profile">
-                    <div class="header-profile-picture" id="headerProfilePicture">
-                        <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
-                    </div>
+                <!-- Katanx Branding - Left (replaced profile) -->
+                <div class="header-branding">
+                    <span class="thesidia-text">katanx</span>
                 </div>
                 
-                <!-- KATANX Title - Center with Nano Dust -->
-                <div class="header-title">
-                    <h1 class="thesidia-title" id="thesidiaTitle">
-                        <span class="thesidia-text">KATANX</span>
-                        <canvas class="nano-dust-canvas" id="nanoDustCanvas"></canvas>
-                    </h1>
-                </div>
-                
-                <!-- Menu Button - Right -->
-                <button class="menu-btn" id="menuBtn" aria-label="Menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <!-- Menu Orb - Right -->
+                <button class="menu-orb" id="menuBtn" aria-label="Menu">
+                    <div class="orb-glow"></div>
                 </button>
             </div>
             
@@ -536,10 +526,13 @@
                     <span class="astro-time-dot"></span>
                 </div>
                 
-                <a href="#" class="submenu-item" data-filter="friends">Friends</a>
-                <a href="#" class="submenu-item" data-filter="fans">Fans</a>
-                <a href="#" class="submenu-item" data-filter="communities">Communities</a>
-                <a href="#" class="submenu-item" data-filter="labs">Labs</a>
+                <nav class="advanced-nav">
+                    <button class="nav-item" data-section="home">home</button>
+                    <button class="nav-item" data-section="stream">stream</button>
+                    <button class="nav-item" data-section="kx-cuts">kx cuts</button>
+                    <button class="nav-item" data-section="circles">circles</button>
+                    <button class="nav-item" data-section="studio">studio</button>
+                </nav>
                 
                 <!-- Star Notepad Button - Far Right -->
                 <button class="star-notepad-btn" id="starNotepadBtn" aria-label="Notes">
@@ -561,44 +554,139 @@
 
         <!-- Main Content -->
         <main class="stream-page-container">
-            <div class="stream-feed-container">
-                <!-- Stream Compose Area -->
-                <div class="stream-compose">
-                    <div class="compose-profile">
-                        <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
-                    </div>
-                    <div class="compose-input-area">
-                        <textarea class="compose-textarea" id="composeTextarea" placeholder="What's happening?"></textarea>
-                        <div class="compose-actions">
-                            <div class="compose-media-buttons">
-                                <button class="compose-media-btn" id="addImageBtn" aria-label="Add image">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                                        <path d="M21 15l-5-5L5 21"/>
-                                    </svg>
-                                </button>
-                                <button class="compose-media-btn" id="addVideoBtn" aria-label="Add video">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polygon points="23 7 16 12 23 17 23 7"/>
-                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                                    </svg>
-                                </button>
-                                <button class="compose-media-btn" id="goLiveBtn" aria-label="Go live">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <circle cx="12" cy="12" r="3"/>
-                                    </svg>
-                                </button>
+            <div class="content-carousel">
+                <div class="carousel-track">
+                    <!-- Home Section - Dashboard -->
+                    <section class="carousel-section" data-section="home">
+                        <div class="home-dashboard">
+                            <div class="dashboard-header">
+                                <h2>Dashboard</h2>
                             </div>
-                            <button class="compose-post-btn" id="postBtn" disabled>Post</button>
+                            <div class="dashboard-widgets">
+                                <div class="widget-card stats-widget">
+                                    <h3>Activity</h3>
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="homePostsCount">0</span>
+                                        <span class="stat-label">Posts</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="homeInteractionsCount">0</span>
+                                        <span class="stat-label">Interactions</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="homeConnectionsCount">0</span>
+                                        <span class="stat-label">Connections</span>
+                                    </div>
+                                </div>
+                                <div class="widget-card quick-actions">
+                                    <h3>Quick Actions</h3>
+                                    <button class="action-btn" data-action="create-post">Create Post</button>
+                                    <button class="action-btn" data-action="explore">Explore</button>
+                                    <button class="action-btn" data-action="settings">Settings</button>
+                                </div>
+                                <div class="widget-card recent-activity">
+                                    <h3>Recent Activity</h3>
+                                    <div class="activity-list" id="homeActivityList">
+                                        <div class="activity-item">Loading...</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Stream Feed -->
-                <div class="stream-feed" id="streamFeed">
-                    <div class="stream-loading">Loading stream...</div>
+                    </section>
+                    
+                    <!-- Stream Section - Curated Algorithmic Feed -->
+                    <section class="carousel-section" data-section="stream">
+                        <div class="stream-feed-container">
+                            <!-- Stream Compose Area -->
+                            <div class="stream-compose">
+                                <div class="compose-profile">
+                                    <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                                </div>
+                                <div class="compose-input-area">
+                                    <textarea class="compose-textarea" id="composeTextarea" placeholder="What's happening?"></textarea>
+                                    <div class="compose-actions">
+                                        <div class="compose-media-buttons">
+                                            <button class="compose-media-btn" id="addImageBtn" aria-label="Add image">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                                    <path d="M21 15l-5-5L5 21"/>
+                                                </svg>
+                                            </button>
+                                            <button class="compose-media-btn" id="addVideoBtn" aria-label="Add video">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polygon points="23 7 16 12 23 17 23 7"/>
+                                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                                                </svg>
+                                            </button>
+                                            <button class="compose-media-btn" id="goLiveBtn" aria-label="Go live">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <circle cx="12" cy="12" r="10"/>
+                                                    <circle cx="12" cy="12" r="3"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <button class="compose-post-btn" id="postBtn" disabled>Post</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Stream Feed -->
+                            <div class="stream-feed" id="streamFeed">
+                                <div class="stream-loading">Loading stream...</div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- KX Cuts Section - Short Form Content -->
+                    <section class="carousel-section" data-section="kx-cuts">
+                        <div class="kx-cuts-container">
+                            <div class="cuts-feed" id="cutsFeed">
+                                <div class="cuts-loading">Loading cuts...</div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Circles Section - Advanced Reddit-Style Forum -->
+                    <section class="carousel-section" data-section="circles">
+                        <div class="circles-container">
+                            <div class="circles-header">
+                                <h2>Circles</h2>
+                                <div class="circles-filters">
+                                    <button class="filter-btn active" data-filter="all">All</button>
+                                    <button class="filter-btn" data-filter="trending">Trending</button>
+                                    <button class="filter-btn" data-filter="recent">Recent</button>
+                                </div>
+                            </div>
+                            <div class="circles-categories-container" id="circlesCategories">
+                                <div class="circles-categories-scroll" id="circlesCategoriesScroll">
+                                    <div class="circles-categories-loading">Loading categories...</div>
+                                </div>
+                            </div>
+                            <div class="circles-content">
+                                <div class="circles-threads" id="circlesThreads">
+                                    <div class="threads-loading">Loading threads...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Studio Section - Mentor Program Streams -->
+                    <section class="carousel-section" data-section="studio">
+                        <div class="studio-container">
+                            <div class="studio-header">
+                                <h2>Studio</h2>
+                                <div class="studio-filters">
+                                    <button class="filter-btn active" data-filter="all">All</button>
+                                    <button class="filter-btn" data-filter="active">Active</button>
+                                    <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+                                </div>
+                            </div>
+                            <div class="studio-programs" id="studioPrograms">
+                                <div class="programs-loading">Loading programs...</div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </main>
@@ -682,6 +770,7 @@
     </div>
     
     <script src="app.js"></script>
+    <script src="navigation.js"></script>
     <script>
         // Stream Page Specific Script
         class StreamPage {
@@ -914,20 +1003,11 @@
                     <div class="stream-post" data-post-id="${post.id}">
                         <div class="post-header">
                             <div class="post-author">
-                                <img src="${post.author?.avatar_url || '/profile-image.jpg'}" alt="${post.author?.display_name || 'User'}" class="post-avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                                <div class="post-avatar-placeholder" data-user-id="${post.author_id || 'user_0'}" style="background-color: ${this.getAvatarColor(post.author_id || 'user_0')};"></div>
                                 <div class="post-author-info">
-                                    <div class="post-author-name">${this.escapeHtml(post.author?.display_name || 'User')}</div>
-                                    <div class="post-author-handle">${this.escapeHtml(post.author?.username || '@user')}</div>
+                                    <div class="post-author-name">${this.escapeHtml(post.author?.display_name || post.author?.username || 'User')}</div>
+                                    <div class="post-time">${timeAgo}</div>
                                 </div>
-                            </div>
-                            <div class="post-meta">
-                                <div class="ai-quality-badge ${qualityBadge}" title="AI Quality Score: ${(aiScore * 100).toFixed(0)}%">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                                    </svg>
-                                    <span>${(aiScore * 100).toFixed(0)}%</span>
-                                </div>
-                                <div class="post-time">${timeAgo}</div>
                             </div>
                         </div>
                         <div class="post-content">${this.escapeHtml(post.content || '')}</div>
@@ -971,25 +1051,51 @@
                         ${aiSentiment.sentiment !== 'neutral' ? `<div class="ai-sentiment sentiment-${aiSentiment.sentiment}">${aiSentiment.sentiment} sentiment</div>` : ''}
                         <div class="post-actions">
                             <div class="post-actions-mastery">
-                                <button class="post-action-chip" data-action="validate" data-post-id="${post.id}" title="Validate: confirm this is technically correct">
-                                    <span class="chip-label">Validate</span>
-                                    <span class="chip-count">${validations}</span>
+                                <button class="post-action-modular" data-action="validate" data-post-id="${post.id}" data-color="green" title="Tap: validate this post">
+                                    <span class="action-dot"></span>
+                                    <span class="action-label">tap</span>
+                                    <span class="action-count">${validations}</span>
                                 </button>
-                                <button class="post-action-chip" data-action="reference" data-post-id="${post.id}" title="Reference: add to your working library or other Blueprints">
-                                    <span class="chip-label">Reference</span>
-                                    <span class="chip-count">${references}</span>
+                                <button class="post-action-modular" data-action="reference" data-post-id="${post.id}" data-color="yellow" title="Add: reference this post">
+                                    <span class="action-dot"></span>
+                                    <span class="action-label">add</span>
+                                    <span class="action-count">${references}</span>
                                 </button>
-                                <button class="post-action-chip" data-action="contribute" data-post-id="${post.id}" title="Contribute: suggest a small improvement or correction">
-                                    <span class="chip-label">Contribute</span>
-                                    <span class="chip-count">${contributions}</span>
+                                <button class="post-action-modular" data-action="contribute" data-post-id="${post.id}" data-color="light-blue" title="Lift: contribute to this post">
+                                    <span class="action-dot"></span>
+                                    <span class="action-label">lift</span>
+                                    <span class="action-count">${contributions}</span>
                                 </button>
-                                <button class="post-action-chip" data-action="fork" data-post-id="${post.id}" title="FORK Blueprint: create your own applied version of this">
-                                    <span class="chip-label">FORK</span>
+                                <button class="post-action-modular" data-action="fork" data-post-id="${post.id}" data-color="light-purple" title="Keep: save this post">
+                                    <span class="action-dot"></span>
+                                    <span class="action-label">keep</span>
+                                    <span class="action-count">0</span>
+                                </button>
+                                <button class="post-action-modular" data-action="flow" data-post-id="${post.id}" data-color="red" title="Flow: share this post">
+                                    <span class="action-dot"></span>
+                                    <span class="action-label">flow</span>
+                                    <span class="action-count">0</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 `;
+            }
+            
+            getAvatarColor(userId) {
+                // Generate consistent color based on user ID
+                const colors = [
+                    '#6B7280', '#9CA3AF', '#D1D5DB', '#E5E7EB',
+                    '#78716C', '#A8A29E', '#D6D3D1', '#E7E5E4',
+                    '#737373', '#A3A3A3', '#D4D4D4', '#E5E5E5',
+                    '#6B7280', '#9CA3AF', '#D1D5DB', '#E5E7EB'
+                ];
+                // Simple hash function to get consistent color
+                let hash = 0;
+                for (let i = 0; i < userId.length; i++) {
+                    hash = userId.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                return colors[Math.abs(hash) % colors.length];
             }
             
             getTimeAgo(timestamp) {
@@ -1097,7 +1203,7 @@
                 const feed = document.getElementById('streamFeed');
                 if (feed) {
                     feed.addEventListener('click', (e) => {
-                        const chip = e.target.closest('.post-action-chip');
+                        const chip = e.target.closest('.post-action-chip, .post-action-modular');
                         if (!chip) return;
                         
                         const target = chip;
@@ -1114,6 +1220,9 @@
                             this.openContributionDialog(postId);
                         } else if (action === 'fork') {
                             this.handleFork(postId);
+                        } else if (action === 'flow') {
+                            // Handle flow action
+                            console.log('Flow action for post:', postId);
                         }
                     });
                 }
@@ -1224,8 +1333,11 @@
                         };
                     }
                     
+                    // Toggle active state
+                    target.classList.toggle('active');
+                    
                     // Update UI count
-                    const countSpan = target.querySelector('.chip-count');
+                    const countSpan = target.querySelector('.chip-count, .action-count');
                     if (countSpan) {
                         countSpan.textContent = interactions.validations || 0;
                     }
@@ -1266,7 +1378,11 @@
                         };
                     }
                     
-                    const countSpan = target.querySelector('.chip-count');
+                    // Toggle active state
+                    target.classList.toggle('active');
+                    
+                    // Update count
+                    const countSpan = target.querySelector('.chip-count, .action-count');
                     if (countSpan) {
                         countSpan.textContent = interactions.references || 0;
                     }
@@ -1314,7 +1430,7 @@
                     // Update contribution chip count
                     const feed = document.getElementById('streamFeed');
                     if (feed) {
-                        const chip = feed.querySelector(`.post-action-chip[data-action="contribute"][data-post-id="${postId}"] .chip-count`);
+                        const chip = feed.querySelector(`.post-action-chip[data-action="contribute"][data-post-id="${postId}"] .chip-count, .post-action-modular[data-action="contribute"][data-post-id="${postId}"] .action-count`);
                         if (chip) {
                             chip.textContent = interactions.contributions || 0;
                         }

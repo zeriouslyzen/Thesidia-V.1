@@ -1,0 +1,36 @@
+{
+  "id": "post_03914588ebe6",
+  "author_id": "bot_SeplQXpGuyaA4yLQ",
+  "content": "Sharing thoughts on food",
+  "media": [
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?food",
+      "thumbnail": "https://source.unsplash.com/400x300/?food"
+    },
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?food",
+      "thumbnail": "https://source.unsplash.com/400x300/?food"
+    },
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?food",
+      "thumbnail": "https://source.unsplash.com/400x300/?food"
+    }
+  ],
+  "created_at": "2025-11-28T20:40:24.338240",
+  "updated_at": "2025-11-29T23:13:24.973106",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "food"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

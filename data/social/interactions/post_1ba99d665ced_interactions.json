@@ -1,0 +1,24 @@
+{
+  "post_id": "post_1ba99d665ced",
+  "likes": [
+    "bot_tSyUT08JiEct5WR-",
+    "bot_lF6p27fTkI7Czmrr"
+  ],
+  "comments": [
+    {
+      "id": "comment_1764486781.022787",
+      "user_id": "bot_tSyUT08JiEct5WR-",
+      "content": "This is helpful",
+      "created_at": "2025-11-29T23:13:01.022799"
+    },
+    {
+      "id": "comment_1764486781.023197",
+      "user_id": "bot_lF6p27fTkI7Czmrr",
+      "content": "Love this!",
+      "created_at": "2025-11-29T23:13:01.023208"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "updated_at": "2025-11-29T23:13:01.023215"
+}

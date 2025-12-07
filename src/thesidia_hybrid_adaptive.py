@@ -3507,20 +3507,10 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         
         # CRITICAL FIX: Check if this needs deep research BEFORE greeting bypass
         # If it needs deep research, skip greeting path entirely
-        query_normalized = input_text.lower()
-        typo_fixes = {
-            'gneneis': 'genesis', 'genisis': 'genesis', 'genises': 'genesis', 'genensis': 'genesis',
-            'decrpted': 'decrypted', 'decrpt': 'decrypt', 'dycrpted': 'decrypted', 'dycrypt': 'decrypt',
-            'bible': 'bible', 'bibel': 'bible'
-        }
-        for typo, correct in typo_fixes.items():
-            query_normalized = query_normalized.replace(typo, correct)
+        from src.support.query_utils import normalize_query, detect_forensic_routing
         
-        needs_forensic_analysis = any(term in query_normalized for term in [
-            "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "abrahamic", "origins", "canon", "canonization",
-            "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "expose", "hidden",
-            "what are", "what are X really", "really about", "characters"
-        ])
+        query_normalized = normalize_query(input_text)
+        needs_forensic_analysis = detect_forensic_routing(input_text, comprehensive=False)
         
         # Skip greeting path if it needs deep research
         if needs_forensic_analysis:
@@ -3620,39 +3610,14 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         
         # 2. Check if it needs forensic truth-seeking analysis (ALL domains: health, finance, law, religion, etc.)
         # Domain-agnostic: Any query asking for truth, real story, what's really happening, etc.
-        # TYPO TOLERANCE: Normalize common typos before checking
-        query_normalized = input_text.lower()
-        # Fix common typos (including "genensis" -> "genesis")
-        typo_fixes = {
-            'gneneis': 'genesis', 'genisis': 'genesis', 'genises': 'genesis', 'genensis': 'genesis',
-            'decrpted': 'decrypted', 'decrpt': 'decrypt', 'dycrpted': 'decrypted', 'dycrypt': 'decrypt',
-            'bible': 'bible', 'bibel': 'bible'
-        }
-        for typo, correct in typo_fixes.items():
-            query_normalized = query_normalized.replace(typo, correct)
+        # TYPO TOLERANCE: Normalize common typos before checking (using shared utilities)
+        from src.support.query_utils import normalize_query, detect_forensic_routing
         
+        query_normalized = normalize_query(input_text)
         print(f"🔍 PROCESS: After typo fix: '{query_normalized[:150]}'", flush=True)
         
-        needs_forensic_analysis = any(term in query_normalized for term in [
-            # Religious/spiritual
-            "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "abrahamic", "origins", "canon", "canonization",
-            # Health/medicine
-            "health", "medicine", "medical", "pharmaceutical", "pharma", "drug", "treatment", "cure", "disease", "illness", "wellness",
-            "supplement", "vitamin", "therapy", "surgery", "diagnosis", "prescription",
-            # Finance/banking
-            "bank", "banks", "banking", "finance", "financial", "money", "currency", "bitcoin", "crypto", "economy", "economic",
-            "federal reserve", "fed", "wall street", "stock market", "investment", "trading",
-            # Law/legal
-            "law", "legal", "court", "judge", "lawyer", "attorney", "lawsuit", "legislation", "constitution", "rights",
-            "justice", "legal system", "jurisdiction", "precedent",
-            # Power/truth-seeking
-            "power", "consciousness", "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "expose", "hidden",
-            "systematic transformation", "redaction", "transformation",
-            "true origins", "real origins", "what's really", "what's really going on", "what are", "what are X really",
-            "deeper", "darker", "secrets", "uncover", "reveal", "full deep dive", "deep dive",
-            "comprehensive", "extensive", "really", "actually", "truth", "real", "true",
-            "hack", "hacking", "matrix", "reality"
-        ])
+        # Use comprehensive detection (includes health, finance, law, etc.)
+        needs_forensic_analysis = detect_forensic_routing(input_text, comprehensive=True)
         
         # Legacy name for compatibility
         is_gnostic_query = needs_forensic_analysis

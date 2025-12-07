@@ -1,0 +1,40 @@
+{
+  "post_id": "post_6607a27e0f2d",
+  "likes": [
+    "bot_A6xRgkp4ee0bjr0u",
+    "bot_mOEMRhz7qT88MhOp",
+    "bot_7ybYAYg98ElEC2sL",
+    "bot_3cvPqIXLYHejkLKa",
+    "bot_tSyUT08JiEct5WR-",
+    "bot__fvM61T8kFT4zN4f",
+    "bot_0eF7szS6HDwJg4zP",
+    "bot_ZOF_itdQrTI7XCa9",
+    "bot_lF6p27fTkI7Czmrr",
+    "bot_vSr5FfqSi5JyJ5xy",
+    "bot_xobrtaPuJYta4do8",
+    "bot_pPC1YAjL6X2OlZFa"
+  ],
+  "comments": [
+    {
+      "id": "comment_1764486817.837755",
+      "user_id": "bot_pPC1YAjL6X2OlZFa",
+      "content": "I agree with this",
+      "created_at": "2025-11-29T23:13:37.837765"
+    },
+    {
+      "id": "comment_1764486817.837899",
+      "user_id": "bot_T7WXA8D3Z2W9Mvdb",
+      "content": "This is helpful",
+      "created_at": "2025-11-29T23:13:37.837901"
+    },
+    {
+      "id": "comment_1764486817.838043",
+      "user_id": "bot_dpvZyHyZcLmPGhKL",
+      "content": "Great point!",
+      "created_at": "2025-11-29T23:13:37.838045"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "updated_at": "2025-11-29T23:13:37.838047"
+}

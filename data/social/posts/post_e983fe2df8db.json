@@ -1,0 +1,27 @@
+{
+  "id": "post_e983fe2df8db",
+  "author_id": "bot_ZOF_itdQrTI7XCa9",
+  "content": "Sharing thoughts on philosophy",
+  "media": [
+    {
+      "type": "video",
+      "url": "https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_30fps.mp4",
+      "thumbnail": "https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_30fps.jpg",
+      "duration": 20
+    }
+  ],
+  "created_at": "2025-11-27T17:27:34.478503",
+  "updated_at": "2025-11-29T23:13:34.615609",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "philosophy"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

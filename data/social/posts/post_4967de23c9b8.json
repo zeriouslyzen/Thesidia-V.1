@@ -1,0 +1,36 @@
+{
+  "id": "post_4967de23c9b8",
+  "author_id": "bot_0eF7szS6HDwJg4zP",
+  "content": "This photography thing is fascinating 💭 #photography",
+  "media": [
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?photography",
+      "thumbnail": "https://source.unsplash.com/400x300/?photography"
+    },
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?photography",
+      "thumbnail": "https://source.unsplash.com/400x300/?photography"
+    },
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?photography",
+      "thumbnail": "https://source.unsplash.com/400x300/?photography"
+    }
+  ],
+  "created_at": "2025-11-29T10:27:25.812644",
+  "updated_at": "2025-11-29T23:13:26.955380",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "photography"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

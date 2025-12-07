@@ -187,10 +187,10 @@
                     <span class="astro-time-dot"></span>
                 </div>
                 
-                <a href="#" class="submenu-item">Friends</a>
-                <a href="#" class="submenu-item">Fans</a>
-                <a href="#" class="submenu-item">Communities</a>
-                <a href="#" class="submenu-item">Builds</a>
+                <a href="#" class="submenu-item" data-filter="friends">Friends</a>
+                <a href="#" class="submenu-item" data-filter="fans">Fans</a>
+                <a href="#" class="submenu-item" data-filter="communities">Communities</a>
+                <a href="#" class="submenu-item" data-filter="labs">Labs</a>
                 
                 <!-- Star Notepad Button - Far Right -->
                 <button class="star-notepad-btn" id="starNotepadBtn" aria-label="Notes">
@@ -476,6 +476,20 @@
                             <div class="post-time">${timeAgo}</div>
                         </div>
                         <div class="post-content">${this.escapeHtml(post.content || '')}</div>
+                        ${post.media && post.media.length > 0 ? `
+                            <div class="post-media">
+                                ${post.media.map(mediaItem => {
+                                    if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
+                                        return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" style="max-width: 100%; border-radius: 12px; margin-top: 12px;">`;
+                                    } else if (mediaItem.type === 'image') {
+                                        return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" style="max-width: 100%; border-radius: 12px; margin-top: 12px;" loading="lazy">`;
+                                    } else if (mediaItem.type === 'video') {
+                                        return `<video src="${mediaItem.url}" controls class="post-media-item" style="max-width: 100%; border-radius: 12px; margin-top: 12px;"></video>`;
+                                    }
+                                    return '';
+                                }).join('')}
+                            </div>
+                        ` : ''}
                         <div class="post-actions">
                             <button class="post-action-btn ${liked ? 'active' : ''}" data-action="like" data-post-id="${post.id}">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -544,6 +558,34 @@
                     });
                     
                     postBtn.addEventListener('click', () => this.createPost());
+                }
+                
+                // Submenu filter items (Friends, Fans, Communities, Labs)
+                const submenuFilters = document.querySelectorAll('.submenu-item[data-filter]');
+                submenuFilters.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const filterType = item.dataset.filter;
+                        
+                        // Update active state
+                        submenuFilters.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        
+                        // Set filter type and reload feed
+                        localStorage.setItem('feed_type', filterType);
+                        this.currentPage = 0;
+                        this.posts = [];
+                        this.loadPosts(0, 20);
+                    });
+                });
+                
+                // Set active filter on page load
+                const currentFilter = localStorage.getItem('feed_type');
+                if (currentFilter && ['friends', 'fans', 'communities', 'labs'].includes(currentFilter)) {
+                    const activeFilter = document.querySelector(`.submenu-item[data-filter="${currentFilter}"]`);
+                    if (activeFilter) {
+                        activeFilter.classList.add('active');
+                    }
                 }
                 
                 // Delegate event listeners for post actions

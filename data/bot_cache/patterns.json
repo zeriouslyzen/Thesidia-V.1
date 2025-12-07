@@ -1,0 +1,48 @@
+{
+  "posting_frequency": {
+    "active": [
+      1,
+      5
+    ],
+    "moderate": [
+      0.5,
+      2
+    ],
+    "casual": [
+      0.1,
+      1
+    ]
+  },
+  "engagement_rates": {
+    "high": [
+      0.05,
+      0.15
+    ],
+    "medium": [
+      0.02,
+      0.08
+    ],
+    "low": [
+      0.001,
+      0.03
+    ]
+  },
+  "time_patterns": {
+    "morning": [
+      6,
+      10
+    ],
+    "afternoon": [
+      12,
+      16
+    ],
+    "evening": [
+      18,
+      22
+    ],
+    "night": [
+      22,
+      2
+    ]
+  }
+}

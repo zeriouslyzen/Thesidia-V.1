@@ -1,0 +1,26 @@
+{
+  "id": "post_1222abfb5daf",
+  "author_id": "bot_xobrtaPuJYta4do8",
+  "content": "Check this out: travel",
+  "media": [
+    {
+      "type": "gif",
+      "url": "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
+      "thumbnail": "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif"
+    }
+  ],
+  "created_at": "2025-11-28T11:31:21.403465",
+  "updated_at": "2025-11-29T23:13:21.906754",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "travel"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

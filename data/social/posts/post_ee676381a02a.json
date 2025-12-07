@@ -1,0 +1,22 @@
+{
+  "id": "post_ee676381a02a",
+  "author_id": "user_mike_rodriguez",
+  "content": "Morning coffee and code. This is the way. ☕\n\nWhat&#x27;s everyone working on today?",
+  "media": [],
+  "created_at": "2025-11-26T18:22:59.219246",
+  "updated_at": "2025-11-26T18:22:59.219246",
+  "interactions": {
+    "likes": 28,
+    "comments": 15,
+    "reposts": 2,
+    "views": 189
+  },
+  "ai_score": 0.65,
+  "tags": [
+    "coffee",
+    "coding",
+    "morning"
+  ],
+  "visibility": "public",
+  "moderation_status": "approved"
+}

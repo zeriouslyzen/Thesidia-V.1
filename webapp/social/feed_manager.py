@@ -60,10 +60,10 @@ class FeedManager:
         Returns:
             List of post data dictionaries
         """
-        # Check cache
+        # Check cache (but don't cache empty feeds for new users)
         cache_key = f"{user_id}_{feed_type}_{limit}_{offset}"
         cached = self._get_cached_feed(cache_key)
-        if cached:
+        if cached and len(cached) > 0:  # Only use cache if it has posts
             return cached
         
         # Generate feed
@@ -73,11 +73,20 @@ class FeedManager:
             posts = self._get_quality_feed(user_id, limit, offset)
         elif feed_type == "personalized":
             posts = self._get_personalized_feed(user_id, limit, offset)
+        elif feed_type == "friends":
+            posts = self._get_friends_feed(user_id, limit, offset)
+        elif feed_type == "fans":
+            posts = self._get_fans_feed(user_id, limit, offset)
+        elif feed_type == "communities":
+            posts = self._get_communities_feed(user_id, limit, offset)
+        elif feed_type == "labs":
+            posts = self._get_labs_feed(user_id, limit, offset)
         else:
             posts = self._get_chronological_feed(user_id, limit, offset)
         
-        # Cache feed
-        self._cache_feed(cache_key, posts)
+        # Cache feed (but don't cache empty feeds to avoid stale empty caches)
+        if len(posts) > 0:
+            self._cache_feed(cache_key, posts)
         
         return posts
     
@@ -176,6 +185,198 @@ class FeedManager:
         
         with open(cache_file, 'w', encoding='utf-8') as f:
             json.dump(cache_data, f, indent=2, ensure_ascii=False)
+    
+    def _get_friends_feed(self, user_id: str, limit: int, offset: int) -> List[Dict[str, Any]]:
+        """Get feed from users you're following (friends) - includes tags"""
+        following = self.social_graph.get_following(user_id)
+        blocked = self.social_graph.get_social_graph(user_id).get('blocked', [])
+        muted = self.social_graph.get_social_graph(user_id).get('muted', [])
+        
+        if not following:
+            return []
+        
+        # Get all posts
+        all_posts = self.post_manager.get_posts_by_date(limit=limit * 3, offset=0)
+        
+        # Filter: only posts from users you're following (with tags)
+        filtered_posts = []
+        for post in all_posts:
+            author_id = post.get('author_id')
+            tags = post.get('tags', [])
+            
+            # Skip blocked/muted users
+            if author_id in blocked or author_id in muted:
+                continue
+            
+            # Only include posts from users you're following
+            # Posts with tags are prioritized
+            if author_id in following:
+                # Add tag metadata for display
+                if tags:
+                    post['_has_tags'] = True
+                    post['_tags'] = tags
+                filtered_posts.append(post)
+        
+        # Sort: posts with tags first, then by date
+        filtered_posts.sort(key=lambda p: (
+            not p.get('tags', []),  # Posts with tags first
+            p.get('created_at', '')
+        ), reverse=True)
+        
+        return filtered_posts[offset:offset + limit]
+    
+    def _get_fans_feed(self, user_id: str, limit: int, offset: int) -> List[Dict[str, Any]]:
+        """Get feed from users who follow you (fans) - includes tags"""
+        followers = self.social_graph.get_followers(user_id)
+        blocked = self.social_graph.get_social_graph(user_id).get('blocked', [])
+        muted = self.social_graph.get_social_graph(user_id).get('muted', [])
+        
+        if not followers:
+            return []
+        
+        # Get all posts
+        all_posts = self.post_manager.get_posts_by_date(limit=limit * 3, offset=0)
+        
+        # Filter: only posts from users who follow you (with tags)
+        filtered_posts = []
+        for post in all_posts:
+            author_id = post.get('author_id')
+            tags = post.get('tags', [])
+            
+            # Skip blocked/muted users
+            if author_id in blocked or author_id in muted:
+                continue
+            
+            # Only include posts from users who follow you
+            # Posts with tags are prioritized
+            if author_id in followers:
+                # Add tag metadata for display
+                if tags:
+                    post['_has_tags'] = True
+                    post['_tags'] = tags
+                filtered_posts.append(post)
+        
+        # Sort: posts with tags first, then by date
+        filtered_posts.sort(key=lambda p: (
+            not p.get('tags', []),  # Posts with tags first
+            p.get('created_at', '')
+        ), reverse=True)
+        
+        return filtered_posts[offset:offset + limit]
+    
+    def _get_communities_feed(self, user_id: str, limit: int, offset: int) -> List[Dict[str, Any]]:
+        """Get feed from communities (posts with tags from community bots)"""
+        blocked = self.social_graph.get_social_graph(user_id).get('blocked', [])
+        muted = self.social_graph.get_social_graph(user_id).get('muted', [])
+        
+        # Get all posts
+        all_posts = self.post_manager.get_posts_by_date(limit=limit * 5, offset=0)
+        
+        # Filter: only posts with tags (community posts)
+        # Prioritize posts from community bots
+        filtered_posts = []
+        for post in all_posts:
+            author_id = post.get('author_id', '')
+            tags = post.get('tags', [])
+            
+            # Skip blocked/muted users
+            if author_id in blocked or author_id in muted:
+                continue
+            
+            # Only include posts with tags (community indicator)
+            if tags:
+                # Check if author is a community bot
+                is_community_bot = author_id.startswith('bot_')
+                if is_community_bot:
+                    # Check bot profile for community type
+                    try:
+                        bot_file = self.base_dir / "data" / "bots" / f"{author_id}.json"
+                        if bot_file.exists():
+                            import json
+                            with open(bot_file, 'r', encoding='utf-8') as f:
+                                bot_data = json.load(f)
+                                if bot_data.get('bot_type') == 'community':
+                                    post['_is_community_post'] = True
+                                    post['_community'] = bot_data.get('community', tags[0])
+                    except Exception:
+                        pass
+                
+                post['_has_tags'] = True
+                post['_tags'] = tags
+                filtered_posts.append(post)
+        
+        # Sort: community bot posts first, then by engagement, then by date
+        filtered_posts.sort(key=lambda p: (
+            not p.get('_is_community_post', False),  # Community posts first
+            -(p.get('interactions', {}).get('likes', 0) + p.get('interactions', {}).get('views', 0)),  # Engagement
+            p.get('created_at', '')
+        ), reverse=True)
+        
+        return filtered_posts[offset:offset + limit]
+    
+    def _get_labs_feed(self, user_id: str, limit: int, offset: int) -> List[Dict[str, Any]]:
+        """Get feed of proactive media posts (Labs - only media posts with high activity)"""
+        blocked = self.social_graph.get_social_graph(user_id).get('blocked', [])
+        muted = self.social_graph.get_social_graph(user_id).get('muted', [])
+        
+        # Get more posts for Labs (more activity)
+        all_posts = self.post_manager.get_posts_by_date(limit=limit * 10, offset=0)
+        
+        # Filter: only posts with media (proactive/action-oriented content)
+        filtered_posts = []
+        for post in all_posts:
+            author_id = post.get('author_id')
+            media = post.get('media', [])
+            
+            # Skip blocked/muted users
+            if author_id in blocked or author_id in muted:
+                continue
+            
+            # Only include posts with media (images, videos, GIFs, multiple photos)
+            if media and len(media) > 0:
+                # Calculate engagement score
+                interactions = post.get('interactions', {})
+                total_engagement = (
+                    interactions.get('likes', 0) +
+                    interactions.get('comments', 0) +
+                    interactions.get('reposts', 0) +
+                    interactions.get('views', 0)
+                )
+                
+                # Prioritize posts with:
+                # 1. Multiple media items (carousels)
+                # 2. Videos (more engaging)
+                # 3. Higher engagement
+                media_score = 0
+                if len(media) > 1:
+                    media_score += 10  # Multiple photos
+                if any(m.get('type') == 'video' for m in media):
+                    media_score += 5  # Videos
+                if any(m.get('type') == 'gif' for m in media):
+                    media_score += 3  # GIFs
+                
+                # Include all media posts (Labs shows more activity)
+                filtered_posts.append({
+                    **post,
+                    '_engagement_score': total_engagement + media_score,
+                    '_media_count': len(media),
+                    '_has_video': any(m.get('type') == 'video' for m in media)
+                })
+        
+        # Sort by: media score, engagement, then date
+        filtered_posts.sort(key=lambda p: (
+            p.get('_engagement_score', 0),
+            p.get('_media_count', 0),
+            p.get('created_at', '')
+        ), reverse=True)
+        
+        # Remove temporary fields
+        for post in filtered_posts:
+            post.pop('_engagement_score', None)
+            post.pop('_media_count', None)
+            post.pop('_has_video', None)
+        
+        return filtered_posts[offset:offset + limit]
     
     def invalidate_cache(self, user_id: Optional[str] = None):
         """Invalidate feed cache"""

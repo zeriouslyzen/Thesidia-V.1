@@ -1,0 +1,30 @@
+{
+  "observations": [
+    "Just noticed {topic} is more complex than I thought",
+    "Thinking about {topic} today",
+    "{topic} has been on my mind",
+    "Anyone else interested in {topic}?",
+    "Deep dive into {topic} reveals interesting patterns"
+  ],
+  "questions": [
+    "What do you think about {topic}?",
+    "Has anyone explored {topic}?",
+    "Curious about {topic} - thoughts?",
+    "Looking for insights on {topic}",
+    "What's your take on {topic}?"
+  ],
+  "sharing": [
+    "Found this interesting: {topic}",
+    "Sharing thoughts on {topic}",
+    "This {topic} thing is fascinating",
+    "Worth exploring: {topic}",
+    "Check this out: {topic}"
+  ],
+  "personal": [
+    "Working on {topic} today",
+    "Exploring {topic} has been rewarding",
+    "My perspective on {topic}",
+    "Reflecting on {topic}",
+    "Learning about {topic}"
+  ]
+}

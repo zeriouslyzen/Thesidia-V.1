@@ -1,0 +1,23 @@
+{
+  "bot_id": "bot_eaWGf1Y7aWU8dxBs",
+  "user_id": "bot_eaWGf1Y7aWU8dxBs",
+  "display_name": "Skyler Wang",
+  "username": "skylerwang505",
+  "bio": "Exploring fitness | Community member | Sharing insights",
+  "interests": [
+    "fitness"
+  ],
+  "personality": "community",
+  "created_at": "2025-01-17T23:13:15.986571",
+  "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=skylerwang505",
+  "is_bot": true,
+  "bot_type": "community",
+  "community": "fitness",
+  "tags": [
+    "fitness"
+  ],
+  "activity_level": [
+    2,
+    6
+  ]
+}

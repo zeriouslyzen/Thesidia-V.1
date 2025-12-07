@@ -40,20 +40,34 @@ class InteractionManager:
         """Load interactions for a post"""
         interaction_file = self._get_interaction_file(post_id)
         
-        if interaction_file.exists():
-            try:
-                with open(interaction_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception:
-                pass
-        
-        return {
+        base: Dict[str, Any] = {
             "post_id": post_id,
             "likes": [],
             "comments": [],
             "reposts": [],
-            "views": []
+            "views": [],
+            # Mastery / utility layer interactions
+            # High-signal actions that encode rigor and utility rather than vanity
+            "validations": [],          # user_ids who validated this post
+            "references": [],           # list of {user_id, context, created_at}
+            "contributions": [],        # list of {user_id, content, created_at}
+            "availability_signals": []  # list of {user_id, created_at, window}
         }
+        
+        if interaction_file.exists():
+            try:
+                with open(interaction_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    # Backwards compatibility: ensure all expected keys exist
+                    for key, default_value in base.items():
+                        if key not in data:
+                            data[key] = default_value
+                    return data
+            except Exception:
+                # Fall back to base structure if file is corrupt
+                pass
+        
+        return base
     
     def _save_interactions(self, post_id: str, interactions: Dict[str, Any]):
         """Save interactions for a post"""
@@ -167,15 +181,136 @@ class InteractionManager:
         """
         interactions = self._load_interactions(post_id)
         
+        # Basic engagement metrics
+        likes = len(interactions['likes'])
+        comments = len(interactions['comments'])
+        reposts = len(interactions['reposts'])
+        views = len(interactions['views'])
+        
+        # Mastery / utility metrics
+        validations = len(interactions.get('validations', []))
+        references = len(interactions.get('references', []))
+        contributions = len(interactions.get('contributions', []))
+        availability_signals = len(interactions.get('availability_signals', []))
+        
         return {
-            "likes": len(interactions['likes']),
-            "comments": len(interactions['comments']),
-            "reposts": len(interactions['reposts']),
-            "views": len(interactions['views']),
+            "likes": likes,
+            "comments": comments,
+            "reposts": reposts,
+            "views": views,
             "liked_by": interactions['likes'],
             "comments_list": interactions['comments'],
-            "reposted_by": interactions['reposts']
+            "reposted_by": interactions['reposts'],
+            # Mastery / utility layer
+            "validations": validations,
+            "validated_by": interactions.get('validations', []),
+            "references": references,
+            "references_list": interactions.get('references', []),
+            "contributions": contributions,
+            "contributions_list": interactions.get('contributions', []),
+            "availability_signals": availability_signals,
+            "availability_list": interactions.get('availability_signals', [])
         }
+    
+    # ------------------------------------------------------------------
+    # Mastery / utility interactions
+    # ------------------------------------------------------------------
+    
+    def validate_post(self, post_id: str, user_id: str) -> bool:
+        """
+        Validate (or un-validate) a post.
+        
+        This is a high-signal action: the user is confirming the rigor /
+        correctness of the content. We implement it as a toggle to keep
+        UX simple while still allowing reversals.
+        
+        Returns:
+            True if validated, False if validation was removed.
+        """
+        interactions = self._load_interactions(post_id)
+        validators: List[str] = interactions.get("validations", [])
+        
+        if user_id in validators:
+            validators.remove(user_id)
+            validated = False
+        else:
+            validators.append(user_id)
+            validated = True
+        
+        interactions["validations"] = validators
+        self._save_interactions(post_id, interactions)
+        return validated
+    
+    def reference_post(self, post_id: str, user_id: str, context: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Reference a post (utility signal).
+        
+        This is the equivalent of "save / cite": the user declares that
+        this post is useful enough to be referenced in their own work.
+        """
+        interactions = self._load_interactions(post_id)
+        references: List[Dict[str, Any]] = interactions.get("references", [])
+        
+        ref = {
+            "id": f"ref_{datetime.now().timestamp()}",
+            "user_id": user_id,
+            "context": context or "",
+            "created_at": datetime.now().isoformat()
+        }
+        references.append(ref)
+        interactions["references"] = references
+        self._save_interactions(post_id, interactions)
+        return ref
+    
+    def contribute_to_post(self, post_id: str, user_id: str, content: str) -> Dict[str, Any]:
+        """
+        Register a contribution to a post.
+        
+        This is a small peer-review style addition or correction, distinct
+        from a general comment. It can be surfaced differently in the UI.
+        """
+        interactions = self._load_interactions(post_id)
+        contributions: List[Dict[str, Any]] = interactions.get("contributions", [])
+        
+        contribution = {
+            "id": f"contrib_{datetime.now().timestamp()}",
+            "user_id": user_id,
+            "content": content,
+            "created_at": datetime.now().isoformat()
+        }
+        contributions.append(contribution)
+        interactions["contributions"] = contributions
+        self._save_interactions(post_id, interactions)
+        return contribution
+    
+    def signal_availability(self, post_id: str, user_id: str, window: Optional[str] = None) -> bool:
+        """
+        Signal availability to act on this post in the real world.
+        
+        Implemented as a toggle: the user can turn their availability
+        signal on/off for a given post.
+        """
+        interactions = self._load_interactions(post_id)
+        availability: List[Dict[str, Any]] = interactions.get("availability_signals", [])
+        
+        # Check if user already has a signal
+        existing_index = next((i for i, sig in enumerate(availability) if sig.get("user_id") == user_id), None)
+        
+        if existing_index is not None:
+            # Remove existing signal
+            availability.pop(existing_index)
+            active = False
+        else:
+            availability.append({
+                "user_id": user_id,
+                "window": window or "",
+                "created_at": datetime.now().isoformat()
+            })
+            active = True
+        
+        interactions["availability_signals"] = availability
+        self._save_interactions(post_id, interactions)
+        return active
     
     def has_liked(self, post_id: str, user_id: str) -> bool:
         """Check if user has liked post"""

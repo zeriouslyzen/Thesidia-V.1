@@ -6,6 +6,9 @@ Security-first API for Thesidia interactions
 
 import sys
 import os
+import secrets
+import json
+import random
 from pathlib import Path
 
 # Ensure os is available for environment variables
@@ -15,7 +18,7 @@ project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / 'src'))
 
-from flask import Flask, request, jsonify, send_from_directory, Response, stream_with_context
+from flask import Flask, request, jsonify, send_from_directory, Response, stream_with_context, redirect, session
 from flask_cors import CORS
 # Force fresh import - clear any cached modules
 import sys
@@ -49,8 +52,7 @@ def _lazy_import_modules():
             print("This is expected on Vercel - Ollama is not available")
             return False
     return True
-import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import importlib
 
 # Ollama import - optional for Vercel deployment
@@ -68,6 +70,9 @@ if static_dir.exists():
 else:
     app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)  # Enable CORS for security
+
+# Session configuration for OAuth
+app.secret_key = os.getenv('FLASK_SECRET_KEY', secrets.token_urlsafe(32))
 
 # Security headers middleware
 from webapp.config.security import is_security_headers_enabled, is_https_required
@@ -118,6 +123,20 @@ try:
     auth_manager = AuthManager(base_dir=project_root)
 except ImportError:
     auth_manager = None
+
+# Initialize OAuth Manager
+try:
+    from webapp.auth.oauth_providers import OAuthManager
+    oauth_manager = OAuthManager(base_dir=project_root)
+except ImportError:
+    oauth_manager = None
+
+# Initialize Phone Auth Manager
+try:
+    from webapp.auth.phone_auth import PhoneAuthManager
+    phone_auth_manager = PhoneAuthManager(base_dir=project_root)
+except ImportError:
+    phone_auth_manager = None
 
 def check_ollama():
     """Check if Ollama is running"""
@@ -273,24 +292,39 @@ def status():
     """Get system status"""
     global thesidia_ready, ollama_status
     
-    # Recheck status
-    ollama_status = check_ollama()
-    if ollama_status and not thesidia_ready:
-        init_thesidia()
-    
-    features = {
-        'deep_research': thesidia.deep_research_engine is not None if thesidia else False,
-        'web_search': thesidia.web_search is not None if thesidia else False,
-        'model_routing': thesidia.capabilities.model_router is not None if thesidia else False,
-    }
-    
-    return jsonify({
-        'ollama_status': ollama_status,
-        'thesidia_ready': thesidia_ready,
-        'model': thesidia.model if thesidia else None,
-        'features': features,
-        'timestamp': datetime.now().isoformat()
-    })
+    try:
+        # Recheck status
+        ollama_status = check_ollama()
+        if ollama_status and not thesidia_ready:
+            try:
+                init_thesidia()
+            except Exception as e:
+                print(f"Warning: Could not initialize Thesidia: {e}")
+        
+        features = {
+            'deep_research': thesidia.deep_research_engine is not None if thesidia else False,
+            'web_search': thesidia.web_search is not None if thesidia else False,
+            'model_routing': thesidia.capabilities.model_router is not None if thesidia else False,
+        }
+        
+        return jsonify({
+            'ollama_status': ollama_status,
+            'thesidia_ready': thesidia_ready,
+            'model': thesidia.model if thesidia else None,
+            'features': features,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'ollama_status': False,
+            'thesidia_ready': False,
+            'model': None,
+            'features': {},
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
 
 @app.route('/api/thesidia', methods=['POST'])
 def thesidia_api():
@@ -345,33 +379,11 @@ def thesidia_api():
     if len(raw_message) > 10000:
         return jsonify({'error': 'Message too long'}), 400
     
-    # CRITICAL FIX #2: Normalize query BEFORE passing to ThesidiaHybridAdaptive
-    # This ensures typo fixes and routing detection work correctly
-    def normalize_query(text):
-        """Normalize query with typo fixes"""
-        text_normalized = text.lower()
-        typo_fixes = {
-            'gneneis': 'genesis', 'genisis': 'genesis', 'genises': 'genesis', 'genensis': 'genesis',
-            'decrpted': 'decrypted', 'decrpt': 'decrypt', 'dycrpted': 'decrypted', 'dycrypt': 'decrypt',
-            'bible': 'bible', 'bibel': 'bible'
-        }
-        for typo, correct in typo_fixes.items():
-            text_normalized = text_normalized.replace(typo, correct)
-        return text_normalized
+    # Normalize query and detect forensic routing (using shared utilities)
+    from src.support.query_utils import normalize_query, detect_forensic_routing
     
-    def detect_forensic_routing(text):
-        """Detect if query needs forensic analysis BEFORE passing to model"""
-        normalized = normalize_query(text)
-        needs_forensic = any(term in normalized for term in [
-            "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "abrahamic", "origins", "canon", "canonization",
-            "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "expose", "hidden",
-            "what are", "what are X really", "really about", "characters", "what's really", "true origins", "real origins"
-        ])
-        return needs_forensic
-    
-    # Normalize the message
     normalized_message = normalize_query(raw_message)
-    needs_forensic = detect_forensic_routing(raw_message)
+    needs_forensic = detect_forensic_routing(raw_message, comprehensive=False)
     
     print(f"🔍 NORMALIZED: '{normalized_message}'", flush=True)
     print(f"🔍 NEEDS FORENSIC: {needs_forensic}", flush=True)
@@ -502,32 +514,12 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
         # CRITICAL: Use thesidia.process() to get full routing, forensic analysis, deep research
         # This ensures all the logic we built actually runs
         
-        # CRITICAL FIX: Normalize and detect routing BEFORE processing
-        def normalize_query(text):
-            """Normalize query with typo fixes"""
-            text_normalized = text.lower()
-            typo_fixes = {
-                'gneneis': 'genesis', 'genisis': 'genesis', 'genises': 'genesis', 'genensis': 'genesis',
-                'decrpted': 'decrypted', 'decrpt': 'decrypt', 'dycrpted': 'decrypted', 'dycrypt': 'decrypt',
-                'bible': 'bible', 'bibel': 'bible'
-            }
-            for typo, correct in typo_fixes.items():
-                text_normalized = text_normalized.replace(typo, correct)
-            return text_normalized
-        
-        def detect_forensic_routing(text):
-            """Detect if query needs forensic analysis"""
-            normalized = normalize_query(text)
-            needs_forensic = any(term in normalized for term in [
-                "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "abrahamic", "origins", "canon", "canonization",
-                "decode", "decoded", "decrypt", "decrypted", "dycrpted", "dycrypt", "expose", "hidden",
-                "what are", "what are X really", "really about", "characters", "what's really", "true origins", "real origins"
-            ])
-            return needs_forensic
+        # Normalize and detect routing BEFORE processing (using shared utilities)
+        from src.support.query_utils import normalize_query, detect_forensic_routing
         
         print(f"🔍 RAW USER INPUT (streaming): '{message}'", flush=True)
         normalized_message = normalize_query(message)
-        needs_forensic = detect_forensic_routing(message)
+        needs_forensic = detect_forensic_routing(message, comprehensive=False)
         print(f"🔍 NORMALIZED (streaming): '{normalized_message}'", flush=True)
         print(f"🔍 NEEDS FORENSIC (streaming): {needs_forensic}", flush=True)
         print(f"🔪 SERVER: Using full Thesidia process() for: {message[:100]}...", flush=True)
@@ -747,27 +739,52 @@ def metrics_historical():
 @app.route('/api/user/session', methods=['GET', 'POST'])
 def user_session():
     """Get or create user session"""
-    if request.method == 'POST':
-        # Create or get user session
-        data = request.get_json() or {}
-        user_id = data.get('user_id')
-        session_id = data.get('session_id')
+    try:
+        if not user_memory_manager:
+            # Fallback: create basic session without memory manager
+            import secrets
+            user_id = f"user_{secrets.token_hex(8)}"
+            session_id = f"session_{secrets.token_hex(16)}"
+            return jsonify({
+                'user_id': user_id,
+                'session_id': session_id,
+                'created_at': datetime.now().isoformat()
+            })
         
-        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-        # Convert Path objects to strings for JSON serialization
-        if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
-            user_data['user_dir'] = str(user_data['user_dir'])
-        return jsonify(user_data)
-    else:
-        # Get session from query params
-        user_id = request.args.get('user_id')
-        session_id = request.args.get('session_id')
-        
-        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-        # Convert Path objects to strings for JSON serialization
-        if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
-            user_data['user_dir'] = str(user_data['user_dir'])
-        return jsonify(user_data)
+        if request.method == 'POST':
+            # Create or get user session
+            data = request.get_json() or {}
+            user_id = data.get('user_id')
+            session_id = data.get('session_id')
+            
+            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+            # Convert Path objects to strings for JSON serialization
+            if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
+                user_data['user_dir'] = str(user_data['user_dir'])
+            return jsonify(user_data)
+        else:
+            # Get session from query params
+            user_id = request.args.get('user_id')
+            session_id = request.args.get('session_id')
+            
+            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+            # Convert Path objects to strings for JSON serialization
+            if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
+                user_data['user_dir'] = str(user_data['user_dir'])
+            return jsonify(user_data)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        # Fallback: create basic session on error
+        import secrets
+        user_id = f"user_{secrets.token_hex(8)}"
+        session_id = f"session_{secrets.token_hex(16)}"
+        return jsonify({
+            'user_id': user_id,
+            'session_id': session_id,
+            'created_at': datetime.now().isoformat(),
+            'error': str(e)
+        })
 
 @app.route('/api/stream/feed', methods=['GET'])
 def stream_feed():
@@ -1244,6 +1261,42 @@ def create_post():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/posts', methods=['GET'])
+def get_posts():
+    """Get posts by user_id"""
+    if not post_manager or not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    user_id = request.args.get('user_id')
+    limit = int(request.args.get('limit', 50))
+    offset = int(request.args.get('offset', 0))
+    
+    if not user_id:
+        return jsonify({'error': 'user_id required'}), 400
+    
+    try:
+        # Get posts by user
+        posts = post_manager.get_posts_by_user(user_id, limit=limit, offset=offset)
+        
+        # Add interactions and author info to each post
+        from webapp.utils.profile_loader import attach_author_to_post
+        
+        for post in posts:
+            interactions = interaction_manager.get_interactions(post['id'])
+            post['interactions'] = interactions
+            
+            # Add author profile information (using shared utility)
+            attach_author_to_post(post, project_root, include_legacy_fields=True)
+            
+            # Add interaction counts for profile.js compatibility
+            post['replies'] = interactions.get('comments', 0)
+            post['reposts'] = interactions.get('reposts', 0)
+            post['likes'] = interactions.get('likes', 0)
+        
+        return jsonify({'posts': posts})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/posts/<post_id>', methods=['GET'])
 def get_post(post_id):
     """Get a post by ID"""
@@ -1320,10 +1373,15 @@ def get_feed():
         # Get feed
         posts = feed_manager.get_feed(user_id, feed_type, limit, offset)
         
-        # Add interactions to each post
+        # Add interactions and author info to each post
+        from webapp.utils.profile_loader import attach_author_to_post
+        
         for post in posts:
             interactions = interaction_manager.get_interactions(post['id'])
             post['interactions'] = interactions
+            
+            # Add author profile information (using shared utility)
+            attach_author_to_post(post, project_root, include_legacy_fields=False)
         
         return jsonify({
             'items': posts,
@@ -1333,6 +1391,963 @@ def get_feed():
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# Section-specific API endpoints
+@app.route('/api/sections/home', methods=['GET'])
+def get_home_section():
+    """Get home dashboard data"""
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    
+    try:
+        # Import mock data generators
+        from data.mock.mock_profiles import generate_profile
+        from data.mock.mock_posts import generate_posts
+        
+        # Get user data (optional - don't fail if not available)
+        current_user_id = None
+        try:
+            if user_memory_manager:
+                user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+                current_user_id = user_data.get('user_id') if user_data else None
+        except:
+            pass  # Continue with mock data even if user lookup fails
+        
+        # Generate mock stats
+        stats = {
+            'posts': random.randint(10, 200),
+            'interactions': random.randint(50, 1000),
+            'connections': random.randint(5, 100)
+        }
+        
+        # Generate recent activity
+        recent_posts = generate_posts(count=5, author_ids=[current_user_id] if current_user_id else None, seed=42)
+        recent_activity = []
+        for post in recent_posts[:5]:
+            time_ago = "2 hours ago" if random.random() > 0.5 else "1 day ago"
+            recent_activity.append({
+                'text': f"Posted: {post['content'][:50]}...",
+                'time': time_ago
+            })
+        
+        return jsonify({
+            'stats': stats,
+            'recent_activity': recent_activity
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/sections/stream', methods=['GET'])
+def get_stream_section():
+    """Get stream section data (enhanced feed)"""
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    limit = int(request.args.get('limit', 20))
+    offset = int(request.args.get('offset', 0))
+    
+    try:
+        from data.mock.mock_posts import generate_posts
+        from data.mock.mock_profiles import generate_profiles
+        from webapp.utils.profile_loader import load_author_profile
+        
+        # Get user data (optional)
+        current_user_id = None
+        try:
+            if user_memory_manager:
+                user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+                current_user_id = user_data.get('user_id') if user_data else None
+        except:
+            pass
+        
+        # Generate mock posts
+        author_ids = [f"user_{i}" for i in range(10)]
+        posts = generate_posts(count=limit, author_ids=author_ids, seed=321)
+        
+        # Generate mock profiles for authors
+        from data.mock.mock_profiles import generate_profile
+        author_profiles = {}
+        for author_id in author_ids:
+            # Use author_id as seed for consistent profile generation
+            seed = hash(author_id) % 10000
+            author_profiles[author_id] = generate_profile(user_id=author_id, seed=seed)
+        
+        # Attach author profiles
+        for post in posts:
+            try:
+                author_id = post['author_id']
+                author_profile = author_profiles.get(author_id)
+                
+                if author_profile:
+                    post['author'] = {
+                        'user_id': author_profile.get('user_id'),
+                        'username': author_profile.get('username'),
+                        'display_name': author_profile.get('display_name', author_profile.get('username', 'User')),
+                        'avatar_url': author_profile.get('avatar_url', '')
+                    }
+                else:
+                    # Fallback - try loading from file
+                    author_profile = load_author_profile(author_id, project_root)
+                    if author_profile:
+                        post['author'] = {
+                            'user_id': author_profile.get('user_id'),
+                            'username': author_profile.get('username'),
+                            'display_name': author_profile.get('display_name', author_profile.get('username', 'User')),
+                            'avatar_url': author_profile.get('avatar_url', '')
+                        }
+                    else:
+                        # Final fallback
+                        post['author'] = {
+                            'user_id': author_id,
+                            'username': author_id.replace('user_', 'user'),
+                            'display_name': author_id.replace('user_', 'User ').title(),
+                            'avatar_url': ''
+                        }
+            except Exception as e:
+                # Fallback if profile loading fails
+                post['author'] = {
+                    'user_id': post['author_id'],
+                    'username': post['author_id'].replace('user_', 'user'),
+                    'display_name': post['author_id'].replace('user_', 'User ').title(),
+                    'avatar_url': ''
+                }
+        
+        return jsonify({
+            'items': posts,
+            'has_more': len(posts) == limit
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/sections/kx-cuts', methods=['GET'])
+def get_kx_cuts_section():
+    """Get kx cuts (short-form content)"""
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    limit = int(request.args.get('limit', 20))
+    
+    try:
+        from data.mock.mock_cuts import generate_cuts
+        from data.mock.mock_profiles import generate_profiles
+        from webapp.utils.profile_loader import load_author_profile
+        
+        # Get user data (optional)
+        current_user_id = None
+        try:
+            if user_memory_manager:
+                user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+                current_user_id = user_data.get('user_id') if user_data else None
+        except:
+            pass
+        
+        # Generate mock cuts
+        author_ids = [f"user_{i}" for i in range(10)]
+        cuts = generate_cuts(count=limit, author_ids=author_ids, seed=123)
+        
+        # Attach author profiles
+        for cut in cuts:
+            try:
+                author_profile = load_author_profile(cut['author_id'], project_root)
+                if author_profile:
+                    cut['author'] = {
+                        'user_id': author_profile.get('user_id'),
+                        'username': author_profile.get('username'),
+                        'display_name': author_profile.get('display_name', ''),
+                        'avatar_url': author_profile.get('avatar_url', '')
+                    }
+                else:
+                    # Fallback
+                    cut['author'] = {
+                        'user_id': cut['author_id'],
+                        'username': cut['author_id'].replace('user_', ''),
+                        'display_name': cut['author_id'].replace('user_', '').replace('_', ' ').title(),
+                        'avatar_url': ''
+                    }
+            except:
+                # Fallback if profile loading fails
+                cut['author'] = {
+                    'user_id': cut['author_id'],
+                    'username': cut['author_id'].replace('user_', ''),
+                    'display_name': cut['author_id'].replace('user_', '').replace('_', ' ').title(),
+                    'avatar_url': ''
+                }
+        
+        return jsonify({
+            'items': cuts,
+            'has_more': len(cuts) == limit
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/sections/circles', methods=['GET'])
+def get_circles_section():
+    """Get circles forum threads"""
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    filter_type = request.args.get('filter', 'all')
+    limit = int(request.args.get('limit', 20))
+    
+    try:
+        from data.mock.mock_circles import generate_threads
+        from data.mock.mock_profiles import generate_profiles
+        from webapp.utils.profile_loader import load_author_profile
+        
+        # Get user data (optional)
+        current_user_id = None
+        try:
+            if user_memory_manager:
+                user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+                current_user_id = user_data.get('user_id') if user_data else None
+        except:
+            pass
+        
+        # Generate mock threads
+        author_ids = [f"user_{i}" for i in range(10)]
+        threads = generate_threads(count=limit, author_ids=author_ids, seed=456)
+        
+        # Apply filter
+        if filter_type == 'trending':
+            threads.sort(key=lambda x: x['upvotes'] - x['downvotes'], reverse=True)
+        elif filter_type == 'recent':
+            threads.sort(key=lambda x: x['created_at'], reverse=True)
+        
+        # Attach author profiles
+        for thread in threads:
+            try:
+                author_profile = load_author_profile(thread['author_id'], project_root)
+                if author_profile:
+                    thread['author'] = {
+                        'user_id': author_profile.get('user_id'),
+                        'username': author_profile.get('username'),
+                        'display_name': author_profile.get('display_name', ''),
+                        'avatar_url': author_profile.get('avatar_url', '')
+                    }
+                else:
+                    # Fallback
+                    thread['author'] = {
+                        'user_id': thread['author_id'],
+                        'username': thread['author_id'].replace('user_', ''),
+                        'display_name': thread['author_id'].replace('user_', '').replace('_', ' ').title(),
+                        'avatar_url': ''
+                    }
+            except:
+                # Fallback if profile loading fails
+                thread['author'] = {
+                    'user_id': thread['author_id'],
+                    'username': thread['author_id'].replace('user_', ''),
+                    'display_name': thread['author_id'].replace('user_', '').replace('_', ' ').title(),
+                    'avatar_url': ''
+                }
+        
+        # Get available categories from CIRCLE_TOPICS
+        from data.mock.mock_circles import CIRCLE_TOPICS
+        categories = []
+        for topic in CIRCLE_TOPICS:
+            # Count threads in this category
+            topic_threads = [t for t in threads if t.get('circle') == topic]
+            categories.append({
+                'id': topic,
+                'name': topic.title(),
+                'slug': topic,
+                'thread_count': len(topic_threads),
+                'avatar_url': None  # Will be generated client-side
+            })
+        
+        return jsonify({
+            'threads': threads,
+            'categories': categories,
+            'has_more': len(threads) == limit
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/threads/<thread_id>', methods=['GET'])
+def get_thread_detail(thread_id):
+    """Get thread detail with full content"""
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    
+    try:
+        from data.mock.mock_circles import generate_threads, CIRCLE_TOPICS
+        from data.mock.mock_profiles import generate_profiles
+        from webapp.utils.profile_loader import load_author_profile
+        
+        # Get user data (optional)
+        current_user_id = None
+        user_vote = None
+        try:
+            if user_memory_manager:
+                user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+                current_user_id = user_data.get('user_id') if user_data else None
+        except:
+            pass
+        
+        # Generate threads to find the one we need
+        # In a real system, this would query by ID
+        author_ids = [f"user_{i}" for i in range(10)]
+        all_threads = generate_threads(count=100, author_ids=author_ids, seed=456)
+        
+        # Find thread by ID (or generate one if not found)
+        thread = None
+        for t in all_threads:
+            if t['id'] == thread_id:
+                thread = t
+                break
+        
+        # If not found, generate a new one with the ID
+        if not thread:
+            import random
+            random.seed(hash(thread_id) % 1000)
+            topic = random.choice(CIRCLE_TOPICS)
+            thread = {
+                'id': thread_id,
+                'author_id': random.choice(author_ids),
+                'title': f"Discussion: {topic}",
+                'body': f"I've been thinking about {topic} lately and wanted to get the community's perspective. What do you all think?",
+                'created_at': datetime.now().isoformat(),
+                'upvotes': random.randint(0, 500),
+                'downvotes': random.randint(0, 50),
+                'comment_count': random.randint(0, 100),
+                'views': random.randint(10, 5000),
+                'circle': topic,
+                'tags': [topic]
+            }
+        
+        # Attach author profile
+        try:
+            author_profile = load_author_profile(thread['author_id'], project_root)
+            if author_profile:
+                thread['author'] = {
+                    'user_id': author_profile.get('user_id'),
+                    'username': author_profile.get('username'),
+                    'display_name': author_profile.get('display_name', ''),
+                    'avatar_url': author_profile.get('avatar_url', '')
+                }
+            else:
+                thread['author'] = {
+                    'user_id': thread['author_id'],
+                    'username': thread['author_id'].replace('user_', ''),
+                    'display_name': thread['author_id'].replace('user_', '').replace('_', ' ').title(),
+                    'avatar_url': ''
+                }
+        except:
+            thread['author'] = {
+                'user_id': thread['author_id'],
+                'username': thread['author_id'].replace('user_', ''),
+                'display_name': thread['author_id'].replace('user_', '').replace('_', ' ').title(),
+                'avatar_url': ''
+            }
+        
+        # Calculate score
+        thread['score'] = thread['upvotes'] - thread['downvotes']
+        thread['user_vote'] = user_vote
+        
+        return jsonify(thread)
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/threads/<thread_id>/comments', methods=['GET'])
+def get_thread_comments(thread_id):
+    """Get comments for a thread with sorting"""
+    sort_type = request.args.get('sort', 'best')
+    limit = int(request.args.get('limit', 50))
+    offset = int(request.args.get('offset', 0))
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    
+    try:
+        # Load comments from interaction manager or generate mock
+        comments = []
+        
+        # Load vote states for comments
+        vote_file = project_root / 'data' / 'social' / 'interactions' / f'{thread_id}.json'
+        comment_votes = {}
+        comment_awards = {}
+        if vote_file.exists():
+            try:
+                with open(vote_file, 'r') as f:
+                    data = json.load(f)
+                    comment_votes = data.get('comment_votes', {})
+                    comment_awards = data.get('comment_awards', {})
+            except:
+                pass
+        
+        # Try to load from interaction manager
+        if interaction_manager:
+            try:
+                interactions = interaction_manager.get_interactions(thread_id)
+                raw_comments = interactions.get('comments', [])
+                
+                # Attach vote states and awards to comments
+                for comment in raw_comments:
+                    comment_id = comment.get('id')
+                    
+                    # Add vote state
+                    if comment_id in comment_votes:
+                        votes = comment_votes[comment_id]
+                        comment['upvotes'] = len(votes.get('upvotes', []))
+                        comment['downvotes'] = len(votes.get('downvotes', []))
+                        comment['score'] = comment['upvotes'] - comment['downvotes']
+                        if user_id:
+                            if user_id in votes.get('upvotes', []):
+                                comment['user_vote'] = 'up'
+                            elif user_id in votes.get('downvotes', []):
+                                comment['user_vote'] = 'down'
+                    
+                    # Add awards
+                    if comment_id in comment_awards:
+                        from webapp.social.awards import aggregate_awards
+                        comment['awards'] = aggregate_awards(comment_awards[comment_id])
+                
+                # Convert to nested structure
+                comments = _build_comment_tree(raw_comments, user_id)
+            except:
+                pass
+        
+        # If no comments, generate mock comments
+        if not comments:
+            comments = _generate_mock_comments(thread_id, limit)
+            
+            # Attach vote states and awards to mock comments
+            for comment in comments:
+                comment_id = comment.get('id')
+                
+                # Add vote state if exists
+                if comment_id in comment_votes:
+                    votes = comment_votes[comment_id]
+                    comment['upvotes'] = len(votes.get('upvotes', []))
+                    comment['downvotes'] = len(votes.get('downvotes', []))
+                    comment['score'] = comment['upvotes'] - comment['downvotes']
+                    if user_id:
+                        if user_id in votes.get('upvotes', []):
+                            comment['user_vote'] = 'up'
+                        elif user_id in votes.get('downvotes', []):
+                            comment['user_vote'] = 'down'
+                
+                # Add awards if exists
+                if comment_id in comment_awards:
+                    from webapp.social.awards import aggregate_awards
+                    comment['awards'] = aggregate_awards(comment_awards[comment_id])
+        
+        # Sort comments
+        try:
+            from webapp.social.comment_sorter import sort_comments
+            comments = sort_comments(comments, sort_type)
+        except ImportError:
+            # Fallback sorting if module not available
+            if sort_type == 'top':
+                comments.sort(key=lambda c: c.get('score', 0), reverse=True)
+            elif sort_type == 'new':
+                comments.sort(key=lambda c: c.get('created_at', ''), reverse=True)
+            # 'best' and 'controversial' default to score-based
+            else:
+                comments.sort(key=lambda c: c.get('score', 0), reverse=True)
+        
+        # Apply pagination
+        total = len(comments)
+        comments = comments[offset:offset + limit]
+        
+        return jsonify({
+            'comments': comments,
+            'total': total,
+            'limit': limit,
+            'offset': offset,
+            'has_more': offset + limit < total
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+def _build_comment_tree(raw_comments, user_id=None):
+    """Build nested comment tree from flat list"""
+    # Group by parent_id
+    by_parent = {}
+    for comment in raw_comments:
+        parent_id = comment.get('parent_id')
+        if parent_id not in by_parent:
+            by_parent[parent_id] = []
+        by_parent[parent_id].append(comment)
+    
+    def build_tree(parent_id=None):
+        children = by_parent.get(parent_id, [])
+        result = []
+        for comment in children:
+            comment_data = {
+                'id': comment.get('id'),
+                'thread_id': comment.get('thread_id'),
+                'parent_id': comment.get('parent_id'),
+                'author': comment.get('author', {}),
+                'content': comment.get('content', ''),
+                'created_at': comment.get('created_at', ''),
+                'score': comment.get('score', 0),
+                'upvotes': comment.get('upvotes', 0),
+                'downvotes': comment.get('downvotes', 0),
+                'user_vote': comment.get('user_vote'),
+                'replies': build_tree(comment.get('id')),
+                'awards': comment.get('awards', [])
+            }
+            result.append(comment_data)
+        return result
+    
+    return build_tree()
+
+def _generate_mock_comments(thread_id, count=10):
+    """Generate mock comments for a thread"""
+    import random
+    from webapp.utils.profile_loader import load_author_profile
+    
+    comments = []
+    author_ids = [f"user_{i}" for i in range(10)]
+    
+    for i in range(count):
+        comment_id = f"comment_{thread_id}_{i}"
+        author_id = random.choice(author_ids)
+        
+        # Try to load author profile
+        author = {
+            'user_id': author_id,
+            'username': author_id.replace('user_', ''),
+            'display_name': author_id.replace('user_', '').replace('_', ' ').title(),
+            'avatar_url': ''
+        }
+        
+        try:
+            author_profile = load_author_profile(author_id, project_root)
+            if author_profile:
+                author = {
+                    'user_id': author_profile.get('user_id'),
+                    'username': author_profile.get('username'),
+                    'display_name': author_profile.get('display_name', ''),
+                    'avatar_url': author_profile.get('avatar_url', '')
+                }
+        except:
+            pass
+        
+        # Random parent (some top-level, some replies)
+        parent_id = None
+        if i > 2 and random.random() > 0.4:
+            parent_id = comments[random.randint(0, min(i-1, 5))]['id']
+        
+        upvotes = random.randint(0, 100)
+        downvotes = random.randint(0, 20)
+        
+        comment = {
+            'id': comment_id,
+            'thread_id': thread_id,
+            'parent_id': parent_id,
+            'author': author,
+            'content': f"This is a mock comment #{i+1}. It contains some thoughtful discussion about the topic.",
+            'created_at': (datetime.now() - timedelta(hours=random.randint(0, 48))).isoformat(),
+            'score': upvotes - downvotes,
+            'upvotes': upvotes,
+            'downvotes': downvotes,
+            'user_vote': None,
+            'replies': [],
+            'awards': []
+        }
+        comments.append(comment)
+    
+    # Build tree structure
+    return _build_comment_tree(comments)
+
+@app.route('/api/threads/<thread_id>/comments', methods=['POST'])
+def create_thread_comment(thread_id):
+    """Create a top-level comment on a thread"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    content = data.get('content', '').strip()
+    
+    if not content:
+        return jsonify({'error': 'Comment content required'}), 400
+    
+    try:
+        # Get user data
+        if user_memory_manager:
+            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+            user_id = user_data.get('user_id') if user_data else user_id
+        
+        if not user_id:
+            return jsonify({'error': 'User authentication required'}), 401
+        
+        # Create comment via interaction manager or direct storage
+        comment_id = f"comment_{thread_id}_{int(datetime.now().timestamp() * 1000)}"
+        
+        from webapp.utils.profile_loader import load_author_profile
+        author_profile = load_author_profile(user_id, project_root)
+        author = {
+            'user_id': user_id,
+            'username': author_profile.get('username', user_id.replace('user_', '')) if author_profile else user_id.replace('user_', ''),
+            'display_name': author_profile.get('display_name', '') if author_profile else '',
+            'avatar_url': author_profile.get('avatar_url', '') if author_profile else ''
+        }
+        
+        comment = {
+            'id': comment_id,
+            'thread_id': thread_id,
+            'parent_id': None,
+            'author': author,
+            'content': content,
+            'created_at': datetime.now().isoformat(),
+            'score': 0,
+            'upvotes': 0,
+            'downvotes': 0,
+            'user_vote': None,
+            'replies': [],
+            'awards': []
+        }
+        
+        # Save comment via interaction manager
+        if interaction_manager:
+            try:
+                interaction_manager.comment_post(thread_id, user_id, content)
+            except:
+                pass
+        
+        return jsonify(comment), 201
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/comments/<comment_id>/reply', methods=['POST'])
+def reply_to_comment(comment_id):
+    """Reply to an existing comment"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    content = data.get('content', '').strip()
+    thread_id = data.get('thread_id')
+    
+    if not content:
+        return jsonify({'error': 'Comment content required'}), 400
+    
+    try:
+        # Get user data
+        if user_memory_manager:
+            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+            user_id = user_data.get('user_id') if user_data else user_id
+        
+        if not user_id:
+            return jsonify({'error': 'User authentication required'}), 401
+        
+        # Get parent comment to find thread_id
+        if not thread_id:
+            # Try to extract from comment_id or load from storage
+            thread_id = comment_id.split('_')[1] if '_' in comment_id else None
+        
+        if not thread_id:
+            return jsonify({'error': 'Thread ID required'}), 400
+        
+        from webapp.utils.profile_loader import load_author_profile
+        author_profile = load_author_profile(user_id, project_root)
+        author = {
+            'user_id': user_id,
+            'username': author_profile.get('username', user_id.replace('user_', '')) if author_profile else user_id.replace('user_', ''),
+            'display_name': author_profile.get('display_name', '') if author_profile else '',
+            'avatar_url': author_profile.get('avatar_url', '') if author_profile else ''
+        }
+        
+        reply_id = f"comment_{thread_id}_{int(datetime.now().timestamp() * 1000)}"
+        
+        reply = {
+            'id': reply_id,
+            'thread_id': thread_id,
+            'parent_id': comment_id,
+            'author': author,
+            'content': content,
+            'created_at': datetime.now().isoformat(),
+            'score': 0,
+            'upvotes': 0,
+            'downvotes': 0,
+            'user_vote': None,
+            'replies': [],
+            'awards': []
+        }
+        
+        # Save reply via interaction manager
+        if interaction_manager:
+            try:
+                interaction_manager.comment_post(thread_id, user_id, content)
+            except:
+                pass
+        
+        return jsonify(reply), 201
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/threads/<thread_id>/vote', methods=['POST'])
+def vote_thread(thread_id):
+    """Vote on a thread (upvote, downvote, or remove vote)"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    direction = data.get('direction')  # 'up', 'down', or None to remove
+    
+    try:
+        # Get user data
+        if user_memory_manager:
+            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+            user_id = user_data.get('user_id') if user_data else user_id
+        
+        if not user_id:
+            return jsonify({'error': 'User authentication required'}), 401
+        
+        # Load or create vote storage
+        vote_file = project_root / 'data' / 'social' / 'interactions' / f'{thread_id}.json'
+        votes = {'upvotes': [], 'downvotes': []}
+        
+        if vote_file.exists():
+            try:
+                with open(vote_file, 'r') as f:
+                    data = json.load(f)
+                    votes['upvotes'] = data.get('upvotes', [])
+                    votes['downvotes'] = data.get('downvotes', [])
+            except:
+                pass
+        
+        # Update votes
+        user_vote = None
+        if direction == 'up':
+            if user_id in votes['downvotes']:
+                votes['downvotes'].remove(user_id)
+            if user_id not in votes['upvotes']:
+                votes['upvotes'].append(user_id)
+            user_vote = 'up'
+        elif direction == 'down':
+            if user_id in votes['upvotes']:
+                votes['upvotes'].remove(user_id)
+            if user_id not in votes['downvotes']:
+                votes['downvotes'].append(user_id)
+            user_vote = 'down'
+        else:
+            # Remove vote
+            if user_id in votes['upvotes']:
+                votes['upvotes'].remove(user_id)
+            if user_id in votes['downvotes']:
+                votes['downvotes'].remove(user_id)
+            user_vote = None
+        
+        # Save votes
+        vote_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(vote_file, 'w') as f:
+            json.dump(votes, f, indent=2)
+        
+        score = len(votes['upvotes']) - len(votes['downvotes'])
+        
+        return jsonify({
+            'score': score,
+            'upvotes': len(votes['upvotes']),
+            'downvotes': len(votes['downvotes']),
+            'user_vote': user_vote
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/comments/<comment_id>/vote', methods=['POST'])
+def vote_comment(comment_id):
+    """Vote on a comment (upvote, downvote, or remove vote)"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    direction = data.get('direction')  # 'up', 'down', or None to remove
+    
+    try:
+        # Get user data
+        if user_memory_manager:
+            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+            user_id = user_data.get('user_id') if user_data else user_id
+        
+        if not user_id:
+            return jsonify({'error': 'User authentication required'}), 401
+        
+        # Extract thread_id from comment_id
+        thread_id = comment_id.split('_')[1] if '_' in comment_id else None
+        
+        # Load comment votes
+        vote_file = project_root / 'data' / 'social' / 'interactions' / f'{thread_id}.json'
+        votes = {'upvotes': [], 'downvotes': []}
+        comment_votes = {}
+        
+        if vote_file.exists():
+            try:
+                with open(vote_file, 'r') as f:
+                    data = json.load(f)
+                    comment_votes = data.get('comment_votes', {})
+                    if comment_id in comment_votes:
+                        votes = comment_votes[comment_id]
+                    else:
+                        votes = {'upvotes': [], 'downvotes': []}
+            except:
+                pass
+        
+        # Update votes
+        user_vote = None
+        if direction == 'up':
+            if user_id in votes.get('downvotes', []):
+                votes['downvotes'].remove(user_id)
+            if user_id not in votes.get('upvotes', []):
+                if 'upvotes' not in votes:
+                    votes['upvotes'] = []
+                votes['upvotes'].append(user_id)
+            user_vote = 'up'
+        elif direction == 'down':
+            if user_id in votes.get('upvotes', []):
+                votes['upvotes'].remove(user_id)
+            if user_id not in votes.get('downvotes', []):
+                if 'downvotes' not in votes:
+                    votes['downvotes'] = []
+                votes['downvotes'].append(user_id)
+            user_vote = 'down'
+        else:
+            # Remove vote
+            if 'upvotes' in votes and user_id in votes['upvotes']:
+                votes['upvotes'].remove(user_id)
+            if 'downvotes' in votes and user_id in votes['downvotes']:
+                votes['downvotes'].remove(user_id)
+            user_vote = None
+        
+        # Save comment votes
+        comment_votes[comment_id] = votes
+        vote_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        if vote_file.exists():
+            with open(vote_file, 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
+        
+        data['comment_votes'] = comment_votes
+        with open(vote_file, 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        score = len(votes.get('upvotes', [])) - len(votes.get('downvotes', []))
+        
+        return jsonify({
+            'score': score,
+            'upvotes': len(votes.get('upvotes', [])),
+            'downvotes': len(votes.get('downvotes', [])),
+            'user_vote': user_vote
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/comments/<comment_id>/award', methods=['POST'])
+def award_comment(comment_id):
+    """Give an award to a comment"""
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    award_type = data.get('award_type')
+    
+    if not award_type:
+        return jsonify({'error': 'Award type required'}), 400
+    
+    try:
+        # Get user data
+        if user_memory_manager:
+            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+            user_id = user_data.get('user_id') if user_data else user_id
+        
+        if not user_id:
+            return jsonify({'error': 'User authentication required'}), 401
+        
+        from webapp.social.awards import add_award, get_award_types
+        
+        # Validate award type
+        valid_types = [a['id'] for a in get_award_types()]
+        if award_type not in valid_types:
+            return jsonify({'error': f'Invalid award type. Must be one of: {", ".join(valid_types)}'}), 400
+        
+        # Add award
+        award = add_award(comment_id, user_id, award_type)
+        
+        # Load existing awards for this comment
+        thread_id = comment_id.split('_')[1] if '_' in comment_id else None
+        if thread_id:
+            vote_file = project_root / 'data' / 'social' / 'interactions' / f'{thread_id}.json'
+            awards_data = {}
+            
+            if vote_file.exists():
+                try:
+                    with open(vote_file, 'r') as f:
+                        data = json.load(f)
+                        awards_data = data.get('comment_awards', {})
+                except:
+                    pass
+            
+            if comment_id not in awards_data:
+                awards_data[comment_id] = []
+            
+            awards_data[comment_id].append(award)
+            
+            # Save awards
+            if vote_file.exists():
+                with open(vote_file, 'r') as f:
+                    data = json.load(f)
+            else:
+                data = {}
+            
+            data['comment_awards'] = awards_data
+            vote_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(vote_file, 'w') as f:
+                json.dump(data, f, indent=2)
+        
+        return jsonify(award), 201
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/awards/types', methods=['GET'])
+def get_award_types():
+    """Get all available award types"""
+    try:
+        from webapp.social.awards import get_award_types
+        return jsonify({'awards': get_award_types()})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/sections/studio', methods=['GET'])
+def get_studio_section():
+    """Get studio mentor programs"""
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    filter_type = request.args.get('filter', 'all')
+    
+    try:
+        from data.mock.mock_studio import generate_programs
+        
+        # Get user data (optional)
+        current_user_id = None
+        try:
+            if user_memory_manager:
+                user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+                current_user_id = user_data.get('user_id') if user_data else None
+        except:
+            pass
+        
+        # Generate mock programs
+        mentor_ids = [f"mentor_{i}" for i in range(5)]
+        programs = generate_programs(count=12, mentor_ids=mentor_ids, seed=789)
+        
+        # Apply filter
+        if filter_type == 'active':
+            programs = [p for p in programs if p['status'] == 'active']
+        elif filter_type == 'upcoming':
+            programs = [p for p in programs if p['status'] == 'upcoming']
+        
+        return jsonify({
+            'programs': programs
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
 
 @app.route('/api/posts/<post_id>/like', methods=['POST'])
 def like_post(post_id):
@@ -1360,6 +2375,104 @@ def like_post(post_id):
         
         return jsonify({
             'liked': liked,
+            'interactions': interactions
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/posts/<post_id>/validate', methods=['POST'])
+def validate_post(post_id):
+    """Validate or un-validate a post (high-signal rigor action)"""
+    if not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        validated = interaction_manager.validate_post(post_id, user_id)
+        interactions = interaction_manager.get_interactions(post_id)
+        
+        return jsonify({
+            'validated': validated,
+            'interactions': interactions
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/posts/<post_id>/reference', methods=['POST'])
+def reference_post(post_id):
+    """Reference a post (utility / citation signal)"""
+    if not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    context = data.get('context') or request.args.get('context')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        ref = interaction_manager.reference_post(post_id, user_id, context=context)
+        interactions = interaction_manager.get_interactions(post_id)
+        
+        return jsonify({
+            'reference': ref,
+            'interactions': interactions
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/posts/<post_id>/contribute', methods=['POST'])
+def contribute_post_mastery(post_id):
+    """Register a structured contribution to a post (peer-review style)"""
+    if not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+    
+    data = request.get_json() or {}
+    user_id = data.get('user_id') or request.args.get('user_id')
+    session_id = data.get('session_id') or request.args.get('session_id')
+    content = data.get('content', '')
+    
+    if not user_id and not session_id:
+        return jsonify({'error': 'user_id or session_id required'}), 400
+    
+    if not content:
+        return jsonify({'error': 'Contribution content required'}), 400
+    
+    try:
+        # Get user data
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        user_id = user_data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User not found'}), 404
+        
+        contribution = interaction_manager.contribute_to_post(post_id, user_id, content)
+        interactions = interaction_manager.get_interactions(post_id)
+        
+        return jsonify({
+            'contribution': contribution,
             'interactions': interactions
         })
     except Exception as e:
@@ -1479,13 +2592,22 @@ def get_user_profile(user_id):
 def astronomical_current():
     """Get current astronomical and calendar positions"""
     try:
+        if not astronomical_engine:
+            return jsonify({
+                'error': 'Astronomical engine not available',
+                'timestamp': datetime.now().isoformat()
+            }), 503
+        
         positions = astronomical_engine.calculate_all_calendars()
         return jsonify(positions)
     except Exception as e:
         print(f"Error in astronomical_current: {e}")
         import traceback
         traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
+        return jsonify({
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
 
 @app.route('/api/astronomical/correlations', methods=['GET'])
 def astronomical_correlations():
@@ -1540,6 +2662,433 @@ def astronomical_predict():
         })
     except Exception as e:
         print(f"Error in astronomical_predict: {e}")
+        return jsonify({'error': str(e)}), 500
+
+# Bot Generation API
+try:
+    from webapp.social.bot_generator import BotGenerator
+    from webapp.social.bot_cleanup import BotCleanup
+    bot_generator = BotGenerator(base_dir=project_root)
+    bot_cleanup = BotCleanup(base_dir=project_root)
+except ImportError:
+    bot_generator = None
+    bot_cleanup = None
+
+@app.route('/api/bots/generate', methods=['POST'])
+def generate_bots():
+    """Generate bot profiles and activity"""
+    if not bot_generator:
+        return jsonify({'error': 'Bot generator not available'}), 503
+    
+    data = request.get_json() or {}
+    count = int(data.get('count', 10))
+    bot_types = data.get('bot_types', ['active', 'moderate', 'casual'])
+    generate_activity = data.get('generate_activity', True)
+    days_of_activity = int(data.get('days_of_activity', 30))
+    
+    try:
+        result = bot_generator.generate_bot_army(
+            count=count,
+            bot_types=bot_types,
+            generate_activity=generate_activity,
+            days_of_activity=days_of_activity
+        )
+        return jsonify(result)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/bots/generate-community', methods=['POST'])
+def generate_community_bots():
+    """Generate community bots with tags"""
+    if not bot_generator:
+        return jsonify({'error': 'Bot generator not available'}), 503
+    
+    data = request.get_json() or {}
+    communities = data.get('communities', None)  # Auto-generate if None
+    bots_per_community = int(data.get('bots_per_community', 3))
+    generate_activity = data.get('generate_activity', True)
+    days_of_activity = int(data.get('days_of_activity', 30))
+    
+    try:
+        result = bot_generator.generate_community_bots(
+            communities=communities,
+            bots_per_community=bots_per_community,
+            generate_activity=generate_activity,
+            days_of_activity=days_of_activity
+        )
+        return jsonify(result)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/bots/generate-activity', methods=['POST'])
+def generate_bot_activity():
+    """Generate activity for existing bot"""
+    if not bot_generator:
+        return jsonify({'error': 'Bot generator not available'}), 503
+    
+    data = request.get_json() or {}
+    bot_id = data.get('bot_id')
+    days = int(data.get('days', 30))
+    posts_per_day_min = float(data.get('posts_per_day_min', 0.5))
+    posts_per_day_max = float(data.get('posts_per_day_max', 3))
+    
+    if not bot_id:
+        return jsonify({'error': 'bot_id required'}), 400
+    
+    try:
+        result = bot_generator.generate_bot_activity(
+            bot_id=bot_id,
+            days=days,
+            posts_per_day_range=(posts_per_day_min, posts_per_day_max)
+        )
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/bots/list', methods=['GET'])
+def list_bots():
+    """List all generated bots"""
+    if not bot_generator:
+        return jsonify({'error': 'Bot generator not available'}), 503
+    
+    bots_dir = project_root / "data" / "bots"
+    bots = []
+    
+    if bots_dir.exists():
+        for bot_file in bots_dir.glob("bot_*.json"):
+            try:
+                with open(bot_file, 'r', encoding='utf-8') as f:
+                    bot_data = json.load(f)
+                    bots.append({
+                        'bot_id': bot_data.get('bot_id'),
+                        'username': bot_data.get('username'),
+                        'display_name': bot_data.get('display_name'),
+                        'bot_type': bot_data.get('bot_type'),
+                        'created_at': bot_data.get('created_at')
+                    })
+            except Exception:
+                continue
+    
+    return jsonify({'bots': bots, 'count': len(bots)})
+
+@app.route('/api/bots/cleanup', methods=['POST'])
+def cleanup_bot_posts():
+    """Clean up old bot posts"""
+    if not bot_cleanup:
+        return jsonify({'error': 'Bot cleanup not available'}), 503
+    
+    data = request.get_json() or {}
+    retention_days = int(data.get('retention_days', 30))
+    
+    try:
+        result = bot_cleanup.cleanup_all()
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/bots/post-now', methods=['POST'])
+def bot_post_now():
+    """Make a bot post right now (real-time)"""
+    if not bot_generator:
+        return jsonify({'error': 'Bot generator not available'}), 503
+    
+    import random
+    
+    data = request.get_json() or {}
+    bot_id = data.get('bot_id')
+    
+    # If no bot_id, select random active bot
+    if not bot_id:
+        bots_dir = project_root / "data" / "bots"
+        bot_files = list(bots_dir.glob("bot_*.json")) if bots_dir.exists() else []
+        if not bot_files:
+            return jsonify({'error': 'No bots available'}), 404
+        
+        bot_file = random.choice(bot_files)
+        with open(bot_file, 'r', encoding='utf-8') as f:
+            bot_data = json.load(f)
+            bot_id = bot_data.get('bot_id')
+    
+    try:
+        # Load bot profile
+        profile_file = bot_generator.bots_dir / f"{bot_id}.json"
+        if not profile_file.exists():
+            return jsonify({'error': 'Bot not found'}), 404
+        
+        with open(profile_file, 'r', encoding='utf-8') as f:
+            bot_profile = json.load(f)
+        
+        # Generate content
+        content = bot_generator.content_synthesizer.synthesize_post(bot_profile)
+        
+        # Generate media (higher chance for Labs/community)
+        media = []
+        bot_type = bot_profile.get('bot_type', 'moderate')
+        media_chance = 0.8 if bot_type == "community" else 0.6  # More media for Labs
+        
+        if random.random() < media_chance:
+            topic = random.choice(bot_profile.get('interests', ['technology']))
+            media = bot_generator.media_generator.generate_media_for_post(
+                post_type="random",
+                topic=topic
+            )
+        
+        # Generate tags
+        tags = []
+        if bot_type == "community" and bot_profile.get('community'):
+            tags = [bot_profile.get('community').lower()]
+        elif random.random() < 0.3:
+            interests = bot_profile.get('interests', [])
+            if interests:
+                tag = random.choice(interests).lower().replace(' ', '')
+                tags = [tag]
+        
+        # Create post with media and tags
+        post = bot_generator.post_manager.create_post(
+            author_id=bot_id,
+            content=content,
+            media=media if media else None,
+            tags=tags if tags else None,
+            visibility="public"
+        )
+        
+        # Get all bot IDs for engagement
+        all_bot_ids = []
+        if bot_generator.bots_dir.exists():
+            for bf in bot_generator.bots_dir.glob("bot_*.json"):
+                try:
+                    with open(bf, 'r', encoding='utf-8') as f:
+                        bd = json.load(f)
+                        all_bot_ids.append(bd.get('bot_id'))
+                except Exception:
+                    continue
+        
+        # Generate engagement (async - will happen later)
+        if random.random() < 0.7:
+            bot_generator._generate_engagement(
+                post['id'],
+                datetime.now(),
+                bot_profile,
+                all_bot_ids
+            )
+        
+        return jsonify({
+            'success': True,
+            'post': post,
+            'bot_id': bot_id
+        })
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+# Authentication Routes
+@app.route('/auth.html')
+def auth_page():
+    """Serve authentication page"""
+    static_dir = Path(__file__).parent.parent / 'public'
+    if static_dir.exists() and (static_dir / 'auth.html').exists():
+        return send_from_directory(str(static_dir), 'auth.html')
+    return send_from_directory('.', 'auth.html')
+
+@app.route('/api/auth/phone/send', methods=['POST'])
+def phone_send_code():
+    """Send SMS verification code"""
+    if not phone_auth_manager:
+        return jsonify({'error': 'Phone authentication not available'}), 503
+    
+    data = request.get_json() or {}
+    phone = data.get('phone', '').strip()
+    
+    if not phone:
+        return jsonify({'error': 'Phone number required'}), 400
+    
+    try:
+        result = phone_auth_manager.send_verification_code(phone)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/auth/phone/verify', methods=['POST'])
+def phone_verify_code():
+    """Verify SMS code and create/login user"""
+    if not phone_auth_manager:
+        return jsonify({'error': 'Phone authentication not available'}), 503
+    
+    data = request.get_json() or {}
+    verification_id = data.get('verification_id')
+    code = data.get('code', '').strip()
+    
+    if not verification_id or not code:
+        return jsonify({'error': 'Verification ID and code required'}), 400
+    
+    try:
+        result = phone_auth_manager.verify_code(verification_id, code)
+        
+        if not result.get('success'):
+            return jsonify(result), 400
+        
+        # Get verified phone
+        phone = result.get('phone')
+        
+        # Find or create user by phone
+        # Check if user exists with this phone
+        user_info_file = project_root / "data" / "auth" / "phone_users.json"
+        phone_users = {}
+        if user_info_file.exists():
+            try:
+                with open(user_info_file, 'r', encoding='utf-8') as f:
+                    phone_users = json.load(f)
+            except Exception:
+                pass
+        
+        user_id = None
+        for uid, user_data in phone_users.items():
+            if user_data.get('phone') == phone:
+                user_id = uid
+                break
+        
+        # Create new user if doesn't exist
+        if not user_id:
+            user_id = f"user_{secrets.token_urlsafe(12)}"
+            phone_users[user_id] = {
+                'phone': phone,
+                'created_at': datetime.now().isoformat()
+            }
+            with open(user_info_file, 'w', encoding='utf-8') as f:
+                json.dump(phone_users, f, indent=2, ensure_ascii=False)
+        
+        # Get or create user session
+        user_data = user_memory_manager.get_user_data(user_id=user_id)
+        
+        return jsonify({
+            'success': True,
+            'user_id': user_data['user_id'],
+            'session_id': user_data['session_id']
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/auth/login', methods=['POST'])
+def email_login():
+    """Email/password login"""
+    if not auth_manager:
+        return jsonify({'error': 'Authentication not available'}), 503
+    
+    data = request.get_json() or {}
+    email = data.get('email', '').strip()
+    password = data.get('password', '')
+    
+    if not email or not password:
+        return jsonify({'error': 'Email and password required'}), 400
+    
+    try:
+        # For now, use email as username (can be improved)
+        result = auth_manager.authenticate_user(email, password)
+        
+        if not result:
+            return jsonify({'error': 'Invalid email or password'}), 401
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/auth/<provider>', methods=['GET'])
+def oauth_initiate(provider):
+    """Initiate OAuth flow"""
+    if not oauth_manager:
+        return jsonify({'error': 'OAuth not available'}), 503
+    
+    oauth_provider = oauth_manager.get_provider(provider)
+    if not oauth_provider:
+        return jsonify({'error': f'OAuth provider {provider} not configured'}), 404
+    
+    # Generate state token for CSRF protection
+    state = secrets.token_urlsafe(32)
+    session['oauth_state'] = state
+    
+    # Get authorization URL
+    auth_url = oauth_provider.get_authorization_url(state)
+    
+    return redirect(auth_url)
+
+@app.route('/api/auth/<provider>/callback', methods=['GET'])
+def oauth_callback(provider):
+    """Handle OAuth callback"""
+    if not oauth_manager:
+        return jsonify({'error': 'OAuth not available'}), 503
+    
+    oauth_provider = oauth_manager.get_provider(provider)
+    if not oauth_provider:
+        return jsonify({'error': f'OAuth provider {provider} not configured'}), 404
+    
+    # Verify state
+    state = request.args.get('state')
+    if state != session.get('oauth_state'):
+        return jsonify({'error': 'Invalid state parameter'}), 400
+    
+    code = request.args.get('code')
+    if not code:
+        return jsonify({'error': 'Authorization code missing'}), 400
+    
+    try:
+        # Exchange code for token
+        token_data = oauth_provider.get_access_token(code)
+        access_token = token_data.get('access_token')
+        
+        if not access_token:
+            return jsonify({'error': 'Failed to get access token'}), 500
+        
+        # Get user info
+        user_info = oauth_provider.get_user_info(access_token)
+        
+        # Find or create user by provider ID
+        provider_id = f"{provider}_{user_info['provider_id']}"
+        user_info_file = project_root / "data" / "auth" / "oauth_users.json"
+        oauth_users = {}
+        if user_info_file.exists():
+            try:
+                with open(user_info_file, 'r', encoding='utf-8') as f:
+                    oauth_users = json.load(f)
+            except Exception:
+                pass
+        
+        user_id = None
+        for uid, user_data in oauth_users.items():
+            if user_data.get('provider_id') == provider_id:
+                user_id = uid
+                break
+        
+        # Create new user if doesn't exist
+        if not user_id:
+            user_id = f"user_{secrets.token_urlsafe(12)}"
+            oauth_users[user_id] = {
+                'provider': provider,
+                'provider_id': provider_id,
+                'email': user_info.get('email'),
+                'username': user_info.get('username'),
+                'name': user_info.get('name'),
+                'avatar_url': user_info.get('avatar_url'),
+                'created_at': datetime.now().isoformat()
+            }
+            with open(user_info_file, 'w', encoding='utf-8') as f:
+                json.dump(oauth_users, f, indent=2, ensure_ascii=False)
+        
+        # Get or create user session
+        user_data = user_memory_manager.get_user_data(user_id=user_id)
+        
+        # Store session in response (will be set in localStorage by frontend)
+        # Redirect to app with session data
+        redirect_url = f"/?user_id={user_data['user_id']}&session_id={user_data['session_id']}"
+        return redirect(redirect_url)
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

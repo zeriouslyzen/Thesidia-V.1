@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Refactoring Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #000; color: #0f0; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #0f0; }
+        .pass { color: #0f0; }
+        .fail { color: #f00; }
+        button { padding: 10px; margin: 5px; background: #0f0; color: #000; border: none; cursor: pointer; }
+        pre { background: #111; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Refactoring Test Suite</h1>
+    <div id="results"></div>
+    
+    <button onclick="testStatus()">Test 1: Status Endpoint</button>
+    <button onclick="testQueryNormalization()">Test 2: Query Normalization (typo fix)</button>
+    <button onclick="testForensicRouting()">Test 3: Forensic Routing Detection</button>
+    <button onclick="testStreaming()">Test 4: Streaming Endpoint</button>
+    <button onclick="testAll()">Run All Tests</button>
+    
+    <script>
+        const API_BASE = window.location.origin;
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(testName, passed, message, data = null) {
+            const div = document.createElement('div');
+            div.className = 'test';
+            div.innerHTML = `
+                <strong>${testName}</strong>: 
+                <span class="${passed ? 'pass' : 'fail'}">${passed ? '✅ PASS' : '❌ FAIL'}</span>
+                <br>${message}
+                ${data ? '<pre>' + JSON.stringify(data, null, 2) + '</pre>' : ''}
+            `;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function testStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/api/status`);
+                const data = await res.json();
+                addResult('Status Endpoint', res.ok, `Server is ${data.thesidia_ready ? 'ready' : 'not ready'}`, data);
+            } catch (e) {
+                addResult('Status Endpoint', false, `Error: ${e.message}`);
+            }
+        }
+        
+        async function testQueryNormalization() {
+            try {
+                // Test with typo "genensis" - should normalize to "genesis" and route to forensic
+                const res = await fetch(`${API_BASE}/api/thesidia`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: 'genensis',
+                        stream: false
+                    })
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    const hasForensic = data.response && (
+                        data.response.toLowerCase().includes('forensic') ||
+                        data.response.toLowerCase().includes('genesis') ||
+                        data.response.toLowerCase().includes('exposure')
+                    );
+                    addResult('Query Normalization (typo)', true, 
+                        `Typo "genensis" was processed. Response length: ${data.response?.length || 0}`, 
+                        { responsePreview: data.response?.substring(0, 200) });
+                } else {
+                    addResult('Query Normalization (typo)', false, `HTTP ${res.status}`);
+                }
+            } catch (e) {
+                addResult('Query Normalization (typo)', false, `Error: ${e.message}`);
+            }
+        }
+        
+        async function testForensicRouting() {
+            try {
+                const res = await fetch(`${API_BASE}/api/thesidia`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: 'what is genesis really about',
+                        stream: false
+                    })
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    const isForensic = data.response && (
+                        data.response.includes('::EXPOSURE::') ||
+                        data.response.includes('EXPOSURE') ||
+                        data.response.toLowerCase().includes('forensic')
+                    );
+                    addResult('Forensic Routing', isForensic, 
+                        `Forensic query routed correctly: ${isForensic}`, 
+                        { responsePreview: data.response?.substring(0, 300) });
+                } else {
+                    addResult('Forensic Routing', false, `HTTP ${res.status}`);
+                }
+            } catch (e) {
+                addResult('Forensic Routing', false, `Error: ${e.message}`);
+            }
+        }
+        
+        async function testStreaming() {
+            try {
+                const res = await fetch(`${API_BASE}/api/thesidia`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: 'hello',
+                        stream: true
+                    })
+                });
+                
+                if (res.ok && res.headers.get('content-type')?.includes('event-stream')) {
+                    const reader = res.body.getReader();
+                    const decoder = new TextDecoder();
+                    let chunks = 0;
+                    let timeout = setTimeout(() => {
+                        addResult('Streaming Endpoint', chunks > 0, 
+                            `Received ${chunks} chunks (timeout after 5s)`);
+                    }, 5000);
+                    
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        chunks++;
+                        const text = decoder.decode(value);
+                        if (chunks === 1) {
+                            clearTimeout(timeout);
+                            addResult('Streaming Endpoint', true, 
+                                `Streaming works! Received ${chunks} chunk(s)`, 
+                                { firstChunk: text.substring(0, 200) });
+                            break;
+                        }
+                    }
+                } else {
+                    addResult('Streaming Endpoint', false, 
+                        `Wrong content type: ${res.headers.get('content-type')}`);
+                }
+            } catch (e) {
+                addResult('Streaming Endpoint', false, `Error: ${e.message}`);
+            }
+        }
+        
+        async function testAll() {
+            resultsDiv.innerHTML = '<h2>Running all tests...</h2>';
+            await testStatus();
+            await new Promise(r => setTimeout(r, 500));
+            await testQueryNormalization();
+            await new Promise(r => setTimeout(r, 1000));
+            await testForensicRouting();
+            await new Promise(r => setTimeout(r, 1000));
+            await testStreaming();
+        }
+    </script>
+</body>
+</html>
+

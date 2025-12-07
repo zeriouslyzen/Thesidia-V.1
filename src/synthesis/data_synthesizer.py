@@ -15,9 +15,14 @@ from datetime import datetime
 
 from ..core.model_router import ModelRouter
 from ..core.model_client import ModelClient
+from ..core.feature_flags import FeatureFlags
 from ..support.utils import strip_meta_noise
 from .skepticism_engine import IntuitiveSkepticism
 from .truth_engine import TruthEngine
+from .contrastive_decoder import ContrastiveDecoder
+from .latent_space_traverser import LatentSpaceTraverser
+from .truth_seeking_decoder import TruthSeekingDecoder
+from .representation_probe import RepresentationProbe
 
 
 class DataSynthesizer:
@@ -30,6 +35,10 @@ class DataSynthesizer:
         self.skepticism_engine = IntuitiveSkepticism(model, model_client=model_client)
         self.model_client = model_client  # Centralized model client for Vibecode compliance
         self.truth_engine = TruthEngine(model=model)  # ⭐ NEW: 7-layer epistemology
+        self.contrastive_decoder = ContrastiveDecoder(model=model, model_client=model_client)
+        self.latent_traverser = LatentSpaceTraverser(model=model)
+        self.truth_decoder = TruthSeekingDecoder(model_name=model)
+        self.representation_probe = RepresentationProbe(model_name=model)
     
     def synthesize(
         self,
@@ -42,13 +51,79 @@ class DataSynthesizer:
         output_mode: str = "spacious",
         evidence_arrangement: str = None,
         enhanced_prompt: str = None,
-        conversation_context: str = None
+        conversation_context: str = None,
+        use_contrastive: bool = False,
+        use_latent_space: bool = False,
+        use_custom_decoding: bool = False,
+        use_representation_probing: bool = False,
+        feature_flags: FeatureFlags = None
     ) -> Dict[str, Any]:
         """
         Synthesize information with pattern recognition and cross-reference.
         
         Now includes TruthEngine for 7-layer epistemology validation.
         """
+        
+        # Determine which advanced features to enable
+        enable_contrastive = use_contrastive
+        enable_latent = use_latent_space
+        enable_custom = use_custom_decoding
+        enable_probe = use_representation_probing
+        if feature_flags:
+            if feature_flags.should_enable("ENABLE_CONTRASTIVE_DECODING", query):
+                enable_contrastive = True
+            if feature_flags.should_enable("ENABLE_LATENT_SPACE_TRAVERSAL", query):
+                enable_latent = True
+            if feature_flags.should_enable("ENABLE_CUSTOM_DECODING", query):
+                enable_custom = True
+            if feature_flags.should_enable("ENABLE_REPRESENTATION_PROBING", query):
+                enable_probe = True
+        
+        # Placeholders for future phases (custom decoding, probing)
+        _ = ()
+        
+        # Optional: Contrastive decoding before main synthesis
+        contrastive_result = None
+        if enable_contrastive:
+            contrastive_result = self.contrastive_decoder.decode_contrastive(
+                query=query,
+                sources=sources,
+                enhanced_prompt=enhanced_prompt,
+                temperature=0.7,
+            )
+
+        # Optional: Latent space traversal
+        latent_result = None
+        if enable_latent:
+            truth_axis = self.latent_traverser.discover_truth_axis("fact", "propaganda")
+            suppressed_dir = None
+            if sources:
+                first_source = sources[0]
+                official = first_source.get("content") or first_source.get("snippet") or ""
+                suppressed_dir = self.latent_traverser.find_suppressed_direction(query, official)
+            latent_result = {
+                "truth_axis_present": truth_axis is not None,
+                "suppressed_direction_present": suppressed_dir is not None,
+                "axis_probes": self.latent_traverser.summarize_axis(
+                    truth_axis,
+                    {"official": "official narrative", "alternative": "alternative interpretation"},
+                ) if truth_axis else {},
+            }
+
+        # Optional: Custom decoding (logit lens/consensus)
+        custom_decoding_result = None
+        if enable_custom:
+            custom_decoding_result = {
+                "logit_lens": self.truth_decoder.logit_lens_decode(query),
+                "consensus_samples": self.truth_decoder.multi_sample_consensus(query, num_samples=2),
+            }
+
+        # Optional: Representation probing
+        probe_result = None
+        if enable_probe:
+            probe_result = {
+                "activations": self.representation_probe.probe_activations(query, layer=None),
+            }
         
         # Cross-reference sources for contradictions and patterns
         if len(sources) >= 2:
@@ -471,6 +546,16 @@ start directly with ur deep analysis. no preamble. be direct, be forensic, be de
                 "contradictions_detected": cross_ref.get("contradictions", False),
                 "cross_reference_analysis": cross_ref.get("analysis", "")
             }
+            
+            # Attach contrastive perspectives if available
+            if contrastive_result:
+                result["contrastive"] = contrastive_result
+            if latent_result:
+                result["latent_space"] = latent_result
+            if custom_decoding_result:
+                result["custom_decoding"] = custom_decoding_result
+            if probe_result:
+                result["representation_probe"] = probe_result
             
             # Add truth analysis if available
             if truth_analysis:

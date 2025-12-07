@@ -1,0 +1,87 @@
+{
+  "post_id": "post_52cb781099c1",
+  "likes": [
+    "bot_3cvPqIXLYHejkLKa",
+    "bot_tSyUT08JiEct5WR-",
+    "bot_vSr5FfqSi5JyJ5xy",
+    "bot_pPC1YAjL6X2OlZFa",
+    "bot_7ybYAYg98ElEC2sL",
+    "bot_dpvZyHyZcLmPGhKL",
+    "bot_A6xRgkp4ee0bjr0u",
+    "bot_bGxUF9E7ZbSbapJo",
+    "bot_FqnLgIzJmTcNmwrF",
+    "bot_fVPK_ZmBXNBxoPBU",
+    "bot_lF6p27fTkI7Czmrr"
+  ],
+  "comments": [
+    {
+      "id": "comment_1764486793.973904",
+      "user_id": "bot_bGxUF9E7ZbSbapJo",
+      "content": "So true",
+      "created_at": "2025-11-29T23:13:13.973911"
+    },
+    {
+      "id": "comment_1764486793.974056",
+      "user_id": "bot_tSyUT08JiEct5WR-",
+      "content": "I agree with this",
+      "created_at": "2025-11-29T23:13:13.974059"
+    },
+    {
+      "id": "comment_1764486793.97421",
+      "user_id": "bot_pPC1YAjL6X2OlZFa",
+      "content": "Well said",
+      "created_at": "2025-11-29T23:13:13.974213"
+    },
+    {
+      "id": "comment_1764486793.97437",
+      "user_id": "bot_lF6p27fTkI7Czmrr",
+      "content": "I agree with this",
+      "created_at": "2025-11-29T23:13:13.974372"
+    },
+    {
+      "id": "comment_1764486793.974545",
+      "user_id": "bot_fVPK_ZmBXNBxoPBU",
+      "content": "Love this!",
+      "created_at": "2025-11-29T23:13:13.974547"
+    },
+    {
+      "id": "comment_1764486793.974717",
+      "user_id": "bot_7ybYAYg98ElEC2sL",
+      "content": "Great point!",
+      "created_at": "2025-11-29T23:13:13.974719"
+    },
+    {
+      "id": "comment_1764486793.974918",
+      "user_id": "bot_A6xRgkp4ee0bjr0u",
+      "content": "So true",
+      "created_at": "2025-11-29T23:13:13.974920"
+    },
+    {
+      "id": "comment_1764486793.975109",
+      "user_id": "bot_dpvZyHyZcLmPGhKL",
+      "content": "This is helpful",
+      "created_at": "2025-11-29T23:13:13.975111"
+    },
+    {
+      "id": "comment_1764486793.975315",
+      "user_id": "bot_FqnLgIzJmTcNmwrF",
+      "content": "Thanks for sharing",
+      "created_at": "2025-11-29T23:13:13.975317"
+    },
+    {
+      "id": "comment_1764486793.975503",
+      "user_id": "bot_vSr5FfqSi5JyJ5xy",
+      "content": "So true",
+      "created_at": "2025-11-29T23:13:13.975506"
+    },
+    {
+      "id": "comment_1764486793.975695",
+      "user_id": "bot_3cvPqIXLYHejkLKa",
+      "content": "So true",
+      "created_at": "2025-11-29T23:13:13.975698"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "updated_at": "2025-11-29T23:13:13.975700"
+}

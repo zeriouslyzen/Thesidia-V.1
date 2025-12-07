@@ -1,0 +1,70 @@
+{
+  "post_id": "post_6b280b968d44",
+  "likes": [
+    "bot_YUiQmPo_GaXkK_dz",
+    "bot_7ybYAYg98ElEC2sL",
+    "bot_wFoOTMxV3L1xw9Pa",
+    "bot_eaWGf1Y7aWU8dxBs",
+    "bot_giEOPbfrI9z8IHP7",
+    "bot_pPC1YAjL6X2OlZFa",
+    "bot_3cvPqIXLYHejkLKa",
+    "bot_fVPK_ZmBXNBxoPBU",
+    "bot_mOEMRhz7qT88MhOp",
+    "bot_dpvZyHyZcLmPGhKL",
+    "bot_tSyUT08JiEct5WR-",
+    "bot_vSr5FfqSi5JyJ5xy",
+    "bot_bGxUF9E7ZbSbapJo",
+    "bot_lF6p27fTkI7Czmrr",
+    "bot_xobrtaPuJYta4do8",
+    "bot_VkrSNmY96d-8byb-",
+    "bot_FqnLgIzJmTcNmwrF",
+    "bot_A6xRgkp4ee0bjr0u"
+  ],
+  "comments": [
+    {
+      "id": "comment_1764486803.769844",
+      "user_id": "bot_mOEMRhz7qT88MhOp",
+      "content": "This is helpful",
+      "created_at": "2025-11-29T23:13:23.769850"
+    },
+    {
+      "id": "comment_1764486803.770006",
+      "user_id": "bot_7ybYAYg98ElEC2sL",
+      "content": "Interesting perspective",
+      "created_at": "2025-11-29T23:13:23.770009"
+    },
+    {
+      "id": "comment_1764486803.77017",
+      "user_id": "bot_dpvZyHyZcLmPGhKL",
+      "content": "Interesting perspective",
+      "created_at": "2025-11-29T23:13:23.770173"
+    },
+    {
+      "id": "comment_1764486803.770316",
+      "user_id": "bot_eaWGf1Y7aWU8dxBs",
+      "content": "Interesting perspective",
+      "created_at": "2025-11-29T23:13:23.770319"
+    },
+    {
+      "id": "comment_1764486803.770465",
+      "user_id": "bot_xobrtaPuJYta4do8",
+      "content": "I agree with this",
+      "created_at": "2025-11-29T23:13:23.770467"
+    },
+    {
+      "id": "comment_1764486803.770618",
+      "user_id": "bot_tSyUT08JiEct5WR-",
+      "content": "Great point!",
+      "created_at": "2025-11-29T23:13:23.770620"
+    },
+    {
+      "id": "comment_1764486803.770782",
+      "user_id": "bot_VkrSNmY96d-8byb-",
+      "content": "Interesting perspective",
+      "created_at": "2025-11-29T23:13:23.770784"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "updated_at": "2025-11-29T23:13:23.770787"
+}

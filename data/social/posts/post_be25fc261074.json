@@ -1,0 +1,28 @@
+{
+  "id": "post_be25fc261074",
+  "author_id": "user_lisa_park",
+  "content": "Working on a new story. The blank page is both terrifying and exciting. Every word matters. 📝",
+  "media": [
+    {
+      "type": "image",
+      "url": "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&h=600&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&h=300&fit=crop"
+    }
+  ],
+  "created_at": "2025-11-26T09:22:59.219246",
+  "updated_at": "2025-11-26T09:22:59.219246",
+  "interactions": {
+    "likes": 45,
+    "comments": 9,
+    "reposts": 4,
+    "views": 198
+  },
+  "ai_score": 0.79,
+  "tags": [
+    "writing",
+    "storytelling",
+    "creativity"
+  ],
+  "visibility": "public",
+  "moderation_status": "approved"
+}

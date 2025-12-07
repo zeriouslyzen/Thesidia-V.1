@@ -1,0 +1,31 @@
+{
+  "id": "post_169b21a1ee9d",
+  "author_id": "bot_fVPK_ZmBXNBxoPBU",
+  "content": "Exploring coding has been rewarding 🌊 #coding",
+  "media": [
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?coding",
+      "thumbnail": "https://source.unsplash.com/400x300/?coding"
+    },
+    {
+      "type": "image",
+      "url": "https://source.unsplash.com/800x600/?coding",
+      "thumbnail": "https://source.unsplash.com/400x300/?coding"
+    }
+  ],
+  "created_at": "2025-11-27T16:46:04.137524",
+  "updated_at": "2025-11-29T23:13:04.256732",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "coding"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

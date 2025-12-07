@@ -13,10 +13,50 @@ class Router {
             '/reactor.html': 'reactor',
             '/application.html': 'application',
             '/archive.html': 'archive',
-            '/metrics_dashboard.html': 'metrics'
+            '/metrics_dashboard.html': 'metrics',
+            '/thread.html': 'thread'
         };
         
+        // Also handle thread.html as a base route
+        if (window.location.pathname === '/thread.html') {
+            this.routes[window.location.pathname] = 'thread';
+        }
+        
+        // Dynamic route patterns
+        this.routePatterns = [
+            { pattern: /^\/thread\/([^\/]+)$/, handler: 'thread', param: 'threadId' },
+            { pattern: /^\/circles\/([^\/]+)\/([^\/]+)$/, handler: 'thread', params: ['category', 'threadId'] }
+        ];
+        
         this.init();
+    }
+    
+    /**
+     * Match dynamic route patterns
+     */
+    matchRoute(path) {
+        // Check exact routes first
+        if (this.routes[path]) {
+            return { handler: this.routes[path], params: {} };
+        }
+        
+        // Check pattern routes
+        for (const route of this.routePatterns) {
+            const match = path.match(route.pattern);
+            if (match) {
+                const params = {};
+                if (route.param) {
+                    params[route.param] = match[1];
+                } else if (route.params) {
+                    route.params.forEach((param, index) => {
+                        params[param] = match[index + 1];
+                    });
+                }
+                return { handler: route.handler, params };
+            }
+        }
+        
+        return null;
     }
     
     /**
@@ -51,15 +91,38 @@ class Router {
      */
     setActivePage() {
         const path = window.location.pathname;
-        const page = this.routes[path] || this.routes['/'];
+        const match = this.matchRoute(path);
         
-        // Update state
-        if (window.State) {
-            window.State.setCurrentPage(page);
+        if (match) {
+            // Store route params for use by page components
+            window.currentRouteParams = match.params;
+            
+            // Update state
+            if (window.State) {
+                window.State.setCurrentPage(match.handler);
+            }
+            
+            // Update navigation active states
+            this.updateNavActiveStates(match.handler);
+            
+            // Initialize thread page if needed
+            if (match.handler === 'thread' && window.ThreadDetailPage) {
+                const threadId = match.params.threadId || match.params.id;
+                if (threadId) {
+                    window.ThreadDetailPage.loadThread(threadId);
+                }
+            }
+        } else {
+            const page = this.routes[path] || this.routes['/'];
+            
+            // Update state
+            if (window.State) {
+                window.State.setCurrentPage(page);
+            }
+            
+            // Update navigation active states
+            this.updateNavActiveStates(page);
         }
-        
-        // Update navigation active states
-        this.updateNavActiveStates(page);
     }
     
     /**
@@ -82,7 +145,9 @@ class Router {
      * Navigate to a page
      */
     navigate(path, options = {}) {
-        const page = this.routes[path];
+        const match = this.matchRoute(path);
+        const page = match ? match.handler : this.routes[path];
+        
         if (page && window.State) {
             window.State.setCurrentPage(page);
         }
@@ -101,7 +166,39 @@ class Router {
      */
     getCurrentRoute() {
         const path = window.location.pathname;
-        return this.routes[path] || this.routes['/'];
+        const match = this.matchRoute(path);
+        if (match) {
+            return { handler: match.handler, params: match.params };
+        }
+        return { handler: this.routes[path] || this.routes['/'], params: {} };
+    }
+    
+    /**
+     * Navigate to thread detail page
+     */
+    navigateToThread(threadId, category = null) {
+        if (!threadId) return;
+        
+        // Navigate to thread.html with thread ID in URL
+        // Use hash for now to work with existing setup
+        const currentPath = window.location.pathname;
+        
+        if (currentPath.includes('thread.html') || currentPath.startsWith('/thread/')) {
+            // Already on thread page, just update and load
+            let path;
+            if (category) {
+                path = `/circles/${category}/${threadId}`;
+            } else {
+                path = `/thread/${threadId}`;
+            }
+            window.history.pushState({}, '', path);
+            if (window.ThreadDetailPage) {
+                window.ThreadDetailPage.loadThread(threadId);
+            }
+        } else {
+            // Navigate to thread.html with hash
+            window.location.href = `/thread.html#${threadId}`;
+        }
     }
     
     /**

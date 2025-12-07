@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    
+    <title>Thread - Katanx</title>
+    <meta name="description" content="Thread discussion - Katanx Circles">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="thread-page">
+        <!-- Header -->
+        <header class="thread-header">
+            <button class="thread-back-btn" onclick="window.history.back()" aria-label="Back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <div class="thread-header-info">
+                <div class="thread-category" id="threadCategory"></div>
+                <div class="thread-meta-header" id="threadMetaHeader"></div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="thread-main">
+            <div class="thread-container">
+                <!-- Thread Content -->
+                <article class="thread-post" id="threadPost">
+                    <div class="thread-loading">Loading thread...</div>
+                </article>
+
+                <!-- Comment Section -->
+                <section class="thread-comments">
+                    <div class="comments-header">
+                        <h2 class="comments-title">Comments</h2>
+                        <div class="comments-sort" id="commentsSort">
+                            <button class="sort-btn active" data-sort="best">Best</button>
+                            <button class="sort-btn" data-sort="top">Top</button>
+                            <button class="sort-btn" data-sort="new">New</button>
+                            <button class="sort-btn" data-sort="controversial">Controversial</button>
+                        </div>
+                    </div>
+                    
+                    <div class="comments-tree" id="commentsTree">
+                        <div class="comments-loading">Loading comments...</div>
+                    </div>
+                </section>
+
+                <!-- Comment Form -->
+                <section class="thread-comment-form">
+                    <div class="comment-form-container">
+                        <textarea 
+                            id="commentInput" 
+                            class="comment-input" 
+                            placeholder="Add a comment..."
+                            rows="3"
+                        ></textarea>
+                        <div class="comment-form-actions">
+                            <button class="comment-submit-btn" id="commentSubmit">Post</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="router.js"></script>
+    <script src="thread.js"></script>
+    <script>
+        // Initialize thread page when DOM is ready
+        function initThreadPage() {
+            if (window.ThreadDetailPage) {
+                // Handle browser back/forward
+                window.addEventListener('popstate', () => {
+                    if (window.ThreadDetailPage && window.Router) {
+                        const route = window.Router.getCurrentRoute();
+                        const threadId = route?.params?.threadId || route?.params?.id || window.location.hash.replace('#', '');
+                        if (threadId && threadId !== window.ThreadDetailPage.threadId) {
+                            window.ThreadDetailPage.loadThread(threadId);
+                        }
+                    }
+                });
+                
+                // Handle hash changes (for direct navigation to thread.html#threadId)
+                window.addEventListener('hashchange', () => {
+                    if (window.ThreadDetailPage) {
+                        const threadId = window.location.hash.replace('#', '');
+                        if (threadId && threadId !== window.ThreadDetailPage.threadId) {
+                            window.ThreadDetailPage.loadThread(threadId);
+                        }
+                    }
+                });
+            }
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThreadPage);
+        } else {
+            initThreadPage();
+        }
+    </script>
+</body>
+</html>
+

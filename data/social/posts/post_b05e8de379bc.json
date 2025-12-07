@@ -1,0 +1,20 @@
+{
+  "id": "post_b05e8de379bc",
+  "author_id": "bot_bGxUF9E7ZbSbapJo",
+  "content": "Check this out: art",
+  "media": [],
+  "created_at": "2025-11-28T21:45:08.533129",
+  "updated_at": "2025-11-29T23:13:09.015394",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "art"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

@@ -1,0 +1,45 @@
+{
+  "post_id": "post_0c6b1db57caf",
+  "likes": [
+    "bot_pPC1YAjL6X2OlZFa",
+    "bot_dpvZyHyZcLmPGhKL",
+    "bot_vSr5FfqSi5JyJ5xy",
+    "bot_tSyUT08JiEct5WR-",
+    "bot_A6xRgkp4ee0bjr0u",
+    "bot_7ybYAYg98ElEC2sL",
+    "bot_fVPK_ZmBXNBxoPBU",
+    "bot_lF6p27fTkI7Czmrr",
+    "bot_bGxUF9E7ZbSbapJo",
+    "bot_FqnLgIzJmTcNmwrF",
+    "bot_3cvPqIXLYHejkLKa"
+  ],
+  "comments": [
+    {
+      "id": "comment_1764486793.476567",
+      "user_id": "bot_bGxUF9E7ZbSbapJo",
+      "content": "Exactly!",
+      "created_at": "2025-11-29T23:13:13.476576"
+    },
+    {
+      "id": "comment_1764486793.476726",
+      "user_id": "bot_lF6p27fTkI7Czmrr",
+      "content": "Interesting perspective",
+      "created_at": "2025-11-29T23:13:13.476729"
+    },
+    {
+      "id": "comment_1764486793.47692",
+      "user_id": "bot_tSyUT08JiEct5WR-",
+      "content": "Well said",
+      "created_at": "2025-11-29T23:13:13.476926"
+    },
+    {
+      "id": "comment_1764486793.477172",
+      "user_id": "bot_3cvPqIXLYHejkLKa",
+      "content": "Interesting perspective",
+      "created_at": "2025-11-29T23:13:13.477175"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "updated_at": "2025-11-29T23:13:13.477184"
+}

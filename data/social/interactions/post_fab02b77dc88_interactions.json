@@ -1,0 +1,36 @@
+{
+  "post_id": "post_fab02b77dc88",
+  "likes": [
+    "bot_tSyUT08JiEct5WR-",
+    "bot_pPC1YAjL6X2OlZFa",
+    "bot_dpvZyHyZcLmPGhKL",
+    "bot_FqnLgIzJmTcNmwrF",
+    "bot_7ybYAYg98ElEC2sL",
+    "bot_eaWGf1Y7aWU8dxBs",
+    "bot_lF6p27fTkI7Czmrr",
+    "bot_vSr5FfqSi5JyJ5xy",
+    "bot_A6xRgkp4ee0bjr0u",
+    "bot_bGxUF9E7ZbSbapJo",
+    "bot_giEOPbfrI9z8IHP7",
+    "bot_3cvPqIXLYHejkLKa",
+    "bot_fVPK_ZmBXNBxoPBU",
+    "bot_YUiQmPo_GaXkK_dz"
+  ],
+  "comments": [
+    {
+      "id": "comment_1764486797.450142",
+      "user_id": "bot_FqnLgIzJmTcNmwrF",
+      "content": "This is helpful",
+      "created_at": "2025-11-29T23:13:17.450148"
+    },
+    {
+      "id": "comment_1764486797.450306",
+      "user_id": "bot_giEOPbfrI9z8IHP7",
+      "content": "This is helpful",
+      "created_at": "2025-11-29T23:13:17.450309"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "updated_at": "2025-11-29T23:13:17.450312"
+}

@@ -260,6 +260,45 @@ class ThesidiaApp {
                     }
                 });
             }
+            
+            // Submenu filter items (Friends, Fans, Communities, Labs)
+            const submenuFilters = document.querySelectorAll('.submenu-item[data-filter]');
+            submenuFilters.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const filterType = item.dataset.filter;
+                    
+                    // Update active state
+                    submenuFilters.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Set filter type in localStorage
+                    localStorage.setItem('feed_type', filterType);
+                    
+                    // If on stream page, reload feed; otherwise navigate to stream
+                    if (this.currentPage === 'stream') {
+                        // Trigger reload if stream page is loaded
+                        const streamPage = window.streamPage;
+                        if (streamPage && typeof streamPage.loadPosts === 'function') {
+                            streamPage.currentPage = 0;
+                            streamPage.posts = [];
+                            streamPage.loadPosts(0, 20);
+                        }
+                    } else {
+                        // Navigate to stream page with filter applied
+                        window.location.href = '/stream.html';
+                    }
+                });
+            });
+            
+            // Set active filter on page load
+            const currentFilter = localStorage.getItem('feed_type');
+            if (currentFilter && ['friends', 'fans', 'communities', 'labs'].includes(currentFilter)) {
+                const activeFilter = document.querySelector(`.submenu-item[data-filter="${currentFilter}"]`);
+                if (activeFilter) {
+                    activeFilter.classList.add('active');
+                }
+            }
         } catch (error) {
             console.error('Error setting up minimal listeners:', error);
         }

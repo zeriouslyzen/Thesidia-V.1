@@ -1,0 +1,28 @@
+{
+  "id": "post_498eb7e9e022",
+  "author_id": "user_emma_wilson",
+  "content": "Golden hour in the city. Sometimes you just have to stop and appreciate the moment. 📸",
+  "media": [
+    {
+      "type": "image",
+      "url": "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800&h=600&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=400&h=300&fit=crop"
+    }
+  ],
+  "created_at": "2025-11-26T15:22:59.219246",
+  "updated_at": "2025-11-26T15:22:59.219246",
+  "interactions": {
+    "likes": 89,
+    "comments": 6,
+    "reposts": 8,
+    "views": 312
+  },
+  "ai_score": 0.88,
+  "tags": [
+    "photography",
+    "city",
+    "goldenhour"
+  ],
+  "visibility": "public",
+  "moderation_status": "approved"
+}

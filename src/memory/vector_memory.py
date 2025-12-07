@@ -11,6 +11,9 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 import time
+import math
+
+from ..support.embeddings import EmbeddingGenerator
 
 
 class VectorMemory:
@@ -40,6 +43,7 @@ class VectorMemory:
             # Global: use data/vectors
             self.vectors_dir = self.base_dir / "data" / "vectors"
         self.use_vector_db = use_vector_db
+        self.embedder = EmbeddingGenerator()
         
         # Ensure directory exists
         self.vectors_dir.mkdir(parents=True, exist_ok=True)
@@ -94,6 +98,11 @@ class VectorMemory:
             "timestamp": datetime.now().isoformat(),
             "id": f"vec_{int(time.time() * 1000)}"
         }
+
+        # Try to attach embedding if available
+        emb = self.embedder.get_embedding(content)
+        if emb:
+            entry["embedding"] = emb
         
         self.memory_entries.append(entry)
         
@@ -119,20 +128,31 @@ class VectorMemory:
         2. Search vector DB for similar embeddings
         3. Return top_k results with metadata
         """
-        # Placeholder: Simple keyword matching until vector DB is implemented
-        query_lower = query.lower()
-        query_words = set(query_lower.split())
-        
         scored_entries = []
-        for entry in self.memory_entries:
-            content_lower = entry["content"].lower()
-            content_words = set(content_lower.split())
+        query_emb = self.embedder.get_embedding(query)
+
+        # Embedding-based search when available
+        if query_emb:
+            for entry in self.memory_entries:
+                emb = entry.get("embedding")
+                if emb and len(emb) == len(query_emb):
+                    score = self._cosine_similarity(query_emb, emb)
+                    scored_entries.append((score, entry))
+
+        # Fallback: keyword matching
+        if not scored_entries:
+            query_lower = query.lower()
+            query_words = set(query_lower.split())
             
-            # Simple overlap score
-            overlap = len(query_words & content_words)
-            if overlap > 0:
-                score = overlap / len(query_words)
-                scored_entries.append((score, entry))
+            for entry in self.memory_entries:
+                content_lower = entry["content"].lower()
+                content_words = set(content_lower.split())
+                
+                # Simple overlap score
+                overlap = len(query_words & content_words)
+                if overlap > 0:
+                    score = overlap / len(query_words)
+                    scored_entries.append((score, entry))
         
         # Sort by score (descending)
         scored_entries.sort(key=lambda x: x[0], reverse=True)
@@ -168,4 +188,14 @@ class VectorMemory:
         """
         print(f"Warning: Vector DB ({db_type}) not yet implemented. Using placeholder.")
         self.use_vector_db = False
+
+    def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
+        if not vec1 or not vec2 or len(vec1) != len(vec2):
+            return 0.0
+        dot = sum(a * b for a, b in zip(vec1, vec2))
+        norm1 = math.sqrt(sum(a * a for a in vec1))
+        norm2 = math.sqrt(sum(b * b for b in vec2))
+        if norm1 == 0 or norm2 == 0:
+            return 0.0
+        return dot / (norm1 * norm2)
 

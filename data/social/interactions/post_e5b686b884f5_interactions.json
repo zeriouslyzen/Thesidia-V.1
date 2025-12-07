@@ -1,0 +1,39 @@
+{
+  "post_id": "post_e5b686b884f5",
+  "likes": [
+    "bot_pPC1YAjL6X2OlZFa",
+    "bot_tSyUT08JiEct5WR-",
+    "bot_7ybYAYg98ElEC2sL",
+    "bot_3cvPqIXLYHejkLKa",
+    "bot_lF6p27fTkI7Czmrr"
+  ],
+  "comments": [
+    {
+      "id": "comment_1764486785.124587",
+      "user_id": "bot_3cvPqIXLYHejkLKa",
+      "content": "This is helpful",
+      "created_at": "2025-11-29T23:13:05.124593"
+    },
+    {
+      "id": "comment_1764486785.12493",
+      "user_id": "bot_lF6p27fTkI7Czmrr",
+      "content": "Thanks for sharing",
+      "created_at": "2025-11-29T23:13:05.124934"
+    },
+    {
+      "id": "comment_1764486785.125222",
+      "user_id": "bot_7ybYAYg98ElEC2sL",
+      "content": "So true",
+      "created_at": "2025-11-29T23:13:05.125225"
+    },
+    {
+      "id": "comment_1764486785.125523",
+      "user_id": "bot_tSyUT08JiEct5WR-",
+      "content": "Well said",
+      "created_at": "2025-11-29T23:13:05.125528"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "updated_at": "2025-11-29T23:13:05.125532"
+}

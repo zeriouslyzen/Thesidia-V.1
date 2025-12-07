@@ -1,0 +1,23 @@
+{
+  "bot_id": "bot_NXWhEoSrUgBSDm-y",
+  "user_id": "bot_NXWhEoSrUgBSDm-y",
+  "display_name": "Alex Williams",
+  "username": "alexwilliams514",
+  "bio": "Exploring food | Community member | Sharing insights",
+  "interests": [
+    "food"
+  ],
+  "personality": "community",
+  "created_at": "2025-03-03T23:12:50.153712",
+  "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=alexwilliams514",
+  "is_bot": true,
+  "bot_type": "community",
+  "community": "food",
+  "tags": [
+    "food"
+  ],
+  "activity_level": [
+    2,
+    6
+  ]
+}

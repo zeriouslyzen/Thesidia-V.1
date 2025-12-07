@@ -1,0 +1,27 @@
+{
+  "id": "post_756e3f9803ba",
+  "author_id": "bot_T7WXA8D3Z2W9Mvdb",
+  "content": "Sharing thoughts on food Anyone else exploring this?",
+  "media": [
+    {
+      "type": "video",
+      "url": "https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_30fps.mp4",
+      "thumbnail": "https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_30fps.jpg",
+      "duration": 10
+    }
+  ],
+  "created_at": "2025-11-27T19:01:22.999312",
+  "updated_at": "2025-11-29T23:13:23.247945",
+  "interactions": {
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "views": 0
+  },
+  "ai_score": 0.0,
+  "tags": [
+    "food"
+  ],
+  "visibility": "public",
+  "moderation_status": "pending"
+}

@@ -1,0 +1,75 @@
+{
+  "first_names": [
+    "Alex",
+    "Jordan",
+    "Taylor",
+    "Casey",
+    "Morgan",
+    "Riley",
+    "Avery",
+    "Quinn",
+    "Sage",
+    "River",
+    "Phoenix",
+    "Skyler",
+    "Cameron",
+    "Dakota"
+  ],
+  "last_names": [
+    "Chen",
+    "Martinez",
+    "Kumar",
+    "Anderson",
+    "Patel",
+    "Kim",
+    "Singh",
+    "Rodriguez",
+    "Wang",
+    "Brown",
+    "Garcia",
+    "Lee",
+    "Johnson",
+    "Williams"
+  ],
+  "bios": [
+    "Exploring the intersection of technology and consciousness",
+    "Researcher | Thinker | Builder",
+    "Interested in patterns, systems, and emergent behavior",
+    "Learning and sharing insights on AI and human cognition",
+    "Building tools for deeper understanding",
+    "Curious about the nature of intelligence",
+    "Exploring the edges of what's possible"
+  ],
+  "interests": [
+    [
+      "AI research",
+      "pattern recognition",
+      "consciousness"
+    ],
+    [
+      "technology",
+      "design",
+      "innovation"
+    ],
+    [
+      "philosophy",
+      "science",
+      "learning"
+    ],
+    [
+      "coding",
+      "systems thinking",
+      "problem solving"
+    ],
+    [
+      "art",
+      "creativity",
+      "expression"
+    ],
+    [
+      "data analysis",
+      "machine learning",
+      "algorithms"
+    ]
+  ]
+}

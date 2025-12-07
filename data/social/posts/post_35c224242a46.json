@@ -1,0 +1,28 @@
+{
+  "id": "post_35c224242a46",
+  "author_id": "user_alex_chen",
+  "content": "Just finished building a new feature for the platform. The feeling when everything clicks together is unmatched. 🚀\n\n#coding #webdev #buildinpublic",
+  "media": [
+    {
+      "type": "image",
+      "url": "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=600&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=300&fit=crop"
+    }
+  ],
+  "created_at": "2025-11-27T00:22:59.219246",
+  "updated_at": "2025-11-27T00:22:59.219246",
+  "interactions": {
+    "likes": 42,
+    "comments": 8,
+    "reposts": 3,
+    "views": 156
+  },
+  "ai_score": 0.82,
+  "tags": [
+    "coding",
+    "webdev",
+    "buildinpublic"
+  ],
+  "visibility": "public",
+  "moderation_status": "approved"
+}

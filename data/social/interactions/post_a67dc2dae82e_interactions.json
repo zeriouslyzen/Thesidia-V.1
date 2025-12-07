@@ -1,0 +1,29 @@
+{
+  "post_id": "post_a67dc2dae82e",
+  "likes": [
+    "bot_ArRnUYjyJwf2UUCv",
+    "bot_d9LP7gwD4bhMIcxQ",
+    "bot_M4X4sBFuc1uhvCd4",
+    "bot_FslVMLxC0zUZiZcy",
+    "bot_OaZSw34BDzTiYRPZ",
+    "bot_fbxY2tF3yMdEzi53",
+    "bot_s_q3nhM9BD2CVAzm"
+  ],
+  "comments": [],
+  "reposts": [],
+  "views": [],
+  "validations": [
+    "user_10fbc25e2d88"
+  ],
+  "references": [
+    {
+      "id": "ref_1764584051.938959",
+      "user_id": "user_10fbc25e2d88",
+      "context": "",
+      "created_at": "2025-12-01T02:14:11.938967"
+    }
+  ],
+  "contributions": [],
+  "availability_signals": [],
+  "updated_at": "2025-12-01T02:14:12.622768"
+}
