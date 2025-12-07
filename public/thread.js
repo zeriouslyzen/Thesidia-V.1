@@ -251,6 +251,20 @@ class ThreadDetailPage {
                 </div>
                 <h1 class="thread-title">${this.escapeHtml(thread.title || '')}</h1>
                 <div class="thread-body">${this.escapeHtml(thread.body || '').replace(/\n/g, '<br>')}</div>
+                ${thread.media && thread.media.length > 0 ? `
+                    <div class="thread-media">
+                        ${thread.media.map(mediaItem => {
+                            if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
+                                return `<img src="${mediaItem.url}" alt="Thread media" class="thread-media-item" loading="lazy">`;
+                            } else if (mediaItem.type === 'image') {
+                                return `<img src="${mediaItem.url}" alt="Thread media" class="thread-media-item" loading="lazy">`;
+                            } else if (mediaItem.type === 'video') {
+                                return `<video src="${mediaItem.url}" controls class="thread-media-item"></video>`;
+                            }
+                            return '';
+                        }).join('')}
+                    </div>
+                ` : ''}
                 <div class="thread-footer-actions">
                     <button class="thread-action-btn" data-action="comment">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
