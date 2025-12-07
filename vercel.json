@@ -13,10 +13,6 @@
       "destination": "/api/server.py"
     },
     {
-      "source": "/(.*\\.(html|css|js|json|xml|txt|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
-      "destination": "/$1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
