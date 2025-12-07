@@ -1837,8 +1837,44 @@ def get_thread_comments(thread_id):
             except:
                 pass
         
+        # Check for welcome thread comments
+        if thread_id == 'thread_welcome_how_to_use':
+            welcome_file = project_root / 'data' / 'social' / 'interactions' / 'thread_welcome_how_to_use.json'
+            if welcome_file.exists():
+                try:
+                    with open(welcome_file, 'r') as f:
+                        welcome_data = json.load(f)
+                        raw_comments = welcome_data.get('comments', [])
+                        
+                        # Attach vote states and awards to comments
+                        for comment in raw_comments:
+                            comment_id = comment.get('id')
+                            
+                            # Add vote state
+                            if comment_id in comment_votes:
+                                votes = comment_votes[comment_id]
+                                comment['upvotes'] = len(votes.get('upvotes', []))
+                                comment['downvotes'] = len(votes.get('downvotes', []))
+                                comment['score'] = comment['upvotes'] - comment['downvotes']
+                                if user_id:
+                                    if user_id in votes.get('upvotes', []):
+                                        comment['user_vote'] = 'up'
+                                    elif user_id in votes.get('downvotes', []):
+                                        comment['user_vote'] = 'down'
+                            
+                            # Add awards
+                            if comment_id in comment_awards:
+                                from webapp.social.awards import aggregate_awards
+                                comment['awards'] = aggregate_awards(comment_awards[comment_id])
+                        
+                        # Convert to nested structure
+                        comments = _build_comment_tree(raw_comments, user_id)
+                except Exception as e:
+                    print(f"Error loading welcome thread comments: {e}")
+                    comments = []
+        
         # Try to load from interaction manager
-        if interaction_manager:
+        if not comments and interaction_manager:
             try:
                 interactions = interaction_manager.get_interactions(thread_id)
                 raw_comments = interactions.get('comments', [])
