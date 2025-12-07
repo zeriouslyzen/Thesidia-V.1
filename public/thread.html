@@ -34,7 +34,10 @@
             <div class="thread-container">
                 <!-- Thread Content -->
                 <article class="thread-post" id="threadPost">
-                    <div class="thread-loading">Loading thread...</div>
+                    <div class="thread-loading">
+                        <div class="loading-spinner"></div>
+                        <p>Loading thread...</p>
+                    </div>
                 </article>
 
                 <!-- Comment Section -->
@@ -50,7 +53,10 @@
                     </div>
                     
                     <div class="comments-tree" id="commentsTree">
-                        <div class="comments-loading">Loading comments...</div>
+                        <div class="comments-loading">
+                            <div class="loading-spinner"></div>
+                            <p>Loading comments...</p>
+                        </div>
                     </div>
                 </section>
 
@@ -77,28 +83,32 @@
     <script>
         // Initialize thread page when DOM is ready
         function initThreadPage() {
-            if (window.ThreadDetailPage) {
-                // Handle browser back/forward
-                window.addEventListener('popstate', () => {
-                    if (window.ThreadDetailPage && window.Router) {
-                        const route = window.Router.getCurrentRoute();
-                        const threadId = route?.params?.threadId || route?.params?.id || window.location.hash.replace('#', '');
-                        if (threadId && threadId !== window.ThreadDetailPage.threadId) {
-                            window.ThreadDetailPage.loadThread(threadId);
-                        }
-                    }
-                });
-                
-                // Handle hash changes (for direct navigation to thread.html#threadId)
-                window.addEventListener('hashchange', () => {
-                    if (window.ThreadDetailPage) {
-                        const threadId = window.location.hash.replace('#', '');
-                        if (threadId && threadId !== window.ThreadDetailPage.threadId) {
-                            window.ThreadDetailPage.loadThread(threadId);
-                        }
-                    }
-                });
+            // Wait for ThreadDetailPage to be available
+            if (!window.ThreadDetailPage) {
+                setTimeout(initThreadPage, 100);
+                return;
             }
+            
+            // Handle browser back/forward
+            window.addEventListener('popstate', () => {
+                if (window.ThreadDetailPage && window.Router) {
+                    const route = window.Router.getCurrentRoute();
+                    const threadId = route?.params?.threadId || route?.params?.id || window.location.hash.replace('#', '');
+                    if (threadId && threadId !== window.ThreadDetailPage.threadId) {
+                        window.ThreadDetailPage.loadThread(threadId);
+                    }
+                }
+            });
+            
+            // Handle hash changes (for direct navigation to thread.html#threadId)
+            window.addEventListener('hashchange', () => {
+                if (window.ThreadDetailPage) {
+                    const threadId = window.location.hash.replace('#', '');
+                    if (threadId && threadId !== window.ThreadDetailPage.threadId) {
+                        window.ThreadDetailPage.loadThread(threadId);
+                    }
+                }
+            });
         }
         
         if (document.readyState === 'loading') {

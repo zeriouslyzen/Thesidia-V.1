@@ -69,6 +69,12 @@ class ThreadDetailPage {
         if (!threadId && window.location.pathname.includes('thread.html')) {
             // Try to get from hash
             threadId = window.location.hash.replace('#', '');
+            
+            // Also try query params
+            if (!threadId) {
+                const params = new URLSearchParams(window.location.search);
+                threadId = params.get('id') || params.get('thread');
+            }
         }
         
         this.threadId = threadId;
@@ -83,7 +89,15 @@ class ThreadDetailPage {
             // Show error if no thread ID found
             const container = document.getElementById('threadPost');
             if (container) {
-                container.innerHTML = '<div class="thread-error">Thread ID not found in URL</div>';
+                container.innerHTML = `
+                    <div class="thread-error">
+                        <h3>Thread Not Found</h3>
+                        <p>No thread ID found in URL. Please navigate from the circles page.</p>
+                        <button class="retry-btn" onclick="window.location.href='/stream.html'">
+                            Go to Circles
+                        </button>
+                    </div>
+                `;
             }
         }
     }
@@ -115,26 +129,55 @@ class ThreadDetailPage {
         });
     }
     
-    async loadThread(threadId) {
+    async loadThread(threadId, retryCount = 0) {
         this.threadId = threadId;
+        const maxRetries = 2;
+        
+        const postContainer = document.getElementById('threadPost');
+        if (postContainer) {
+            postContainer.innerHTML = '<div class="thread-loading">Loading thread...</div>';
+        }
         
         try {
             // Load thread data
             const threadResponse = await fetch(`/api/threads/${threadId}?user_id=${this.userId || ''}&session_id=${this.sessionId || ''}`);
+            
             if (!threadResponse.ok) {
-                throw new Error(`Failed to load thread: ${threadResponse.status}`);
+                // Retry on 404 or 500 errors
+                if ((threadResponse.status === 404 || threadResponse.status === 500) && retryCount < maxRetries) {
+                    console.log(`Retrying thread load (attempt ${retryCount + 1}/${maxRetries})...`);
+                    await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
+                    return this.loadThread(threadId, retryCount + 1);
+                }
+                
+                const errorData = await threadResponse.json().catch(() => ({}));
+                throw new Error(errorData.error || `Failed to load thread: ${threadResponse.status}`);
             }
             
             this.thread = await threadResponse.json();
+            
+            // Validate thread data
+            if (!this.thread || !this.thread.id) {
+                throw new Error('Invalid thread data received');
+            }
+            
             this.renderThread(this.thread);
             
             // Load comments
             await this.loadComments(threadId, this.currentSort);
         } catch (error) {
             console.error('Error loading thread:', error);
-            const postContainer = document.getElementById('threadPost');
             if (postContainer) {
-                postContainer.innerHTML = `<div class="thread-error">Error loading thread: ${error.message}</div>`;
+                const errorHtml = `
+                    <div class="thread-error">
+                        <h3>Unable to load thread</h3>
+                        <p>${this.escapeHtml(error.message)}</p>
+                        <button class="retry-btn" onclick="window.ThreadDetailPage.loadThread('${threadId}')">
+                            Retry
+                        </button>
+                    </div>
+                `;
+                postContainer.innerHTML = errorHtml;
             }
         }
     }
@@ -213,8 +256,14 @@ class ThreadDetailPage {
         this.setupVoteHandlers(thread.id);
     }
     
-    async loadComments(threadId, sort = 'best') {
+    async loadComments(threadId, sort = 'best', retryCount = 0) {
         this.currentSort = sort;
+        const maxRetries = 2;
+        
+        const container = document.getElementById('commentsTree');
+        if (container && retryCount === 0) {
+            container.innerHTML = '<div class="comments-loading">Loading comments...</div>';
+        }
         
         try {
             const response = await fetch(
@@ -222,7 +271,15 @@ class ThreadDetailPage {
             );
             
             if (!response.ok) {
-                throw new Error(`Failed to load comments: ${response.status}`);
+                // Retry on 404 or 500 errors
+                if ((response.status === 404 || response.status === 500) && retryCount < maxRetries) {
+                    console.log(`Retrying comments load (attempt ${retryCount + 1}/${maxRetries})...`);
+                    await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+                    return this.loadComments(threadId, sort, retryCount + 1);
+                }
+                
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Failed to load comments: ${response.status}`);
             }
             
             const data = await response.json();
@@ -235,9 +292,16 @@ class ThreadDetailPage {
             });
         } catch (error) {
             console.error('Error loading comments:', error);
-            const container = document.getElementById('commentsTree');
             if (container) {
-                container.innerHTML = `<div class="comments-error">Error loading comments: ${error.message}</div>`;
+                const errorHtml = `
+                    <div class="comments-error">
+                        <p>${this.escapeHtml(error.message)}</p>
+                        <button class="retry-btn" onclick="window.ThreadDetailPage.loadComments('${threadId}', '${sort}')">
+                            Retry
+                        </button>
+                    </div>
+                `;
+                container.innerHTML = errorHtml;
             }
         }
     }

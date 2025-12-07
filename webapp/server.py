@@ -271,22 +271,6 @@ def sitemap():
         return send_from_directory(str(static_dir), 'sitemap.xml'), 200, {'Content-Type': 'application/xml'}
     return send_from_directory('.', 'sitemap.xml'), 200, {'Content-Type': 'application/xml'}
 
-@app.route('/<path:path>')
-def serve_static(path):
-    """Serve static files with no-cache headers"""
-    # Check public/ directory first (for Vercel), then current directory
-    static_dir = Path(__file__).parent.parent / 'public'
-    if static_dir.exists() and (static_dir / path).exists():
-        response = send_from_directory(str(static_dir), path)
-    else:
-        response = send_from_directory('.', path)
-    # Add cache-busting headers for HTML, CSS, and JS files
-    if path.endswith(('.html', '.css', '.js')):
-        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '0'
-    return response
-
 @app.route('/api/status', methods=['GET'])
 def status():
     """Get system status"""
@@ -3138,4 +3122,21 @@ if __name__ == '__main__':
             port=port,
             debug=False  # Disable debug in production
         )
+
+# Catch-all route for static files - MUST be registered last so API routes match first
+@app.route('/<path:path>')
+def serve_static(path):
+    """Serve static files with no-cache headers"""
+    # Check public/ directory first (for Vercel), then current directory
+    static_dir = Path(__file__).parent.parent / 'public'
+    if static_dir.exists() and (static_dir / path).exists():
+        response = send_from_directory(str(static_dir), path)
+    else:
+        response = send_from_directory('.', path)
+    # Add cache-busting headers for HTML, CSS, and JS files
+    if path.endswith(('.html', '.css', '.js')):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
 
