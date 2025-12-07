@@ -930,10 +930,10 @@ class NavigationSystem {
         const fallbackAvatarUrl = this.getFallbackAvatarUrl(topic, authorId);
         const timeAgo = this.formatMessageTime(thread.created_at);
         
-        // Get first part of paragraph (static preview)
+        // Get first part of paragraph (static preview) - shorter for compact mobile view
         const bodyText = (thread.body || '').trim();
         const paragraphPreview = bodyText ? 
-            this.escapeHtml(bodyText.length > 120 ? bodyText.substring(0, 117) + '...' : bodyText) : 
+            this.escapeHtml(bodyText.length > 80 ? bodyText.substring(0, 77) + '...' : bodyText) : 
             'No content available';
         
         // Create shifting indicators for comments/upvotes
@@ -975,13 +975,13 @@ class NavigationSystem {
                         </div>
                         <div class="circle-actions">
                             <button class="circle-action-btn" data-action="vote-up" data-thread-id="${threadId}" title="Upvote">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M18 15l-6-6-6 6"/>
                                 </svg>
                                 <span>${upvotes}</span>
                             </button>
                             <button class="circle-action-btn" data-action="comment" data-thread-id="${threadId}" title="Comments">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                                 </svg>
                                 <span>${commentCount}</span>

@@ -1349,8 +1349,8 @@ html:has(#app.sidebar-pushed) {
 .circle-message-item {
     display: flex;
     align-items: flex-start;
-    padding: 14px 16px;
-    gap: 14px;
+    padding: 8px 12px;
+    gap: 10px;
     cursor: pointer;
     transition: background-color 0.15s ease;
     background: var(--bg-primary);
@@ -1366,8 +1366,8 @@ html:has(#app.sidebar-pushed) {
 
 /* Circular avatar - photo-like images */
 .circle-avatar-image {
-    width: 52px;
-    height: 52px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
@@ -1376,11 +1376,11 @@ html:has(#app.sidebar-pushed) {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     /* 3D Spherical Effect */
     box-shadow: 
-        0 3px 6px rgba(0, 0, 0, 0.3),
-        0 1px 3px rgba(0, 0, 0, 0.2),
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 1px 2px rgba(0, 0, 0, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1),
         inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
 
 .circle-message-item:hover .circle-avatar-image {
@@ -1395,8 +1395,8 @@ html:has(#app.sidebar-pushed) {
 
 /* Fallback avatar (shown when image fails to load) */
 .circle-avatar-fallback {
-    width: 52px;
-    height: 52px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: none;
     align-items: center;
@@ -1406,11 +1406,11 @@ html:has(#app.sidebar-pushed) {
     flex-shrink: 0;
     /* 3D Spherical Effect */
     box-shadow: 
-        0 3px 6px rgba(0, 0, 0, 0.3),
-        0 1px 3px rgba(0, 0, 0, 0.2),
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 1px 2px rgba(0, 0, 0, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1),
         inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
 
 /* Legacy circle-avatar class for backward compatibility */
@@ -1435,7 +1435,7 @@ html:has(#app.sidebar-pushed) {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
 }
 
 .circle-message-header {
@@ -1447,7 +1447,7 @@ html:has(#app.sidebar-pushed) {
 }
 
 .circle-topic-name {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--text-primary);
     flex: 1;
@@ -1457,21 +1457,21 @@ html:has(#app.sidebar-pushed) {
 }
 
 .circle-message-time {
-    font-size: 13px;
+    font-size: 11px;
     color: var(--text-tertiary);
     flex-shrink: 0;
 }
 
 /* Paragraph preview - static, smaller text */
 .circle-paragraph-preview {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-secondary);
-    line-height: 1.5;
+    line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 /* Footer with indicators and actions */
@@ -1484,10 +1484,10 @@ html:has(#app.sidebar-pushed) {
 }
 
 .circle-indicators {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-tertiary);
     transition: opacity 0.25s ease, transform 0.25s ease;
-    min-height: 16px;
+    min-height: 14px;
     display: inline-block;
     will-change: opacity, transform;
 }
@@ -1495,7 +1495,7 @@ html:has(#app.sidebar-pushed) {
 /* Action buttons */
 .circle-actions {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
 }
 
@@ -1505,12 +1505,12 @@ html:has(#app.sidebar-pushed) {
     color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 4px 6px;
+    padding: 2px 4px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .circle-action-btn:hover {
@@ -1523,13 +1523,13 @@ html:has(#app.sidebar-pushed) {
 }
 
 .circle-action-btn svg {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     stroke-width: 2;
 }
 
 .circle-action-btn span {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
 }
 
