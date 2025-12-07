@@ -30,7 +30,13 @@ class InteractionManager:
         """
         self.base_dir = base_dir or Path(".")
         self.interactions_dir = self.base_dir / "data" / "social" / "interactions"
-        self.interactions_dir.mkdir(parents=True, exist_ok=True)
+        # Try to create directory, but handle read-only filesystem (e.g., Vercel)
+        try:
+            self.interactions_dir.mkdir(parents=True, exist_ok=True)
+        except (OSError, PermissionError) as e:
+            # On read-only filesystem (Vercel), use in-memory storage
+            print(f"Warning: Cannot create interactions directory (read-only filesystem): {e}")
+            print("Using in-memory interaction storage (not persistent)")
     
     def _get_interaction_file(self, post_id: str) -> Path:
         """Get interaction file path for post"""

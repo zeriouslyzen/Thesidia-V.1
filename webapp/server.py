@@ -1192,7 +1192,11 @@ def upload_media():
         
         # Create uploads directory structure
         uploads_dir = project_root / 'data' / 'uploads' / 'media'
-        uploads_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            uploads_dir.mkdir(parents=True, exist_ok=True)
+        except (OSError, PermissionError) as e:
+            # On read-only filesystem (Vercel), return error
+            return jsonify({'error': 'File uploads not available on this platform'}), 503
         
         # Generate unique filename
         timestamp = int(datetime.now().timestamp() * 1000)
@@ -2483,9 +2487,13 @@ def vote_thread(thread_id):
             user_vote = None
         
         # Save votes
-        vote_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(vote_file, 'w') as f:
-            json.dump(votes, f, indent=2)
+        try:
+            vote_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(vote_file, 'w') as f:
+                json.dump(votes, f, indent=2)
+        except (OSError, PermissionError) as e:
+            # On read-only filesystem (Vercel), use in-memory storage
+            print(f"Warning: Cannot save votes to disk (read-only filesystem): {e}")
         
         score = len(votes['upvotes']) - len(votes['downvotes'])
         
@@ -2564,12 +2572,16 @@ def vote_comment(comment_id):
         
         # Save comment votes
         comment_votes[comment_id] = votes
-        vote_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        if vote_file.exists():
-            with open(vote_file, 'r') as f:
-                data = json.load(f)
-        else:
+        try:
+            vote_file.parent.mkdir(parents=True, exist_ok=True)
+            if vote_file.exists():
+                with open(vote_file, 'r') as f:
+                    data = json.load(f)
+            else:
+                data = {}
+        except (OSError, PermissionError) as e:
+            # On read-only filesystem (Vercel), use in-memory storage
+            print(f"Warning: Cannot save comment votes to disk (read-only filesystem): {e}")
             data = {}
         
         data['comment_votes'] = comment_votes
@@ -2645,9 +2657,13 @@ def award_comment(comment_id):
                 data = {}
             
             data['comment_awards'] = awards_data
-            vote_file.parent.mkdir(parents=True, exist_ok=True)
-            with open(vote_file, 'w') as f:
-                json.dump(data, f, indent=2)
+            try:
+                vote_file.parent.mkdir(parents=True, exist_ok=True)
+                with open(vote_file, 'w') as f:
+                    json.dump(data, f, indent=2)
+            except (OSError, PermissionError) as e:
+                # On read-only filesystem (Vercel), use in-memory storage
+                print(f"Warning: Cannot save awards to disk (read-only filesystem): {e}")
         
         return jsonify(award), 201
     except Exception as e:

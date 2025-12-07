@@ -40,7 +40,13 @@ class SessionManager:
         
         # Session storage
         self.sessions_file = self.base_dir / "data" / "auth" / "sessions.json"
-        self.sessions_file.parent.mkdir(parents=True, exist_ok=True)
+        # Try to create directory, but handle read-only filesystem (e.g., Vercel)
+        try:
+            self.sessions_file.parent.mkdir(parents=True, exist_ok=True)
+        except (OSError, PermissionError) as e:
+            # On read-only filesystem (Vercel), use in-memory storage
+            print(f"Warning: Cannot create data directory (read-only filesystem): {e}")
+            print("Using in-memory session storage (not persistent)")
         self.sessions: Dict[str, Dict[str, Any]] = {}
         self._load_sessions()
         

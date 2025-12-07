@@ -34,7 +34,13 @@ class PostManager:
         """
         self.base_dir = base_dir or Path(".")
         self.posts_dir = self.base_dir / "data" / "social" / "posts"
-        self.posts_dir.mkdir(parents=True, exist_ok=True)
+        # Try to create directory, but handle read-only filesystem (e.g., Vercel)
+        try:
+            self.posts_dir.mkdir(parents=True, exist_ok=True)
+        except (OSError, PermissionError) as e:
+            # On read-only filesystem (Vercel), use in-memory storage
+            print(f"Warning: Cannot create posts directory (read-only filesystem): {e}")
+            print("Using in-memory post storage (not persistent)")
         self.schema = PostSchema()
     
     def create_post(

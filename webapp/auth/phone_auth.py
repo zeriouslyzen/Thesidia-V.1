@@ -19,7 +19,13 @@ class PhoneAuthManager:
     def __init__(self, base_dir=None):
         self.base_dir = base_dir or Path(".")
         self.verifications_file = self.base_dir / "data" / "auth" / "phone_verifications.json"
-        self.verifications_file.parent.mkdir(parents=True, exist_ok=True)
+        # Try to create directory, but handle read-only filesystem (e.g., Vercel)
+        try:
+            self.verifications_file.parent.mkdir(parents=True, exist_ok=True)
+        except (OSError, PermissionError) as e:
+            # On read-only filesystem (Vercel), use in-memory storage
+            print(f"Warning: Cannot create data directory (read-only filesystem): {e}")
+            print("Using in-memory verification storage (not persistent)")
         
         # SMS provider configuration
         self.twilio_account_sid = os.getenv('TWILIO_ACCOUNT_SID')

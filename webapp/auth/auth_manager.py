@@ -50,7 +50,13 @@ class AuthManager:
         
         # Password storage (in production, should be encrypted)
         self.passwords_file = self.base_dir / "data" / "auth" / "passwords.json"
-        self.passwords_file.parent.mkdir(parents=True, exist_ok=True)
+        # Try to create directory, but handle read-only filesystem (e.g., Vercel)
+        try:
+            self.passwords_file.parent.mkdir(parents=True, exist_ok=True)
+        except (OSError, PermissionError) as e:
+            # On read-only filesystem (Vercel), use in-memory storage
+            print(f"Warning: Cannot create data directory (read-only filesystem): {e}")
+            print("Using in-memory password storage (not persistent)")
         self._load_passwords()
     
     def _load_passwords(self):
