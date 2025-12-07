@@ -41,6 +41,8 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Neue Montreal / Gotham Book alternative: Space Grotesk -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Cyberpunk font: Rajdhani -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .stream-container {
             flex: 1;
@@ -431,7 +433,8 @@
         }
         
         .ai-summary {
-            margin-top: var(--spacing-sm);
+            margin-top: 0;
+            margin-bottom: 0;
             padding: var(--spacing-sm);
             background: var(--bg-tertiary);
             border-left: 3px solid var(--text-secondary);
@@ -443,7 +446,8 @@
         
         .ai-sentiment {
             display: inline-block;
-            margin-top: var(--spacing-xs);
+            margin-top: 0;
+            margin-bottom: 0;
             padding: 2px 8px;
             border-radius: var(--border-radius-sm);
             font-size: var(--font-size-xs);
@@ -597,40 +601,6 @@
                     <!-- Stream Section - Curated Algorithmic Feed -->
                     <section class="carousel-section" data-section="stream">
                         <div class="stream-feed-container">
-                            <!-- Stream Compose Area -->
-                            <div class="stream-compose">
-                                <div class="compose-profile">
-                                    <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
-                                </div>
-                                <div class="compose-input-area">
-                                    <textarea class="compose-textarea" id="composeTextarea" placeholder="What's happening?"></textarea>
-                                    <div class="compose-actions">
-                                        <div class="compose-media-buttons">
-                                            <button class="compose-media-btn" id="addImageBtn" aria-label="Add image">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                                    <path d="M21 15l-5-5L5 21"/>
-                                                </svg>
-                                            </button>
-                                            <button class="compose-media-btn" id="addVideoBtn" aria-label="Add video">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <polygon points="23 7 16 12 23 17 23 7"/>
-                                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                                                </svg>
-                                            </button>
-                                            <button class="compose-media-btn" id="goLiveBtn" aria-label="Go live">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <circle cx="12" cy="12" r="10"/>
-                                                    <circle cx="12" cy="12" r="3"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <button class="compose-post-btn" id="postBtn" disabled>Post</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
                             <!-- Stream Feed -->
                             <div class="stream-feed" id="streamFeed">
                                 <div class="stream-loading">Loading stream...</div>
@@ -977,6 +947,22 @@
                 
                 feed.innerHTML = this.posts.map(post => this.renderPost(post)).join('');
                 console.log('Posts rendered successfully');
+                
+                // Setup cyberpunk action button clicks
+                this.setupCyberpunkActions();
+            }
+            
+            setupCyberpunkActions() {
+                const feed = document.getElementById('streamFeed');
+                if (!feed) return;
+                
+                feed.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.cyberpunk-action-btn');
+                    if (!btn) return;
+                    
+                    // Toggle clicked state to reveal number
+                    btn.classList.toggle('clicked');
+                });
             }
             
             renderPost(post) {
@@ -1012,13 +998,6 @@
                             </div>
                         </div>
                         <div class="post-content">${this.escapeHtml(post.content || '')}</div>
-                        ${post.tags && post.tags.length > 0 ? `
-                            <div class="post-tags">
-                                ${post.tags.map(tag => `
-                                    <span class="post-tag">#${this.escapeHtml(tag)}</span>
-                                `).join('')}
-                            </div>
-                        ` : ''}
                         ${post.media && post.media.length > 0 ? `
                             <div class="post-media">
                                 ${post.media.length > 1 ? `
@@ -1051,31 +1030,22 @@
                         ${aiSummary ? `<div class="ai-summary">AI Summary: ${this.escapeHtml(aiSummary)}</div>` : ''}
                         ${aiSentiment.sentiment !== 'neutral' ? `<div class="ai-sentiment sentiment-${aiSentiment.sentiment}">${aiSentiment.sentiment} sentiment</div>` : ''}
                         <div class="post-actions">
-                            <div class="post-actions-mastery">
-                                <button class="post-action-modular" data-action="validate" data-post-id="${post.id}" data-color="green" title="Tap: validate this post">
-                                    <span class="action-dot"></span>
-                                    <span class="action-label">tap</span>
-                                    <span class="action-count">${validations}</span>
+                            <div class="post-actions-cyberpunk">
+                                <button class="cyberpunk-action-btn" data-action="resonate" data-post-id="${post.id}" data-count="${likes || 0}">
+                                    <span class="cyberpunk-label">resonate</span>
+                                    <span class="cyberpunk-count" style="display: none;">${likes || 0}</span>
                                 </button>
-                                <button class="post-action-modular" data-action="reference" data-post-id="${post.id}" data-color="yellow" title="Add: reference this post">
-                                    <span class="action-dot"></span>
-                                    <span class="action-label">add</span>
-                                    <span class="action-count">${references}</span>
+                                <button class="cyberpunk-action-btn" data-action="respect" data-post-id="${post.id}" data-count="${validations || 0}">
+                                    <span class="cyberpunk-label">respect</span>
+                                    <span class="cyberpunk-count" style="display: none;">${validations || 0}</span>
                                 </button>
-                                <button class="post-action-modular" data-action="contribute" data-post-id="${post.id}" data-color="light-blue" title="Lift: contribute to this post">
-                                    <span class="action-dot"></span>
-                                    <span class="action-label">lift</span>
-                                    <span class="action-count">${contributions}</span>
+                                <button class="cyberpunk-action-btn" data-action="refine" data-post-id="${post.id}" data-count="${references || 0}">
+                                    <span class="cyberpunk-label">refine</span>
+                                    <span class="cyberpunk-count" style="display: none;">${references || 0}</span>
                                 </button>
-                                <button class="post-action-modular" data-action="fork" data-post-id="${post.id}" data-color="light-purple" title="Keep: save this post">
-                                    <span class="action-dot"></span>
-                                    <span class="action-label">keep</span>
-                                    <span class="action-count">0</span>
-                                </button>
-                                <button class="post-action-modular" data-action="flow" data-post-id="${post.id}" data-color="red" title="Flow: share this post">
-                                    <span class="action-dot"></span>
-                                    <span class="action-label">flow</span>
-                                    <span class="action-count">0</span>
+                                <button class="cyberpunk-action-btn" data-action="repost" data-post-id="${post.id}" data-count="${reposts || 0}">
+                                    <span class="cyberpunk-label">repost</span>
+                                    <span class="cyberpunk-count" style="display: none;">${reposts || 0}</span>
                                 </button>
                             </div>
                         </div>
@@ -1715,6 +1685,336 @@
             });
         } else {
             window.streamPage = new StreamPage();
+        }
+    </script>
+
+    <!-- Floating Action Button - Glowing Orb (Replicated from menu-orb) -->
+    <button class="fab-orb" id="fabOrb" aria-label="Create Post">
+        <div class="fab-orb-glow"></div>
+    </button>
+
+    <!-- Post Creation Modal - Bottom Sheet -->
+    <div class="post-modal" id="postModal">
+        <div class="post-modal-backdrop" id="postModalBackdrop"></div>
+        <div class="post-modal-content">
+            <div class="post-modal-header">
+                <h3>Create Post</h3>
+                <button class="post-modal-close" id="postModalClose" aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="post-modal-body">
+                <!-- Post Type Selector -->
+                <div class="post-type-selector">
+                    <label class="post-type-label">Post Type</label>
+                    <div class="post-type-options">
+                        <button class="post-type-btn active" data-type="stream">Stream</button>
+                        <button class="post-type-btn" data-type="kx-cuts">KX Cuts</button>
+                        <button class="post-type-btn" data-type="circles">Circles</button>
+                        <button class="post-type-btn" data-type="studio">Studio</button>
+                    </div>
+                </div>
+
+                <!-- Content Input -->
+                <div class="post-content-input">
+                    <textarea 
+                        class="post-textarea" 
+                        id="postTextarea" 
+                        placeholder="What would you like to share?"
+                        rows="6"
+                    ></textarea>
+                </div>
+
+                <!-- Media Options -->
+                <div class="post-media-options">
+                    <label class="post-media-label">Add Media</label>
+                    <div class="post-media-grid">
+                        <button class="post-media-btn" data-action="image" id="postModalAddImageBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <path d="M21 15l-5-5L5 21"/>
+                            </svg>
+                            <span>Image</span>
+                        </button>
+                        <button class="post-media-btn" data-action="video" id="postModalAddVideoBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="23 7 16 12 23 17 23 7"/>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                            </svg>
+                            <span>Video</span>
+                        </button>
+                        <button class="post-media-btn" data-action="selfie" id="postModalTakeSelfieBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            <span>Selfie</span>
+                        </button>
+                        <button class="post-media-btn" data-action="camera" id="postModalTakeVideoBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            <span>Record</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Media Preview -->
+                <div class="post-media-preview" id="postMediaPreview"></div>
+            </div>
+
+            <div class="post-modal-footer">
+                <button class="post-submit-btn" id="postSubmitBtn" disabled>Post</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Post Creation Modal Handler
+        class PostCreationModal {
+            constructor() {
+                this.fabOrb = document.getElementById('fabOrb');
+                this.modal = document.getElementById('postModal');
+                this.backdrop = document.getElementById('postModalBackdrop');
+                this.closeBtn = document.getElementById('postModalClose');
+                this.textarea = document.getElementById('postTextarea');
+                this.submitBtn = document.getElementById('postSubmitBtn');
+                this.postType = 'stream';
+                this.selectedMedia = [];
+                
+                this.init();
+            }
+
+            init() {
+                // FAB click handler
+                this.fabOrb?.addEventListener('click', () => this.openModal());
+                
+                // Close handlers
+                this.closeBtn?.addEventListener('click', () => this.closeModal());
+                this.backdrop?.addEventListener('click', () => this.closeModal());
+                
+                // Post type selection
+                document.querySelectorAll('.post-type-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.post-type-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.postType = e.target.dataset.type;
+                    });
+                });
+
+                // Media buttons
+                document.querySelectorAll('.post-media-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const action = e.currentTarget.dataset.action;
+                        this.handleMediaAction(action);
+                    });
+                });
+
+                // Textarea input handler
+                this.textarea?.addEventListener('input', () => {
+                    this.updateSubmitButton();
+                });
+
+                // Submit handler
+                this.submitBtn?.addEventListener('click', () => this.submitPost());
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.modal?.classList.contains('active')) {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            openModal() {
+                this.modal?.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeModal() {
+                this.modal?.classList.remove('active');
+                document.body.style.overflow = '';
+                this.resetForm();
+            }
+
+            resetForm() {
+                if (this.textarea) this.textarea.value = '';
+                this.selectedMedia = [];
+                this.updateMediaPreview();
+                this.updateSubmitButton();
+                this.postType = 'stream';
+                document.querySelectorAll('.post-type-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.type === 'stream');
+                });
+            }
+
+            handleMediaAction(action) {
+                const input = document.createElement('input');
+                
+                switch(action) {
+                    case 'image':
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.multiple = true;
+                        break;
+                    case 'video':
+                        input.type = 'file';
+                        input.accept = 'video/*';
+                        input.multiple = true;
+                        break;
+                    case 'selfie':
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.capture = 'user';
+                        break;
+                    case 'camera':
+                        input.type = 'file';
+                        input.accept = 'video/*';
+                        input.capture = 'environment';
+                        break;
+                }
+
+                input.onchange = (e) => {
+                    const files = Array.from(e.target.files);
+                    files.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            this.selectedMedia.push({
+                                file: file,
+                                url: event.target.result,
+                                type: file.type.startsWith('image/') ? 'image' : 'video'
+                            });
+                            this.updateMediaPreview();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                };
+
+                input.click();
+            }
+
+            updateMediaPreview() {
+                const preview = document.getElementById('postMediaPreview');
+                if (!preview) return;
+
+                if (this.selectedMedia.length === 0) {
+                    preview.innerHTML = '';
+                    preview.style.display = 'none';
+                    return;
+                }
+
+                preview.style.display = 'block';
+                preview.innerHTML = this.selectedMedia.map((media, index) => `
+                    <div class="media-preview-item">
+                        ${media.type === 'image' 
+                            ? `<img src="${media.url}" alt="Preview ${index + 1}">`
+                            : `<video src="${media.url}" controls></video>`
+                        }
+                        <button class="media-remove-btn" data-index="${index}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                `).join('');
+
+                // Remove button handlers
+                preview.querySelectorAll('.media-remove-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.currentTarget.dataset.index);
+                        this.selectedMedia.splice(index, 1);
+                        this.updateMediaPreview();
+                    });
+                });
+            }
+
+            updateSubmitButton() {
+                const hasContent = this.textarea?.value.trim().length > 0;
+                const hasMedia = this.selectedMedia.length > 0;
+                
+                if (this.submitBtn) {
+                    this.submitBtn.disabled = !(hasContent || hasMedia);
+                }
+            }
+
+            async submitPost() {
+                const content = this.textarea?.value.trim() || '';
+                
+                if (!content && this.selectedMedia.length === 0) {
+                    return;
+                }
+
+                if (this.submitBtn) {
+                    this.submitBtn.disabled = true;
+                    this.submitBtn.textContent = 'Posting...';
+                }
+
+                try {
+                    // Get user session
+                    const userId = localStorage.getItem('thesidia_user_id');
+                    const sessionId = localStorage.getItem('thesidia_session_id');
+
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('content', content);
+                    formData.append('post_type', this.postType);
+                    formData.append('user_id', userId || '');
+                    formData.append('session_id', sessionId || '');
+
+                    // Add media files
+                    this.selectedMedia.forEach((media, index) => {
+                        formData.append(`media_${index}`, media.file);
+                    });
+
+                    // Submit to API
+                    const response = await fetch('/api/posts/create', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        this.closeModal();
+                        // Reload current section
+                        if (window.navigationSystem) {
+                            const currentSection = window.navigationSystem.currentSection;
+                            if (currentSection === 'stream' && window.streamPage) {
+                                window.streamPage.loadPosts(0, 20);
+                            } else if (currentSection === 'kx-cuts' && window.navigationSystem) {
+                                window.navigationSystem.loadKXCutsContent();
+                            } else if (currentSection === 'circles' && window.navigationSystem) {
+                                window.navigationSystem.loadCirclesContent();
+                            }
+                        }
+                    } else {
+                        const error = await response.json();
+                        alert('Error creating post: ' + (error.error || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error submitting post:', error);
+                    alert('Error creating post. Please try again.');
+                } finally {
+                    if (this.submitBtn) {
+                        this.submitBtn.disabled = false;
+                        this.submitBtn.textContent = 'Post';
+                    }
+                }
+            }
+        }
+
+        // Initialize post creation modal
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.postCreationModal = new PostCreationModal();
+            });
+        } else {
+            window.postCreationModal = new PostCreationModal();
         }
     </script>
         
