@@ -159,8 +159,17 @@ class NavigationSystem {
                 // Swipe left - next section
                 this.navigateNext();
             } else {
-                // Swipe right - previous section
-                this.navigatePrevious();
+                // Swipe right - previous section or open menu if on home
+                if (this.currentSection === 'home') {
+                    // Open sidebar menu on home when swiping right
+                    const menuBtn = document.getElementById('menuBtn');
+                    const sidebar = document.getElementById('leftSidebar');
+                    if (menuBtn && sidebar) {
+                        sidebar.classList.add('open');
+                    }
+                } else {
+                    this.navigatePrevious();
+                }
             }
         }
     }
@@ -566,9 +575,26 @@ class NavigationSystem {
         const domain = (cut.domains && cut.domains.length > 0) ? cut.domains[0] : (cut.domain || null);
         const author = cut.author || {};
         const username = author.username || author.user_id || 'unknown';
-        const avatarUrl = author.avatar_url || '/profile-image.jpg';
+        
+        // Mock avatar images - tiny HD, no cartoon/nature
+        // Using placeholder service with realistic portraits
+        const avatarIndex = (username.charCodeAt(0) || 0) % 10;
+        const avatarUrl = author.avatar_url || `https://i.pravatar.cc/40?img=${avatarIndex + 1}`;
+        
+        // Mock topic-related GIFs based on domain
+        const topicGifs = {
+            'movement': 'https://media.giphy.com/media/l0MYC0Lajbo1e6mdy/giphy.gif',
+            'visual': 'https://media.giphy.com/media/3o7aCTPPm4OHfRLSH6/giphy.gif',
+            'music': 'https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif',
+            'craft': 'https://media.giphy.com/media/3o7aD2sa0qC3XtSitO/giphy.gif',
+            'writing': 'https://media.giphy.com/media/3o7abKh2uIh5V0s0k0/giphy.gif',
+            'teaching': 'https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif',
+            'performance': 'https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif'
+        };
+        const topicGif = domain && topicGifs[domain.toLowerCase()] ? topicGifs[domain.toLowerCase()] : null;
+        
         const videoUrl = cut.video_url || cut.media_url || '';
-        const thumbnailUrl = cut.thumbnail_url || cut.poster_url || '';
+        const thumbnailUrl = cut.thumbnail_url || cut.poster_url || topicGif || '';
         
         // Escape HTML to prevent XSS
         const safeUsername = String(username).replace(/[<>&"']/g, '');
@@ -583,9 +609,9 @@ class NavigationSystem {
                     <!-- Creator Info Overlay (Top-Left) -->
                     <div class="cut-creator-overlay">
                         <div class="cut-avatar">
-                            <img src="${avatarUrl}" alt="${safeUsername}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\'%3E%3Ccircle cx=\'10\' cy=\'10\' r=\'10\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'10\' cy=\'7\' r=\'3\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M5 18 Q10 15 15 18\' stroke=\'%23ffffff\' stroke-width=\'1\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                            <img src="${avatarUrl}" alt="${safeUsername}" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\'%3E%3Ccircle cx=\'10\' cy=\'10\' r=\'10\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'10\' cy=\'7\' r=\'3\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M5 18 Q10 15 15 18\' stroke=\'%23ffffff\' stroke-width=\'1\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
                         </div>
-                        <div class="cut-creator-name">@${safeUsername}</div>
+                        <div class="cut-creator-name">/${safeUsername}</div>
                     </div>
                     
                     <!-- Metadata Overlay (Top-Right) -->

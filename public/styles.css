@@ -1156,11 +1156,12 @@ html:has(#app.sidebar-pushed) {
 }
 
 .cut-creator-name {
-    font-size: 11px;
+    font-size: 12px; /* 1 point bigger */
     font-weight: 500;
     color: var(--text-primary);
     line-height: 1.2;
     white-space: nowrap;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.3), 0 0 8px rgba(255, 255, 255, 0.15); /* Faint white glow */
 }
 
 /* Metadata Overlay - Top-Right */
@@ -2133,7 +2134,7 @@ html:has(#app.sidebar-pushed) {
 
 .post-content {
     color: var(--text-primary);
-    font-size: var(--font-size-base);
+    font-size: 12px; /* Match circles sub preview */
     line-height: var(--line-height-relaxed);
     margin-bottom: 12px;
     word-wrap: break-word;
@@ -2647,7 +2648,7 @@ html:has(#app.sidebar-pushed) {
     padding: var(--spacing-md) var(--spacing-lg);
     border-radius: var(--border-radius-md);
     line-height: var(--line-height-relaxed);
-    font-size: var(--font-size-base);
+    font-size: 12px; /* Match circles sub preview */
     word-wrap: break-word;
     white-space: pre-wrap;
 }
@@ -4167,7 +4168,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .thread-body {
-    font-size: var(--font-size-base);
+    font-size: 12px; /* Match circles sub preview */
     line-height: 1.6;
     color: var(--text-primary);
     margin-bottom: var(--spacing-md);
@@ -4392,7 +4393,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .comment-body {
-    font-size: var(--font-size-base);
+    font-size: 12px; /* Match circles sub preview */
     line-height: 1.6;
     color: var(--text-primary);
     margin-bottom: var(--spacing-sm);
