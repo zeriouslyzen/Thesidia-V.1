@@ -98,28 +98,27 @@ if app is None:
             'dynamic_error': dynamic_error_msg
         }), 503
 
-# Wrap the app's error handling to catch any unhandled exceptions
-original_handle_exception = app.handle_exception
-def safe_handle_exception(e):
-    """Safe error handler that always returns a response"""
-    try:
-        return original_handle_exception(e)
-    except Exception as handler_error:
-        # If even the error handler fails, return a minimal response
+# Ensure the app has a global error handler that catches everything
+# This will catch any exceptions that slip through
+if not hasattr(app, '_thesidia_error_handler_added'):
+    @app.errorhandler(Exception)
+    def catch_all_errors(e):
+        """Catch all exceptions and return a safe response"""
         import traceback
-        print(f"Error in error handler: {handler_error}")
+        error_msg = str(e) if e else "Unknown error"
+        error_type = type(e).__name__ if e else "Unknown"
+        print(f"❌ Exception caught by global handler: {error_msg}")
+        print(f"   Type: {error_type}")
         traceback.print_exc()
+        
         from flask import jsonify
         return jsonify({
             'error': 'Internal server error',
             'message': 'An unexpected error occurred',
-            'type': type(e).__name__ if e else 'Unknown'
+            'type': error_type
         }), 500
-
-# Only override if the app doesn't already have a custom error handler
-if not hasattr(app, '_custom_error_handler'):
-    app.handle_exception = safe_handle_exception
-    app._custom_error_handler = True
+    
+    app._thesidia_error_handler_added = True
 
 # Export app for Vercel
 # Vercel automatically wraps Flask apps - just export 'app'
