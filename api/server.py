@@ -46,9 +46,11 @@ except Exception as import_error:
     except Exception as dynamic_error:
         # Final fallback: Create minimal Flask app
         import traceback
+        error_msg_import = str(import_error) if 'import_error' in locals() else "Unknown import error"
+        error_msg_dynamic = str(dynamic_error) if 'dynamic_error' in locals() else "Unknown dynamic error"
         print(f"❌ Failed to import Flask app")
-        print(f"   Direct import error: {import_error}")
-        print(f"   Dynamic import error: {dynamic_error}")
+        print(f"   Direct import error: {error_msg_import}")
+        print(f"   Dynamic import error: {error_msg_dynamic}")
         traceback.print_exc()
         
         from flask import Flask, jsonify
@@ -64,8 +66,8 @@ except Exception as import_error:
                 'error': 'Server initialization failed',
                 'message': 'Thesidia requires Ollama running locally',
                 'recommendation': 'Deploy to Railway, Render, Fly.io, or similar platform that supports persistent services',
-                'import_error': str(import_error),
-                'dynamic_error': str(dynamic_error)
+                'import_error': error_msg_import,
+                'dynamic_error': error_msg_dynamic
             }), 503
         
         print("⚠️  Created fallback Flask app")

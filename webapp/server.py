@@ -288,48 +288,56 @@ def index():
         if static_dir.exists():
             index_path = static_dir / 'index.html'
             if index_path.exists():
-                return send_from_directory(str(static_dir), 'index.html')
+                try:
+                    return send_from_directory(str(static_dir), 'index.html')
+                except Exception as file_error:
+                    print(f"Error sending index.html: {file_error}")
             contexts_path = static_dir / 'contexts.html'
             if contexts_path.exists():
-                return send_from_directory(str(static_dir), 'contexts.html')
+                try:
+                    return send_from_directory(str(static_dir), 'contexts.html')
+                except Exception as file_error:
+                    print(f"Error sending contexts.html: {file_error}")
         # Fallback to current directory
-        if Path('index.html').exists():
-            return send_from_directory('.', 'index.html')
-        if Path('contexts.html').exists():
-            return send_from_directory('.', 'contexts.html')
-    except Exception as e:
+        current_index = Path('index.html')
+        if current_index.exists():
+            try:
+                return send_from_directory('.', 'index.html')
+            except Exception as file_error:
+                print(f"Error sending current index.html: {file_error}")
+        current_contexts = Path('contexts.html')
+        if current_contexts.exists():
+            try:
+                return send_from_directory('.', 'contexts.html')
+            except Exception as file_error:
+                print(f"Error sending current contexts.html: {file_error}")
+    except Exception as route_error:
         # If file serving fails, return a simple HTML response
         import traceback
-        print(f"Error serving index file: {e}")
+        error_msg = str(route_error) if route_error else "Unknown error"
+        print(f"Error in index route: {error_msg}")
         traceback.print_exc()
-        # Return a minimal HTML page
-        return f"""<!DOCTYPE html>
+    
+    # Final fallback - always return something
+    try:
+        return """<!DOCTYPE html>
 <html>
 <head>
     <title>Thesidia</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>window.location.href = '/stream.html';</script>
 </head>
 <body>
     <h1>Thesidia</h1>
     <p>Application is loading...</p>
-    <script>window.location.href = '/stream.html';</script>
+    <p>If you are not redirected, please <a href="/stream.html">click here</a>.</p>
 </body>
 </html>""", 200, {'Content-Type': 'text/html'}
-    
-    # Final fallback if nothing works
-    return """<!DOCTYPE html>
-<html>
-<head>
-    <title>Thesidia</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <h1>Thesidia</h1>
-    <p>Please navigate to <a href="/stream.html">/stream.html</a></p>
-</body>
-</html>""", 200, {'Content-Type': 'text/html'}
+    except Exception as final_error:
+        # Absolute last resort - return plain text
+        error_msg = str(final_error) if final_error else "Unknown error"
+        return f"Error: {error_msg}", 500, {'Content-Type': 'text/plain'}
 
 @app.route('/robots.txt')
 def robots():
