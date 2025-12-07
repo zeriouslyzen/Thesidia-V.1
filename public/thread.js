@@ -136,7 +136,7 @@ class ThreadDetailPage {
             // Auto-resize textarea
             commentInput.addEventListener('input', () => {
                 commentInput.style.height = 'auto';
-                commentInput.style.height = Math.min(commentInput.scrollHeight, 200) + 'px';
+                commentInput.style.height = Math.min(commentInput.scrollHeight, 120) + 'px'; // Match max-height
             });
         }
         
@@ -422,14 +422,14 @@ class ThreadDetailPage {
                         <button class="comment-reply-btn" data-comment-id="${comment.id}" data-parent-id="${comment.id}">
                             Reply
                         </button>
-                        <button class="comment-award-btn" data-comment-id="${comment.id}">
-                            Award
+                        <button class="comment-cut-btn" data-comment-id="${comment.id}">
+                            Cut
                         </button>
                     </div>
-                    ${comment.awards && comment.awards.length > 0 ? `
-                        <div class="comment-awards">
-                            ${comment.awards.map(award => {
-                                const awardTypes = {
+                    ${comment.cuts && comment.cuts.length > 0 ? `
+                        <div class="comment-cuts">
+                            ${comment.cuts.map(cut => {
+                                const cutTypes = {
                                     'quality': { icon: '★', name: 'Quality' },
                                     'insightful': { icon: '💡', name: 'Insightful' },
                                     'helpful': { icon: '✓', name: 'Helpful' },
@@ -437,11 +437,11 @@ class ThreadDetailPage {
                                     'well_researched': { icon: '📚', name: 'Well Researched' },
                                     'thoughtful': { icon: '🤔', name: 'Thoughtful' }
                                 };
-                                const awardInfo = awardTypes[award.type] || { icon: '★', name: award.type || 'Award' };
+                                const cutInfo = cutTypes[cut.type] || { icon: '★', name: cut.type || 'Cut' };
                                 return `
-                                    <span class="award-badge" title="${this.escapeHtml(awardInfo.name)}">
-                                        <span class="award-badge-icon">${awardInfo.icon}</span>
-                                        <span class="award-badge-count">${award.count || 1}</span>
+                                    <span class="cut-badge" title="${this.escapeHtml(cutInfo.name)}">
+                                        <span class="cut-badge-icon">${cutInfo.icon}</span>
+                                        <span class="cut-badge-count">${cut.count || 1}</span>
                                     </span>
                                 `;
                             }).join('')}
@@ -493,40 +493,40 @@ class ThreadDetailPage {
             });
         });
         
-        // Award buttons
-        document.querySelectorAll('.comment-award-btn').forEach(btn => {
+        // Cut buttons
+        document.querySelectorAll('.comment-cut-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const commentId = btn.dataset.commentId;
-                this.showAwardMenu(commentId);
+                this.showCutMenu(commentId);
             });
         });
     }
     
-    async showAwardMenu(commentId) {
+    async showCutMenu(commentId) {
         try {
-            // Load award types
-            const response = await fetch('/api/awards/types');
+            // Load cut types
+            const response = await fetch('/api/cuts/types');
             const data = await response.json();
-            const awardTypes = data.awards || [];
+            const cutTypes = data.cuts || [];
             
-            // Create award modal
+            // Create cut modal
             const modal = document.createElement('div');
-            modal.className = 'award-modal';
+            modal.className = 'cut-modal';
             modal.innerHTML = `
-                <div class="award-modal-backdrop"></div>
-                <div class="award-modal-content">
-                    <div class="award-modal-header">
-                        <h3>Give Award</h3>
-                        <button class="award-modal-close" aria-label="Close">×</button>
+                <div class="cut-modal-backdrop"></div>
+                <div class="cut-modal-content">
+                    <div class="cut-modal-header">
+                        <h3>Give Cut</h3>
+                        <button class="cut-modal-close" aria-label="Close">×</button>
                     </div>
-                    <div class="award-modal-body">
-                        <p class="award-modal-description">Select an award type:</p>
-                        <div class="award-types-list">
-                            ${awardTypes.map(award => `
-                                <button class="award-type-btn" data-award-type="${award.id}">
-                                    <span class="award-icon">${award.icon || '★'}</span>
-                                    <span class="award-name">${this.escapeHtml(award.name)}</span>
+                    <div class="cut-modal-body">
+                        <p class="cut-modal-description">Select a cut type:</p>
+                        <div class="cut-types-list">
+                            ${cutTypes.map(cut => `
+                                <button class="cut-type-btn" data-cut-type="${cut.id}">
+                                    <span class="cut-icon">${cut.icon || '★'}</span>
+                                    <span class="cut-name">${this.escapeHtml(cut.name)}</span>
                                 </button>
                             `).join('')}
                         </div>
@@ -538,45 +538,45 @@ class ThreadDetailPage {
             
             // Close handlers
             const closeModal = () => modal.remove();
-            modal.querySelector('.award-modal-backdrop').addEventListener('click', closeModal);
-            modal.querySelector('.award-modal-close').addEventListener('click', closeModal);
+            modal.querySelector('.cut-modal-backdrop').addEventListener('click', closeModal);
+            modal.querySelector('.cut-modal-close').addEventListener('click', closeModal);
             
-            // Award type selection
-            modal.querySelectorAll('.award-type-btn').forEach(btn => {
+            // Cut type selection
+            modal.querySelectorAll('.cut-type-btn').forEach(btn => {
                 btn.addEventListener('click', async () => {
-                    const awardType = btn.dataset.awardType;
+                    const cutType = btn.dataset.cutType;
                     closeModal();
-                    await this.giveAward(commentId, awardType);
+                    await this.giveCut(commentId, cutType);
                 });
             });
         } catch (error) {
-            console.error('Error showing award menu:', error);
-            alert('Error loading awards. Please try again.');
+            console.error('Error showing cut menu:', error);
+            alert('Error loading cuts. Please try again.');
         }
     }
     
-    async giveAward(commentId, awardType) {
+    async giveCut(commentId, cutType) {
         try {
-            const response = await fetch(`/api/comments/${commentId}/award`, {
+            const response = await fetch(`/api/comments/${commentId}/cut`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    award_type: awardType,
+                    cut_type: cutType,
                     user_id: this.userId,
                     session_id: this.sessionId
                 })
             });
             
             if (response.ok) {
-                // Reload comments to show new award
+                // Reload comments to show new cut
                 await this.loadComments(this.threadId, this.currentSort);
             } else {
                 const error = await response.json();
-                alert(`Error: ${error.error || 'Failed to give award'}`);
+                alert(`Error: ${error.error || 'Failed to give cut'}`);
             }
         } catch (error) {
-            console.error('Error giving award:', error);
-            alert('Error giving award. Please try again.');
+            console.error('Error giving cut:', error);
+            alert('Error giving cut. Please try again.');
         }
     }
     

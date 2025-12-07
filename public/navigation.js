@@ -92,14 +92,41 @@ class NavigationSystem {
         
         // Touch events
         carousel.addEventListener('touchstart', (e) => {
+            // Don't handle swipe if touch started in circles area (categories scroll or threads)
+            const circlesContainer = e.target.closest('.circles-container');
+            const categoriesScroll = e.target.closest('.circles-categories-scroll');
+            const circlesThreads = e.target.closest('.circles-threads');
+            
+            if (circlesContainer || categoriesScroll || circlesThreads) {
+                // Let circles handle its own scrolling/swiping
+                return;
+            }
+            
             this.touchStartX = e.touches[0].clientX;
         }, { passive: true });
         
         carousel.addEventListener('touchmove', (e) => {
+            // Don't handle swipe if touch is in circles area
+            const circlesContainer = e.target.closest('.circles-container');
+            const categoriesScroll = e.target.closest('.circles-categories-scroll');
+            const circlesThreads = e.target.closest('.circles-threads');
+            
+            if (circlesContainer || categoriesScroll || circlesThreads) {
+                return;
+            }
             // Allow default scrolling behavior
         }, { passive: true });
         
         carousel.addEventListener('touchend', (e) => {
+            // Don't handle swipe if touch ended in circles area
+            const circlesContainer = e.target.closest('.circles-container');
+            const categoriesScroll = e.target.closest('.circles-categories-scroll');
+            const circlesThreads = e.target.closest('.circles-threads');
+            
+            if (circlesContainer || categoriesScroll || circlesThreads) {
+                return;
+            }
+            
             this.touchEndX = e.changedTouches[0].clientX;
             this.handleSwipe();
         }, { passive: true });
@@ -109,6 +136,15 @@ class NavigationSystem {
         let mouseStartX = 0;
         
         carousel.addEventListener('mousedown', (e) => {
+            // Don't handle swipe if click started in circles area
+            const circlesContainer = e.target.closest('.circles-container');
+            const categoriesScroll = e.target.closest('.circles-categories-scroll');
+            const circlesThreads = e.target.closest('.circles-threads');
+            
+            if (circlesContainer || categoriesScroll || circlesThreads) {
+                return;
+            }
+            
             isMouseDown = true;
             mouseStartX = e.clientX;
             carousel.style.cursor = 'grabbing';
@@ -116,16 +152,36 @@ class NavigationSystem {
         
         carousel.addEventListener('mousemove', (e) => {
             if (!isMouseDown) return;
+            
+            // Don't handle swipe if moving in circles area
+            const circlesContainer = e.target.closest('.circles-container');
+            const categoriesScroll = e.target.closest('.circles-categories-scroll');
+            const circlesThreads = e.target.closest('.circles-threads');
+            
+            if (circlesContainer || categoriesScroll || circlesThreads) {
+                isMouseDown = false;
+                carousel.style.cursor = '';
+                return;
+            }
+            
             // Prevent text selection during drag
             e.preventDefault();
         });
         
         carousel.addEventListener('mouseup', (e) => {
             if (isMouseDown) {
-                const mouseEndX = e.clientX;
-                this.touchStartX = mouseStartX;
-                this.touchEndX = mouseEndX;
-                this.handleSwipe();
+                // Don't handle swipe if click ended in circles area
+                const circlesContainer = e.target.closest('.circles-container');
+                const categoriesScroll = e.target.closest('.circles-categories-scroll');
+                const circlesThreads = e.target.closest('.circles-threads');
+                
+                if (!circlesContainer && !categoriesScroll && !circlesThreads) {
+                    const mouseEndX = e.clientX;
+                    this.touchStartX = mouseStartX;
+                    this.touchEndX = mouseEndX;
+                    this.handleSwipe();
+                }
+                
                 isMouseDown = false;
                 carousel.style.cursor = '';
             }
@@ -162,10 +218,16 @@ class NavigationSystem {
                 // Swipe right - previous section or open menu if on home
                 if (this.currentSection === 'home') {
                     // Open sidebar menu on home when swiping right
-                    const menuBtn = document.getElementById('menuBtn');
-                    const sidebar = document.getElementById('leftSidebar');
-                    if (menuBtn && sidebar) {
-                        sidebar.classList.add('open');
+                    if (window.thesidiaApp && typeof window.thesidiaApp.toggleLeftSidebar === 'function') {
+                        window.thesidiaApp.toggleLeftSidebar();
+                    } else {
+                        // Fallback if thesidiaApp not available
+                        const sidebar = document.getElementById('leftSidebar');
+                        const app = document.getElementById('app');
+                        if (sidebar && app) {
+                            sidebar.classList.add('open');
+                            app.classList.add('sidebar-pushed');
+                        }
                     }
                 } else {
                     this.navigatePrevious();
@@ -876,7 +938,18 @@ class NavigationSystem {
             avatarUrl = `https://api.dicebear.com/7.x/shapes/svg?seed=all&size=64&backgroundColor=666&radius=50`;
             fallbackAvatarUrl = `https://ui-avatars.com/api/?name=All&background=666&color=fff&size=64&bold=true`;
         } else {
-            avatarUrl = this.getAvatarUrl(slug, slug);
+            // Use real photos for categories too
+            const seed = slug || category.id || 'default';
+            let seedHash = 0;
+            const seedString = seed.toString();
+            for (let i = 0; i < seedString.length; i++) {
+                seedHash = seedString.charCodeAt(i) + ((seedHash << 5) - seedHash);
+            }
+            const numericSeed = Math.abs(seedHash);
+            const seedNum = numericSeed % 1000;
+            
+            // Use Unsplash for category photos (portrait/face style)
+            avatarUrl = `https://source.unsplash.com/200x200/?portrait,face&sig=${seedNum}`;
             fallbackAvatarUrl = this.getFallbackAvatarUrl(slug, slug);
             initial = this.getCircleInitial(slug);
             color = this.getCircleColor(slug);
@@ -983,11 +1056,9 @@ class NavigationSystem {
             return authorAvatarUrl;
         }
         
-        // Use DiceBear API for realistic-looking avatars
-        // Using 'personas' style for more photo-like appearance
-        const seed = authorId || topic || 'default';
-        
+        // Use Unsplash Source API for real photos
         // Generate consistent seed from topic/author
+        const seed = authorId || topic || 'default';
         let seedHash = 0;
         const seedString = seed.toString();
         for (let i = 0; i < seedString.length; i++) {
@@ -995,23 +1066,17 @@ class NavigationSystem {
         }
         const numericSeed = Math.abs(seedHash);
         
-        // Use personas style for more realistic photo-like avatars
-        // Alternatives: avataaars (cartoon), personas (more realistic), adventurer
-        const style = 'personas'; // Most photo-like
-        const size = 80;
+        // Use Unsplash Source for real profile photos
+        // Using portrait orientation and face focus
+        const width = 200;
+        const height = 200;
+        const seedNum = numericSeed % 1000; // Use for consistent selection
         
-        const params = new URLSearchParams({
-            seed: numericSeed.toString(),
-            size: size.toString(),
-            backgroundColor: this.getCircleColor(topic).replace('#', ''),
-            radius: '50'
-        });
-        
-        return `https://api.dicebear.com/7.x/${style}/svg?${params.toString()}`;
+        return `https://source.unsplash.com/${width}x${height}/?portrait,face&sig=${seedNum}`;
     }
     
     getFallbackAvatarUrl(topic, authorId = null) {
-        // Use RandomUser.me API for realistic profile photos
+        // Use RandomUser.me API for realistic profile photos as fallback
         // Generate consistent seed from topic/author
         const seed = authorId || topic || 'default';
         let seedHash = 0;
@@ -1072,20 +1137,24 @@ class NavigationSystem {
             this.escapeHtml(bodyText.length > 80 ? bodyText.substring(0, 77) + '...' : bodyText) : 
             'No content available';
         
-        // Create shifting indicators for comments/upvotes
+        // Create shifting indicators for comments/resonate/respect
         const indicators = [];
         if (thread.comment_count > 0) {
             indicators.push(`${thread.comment_count} comment${thread.comment_count !== 1 ? 's' : ''}`);
         }
-        if (thread.upvotes > 0) {
-            indicators.push(`${thread.upvotes} upvote${thread.upvotes !== 1 ? 's' : ''}`);
+        const resonateCount = thread.resonate_count || thread.upvotes || 0;
+        const respectCount = thread.respect_count || 0;
+        if (resonateCount > 0) {
+            indicators.push(`${resonateCount} resonate${resonateCount !== 1 ? 's' : ''}`);
+        }
+        if (respectCount > 0) {
+            indicators.push(`${respectCount} respect${respectCount !== 1 ? 's' : ''}`);
         }
         if (thread.views > 0) {
             indicators.push(`${thread.views} view${thread.views !== 1 ? 's' : ''}`);
         }
         
         const threadId = thread.id || `thread_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        const upvotes = thread.upvotes || 0;
         const commentCount = thread.comment_count || 0;
         
         return `
@@ -1110,11 +1179,17 @@ class NavigationSystem {
                             ${indicators.length > 0 ? indicators[0] : 'No activity'}
                         </div>
                         <div class="circle-actions">
-                            <button class="circle-action-btn" data-action="vote-up" data-thread-id="${threadId}" title="Upvote">
+                            <button class="circle-action-btn" data-action="resonate" data-thread-id="${threadId}" title="Resonate">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M18 15l-6-6-6 6"/>
                                 </svg>
-                                <span>${upvotes}</span>
+                                <span>${resonateCount || 0}</span>
+                            </button>
+                            <button class="circle-action-btn" data-action="respect" data-thread-id="${threadId}" title="Respect">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                                </svg>
+                                <span>${respectCount || 0}</span>
                             </button>
                             <button class="circle-action-btn" data-action="comment" data-thread-id="${threadId}" title="Comments">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1170,14 +1245,19 @@ class NavigationSystem {
     }
     
     initializeShiftingPreviews(threads) {
-        // Set up shifting indicators for comments/upvotes/views
+        // Set up shifting indicators for comments/resonate/respect/views
         threads.forEach((thread, index) => {
             const indicators = [];
             if (thread.comment_count > 0) {
                 indicators.push(`${thread.comment_count} comment${thread.comment_count !== 1 ? 's' : ''}`);
             }
-            if (thread.upvotes > 0) {
-                indicators.push(`${thread.upvotes} upvote${thread.upvotes !== 1 ? 's' : ''}`);
+            const resonateCount = thread.resonate_count || thread.upvotes || 0;
+            const respectCount = thread.respect_count || 0;
+            if (resonateCount > 0) {
+                indicators.push(`${resonateCount} resonate${resonateCount !== 1 ? 's' : ''}`);
+            }
+            if (respectCount > 0) {
+                indicators.push(`${respectCount} respect${respectCount !== 1 ? 's' : ''}`);
             }
             if (thread.views > 0) {
                 indicators.push(`${thread.views} view${thread.views !== 1 ? 's' : ''}`);

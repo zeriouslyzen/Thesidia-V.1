@@ -118,6 +118,17 @@ class ThesidiaApp {
         let touchEndX = 0;
         let touchEndY = 0;
         
+        // Helper to check if we're on home page
+        const isOnHomePage = () => {
+            // Check if navigation system exists and we're on home
+            if (window.navigationSystem && window.navigationSystem.currentSection === 'home') {
+                return true;
+            }
+            // Fallback: check URL or page structure
+            const path = window.location.pathname;
+            return path === '/' || path === '/index.html' || path === '/stream.html' || path.includes('stream.html');
+        };
+        
         // Touch start
         document.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].clientX;
@@ -139,11 +150,25 @@ class ThesidiaApp {
             if (absDeltaX > 50 && absDeltaX > deltaY) {
                 const isOpen = sidebar.classList.contains('open');
                 
+                // Check if we're on home section (for carousel navigation)
+                // Check multiple ways to be sure
+                let isOnHome = false;
+                if (window.navigationSystem) {
+                    isOnHome = window.navigationSystem.currentSection === 'home';
+                }
+                // Also check if we're on a page that should allow sidebar swipe
+                if (!isOnHome) {
+                    isOnHome = isOnHomePage();
+                }
+                
                 if (deltaX > 0 && !isOpen) {
-                    // Swipe right to open
-                    this.toggleLeftSidebar();
+                    // Swipe right to open - ONLY on home page
+                    if (isOnHome) {
+                        this.toggleLeftSidebar();
+                    }
+                    // If not on home, do nothing - let navigation.js handle it
                 } else if (deltaX < 0 && isOpen) {
-                    // Swipe left to close
+                    // Swipe left to close - always allowed
                     this.closeLeftSidebar();
                 }
             }
