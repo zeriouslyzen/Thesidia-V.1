@@ -21,18 +21,17 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / 'src'))
 sys.path.insert(0, str(project_root / 'webapp'))
 
-# Import the Flask app from webapp/server.py
-app = None
+# Initialize error messages
 import_error_msg = "Not attempted"
 dynamic_error_msg = "Not attempted"
+app = None
 
+# Try to import the Flask app from webapp/server.py
 try:
-    # Try direct import first (simpler for Vercel)
     from webapp.server import app as flask_app
     app = flask_app
     print("✅ Successfully imported Flask app from webapp.server")
 except Exception as import_err:
-    # Capture error message immediately
     import_error_msg = str(import_err) if import_err else "Unknown import error"
     print(f"⚠️  Direct import failed: {import_error_msg}")
     
@@ -48,13 +47,13 @@ except Exception as import_err:
             app = server_module.app
             print("✅ Successfully loaded Flask app via dynamic import")
         else:
-            raise ImportError(f"server.py not found at {server_path}")
+            dynamic_error_msg = f"server.py not found at {server_path}"
+            raise ImportError(dynamic_error_msg)
     except Exception as dynamic_err:
-        # Capture error message immediately
         dynamic_error_msg = str(dynamic_err) if dynamic_err else "Unknown dynamic error"
         print(f"⚠️  Dynamic import failed: {dynamic_error_msg}")
         
-        # Final fallback: Create minimal Flask app
+        # Create minimal fallback Flask app
         import traceback
         print(f"❌ Failed to import Flask app")
         print(f"   Direct import error: {import_error_msg}")
@@ -69,7 +68,7 @@ except Exception as import_err:
         
         @app.route('/', defaults={'path': ''})
         @app.route('/<path:path>')
-        def fallback(path):
+        def fallback_route(path):
             return jsonify({
                 'error': 'Server initialization failed',
                 'message': 'Thesidia requires Ollama running locally',
@@ -80,9 +79,8 @@ except Exception as import_err:
         
         print("⚠️  Created fallback Flask app")
 
-# Ensure app is defined
+# Ensure app is defined - create absolute minimal app if needed
 if app is None:
-    # Create absolute minimal app if everything failed
     from flask import Flask, jsonify
     from flask_cors import CORS
     app = Flask(__name__)
@@ -98,15 +96,14 @@ if app is None:
             'dynamic_error': dynamic_error_msg
         }), 503
 
-# Ensure the app has a global error handler that catches everything
-# This will catch any exceptions that slip through
+# Add global error handler to catch all exceptions
 if not hasattr(app, '_thesidia_error_handler_added'):
     @app.errorhandler(Exception)
-    def catch_all_errors(e):
+    def catch_all_errors(exception):
         """Catch all exceptions and return a safe response"""
         import traceback
-        error_msg = str(e) if e else "Unknown error"
-        error_type = type(e).__name__ if e else "Unknown"
+        error_msg = str(exception) if exception else "Unknown error"
+        error_type = type(exception).__name__ if exception else "Unknown"
         print(f"❌ Exception caught by global handler: {error_msg}")
         print(f"   Type: {error_type}")
         traceback.print_exc()
@@ -123,4 +120,3 @@ if not hasattr(app, '_thesidia_error_handler_added'):
 # Export app for Vercel
 # Vercel automatically wraps Flask apps - just export 'app'
 # The app variable must be named 'app' for Vercel to detect it
-
