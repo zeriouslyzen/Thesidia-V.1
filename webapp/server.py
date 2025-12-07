@@ -120,6 +120,22 @@ def add_security_headers(response):
     
     return response
 
+# Global error handler to catch unhandled exceptions
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """Handle all unhandled exceptions gracefully"""
+    import traceback
+    error_trace = traceback.format_exc()
+    print(f"❌ Unhandled exception: {e}")
+    print(error_trace)
+    
+    # Return a proper error response instead of crashing
+    return jsonify({
+        'error': 'Internal server error',
+        'message': str(e) if os.getenv('VERCEL') else 'An error occurred',
+        'type': type(e).__name__
+    }), 500
+
 # Initialize Thesidia
 thesidia = None
 thesidia_ready = False
