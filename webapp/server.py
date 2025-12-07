@@ -1653,6 +1653,81 @@ def get_kx_cuts_section():
         import traceback
         return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
 
+@app.route('/api/cuts/<cut_id>/recognize', methods=['POST'])
+def recognize_cut(cut_id):
+    """Recognize a cut (acknowledge quality expression)"""
+    try:
+        data = request.get_json() or {}
+        user_id = data.get('user_id')
+        session_id = data.get('session_id')
+        
+        if not user_id:
+            return jsonify({'error': 'user_id required'}), 400
+        
+        if not cut_id:
+            return jsonify({'error': 'cut_id required'}), 400
+        
+        # TODO: Implement recognition logic
+        # For now, return mock response
+        return jsonify({
+            'success': True,
+            'count': 1,
+            'message': 'Cut recognized'
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/cuts/<cut_id>/growth', methods=['POST'])
+def growth_cut(cut_id):
+    """Share growth insight for a cut"""
+    try:
+        data = request.get_json() or {}
+        user_id = data.get('user_id')
+        session_id = data.get('session_id')
+        
+        if not user_id:
+            return jsonify({'error': 'user_id required'}), 400
+        
+        if not cut_id:
+            return jsonify({'error': 'cut_id required'}), 400
+        
+        # TODO: Implement growth logic
+        # For now, return mock response
+        return jsonify({
+            'success': True,
+            'count': 1,
+            'message': 'Growth insight shared'
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/cuts/<cut_id>/connect', methods=['POST'])
+def connect_cut(cut_id):
+    """Request connection for a cut"""
+    try:
+        data = request.get_json() or {}
+        user_id = data.get('user_id')
+        session_id = data.get('session_id')
+        
+        if not user_id:
+            return jsonify({'error': 'user_id required'}), 400
+        
+        if not cut_id:
+            return jsonify({'error': 'cut_id required'}), 400
+        
+        # TODO: Implement connection logic
+        # For now, return mock response
+        return jsonify({
+            'success': True,
+            'count': 1,
+            'message': 'Connection requested'
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
 @app.route('/api/sections/circles', methods=['GET'])
 def get_circles_section():
     """Get circles forum threads"""

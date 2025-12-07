@@ -1041,105 +1041,246 @@ html:has(#app.sidebar-pushed) {
     color: var(--text-tertiary);
 }
 
-/* KX Cuts Section */
+/* KX Cuts Section - Visual-First Masonry Layout */
 .kx-cuts-container {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .cuts-feed {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 16px;
     width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    scroll-snap-type: y mandatory;
+    align-items: start;
 }
 
+@media (max-width: 640px) {
+    .cuts-feed {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 12px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .cuts-feed {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+@media (min-width: 1440px) {
+    .cuts-feed {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+/* Cut Card - Visual-First */
 .cut-item {
-    width: 100%;
-    height: 100vh;
-    flex-shrink: 0;
-    scroll-snap-align: start;
+    background: var(--bg-secondary);
+    border: var(--border-width-thin) solid var(--border-color);
+    border-radius: 8px;
+    padding: 0;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
 }
 
+.cut-item:hover {
+    border-color: var(--text-secondary);
+}
+
+.cut-item:hover .cut-interactions-overlay {
+    opacity: 1;
+}
+
+/* Media Container - Primary (95% of space) */
 .cut-video-container {
     width: 100%;
-    height: 100%;
     position: relative;
-    background: var(--bg-primary);
+    background: var(--bg-tertiary);
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
 }
 
 .cut-video {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    display: block;
 }
 
-.cut-overlay {
+/* All Overlays - Positioned Absolutely */
+.cut-creator-overlay,
+.cut-metadata-overlay,
+.cut-domains-overlay,
+.cut-interactions-overlay {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 24px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    z-index: 10;
+    pointer-events: auto;
+}
+
+/* Creator Info Overlay - Top-Left */
+.cut-creator-overlay {
+    top: 8px;
+    left: 8px;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+    border-top-left-radius: 8px;
 }
 
-.cut-info {
-    flex: 1;
+.cut-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--bg-tertiary);
 }
 
-.cut-author {
-    font-size: var(--font-size-sm);
+.cut-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cut-creator-name {
+    font-size: 11px;
     font-weight: 500;
     color: var(--text-primary);
-    margin-bottom: 8px;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
-.cut-description {
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
+/* Metadata Overlay - Top-Right */
+.cut-metadata-overlay {
+    top: 8px;
+    right: 8px;
+    padding: 4px 6px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+    border-top-right-radius: 8px;
 }
 
-.cut-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    align-items: center;
-}
-
-.cut-action-btn {
-    background: none;
-    border: none;
+.cut-time {
+    font-size: 9px;
+    font-weight: 400;
     color: var(--text-primary);
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* Domain Tags Overlay - Bottom-Left (Optional) */
+.cut-domains-overlay {
+    bottom: 8px;
+    left: 8px;
+    padding: 4px 6px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+    border-bottom-left-radius: 8px;
+}
+
+.cut-domain-tag {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* Interactions Overlay - Bottom-Right (On Hover) */
+.cut-interactions-overlay {
+    bottom: 8px;
+    right: 8px;
     display: flex;
     flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 8px;
+    border-bottom-right-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.cut-interaction-btn {
+    display: inline-flex;
     align-items: center;
     gap: 4px;
+    padding: 4px 6px;
+    border: none;
+    background: transparent;
     cursor: pointer;
-    transition: all 0.4s ease-in-out;
-    padding: 8px;
+    transition: opacity 0.2s ease;
 }
 
-.cut-action-btn:hover {
-    transform: scale(1.1);
+.cut-interaction-btn:hover {
+    opacity: 0.8;
 }
 
-.cut-action-btn svg {
-    width: 24px;
-    height: 24px;
+.cut-interaction-btn:active {
+    opacity: 0.6;
 }
 
-.cut-action-btn span {
-    font-size: var(--font-size-xs);
+.interaction-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.cut-interaction-btn[data-action="recognize"] .interaction-dot {
+    background-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
+}
+
+.cut-interaction-btn[data-action="growth"] .interaction-dot {
+    background-color: rgba(96, 165, 250, 0.6);
+    box-shadow: 0 0 3px rgba(96, 165, 250, 0.4);
+}
+
+.cut-interaction-btn[data-action="connect"] .interaction-dot {
+    background-color: rgba(168, 85, 247, 0.6);
+    box-shadow: 0 0 3px rgba(168, 85, 247, 0.4);
+}
+
+.interaction-count {
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+/* Loading State */
+.cuts-loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 32px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+/* Video Placeholder */
+.cut-video-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 11px;
 }
 
 /* Circles Section - Messaging Style */

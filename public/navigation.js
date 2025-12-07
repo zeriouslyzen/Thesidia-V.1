@@ -533,6 +533,7 @@ class NavigationSystem {
                 if (data.items && data.items.length > 0) {
                     cutsFeed.innerHTML = data.items.map(cut => this.renderCut(cut)).join('');
                     console.log('✅ Rendered', data.items.length, 'cuts');
+                    this.setupCutInteractions();
                 } else {
                     cutsFeed.innerHTML = '<div class="cuts-loading">No cuts available</div>';
                 }
@@ -552,33 +553,142 @@ class NavigationSystem {
     }
     
     renderCut(cut) {
+        if (!cut || !cut.id) {
+            return '';
+        }
+        
+        const interactions = cut.interactions || {};
+        const recognizeCount = interactions.recognize || interactions.recognitions || 0;
+        const growthCount = interactions.growth || 0;
+        const connectCount = interactions.connect || interactions.connections || 0;
+        
+        const timeAgo = this.formatTimeAgo(cut.created_at || cut.timestamp || new Date().toISOString());
+        const domain = (cut.domains && cut.domains.length > 0) ? cut.domains[0] : (cut.domain || null);
+        const author = cut.author || {};
+        const username = author.username || author.user_id || 'unknown';
+        const avatarUrl = author.avatar_url || '/profile-image.jpg';
+        const videoUrl = cut.video_url || cut.media_url || '';
+        const thumbnailUrl = cut.thumbnail_url || cut.poster_url || '';
+        
+        // Escape HTML to prevent XSS
+        const safeUsername = String(username).replace(/[<>&"']/g, '');
+        const safeDomain = domain ? String(domain).replace(/[<>&"']/g, '') : '';
+        const safeCutId = String(cut.id).replace(/[<>&"']/g, '');
+        
         return `
-            <div class="cut-item" data-cut-id="${cut.id}">
+            <article class="cut-item" data-cut-id="${safeCutId}">
                 <div class="cut-video-container">
-                    <video class="cut-video" src="${cut.video_url}" poster="${cut.thumbnail_url}" muted></video>
-                    <div class="cut-overlay">
-                        <div class="cut-info">
-                            <div class="cut-author">@${cut.author?.username || 'unknown'}</div>
-                            <div class="cut-description">${cut.description || ''}</div>
+                    ${videoUrl ? `<video class="cut-video" src="${videoUrl}" ${thumbnailUrl ? `poster="${thumbnailUrl}"` : ''} muted loading="lazy"></video>` : `<div class="cut-video-placeholder"></div>`}
+                    
+                    <!-- Creator Info Overlay (Top-Left) -->
+                    <div class="cut-creator-overlay">
+                        <div class="cut-avatar">
+                            <img src="${avatarUrl}" alt="${safeUsername}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\'%3E%3Ccircle cx=\'10\' cy=\'10\' r=\'10\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'10\' cy=\'7\' r=\'3\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M5 18 Q10 15 15 18\' stroke=\'%23ffffff\' stroke-width=\'1\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
                         </div>
-                        <div class="cut-actions">
-                            <button class="cut-action-btn" data-action="like">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                                </svg>
-                                <span>${cut.likes || 0}</span>
-                            </button>
-                            <button class="cut-action-btn" data-action="comment">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                                </svg>
-                                <span>${cut.comments || 0}</span>
-                            </button>
-                        </div>
+                        <div class="cut-creator-name">@${safeUsername}</div>
+                    </div>
+                    
+                    <!-- Metadata Overlay (Top-Right) -->
+                    <div class="cut-metadata-overlay">
+                        <span class="cut-time">${timeAgo}</span>
+                    </div>
+                    
+                    ${safeDomain ? `
+                    <!-- Domain Tag Overlay (Bottom-Left, Optional) -->
+                    <div class="cut-domains-overlay">
+                        <span class="cut-domain-tag">${safeDomain}</span>
+                    </div>
+                    ` : ''}
+                    
+                    <!-- Interactions Overlay (Bottom-Right, On Hover) -->
+                    <div class="cut-interactions-overlay">
+                        <button class="cut-interaction-btn" data-action="recognize" data-cut-id="${safeCutId}" title="Recognize">
+                            <span class="interaction-dot"></span>
+                            <span class="interaction-count">${recognizeCount}</span>
+                        </button>
+                        <button class="cut-interaction-btn" data-action="growth" data-cut-id="${safeCutId}" title="Growth">
+                            <span class="interaction-dot"></span>
+                            <span class="interaction-count">${growthCount}</span>
+                        </button>
+                        <button class="cut-interaction-btn" data-action="connect" data-cut-id="${safeCutId}" title="Connect">
+                            <span class="interaction-dot"></span>
+                            <span class="interaction-count">${connectCount}</span>
+                        </button>
                     </div>
                 </div>
-            </div>
+            </article>
         `;
+    }
+    
+    formatTimeAgo(timestamp) {
+        if (!timestamp) return 'now';
+        try {
+            const now = new Date();
+            const postTime = new Date(timestamp);
+            const diffMs = now - postTime;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'now';
+            if (diffMins < 60) return `${diffMins}m`;
+            if (diffHours < 24) return `${diffHours}h`;
+            if (diffDays < 7) return `${diffDays}d`;
+            return postTime.toLocaleDateString();
+        } catch (e) {
+            return 'recently';
+        }
+    }
+    
+    setupCutInteractions() {
+        const cutsFeed = document.getElementById('cutsFeed');
+        if (!cutsFeed) return;
+        
+        cutsFeed.addEventListener('click', (e) => {
+            const btn = e.target.closest('.cut-interaction-btn');
+            if (!btn) return;
+            
+            const action = btn.dataset.action;
+            const cutId = btn.dataset.cutId;
+            
+            if (!action || !cutId) return;
+            
+            this.handleCutInteraction(cutId, action, btn);
+        });
+    }
+    
+    async handleCutInteraction(cutId, action, btn) {
+        try {
+            const userId = localStorage.getItem('thesidia_user_id');
+            const sessionId = localStorage.getItem('thesidia_session_id');
+            
+            if (!userId || !cutId || !action) {
+                return;
+            }
+            
+            const response = await fetch(`/api/cuts/${cutId}/${action}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: userId,
+                    session_id: sessionId
+                })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const countSpan = btn.querySelector('.interaction-count');
+                if (countSpan && data.count !== undefined) {
+                    const currentCount = parseInt(countSpan.textContent) || 0;
+                    countSpan.textContent = currentCount + 1;
+                }
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('Error handling cut interaction:', errorData.error || 'Unknown error');
+            }
+        } catch (error) {
+            console.error('Error handling cut interaction:', error);
+        }
     }
     
     async loadCirclesContent() {

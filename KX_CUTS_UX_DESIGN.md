@@ -58,31 +58,28 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
 
 ## Part 2: Cut Card Design
 
-### 2.1 Card Structure
+### 2.1 Card Structure (Visual-First)
 
-**Card Components** (top to bottom):
-1. **Media Container** (video/image)
-2. **Creator Info** (avatar, name, level)
-3. **Description** (text, truncated)
-4. **Domain Tags** (skill/art domain)
-5. **Interaction Bar** (recognition, growth, connection)
-6. **Metadata** (time, views)
+**Card Components**:
+1. **Media Container** (video/image) - PRIMARY, takes 95% of space
+2. **Overlay Elements** (on hover/click):
+   - Creator info (minimal, overlay)
+   - Interactions (floating, overlay)
+   - Metadata (corner, overlay)
 
 **Card Dimensions**:
 - **Min Height**: Auto (content-driven)
 - **Max Width**: 320px
-- **Padding**: 12px (generous)
+- **Padding**: 0 (no padding, media edge-to-edge)
 - **Border**: 1px solid (subtle)
 - **Border Radius**: 8px (minimal)
+- **Visual-First**: Media is primary, everything else is overlay
 
 ### 2.2 Card Spacing
 
 **Internal Spacing**:
-- Media to creator: 12px
-- Creator to description: 8px
-- Description to tags: 8px
-- Tags to interactions: 12px
-- Interactions to metadata: 8px
+- No internal spacing (overlay elements only)
+- Overlay elements: Positioned absolutely over media
 
 **External Spacing**:
 - Card to card: 16px (grid gap)
@@ -92,21 +89,20 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
 
 ## Part 3: Typography System
 
-### 3.1 Font Sizes (Reddit-Style Small)
+### 3.1 Font Sizes (Mini, Modular)
 
 **Font Scale**:
-- **XS**: 11px (metadata, counts)
-- **SM**: 13px (descriptions, labels)
-- **BASE**: 15px (creator names, titles)
-- **MD**: 18px (headings, if needed)
+- **XXS**: 9px (counts, metadata)
+- **XS**: 10px (labels, tags)
+- **SM**: 11px (creator name, minimal text)
 
 **Usage**:
-- Creator name: 13px
-- Description: 13px
-- Domain tags: 11px
-- Interaction labels: 11px
-- Counts: 11px
-- Time/metadata: 11px
+- Creator name: 11px (overlay, minimal)
+- Domain tags: 10px (overlay, minimal)
+- Interaction labels: 10px (overlay, minimal)
+- Counts: 9px (overlay, minimal)
+- Time/metadata: 9px (overlay, minimal)
+- No description text (visual only)
 
 ### 3.2 Font Weights
 
@@ -163,199 +159,176 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
 - Responsive sizing
 - Lazy loading
 
-### 4.2 Creator Info Module
+### 4.2 Creator Info Module (Overlay)
 
 **Structure**:
 ```html
-<div class="cut-creator">
+<div class="cut-creator-overlay">
     <div class="cut-avatar">
         <img src="..." alt="Creator">
     </div>
-    <div class="cut-creator-info">
-        <div class="cut-creator-name">@username</div>
-        <div class="cut-creator-level">Experienced</div>
-    </div>
+    <div class="cut-creator-name">@username</div>
 </div>
 ```
 
 **Styling**:
-- **Avatar**: 24px × 24px (small, compact)
-- **Name**: 13px, 500 weight
-- **Level**: 11px, 400 weight, secondary color
-- **Gap**: 8px (avatar to info)
-- **Padding**: 0 (no extra padding)
+- **Position**: Absolute, top-left corner
+- **Avatar**: 20px × 20px (mini)
+- **Name**: 11px, 500 weight
+- **Background**: Semi-transparent overlay
+- **Padding**: 6px 8px
+- **Border Radius**: 4px (top-left corner)
+- **Gap**: 6px (avatar to name)
 
 **Layout**:
 - Horizontal flex
-- Align items center
-- Compact spacing
+- Overlay on media
+- Visible on hover/always (minimal)
 
-### 4.3 Description Module
+### 4.3 Description Module (Removed)
 
-**Structure**:
-```html
-<div class="cut-description">
-    <p class="cut-description-text">Description text...</p>
-</div>
-```
+**No Description**:
+- Visual-first design
+- No text description
+- Media speaks for itself
+- Optional: Tooltip on hover (if needed)
 
-**Styling**:
-- **Font Size**: 13px
-- **Line Height**: 1.4
-- **Color**: Primary text
-- **Max Lines**: 3 (truncate with ellipsis)
-- **Padding**: 0
-
-**Truncation**:
-- 3 lines max
-- Ellipsis (...)
-- Click to expand (optional)
-
-### 4.4 Domain Tags Module
+### 4.4 Domain Tags Module (Overlay, Optional)
 
 **Structure**:
 ```html
-<div class="cut-domains">
+<div class="cut-domains-overlay">
     <span class="cut-domain-tag">Visual Arts</span>
-    <span class="cut-domain-tag">Painting</span>
 </div>
 ```
 
 **Styling**:
-- **Font Size**: 11px
+- **Position**: Absolute, bottom-left corner
+- **Font Size**: 10px
 - **Font Weight**: 500
-- **Padding**: 4px 8px
+- **Padding**: 4px 6px
 - **Border Radius**: 4px
-- **Background**: Tertiary
-- **Color**: Secondary
-- **Gap**: 6px (between tags)
+- **Background**: Semi-transparent overlay
+- **Color**: Primary text
+- **Max Tags**: 1 (only primary domain)
 
 **Layout**:
-- Flex wrap
-- Horizontal flow
-- Compact tags
+- Single tag (minimal)
+- Overlay on media
+- Visible on hover/always (minimal)
 
-### 4.5 Interaction Bar Module
+### 4.5 Interaction Bar Module (Overlay, Floating)
 
 **Structure**:
 ```html
-<div class="cut-interactions">
-    <button class="cut-interaction-btn" data-action="recognize">
+<div class="cut-interactions-overlay">
+    <button class="cut-interaction-btn" data-action="recognize" title="Recognize">
         <span class="interaction-dot"></span>
-        <span class="interaction-label">recognize</span>
         <span class="interaction-count">12</span>
     </button>
-    <button class="cut-interaction-btn" data-action="growth">
+    <button class="cut-interaction-btn" data-action="growth" title="Growth">
         <span class="interaction-dot"></span>
-        <span class="interaction-label">growth</span>
         <span class="interaction-count">5</span>
     </button>
-    <button class="cut-interaction-btn" data-action="connect">
+    <button class="cut-interaction-btn" data-action="connect" title="Connect">
         <span class="interaction-dot"></span>
-        <span class="interaction-label">connect</span>
         <span class="interaction-count">3</span>
     </button>
 </div>
 ```
 
 **Styling**:
-- **Layout**: Horizontal flex
-- **Gap**: 12px (between buttons)
-- **Padding**: 0 (buttons have internal padding)
-- **Font Size**: 11px (labels and counts)
-- **Font Weight**: 400
+- **Position**: Absolute, bottom-right corner
+- **Layout**: Vertical stack (column)
+- **Gap**: 8px (between buttons)
+- **Padding**: 8px
+- **Background**: Semi-transparent overlay
+- **Border Radius**: 8px (bottom-right corner)
+- **Font Size**: 9px (counts only)
+- **Visible**: On hover (or always, minimal)
 
 **Button Styling**:
-- **Padding**: 4px 8px
+- **Padding**: 4px 6px
 - **Border**: None
 - **Background**: Transparent
-- **Gap**: 6px (dot, label, count)
+- **Gap**: 4px (dot to count)
 - **Hover**: Opacity 0.8
 - **Active**: Opacity 0.6
+- **No labels** (tooltip only)
 
 **Dot Styling**:
-- **Size**: 6px × 6px
+- **Size**: 5px × 5px (smaller)
 - **Border Radius**: 50%
 - **Colors**: 
   - Recognize: Subtle glow (warm)
   - Growth: Subtle glow (cool)
   - Connect: Subtle glow (neutral)
 
-### 4.6 Metadata Module
+### 4.6 Metadata Module (Overlay, Corner)
 
 **Structure**:
 ```html
-<div class="cut-metadata">
+<div class="cut-metadata-overlay">
     <span class="cut-time">2h</span>
-    <span class="cut-views">1.2k</span>
 </div>
 ```
 
 **Styling**:
-- **Font Size**: 11px
+- **Position**: Absolute, top-right corner
+- **Font Size**: 9px
 - **Font Weight**: 400
-- **Color**: Tertiary
-- **Gap**: 8px (between items)
-- **Layout**: Horizontal flex
+- **Color**: Primary text (with overlay background)
+- **Padding**: 4px 6px
+- **Background**: Semi-transparent overlay
+- **Border Radius**: 4px (top-right corner)
+- **Layout**: Single item (time only, minimal)
+- **Visible**: Always (minimal, corner)
 
 ---
 
 ## Part 5: Complete Card Markup
 
-### 5.1 Full Card Structure
+### 5.1 Full Card Structure (Visual-First)
 
 ```html
 <article class="cut-card" data-cut-id="...">
-    <!-- Media -->
+    <!-- Media (Primary, 95% of space) -->
     <div class="cut-media">
         <video class="cut-video" src="..." poster="..." muted></video>
-    </div>
-    
-    <!-- Creator Info -->
-    <div class="cut-creator">
-        <div class="cut-avatar">
-            <img src="..." alt="Creator">
-        </div>
-        <div class="cut-creator-info">
+        
+        <!-- Creator Info Overlay (Top-Left) -->
+        <div class="cut-creator-overlay">
+            <div class="cut-avatar">
+                <img src="..." alt="Creator">
+            </div>
             <div class="cut-creator-name">@username</div>
-            <div class="cut-creator-level">Experienced</div>
         </div>
-    </div>
-    
-    <!-- Description -->
-    <div class="cut-description">
-        <p class="cut-description-text">Description text that can be truncated...</p>
-    </div>
-    
-    <!-- Domain Tags -->
-    <div class="cut-domains">
-        <span class="cut-domain-tag">Visual Arts</span>
-        <span class="cut-domain-tag">Painting</span>
-    </div>
-    
-    <!-- Interactions -->
-    <div class="cut-interactions">
-        <button class="cut-interaction-btn" data-action="recognize">
-            <span class="interaction-dot"></span>
-            <span class="interaction-label">recognize</span>
-            <span class="interaction-count">12</span>
-        </button>
-        <button class="cut-interaction-btn" data-action="growth">
-            <span class="interaction-dot"></span>
-            <span class="interaction-label">growth</span>
-            <span class="interaction-count">5</span>
-        </button>
-        <button class="cut-interaction-btn" data-action="connect">
-            <span class="interaction-dot"></span>
-            <span class="interaction-label">connect</span>
-            <span class="interaction-count">3</span>
-        </button>
-    </div>
-    
-    <!-- Metadata -->
-    <div class="cut-metadata">
-        <span class="cut-time">2h</span>
-        <span class="cut-views">1.2k</span>
+        
+        <!-- Metadata Overlay (Top-Right) -->
+        <div class="cut-metadata-overlay">
+            <span class="cut-time">2h</span>
+        </div>
+        
+        <!-- Domain Tag Overlay (Bottom-Left, Optional) -->
+        <div class="cut-domains-overlay">
+            <span class="cut-domain-tag">Visual Arts</span>
+        </div>
+        
+        <!-- Interactions Overlay (Bottom-Right, On Hover) -->
+        <div class="cut-interactions-overlay">
+            <button class="cut-interaction-btn" data-action="recognize" title="Recognize">
+                <span class="interaction-dot"></span>
+                <span class="interaction-count">12</span>
+            </button>
+            <button class="cut-interaction-btn" data-action="growth" title="Growth">
+                <span class="interaction-dot"></span>
+                <span class="interaction-count">5</span>
+            </button>
+            <button class="cut-interaction-btn" data-action="connect" title="Connect">
+                <span class="interaction-dot"></span>
+                <span class="interaction-count">3</span>
+            </button>
+        </div>
     </div>
 </article>
 ```
@@ -397,17 +370,16 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
 }
 ```
 
-### 6.2 Cut Card
+### 6.2 Cut Card (Visual-First)
 
 ```css
 .cut-card {
     background: var(--bg-secondary);
     border: var(--border-width-thin) solid var(--border-color);
     border-radius: 8px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
     transition: border-color 0.2s ease;
 }
 
@@ -415,21 +387,20 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
     border-color: var(--text-secondary);
 }
 
-.cut-card > * + * {
-    margin-top: 12px;
+.cut-card:hover .cut-interactions-overlay {
+    opacity: 1;
 }
 ```
 
-### 6.3 Media Container
+### 6.3 Media Container (Primary)
 
 ```css
 .cut-media {
     width: 100%;
     position: relative;
-    border-radius: 8px;
-    overflow: hidden;
     background: var(--bg-tertiary);
     aspect-ratio: 9 / 16;
+    overflow: hidden;
 }
 
 .cut-video {
@@ -439,28 +410,36 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
     display: block;
 }
 
-.cut-media-overlay {
+/* All overlays positioned absolutely over media */
+.cut-creator-overlay,
+.cut-metadata-overlay,
+.cut-domains-overlay,
+.cut-interactions-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
+    z-index: 10;
+    pointer-events: auto;
 }
 ```
 
-### 6.4 Creator Info
+### 6.4 Creator Info (Overlay, Top-Left)
 
 ```css
-.cut-creator {
+.cut-creator-overlay {
+    top: 8px;
+    left: 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+    border-top-left-radius: 8px;
 }
 
 .cut-avatar {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
@@ -473,97 +452,74 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
     object-fit: cover;
 }
 
-.cut-creator-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-
 .cut-creator-name {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 500;
     color: var(--text-primary);
     line-height: 1.2;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.cut-creator-level {
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--text-tertiary);
-    line-height: 1.2;
 }
 ```
 
-### 6.5 Description
+### 6.5 Description (Removed)
 
 ```css
-.cut-description {
-    margin-top: 8px;
-}
-
-.cut-description-text {
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--text-primary);
-    line-height: 1.4;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+/* No description - visual-first design */
 ```
 
-### 6.6 Domain Tags
+### 6.6 Domain Tags (Overlay, Bottom-Left, Optional)
 
 ```css
-.cut-domains {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
+.cut-domains-overlay {
+    bottom: 8px;
+    left: 8px;
+    padding: 4px 6px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+    border-bottom-left-radius: 8px;
 }
 
 .cut-domain-tag {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
-    color: var(--text-secondary);
-    background: var(--bg-tertiary);
-    padding: 4px 8px;
-    border-radius: 4px;
-    border: var(--border-width-thin) solid var(--border-color);
+    color: var(--text-primary);
     line-height: 1.2;
+    white-space: nowrap;
 }
 ```
 
-### 6.7 Interaction Bar
+### 6.7 Interaction Bar (Overlay, Bottom-Right, On Hover)
 
 ```css
-.cut-interactions {
+.cut-interactions-overlay {
+    bottom: 8px;
+    right: 8px;
     display: flex;
-    gap: 12px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: var(--border-width-thin) solid var(--border-color);
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 8px;
+    border-bottom-right-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.cut-card:hover .cut-interactions-overlay {
+    opacity: 1;
 }
 
 .cut-interaction-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 8px;
+    gap: 4px;
+    padding: 4px 6px;
     border: none;
     background: transparent;
     cursor: pointer;
     transition: opacity 0.2s ease;
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--text-secondary);
 }
 
 .cut-interaction-btn:hover {
@@ -575,60 +531,54 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
 }
 
 .interaction-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     flex-shrink: 0;
 }
 
 .cut-interaction-btn[data-action="recognize"] .interaction-dot {
     background-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
 }
 
 .cut-interaction-btn[data-action="growth"] .interaction-dot {
     background-color: rgba(96, 165, 250, 0.6);
-    box-shadow: 0 0 4px rgba(96, 165, 250, 0.4);
+    box-shadow: 0 0 3px rgba(96, 165, 250, 0.4);
 }
 
 .cut-interaction-btn[data-action="connect"] .interaction-dot {
     background-color: rgba(168, 85, 247, 0.6);
-    box-shadow: 0 0 4px rgba(168, 85, 247, 0.4);
-}
-
-.interaction-label {
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--text-secondary);
-    line-height: 1.2;
+    box-shadow: 0 0 3px rgba(168, 85, 247, 0.4);
 }
 
 .interaction-count {
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 400;
-    color: var(--text-tertiary);
+    color: var(--text-primary);
     line-height: 1.2;
 }
 ```
 
-### 6.8 Metadata
+### 6.8 Metadata (Overlay, Top-Right)
 
 ```css
-.cut-metadata {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--text-tertiary);
-    line-height: 1.2;
+.cut-metadata-overlay {
+    top: 8px;
+    right: 8px;
+    padding: 4px 6px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+    border-top-right-radius: 8px;
 }
 
-.cut-time,
-.cut-views {
-    font-size: 11px;
+.cut-time {
+    font-size: 9px;
     font-weight: 400;
-    color: var(--text-tertiary);
+    color: var(--text-primary);
+    line-height: 1.2;
+    white-space: nowrap;
 }
 ```
 
@@ -853,30 +803,24 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
 
 ## Part 15: Visual Examples
 
-### 15.1 Card Layout
+### 15.1 Card Layout (Visual-First)
 
 ```
 ┌─────────────────────────┐
+│ [Avatar] @username  2h  │ ← Overlay (top)
+│                         │
 │                         │
 │      Media (Video)      │
+│      (95% of space)     │
 │                         │
-├─────────────────────────┤
-│ [Avatar] @username      │
-│          Experienced    │
 │                         │
-│ Description text that   │
-│ can be truncated to 3   │
-│ lines maximum...        │
-│                         │
-│ [Visual Arts] [Painting]│
-│                         │
-│ ─────────────────────── │
-│ • recognize 12          │
-│ • growth 5               │
-│ • connect 3             │
-│                         │
-│ 2h • 1.2k               │
+│ [Visual Arts]    • 12   │ ← Overlay (bottom)
+│                 • 5     │   (on hover)
+│                 • 3     │
 └─────────────────────────┘
+
+All text is overlay, minimal, tiny fonts (9-11px)
+No dedicated space for metrics - all overlay
 ```
 
 ### 15.2 Grid Layout
@@ -898,20 +842,25 @@ KX Cuts uses a **masonry Pinterest-style layout** with:
 
 ### 16.1 Key Features
 
-1. **Masonry Grid**: Pinterest-style, responsive
-2. **Small Fonts**: 11-13px (Reddit-style)
-3. **Modular Components**: Reusable, efficient
-4. **Lots of Space**: 16px gaps, 12px padding
-5. **No Emojis**: Clean, professional
-6. **Interactions**: Recognize, Growth, Connect
+1. **Visual-First**: Media takes 95% of space
+2. **Masonry Grid**: Pinterest-style, responsive
+3. **Mini Fonts**: 9-11px (ultra-small, modular)
+4. **Overlay Elements**: All text/metrics overlay on media
+5. **No Dedicated Space**: No space for metrics/text
+6. **Modular Components**: Reusable, efficient
+7. **Lots of Space**: 16px gaps between cards
+8. **No Emojis**: Clean, professional
+9. **Interactions**: Recognize, Growth, Connect (overlay, on hover)
 
 ### 16.2 Design Principles
 
-- **Minimal**: Clean, uncluttered
-- **Efficient**: Modular, reusable
-- **Spacious**: Generous padding, breathing room
-- **Small**: Reddit-style small fonts
+- **Visual-First**: Media is primary, everything else is overlay
+- **Minimal Text**: Ultra-small fonts (9-11px), only essential
+- **No Dedicated Metrics**: All metrics overlay, no space dedicated
+- **Modular**: Reusable components, efficient
+- **Spacious**: Generous gaps between cards
 - **Professional**: No emojis, clean design
+- **Hover Interactions**: Metrics appear on hover (or always minimal)
 
 ---
 
