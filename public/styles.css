@@ -293,6 +293,7 @@ body {
     padding: 4px 16px; /* Reduced from 8px to make thinner */
     /* border-top: var(--border-width-thin) solid var(--border-color); */ /* Removed grey border */
     position: relative;
+    padding-bottom: 2px; /* Reduced bottom padding for less space below */
 }
 
 /* Advanced Navigation Bar */
@@ -326,6 +327,8 @@ body {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    line-height: 1.2;
+    margin: 0;
 }
 
 .advanced-nav .nav-item:hover {
@@ -3673,6 +3676,37 @@ html:has(#app.sidebar-pushed) {
         font-family: var(--font-brand); /* Neue Montreal / Gotham Book alternative */
     }
     
+    /* Navigation menu mobile fixes */
+    .header-submenu {
+        padding: 2px 12px 0 12px; /* Reduced padding, especially bottom */
+        gap: 8px; /* Closer spacing */
+        z-index: 2; /* Ensure it's above other elements */
+    }
+    
+    .advanced-nav {
+        gap: 12px; /* Closer spacing between nav items */
+        padding: 0 4px;
+        z-index: 2; /* Ensure it's above other elements */
+    }
+    
+    .advanced-nav .nav-item {
+        font-size: 10px; /* Smaller font on mobile */
+        padding: 4px 6px; /* Reduced padding */
+        line-height: 1.1; /* Tighter line height */
+        margin: 0;
+    }
+    
+    /* Ensure nav doesn't overlap with icon */
+    .astro-time-indicator {
+        z-index: 1; /* Behind nav */
+        left: 8px; /* Slightly adjust position */
+    }
+    
+    .star-notepad-btn {
+        z-index: 1; /* Behind nav */
+        right: 8px; /* Slightly adjust position */
+    }
+    
     /* Container padding */
     .stream-container,
     .atlas-container,
@@ -3711,7 +3745,7 @@ html:has(#app.sidebar-pushed) {
 }
 
 @media (max-width: 480px) {
-    /* Extra small screens */
+    /* Extra small screens - iPhone size */
     .stream-title,
     .atlas-title,
     .reactor-title,
@@ -3724,6 +3758,23 @@ html:has(#app.sidebar-pushed) {
     .reactor-subtitle,
     .application-subtitle {
         font-size: var(--font-size-sm);
+    }
+    
+    /* Even tighter navigation on small screens */
+    .header-submenu {
+        padding: 1px 8px 0 8px; /* Minimal padding */
+        gap: 6px; /* Very close spacing */
+    }
+    
+    .advanced-nav {
+        gap: 8px; /* Very close spacing between items */
+        padding: 0 2px;
+    }
+    
+    .advanced-nav .nav-item {
+        font-size: 9px; /* Even smaller font */
+        padding: 3px 4px; /* Minimal padding */
+        line-height: 1.0; /* Very tight line height */
     }
 }
 
