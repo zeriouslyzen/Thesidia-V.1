@@ -841,6 +841,29 @@ class ThreadDetailPage {
         }
     }
     
+    handleBack() {
+        // Check if we have a stored referrer
+        const referrer = sessionStorage.getItem('thread_referrer');
+        
+        if (referrer) {
+            // Navigate back to the referrer page
+            sessionStorage.removeItem('thread_referrer');
+            window.location.href = referrer;
+        } else if (document.referrer && document.referrer.includes(window.location.origin)) {
+            // Use browser referrer if available
+            const referrerPath = new URL(document.referrer).pathname;
+            if (referrerPath && referrerPath !== window.location.pathname) {
+                window.location.href = referrerPath;
+            } else {
+                // Fallback to circles/stream
+                window.location.href = '/stream.html';
+            }
+        } else {
+            // Default fallback - go to circles section
+            window.location.href = '/stream.html#circles';
+        }
+    }
+    
     // Utility methods
     escapeHtml(text) {
         if (!text) return '';
