@@ -196,7 +196,20 @@ class Router {
                 window.ThreadDetailPage.loadThread(threadId);
             }
         } else {
-            // Navigate to thread.html with hash
+            // Store referrer for back button
+            const referrer = window.location.pathname + window.location.search;
+            sessionStorage.setItem('thread_referrer', referrer);
+            
+            // Use pushState for proper history
+            let path;
+            if (category) {
+                path = `/circles/${category}/${threadId}`;
+            } else {
+                path = `/thread/${threadId}`;
+            }
+            window.history.pushState({ threadId, category, referrer }, '', path);
+            
+            // Navigate to thread page
             window.location.href = `/thread.html#${threadId}`;
         }
     }

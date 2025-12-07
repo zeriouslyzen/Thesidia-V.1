@@ -103,6 +103,14 @@ class ThreadDetailPage {
     }
     
     setupEventListeners() {
+        // Back button
+        const backBtn = document.getElementById('threadBackBtn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                this.handleBack();
+            });
+        }
+        
         // Comment form submit
         const submitBtn = document.getElementById('commentSubmit');
         if (submitBtn) {

@@ -1009,8 +1009,25 @@ class NavigationSystem {
                 
                 // Navigate to thread detail page
                 if (threadId) {
-                    // Use thread.html with hash for navigation
-                    window.location.href = `/thread.html#${threadId}`;
+                    // Store where we came from for back button
+                    const referrer = window.location.pathname + window.location.search;
+                    sessionStorage.setItem('thread_referrer', referrer);
+                    
+                    // Use pushState for proper history management
+                    let path;
+                    if (category) {
+                        path = `/circles/${category}/${threadId}`;
+                    } else {
+                        path = `/thread/${threadId}`;
+                    }
+                    window.history.pushState({ threadId, category, referrer }, '', path);
+                    
+                    // Navigate to thread page
+                    if (window.Router && window.Router.navigateToThread) {
+                        window.Router.navigateToThread(threadId, category);
+                    } else {
+                        window.location.href = `/thread.html#${threadId}`;
+                    }
                 }
             });
         });
