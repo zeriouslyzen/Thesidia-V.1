@@ -2,7 +2,20 @@
   "version": 2,
   "buildCommand": "echo 'No build needed'",
   "outputDirectory": "public",
+  "functions": {
+    "api/server.py": {
+      "runtime": "python3.9"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/server.py"
+    },
+    {
+      "source": "/(.*\\.(html|css|js|json|xml|txt|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
+      "destination": "/$1"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

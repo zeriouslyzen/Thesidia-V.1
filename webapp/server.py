@@ -65,18 +65,36 @@ except ImportError:
     ollama = None
 
 # For Vercel: serve from public/ if it exists, otherwise current directory
-static_dir = Path(__file__).parent.parent / 'public'
-if static_dir.exists():
-    app = Flask(__name__, static_folder=str(static_dir), static_url_path='')
-else:
-    app = Flask(__name__, static_folder='.', static_url_path='')
-CORS(app)  # Enable CORS for security
+try:
+    static_dir = Path(__file__).parent.parent / 'public'
+    if static_dir.exists():
+        app = Flask(__name__, static_folder=str(static_dir), static_url_path='')
+    else:
+        app = Flask(__name__, static_folder='.', static_url_path='')
+    CORS(app)  # Enable CORS for security
+except Exception as e:
+    # Fallback if Flask initialization fails
+    import traceback
+    print(f"Error initializing Flask app: {e}")
+    traceback.print_exc()
+    # Create minimal app
+    from flask import Flask
+    from flask_cors import CORS
+    app = Flask(__name__)
+    CORS(app)
 
 # Session configuration for OAuth
 app.secret_key = os.getenv('FLASK_SECRET_KEY', secrets.token_urlsafe(32))
 
-# Security headers middleware
-from webapp.config.security import is_security_headers_enabled, is_https_required
+# Security headers middleware - wrapped in try/except for Vercel
+try:
+    from webapp.config.security import is_security_headers_enabled, is_https_required
+except ImportError:
+    # Fallback if security config can't be imported
+    def is_security_headers_enabled():
+        return False
+    def is_https_required():
+        return False
 
 @app.after_request
 def add_security_headers(response):
@@ -286,11 +304,16 @@ def status():
             except Exception as e:
                 print(f"Warning: Could not initialize Thesidia: {e}")
         
-        features = {
-            'deep_research': thesidia.deep_research_engine is not None if thesidia else False,
-            'web_search': thesidia.web_search is not None if thesidia else False,
-            'model_routing': thesidia.capabilities.model_router is not None if thesidia else False,
-        }
+        features = {}
+        if thesidia:
+            try:
+                features = {
+                    'deep_research': thesidia.deep_research_engine is not None if hasattr(thesidia, 'deep_research_engine') else False,
+                    'web_search': thesidia.web_search is not None if hasattr(thesidia, 'web_search') else False,
+                    'model_routing': thesidia.capabilities.model_router is not None if hasattr(thesidia, 'capabilities') and hasattr(thesidia.capabilities, 'model_router') else False,
+                }
+            except:
+                features = {}
         
         return jsonify({
             'ollama_status': ollama_status,
@@ -301,7 +324,9 @@ def status():
         })
     except Exception as e:
         import traceback
-        traceback.print_exc()
+        error_trace = traceback.format_exc()
+        print(f"Error in /api/status: {e}")
+        print(error_trace)
         return jsonify({
             'ollama_status': False,
             'thesidia_ready': False,
@@ -309,7 +334,7 @@ def status():
             'features': {},
             'error': str(e),
             'timestamp': datetime.now().isoformat()
-        }), 500
+        }), 200  # Return 200 instead of 500 so frontend can handle gracefully
 
 @app.route('/api/thesidia', methods=['POST'])
 def thesidia_api():
@@ -3400,19 +3425,24 @@ if __name__ == '__main__':
         )
 
 # Catch-all route for static files - MUST be registered last so API routes match first
-@app.route('/<path:path>')
-def serve_static(path):
-    """Serve static files with no-cache headers"""
-    # Check public/ directory first (for Vercel), then current directory
-    static_dir = Path(__file__).parent.parent / 'public'
-    if static_dir.exists() and (static_dir / path).exists():
-        response = send_from_directory(str(static_dir), path)
-    else:
-        response = send_from_directory('.', path)
-    # Add cache-busting headers for HTML, CSS, and JS files
-    if path.endswith(('.html', '.css', '.js')):
-        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '0'
-    return response
+# Skip this route on Vercel (Vercel handles static files)
+if not os.getenv('VERCEL'):
+    @app.route('/<path:path>')
+    def serve_static(path):
+        """Serve static files with no-cache headers"""
+        try:
+            # Check public/ directory first (for Vercel), then current directory
+            static_dir = Path(__file__).parent.parent / 'public'
+            if static_dir.exists() and (static_dir / path).exists():
+                response = send_from_directory(str(static_dir), path)
+            else:
+                response = send_from_directory('.', path)
+            # Add cache-busting headers for HTML, CSS, and JS files
+            if path.endswith(('.html', '.css', '.js')):
+                response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                response.headers['Pragma'] = 'no-cache'
+                response.headers['Expires'] = '0'
+            return response
+        except Exception as e:
+            return jsonify({'error': 'File not found', 'path': path}), 404
 
