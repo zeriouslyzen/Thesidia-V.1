@@ -19,6 +19,7 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / 'src'))
 
 from flask import Flask, request, jsonify, send_from_directory, Response, stream_with_context, redirect, session
+from werkzeug.utils import secure_filename
 from flask_cors import CORS
 # Force fresh import - clear any cached modules
 import sys
@@ -1063,6 +1064,93 @@ def update_content_settings():
             return jsonify({'error': error}), 400
         
         return jsonify({'success': True, 'message': 'Content settings updated'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/media/upload', methods=['POST'])
+def upload_media():
+    """Upload media file (image or video)"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    
+    user_id = request.form.get('user_id') or request.args.get('user_id')
+    session_id = request.form.get('session_id') or request.args.get('session_id')
+    
+    try:
+        # Get user data
+        if user_memory_manager:
+            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+            user_id = user_data.get('user_id') if user_data else user_id
+        
+        if not user_id:
+            return jsonify({'error': 'User authentication required'}), 401
+        
+        # Validate file type
+        filename = secure_filename(file.filename)
+        file_ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'mp4', 'webm', 'mov'}
+        
+        if file_ext not in allowed_extensions:
+            return jsonify({'error': f'File type not allowed. Allowed: {", ".join(allowed_extensions)}'}), 400
+        
+        # Determine media type
+        media_type = 'video' if file_ext in {'mp4', 'webm', 'mov'} else 'image'
+        
+        # Create uploads directory structure
+        uploads_dir = project_root / 'data' / 'uploads' / 'media'
+        uploads_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Generate unique filename
+        timestamp = int(datetime.now().timestamp() * 1000)
+        unique_filename = f"{user_id}_{timestamp}_{filename}"
+        file_path = uploads_dir / unique_filename
+        
+        # Save file
+        file.save(str(file_path))
+        
+        # Generate URL
+        media_url = f'/api/media/{unique_filename}'
+        
+        return jsonify({
+            'url': media_url,
+            'type': media_type,
+            'filename': unique_filename,
+            'size': file_path.stat().st_size
+        }), 201
+        
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/media/<filename>', methods=['GET'])
+def serve_media(filename):
+    """Serve uploaded media files"""
+    try:
+        uploads_dir = project_root / 'data' / 'uploads' / 'media'
+        file_path = uploads_dir / secure_filename(filename)
+        
+        if not file_path.exists() or not file_path.is_file():
+            return jsonify({'error': 'File not found'}), 404
+        
+        # Determine content type
+        ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+        content_types = {
+            'jpg': 'image/jpeg',
+            'jpeg': 'image/jpeg',
+            'png': 'image/png',
+            'gif': 'image/gif',
+            'webp': 'image/webp',
+            'mp4': 'video/mp4',
+            'webm': 'video/webm',
+            'mov': 'video/quicktime'
+        }
+        content_type = content_types.get(ext, 'application/octet-stream')
+        
+        return send_from_directory(str(uploads_dir), filename, mimetype=content_type)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

@@ -1264,7 +1264,7 @@
                 }
             }
             
-            handleMediaUpload(type) {
+            async handleMediaUpload(type) {
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = type === 'image' ? 'image/*' : 'video/*';
@@ -1274,25 +1274,77 @@
                     const file = e.target.files[0];
                     if (!file) return;
                     
-                    // Show preview
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const preview = document.createElement('div');
-                        preview.className = 'media-preview';
-                        preview.innerHTML = `
-                            <${type === 'image' ? 'img' : 'video'} src="${event.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
-                            <button class="remove-media" onclick="this.parentElement.remove()">×</button>
-                        `;
-                        const composeArea = document.querySelector('.compose-input-area');
-                        if (composeArea) {
-                            composeArea.insertBefore(preview, composeArea.firstChild);
-                        }
-                    };
+                    // Validate file size (max 10MB for images, 50MB for videos)
+                    const maxSize = type === 'image' ? 10 * 1024 * 1024 : 50 * 1024 * 1024;
+                    if (file.size > maxSize) {
+                        alert(`File too large. Maximum size: ${type === 'image' ? '10MB' : '50MB'}`);
+                        return;
+                    }
                     
-                    if (type === 'image') {
-                        reader.readAsDataURL(file);
-                    } else {
-                        reader.readAsDataURL(file);
+                    // Show loading state
+                    const composeArea = document.querySelector('.compose-input-area');
+                    if (!composeArea) return;
+                    
+                    const loadingPreview = document.createElement('div');
+                    loadingPreview.className = 'media-preview loading';
+                    loadingPreview.innerHTML = `
+                        <div style="padding: 20px; text-align: center; color: var(--text-secondary);">
+                            Uploading...
+                        </div>
+                    `;
+                    composeArea.insertBefore(loadingPreview, composeArea.firstChild);
+                    
+                    try {
+                        // Upload file
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('user_id', this.userId || '');
+                        formData.append('session_id', this.sessionId || '');
+                        
+                        const response = await fetch('/api/media/upload', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (!response.ok) {
+                            const error = await response.json();
+                            throw new Error(error.error || 'Upload failed');
+                        }
+                        
+                        const data = await response.json();
+                        
+                        // Replace loading with preview
+                        loadingPreview.className = 'media-preview';
+                        loadingPreview.innerHTML = `
+                            <${type === 'image' ? 'img' : 'video'} 
+                                src="${data.url}" 
+                                alt="Preview" 
+                                style="max-width: 200px; max-height: 200px; border-radius: 8px; object-fit: cover;"
+                                ${type === 'video' ? 'controls' : ''}
+                            >
+                            <button class="remove-media" onclick="this.parentElement.remove()">×</button>
+                            <input type="hidden" class="media-url" value="${data.url}">
+                            <input type="hidden" class="media-type" value="${data.type}">
+                        `;
+                        
+                        // Store media data for post creation
+                        if (!this.pendingMedia) {
+                            this.pendingMedia = [];
+                        }
+                        this.pendingMedia.push({
+                            url: data.url,
+                            type: data.type,
+                            filename: data.filename
+                        });
+                        
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                        loadingPreview.innerHTML = `
+                            <div style="padding: 20px; text-align: center; color: var(--text-error);">
+                                Upload failed: ${error.message}
+                                <button onclick="this.parentElement.parentElement.remove()" style="margin-top: 10px;">Close</button>
+                            </div>
+                        `;
                     }
                 });
                 
@@ -1462,11 +1514,39 @@
             
             async createPost() {
                 const composeTextarea = document.getElementById('composeTextarea');
-                if (!composeTextarea || !composeTextarea.value.trim()) return;
+                if (!composeTextarea || !composeTextarea.value.trim()) {
+                    // Allow posts with just media
+                    if (!this.pendingMedia || this.pendingMedia.length === 0) {
+                        return;
+                    }
+                }
                 
                 const content = composeTextarea.value.trim();
                 composeTextarea.value = '';
                 document.getElementById('postBtn').disabled = true;
+                
+                // Collect media from previews
+                const media = [];
+                if (this.pendingMedia && this.pendingMedia.length > 0) {
+                    media.push(...this.pendingMedia);
+                } else {
+                    // Fallback: collect from DOM
+                    const mediaPreviews = document.querySelectorAll('.media-preview');
+                    mediaPreviews.forEach(preview => {
+                        const urlInput = preview.querySelector('.media-url');
+                        const typeInput = preview.querySelector('.media-type');
+                        if (urlInput && typeInput) {
+                            media.push({
+                                url: urlInput.value,
+                                type: typeInput.value
+                            });
+                        }
+                    });
+                }
+                
+                // Clear media previews
+                document.querySelectorAll('.media-preview').forEach(preview => preview.remove());
+                this.pendingMedia = [];
                 
                 try {
                     const response = await fetch('/api/posts', {
@@ -1474,6 +1554,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             content: content,
+                            media: media,
                             user_id: this.userId,
                             session_id: this.sessionId
                         })
