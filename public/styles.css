@@ -5768,7 +5768,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .profile-bio {
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 .profile-picture-large.square {

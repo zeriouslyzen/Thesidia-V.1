@@ -104,9 +104,13 @@ class ProfilePage {
         
         const socialLink = document.getElementById('profileSocialLink');
         const socialText = document.getElementById('profileSocialText');
-        if (profile.socialUrl) {
-            socialLink.href = profile.socialUrl;
-            socialText.textContent = profile.socialType === 'facebook' ? 'Facebook' : 'Instagram';
+        const igLink = document.getElementById('profileSocialIG');
+        const xLink = document.getElementById('profileSocialX');
+        if (igLink) {
+            igLink.href = profile.ig || profile.socialUrl || '#';
+        }
+        if (xLink) {
+            xLink.href = profile.x || '#';
         }
 
         const avatar = profile.avatar_url || localStorage.getItem('profileImage');
