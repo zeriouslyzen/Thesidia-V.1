@@ -5772,7 +5772,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .profile-picture-large.square {
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 .profile-picture-large.circle {

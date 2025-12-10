@@ -189,24 +189,7 @@ class ProfilePage {
         document.getElementById('cancelCropBtn').addEventListener('click', () => this.closeCropModal());
         document.getElementById('applyCropBtn').addEventListener('click', () => this.applyCrop());
 
-        // Avatar shape toggle
-        const circleBtn = document.getElementById('avatarCircleBtn');
-        const squareBtn = document.getElementById('avatarSquareBtn');
-        const picture = document.getElementById('profilePictureLarge');
-        if (circleBtn && squareBtn && picture) {
-            circleBtn.addEventListener('click', () => {
-                picture.classList.add('circle');
-                picture.classList.remove('square');
-                circleBtn.classList.add('active');
-                squareBtn.classList.remove('active');
-            });
-            squareBtn.addEventListener('click', () => {
-                picture.classList.add('square');
-                picture.classList.remove('circle');
-                squareBtn.classList.add('active');
-                circleBtn.classList.remove('active');
-            });
-        }
+        // Avatar shape toggle removed (default rectangle)
     }
 
     openEditModal() {

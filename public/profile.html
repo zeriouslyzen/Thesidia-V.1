@@ -147,7 +147,7 @@
 
         .edit-profile-btn {
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 0;
             color: var(--text-primary);
             padding: 8px 20px;
             border-radius: 20px;
@@ -158,8 +158,7 @@
         }
 
         .edit-profile-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         /* Profile Info */
@@ -775,7 +774,7 @@
             <!-- Profile Header -->
             <div class="profile-header">
                 <!-- Profile Picture -->
-                <div class="profile-picture-large circle" id="profilePictureLarge">
+                <div class="profile-picture-large square" id="profilePictureLarge">
                     <img src="/profile-image.jpg" alt="Profile" id="profilePictureImg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'%3E%3Ccircle cx=\'60\' cy=\'60\' r=\'60\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'60\' cy=\'45\' r=\'18\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M30 115 Q60 95 90 115\' stroke=\'%23ffffff\' stroke-width=\'3\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
                     <div class="profile-picture-edit-overlay">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -787,11 +786,7 @@
 
                 <!-- Profile Actions -->
                 <div class="profile-actions">
-                    <button class="edit-profile-btn" id="editProfileBtn">Edit profile</button>
-                    <div class="avatar-toggle-group">
-                        <button class="avatar-toggle-btn active" id="avatarCircleBtn">Circle</button>
-                        <button class="avatar-toggle-btn" id="avatarSquareBtn">Square</button>
-                    </div>
+                    <button class="edit-profile-btn no-border" id="editProfileBtn">Edit profile</button>
                 </div>
 
                 <!-- Profile Info -->
@@ -830,15 +825,15 @@
                     <div class="profile-stats-large">
                         <div class="profile-stat">
                             <span class="profile-stat-number" id="profileFollowingCount">150</span>
-                            <span>Following</span>
+                            <span>Top links</span>
                         </div>
                         <div class="profile-stat">
                             <span class="profile-stat-number" id="profileFollowersCount">1.2K</span>
-                            <span>Followers</span>
+                            <span>Resonating</span>
                         </div>
                         <div class="profile-stat">
                             <span class="profile-stat-number" id="profilePostsCount">42</span>
-                            <span>Posts</span>
+                            <span>Works</span>
                         </div>
                     </div>
                 </div>
@@ -846,10 +841,10 @@
 
             <!-- Profile Navigation -->
             <div class="profile-nav">
-                <div class="profile-nav-item active" data-tab="posts">Posts</div>
-                <div class="profile-nav-item" data-tab="replies">Replies</div>
-                <div class="profile-nav-item" data-tab="media">Media</div>
-                <div class="profile-nav-item" data-tab="likes">Likes</div>
+                <div class="profile-nav-item active" data-tab="stream">Stream</div>
+                <div class="profile-nav-item" data-tab="portfolio">Portfolio</div>
+                <div class="profile-nav-item" data-tab="cuts">KX Cuts</div>
+                <div class="profile-nav-item" data-tab="dojo">Dojo</div>
             </div>
 
             <!-- Profile Timeline -->
