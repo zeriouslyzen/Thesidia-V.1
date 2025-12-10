@@ -1,0 +1,17 @@
+{
+  "user_id": "user_kxc_aurora",
+  "username": "aurora",
+  "display_name": "Aurora Vale",
+  "avatar_url": "https://i.pravatar.cc/120?img=47",
+  "bio": "Motion designer crafting kinetic, minimal stories.",
+  "role": "Visual Artist",
+  "domains": ["movement", "visual"],
+  "location": "Barcelona",
+  "website": "https://auroravale.studio",
+  "stats": {
+    "posts": 42,
+    "followers": 12800,
+    "following": 420
+  }
+}
+

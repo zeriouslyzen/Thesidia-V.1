@@ -4,96 +4,139 @@ class ProfilePage {
         this.currentCropType = null;
         this.userId = null;
         this.sessionId = null;
-        this.init();
-    }
-    
-    async init() {
-        // Load user session
-        this.userId = localStorage.getItem('thesidia_user_id');
-        this.sessionId = localStorage.getItem('thesidia_session_id');
-        
-        if (!this.sessionId) {
-            try {
-                const response = await fetch('/api/user/session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({})
-                });
-                const data = await response.json();
-                if (data.user_id && data.session_id) {
-                    this.userId = data.user_id;
-                    this.sessionId = data.session_id;
-                    localStorage.setItem('thesidia_user_id', this.userId);
-                    localStorage.setItem('thesidia_session_id', this.sessionId);
-                }
-            } catch (error) {
-                console.error('Error loading session:', error);
-            }
-        }
-        
-        // Load timeline on init
-        this.loadTimeline();
-        
-        // Setup tab switching
-        document.querySelectorAll('.profile-nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const tab = item.dataset.tab;
-                this.switchTab(tab);
-            });
-        }); // 'profile' or 'banner'
+        this.mockProfiles = [];
+        this.profileData = null;
         this.cropCanvas = null;
         this.cropImage = null;
         this.cropContext = null;
         this.init();
     }
 
-    init() {
+    async ensureSession() {
+        if (this.sessionId) return;
+        try {
+            const response = await fetch('/api/user/session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            const data = await response.json();
+            if (data.user_id && data.session_id) {
+                this.userId = this.userId || data.user_id;
+                this.sessionId = data.session_id;
+                localStorage.setItem('thesidia_user_id', this.userId);
+                localStorage.setItem('thesidia_session_id', this.sessionId);
+            }
+        } catch (error) {
+            console.warn('Session bootstrap failed (mock mode is okay):', error);
+        }
+    }
+
+    async loadMockProfiles() {
+        try {
+            const res = await fetch('/mock-profiles.json');
+            const data = await res.json();
+            this.mockProfiles = data.profiles || [];
+        } catch (error) {
+            console.warn('Could not load mock profiles', error);
+            this.mockProfiles = [];
+        }
+    }
+
+    getProfileFromMocks() {
+        const targetId = this.getProfileUserId();
+        const found = this.mockProfiles.find(p => p.user_id === targetId);
+        if (found) return found;
+        // Fallback to first mock
+        return this.mockProfiles[0] || null;
+    }
+
+    stripProtocol(url) {
+        return url.replace(/^https?:\/\//, '').replace(/^\/\//, '');
+    }
+
+    getDisciplineLabels(domains) {
+        const map = {
+            'movement': 'Movement Arts',
+            'visual': 'Visual Arts',
+            'music': 'Music & Sound',
+            'sound': 'Music & Sound',
+            'craft': 'Craft & Design',
+            'design': 'Design',
+            'performance': 'Performance',
+            'writing': 'Writing',
+            'ai': 'AI Systems',
+            'systems': 'Systems',
+            'physical': 'Physical Training'
+        };
+        return (domains || []).map(d => map[d] || d).filter(Boolean);
+    }
+    
+    async init() {
+        this.userId = this.getProfileUserId();
+        this.sessionId = localStorage.getItem('thesidia_session_id');
+        
+        await this.ensureSession();
+        await this.loadMockProfiles();
         this.loadProfileData();
         this.setupEventListeners();
         this.loadTimeline();
     }
 
     loadProfileData() {
-        // Load from localStorage or use defaults
-        const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
+        const profile = this.getProfileFromMocks() || {};
+        this.profileData = profile;
         
-        // Set profile data
-        document.getElementById('profileNameLarge').textContent = profileData.name || profileData.display_name || 'User';
-        document.getElementById('profileUsernameLarge').textContent = `@${profileData.username || 'user'}`;
-        document.getElementById('profileBio').textContent = profileData.bio || 'Exploring the depths of consciousness and pattern recognition. Building Thesidia.';
+        document.getElementById('profileNameLarge').textContent = profile.display_name || profile.name || 'User';
+        document.getElementById('profileUsernameLarge').textContent = `//${profile.username || 'user'}`;
+        document.getElementById('profileBio').textContent = profile.bio || 'Exploring the depths of consciousness and pattern recognition. Building Thesidia.';
         
-        if (profileData.location) {
-            document.getElementById('profileLocation').querySelector('span').textContent = profileData.location;
+        if (profile.location) {
+            document.getElementById('profileLocation').querySelector('span').textContent = profile.location;
         }
         
-        if (profileData.website) {
+        if (profile.website) {
             const websiteLink = document.getElementById('profileWebsiteLink');
-            websiteLink.textContent = profileData.website;
-            websiteLink.href = profileData.website.startsWith('http') ? profileData.website : `https://${profileData.website}`;
+            const cleanUrl = this.stripProtocol(profile.website);
+            websiteLink.textContent = `//${cleanUrl}`;
+            websiteLink.href = profile.website.startsWith('http') ? profile.website : `https://${cleanUrl}`;
         }
         
-        if (profileData.socialUrl) {
-            const socialLink = document.getElementById('profileSocialLink');
-            socialLink.href = profileData.socialUrl;
-            const socialText = document.getElementById('profileSocialText');
-            socialText.textContent = profileData.socialType === 'facebook' ? 'Facebook' : 'Instagram';
+        const socialLink = document.getElementById('profileSocialLink');
+        const socialText = document.getElementById('profileSocialText');
+        if (profile.socialUrl) {
+            socialLink.href = profile.socialUrl;
+            socialText.textContent = profile.socialType === 'facebook' ? 'Facebook' : 'Instagram';
         }
 
-        // Load images
-        const savedBanner = localStorage.getItem('profileBanner');
-        if (savedBanner) {
-            const banner = document.getElementById('profileBanner');
-            if (!banner.querySelector('img')) {
-                const img = document.createElement('img');
-                img.src = savedBanner;
-                banner.insertBefore(img, banner.firstChild);
-            }
+        const avatar = profile.avatar_url || localStorage.getItem('profileImage');
+        if (avatar) {
+            document.getElementById('profilePictureImg').src = avatar;
         }
 
-        const savedProfilePic = localStorage.getItem('profileImage');
-        if (savedProfilePic) {
-            document.getElementById('profilePictureImg').src = savedProfilePic;
+        // Role
+        const roleEl = document.getElementById('profileRole');
+        if (roleEl) {
+            roleEl.textContent = profile.role || 'Practitioner';
         }
+
+        // Disciplines (show max 2)
+        const disciplinesEl = document.getElementById('profileDisciplines');
+        if (disciplinesEl) {
+            const labels = this.getDisciplineLabels(profile.domains || profile.disciplines || []);
+            disciplinesEl.innerHTML = labels.slice(0, 2).map(l => `<span class="profile-discipline-chip">${l}</span>`).join('');
+        }
+
+        // Stats
+        document.getElementById('profileFollowingCount').textContent = profile.stats?.following ?? '0';
+        document.getElementById('profileFollowersCount').textContent = profile.stats?.followers ?? '0';
+        document.getElementById('profilePostsCount').textContent = profile.posts ? profile.posts.length : '0';
+
+        // Sidebar sync
+        const sidebarName = document.getElementById('sidebarProfileNameProfile');
+        const sidebarTag = document.getElementById('sidebarProfileTagProfile');
+        if (sidebarName) sidebarName.textContent = profile.display_name || profile.name || 'User';
+        if (sidebarTag) sidebarTag.textContent = `//${profile.username || 'user'}`;
     }
 
     setupEventListeners() {
@@ -145,6 +188,25 @@ class ProfilePage {
         // Crop modal
         document.getElementById('cancelCropBtn').addEventListener('click', () => this.closeCropModal());
         document.getElementById('applyCropBtn').addEventListener('click', () => this.applyCrop());
+
+        // Avatar shape toggle
+        const circleBtn = document.getElementById('avatarCircleBtn');
+        const squareBtn = document.getElementById('avatarSquareBtn');
+        const picture = document.getElementById('profilePictureLarge');
+        if (circleBtn && squareBtn && picture) {
+            circleBtn.addEventListener('click', () => {
+                picture.classList.add('circle');
+                picture.classList.remove('square');
+                circleBtn.classList.add('active');
+                squareBtn.classList.remove('active');
+            });
+            squareBtn.addEventListener('click', () => {
+                picture.classList.add('square');
+                picture.classList.remove('circle');
+                squareBtn.classList.add('active');
+                circleBtn.classList.remove('active');
+            });
+        }
     }
 
     openEditModal() {
@@ -321,49 +383,33 @@ class ProfilePage {
     }
 
     async loadTimeline() {
-        // Load user's posts from API
         const timeline = document.getElementById('profileTimeline');
         if (!timeline) return;
         
-        // Show loading state
-        timeline.innerHTML = '<div class="profile-loading">Loading posts...</div>';
-        
-        try {
-            const userId = localStorage.getItem('thesidia_user_id');
-            const sessionId = localStorage.getItem('thesidia_session_id');
-            const profileUserId = this.getProfileUserId() || userId;
-            
-            // Fetch user posts
-            const response = await fetch(`/api/posts?user_id=${profileUserId}&limit=50`);
-            const data = await response.json();
-            
-            if (data.posts && data.posts.length > 0) {
-                timeline.innerHTML = '';
-                data.posts.forEach(post => {
-                    const postElement = this.createPostElement(post);
-                    timeline.appendChild(postElement);
-                });
-                
-                // Update post count
-                const postsCountEl = document.getElementById('profilePostsCount');
-                if (postsCountEl) {
-                    postsCountEl.textContent = data.posts.length;
-                }
-            } else {
-                timeline.innerHTML = `
-                    <div class="profile-empty">
-                        <div class="profile-empty-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                            </svg>
-                        </div>
-                        <p>No posts yet. Start sharing your thoughts!</p>
+        const posts = this.profileData?.posts || [];
+        if (posts.length === 0) {
+            timeline.innerHTML = `
+                <div class="profile-empty">
+                    <div class="profile-empty-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
                     </div>
-                `;
-            }
-        } catch (error) {
-            console.error('Error loading timeline:', error);
-            timeline.innerHTML = '<div class="profile-error">Error loading posts. Please try again.</div>';
+                    <p>No posts yet. Start sharing your thoughts!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        timeline.innerHTML = '';
+        posts.forEach(post => {
+            const postElement = this.createPostElement(post);
+            timeline.appendChild(postElement);
+        });
+        
+        const postsCountEl = document.getElementById('profilePostsCount');
+        if (postsCountEl) {
+            postsCountEl.textContent = posts.length;
         }
     }
     
@@ -378,16 +424,17 @@ class ProfilePage {
         div.className = 'profile-post';
         
         const isPinned = post.pinned || false;
+        const avatar = post.avatar || this.profileData?.avatar_url || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='24' cy='18' r='7' fill='%23ffffff' fill-opacity='0.3'/%3E%3Cpath d='M12 46 Q24 38 36 46' stroke='%23ffffff' stroke-width='2' fill='none' stroke-opacity='0.3'/%3E%3C/svg%3E";
         
         div.innerHTML = `
             <div class="profile-post-header">
                 <div class="profile-post-avatar">
-                    <img src="${post.avatar || '/profile-image.jpg'}" alt="Profile">
+                    <img src="${avatar}" alt="Profile">
                 </div>
                 <div class="profile-post-info">
                     <div class="profile-post-author">
-                        <span class="profile-post-author-name">${post.authorName || post.author?.display_name || 'User'}</span>
-                        <span class="profile-post-author-handle">@${post.authorHandle || post.author?.username || 'user'}</span>
+                        <span class="profile-post-author-name">${post.authorName || post.author?.display_name || this.profileData?.display_name || 'User'}</span>
+                        <span class="profile-post-author-handle">//${post.authorHandle || post.author?.username || this.profileData?.username || 'user'}</span>
                         ${isPinned ? '<span class="profile-post-pinned"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17v5M9 10V6a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v4M9 10H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-3M9 10h6"/></svg> Pinned</span>' : ''}
                     </div>
                     <div class="profile-post-content">${this.escapeHtml(post.content || '')}</div>

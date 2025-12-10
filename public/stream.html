@@ -37,12 +37,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Neue Montreal / Gotham Book alternative: Space Grotesk -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Cyberpunk font: Rajdhani -->
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .stream-container {
             flex: 1;
@@ -693,7 +688,7 @@
                     <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
                     <div class="profile-picture-container" id="profilePictureContainer">
                         <div class="profile-picture" id="profilePicture">
-                            <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Ccircle cx=\'24\' cy=\'24\' r=\'24\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'24\' cy=\'18\' r=\'7\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M12 46 Q24 38 36 46\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='24' cy='18' r='7' fill='%23ffffff' fill-opacity='0.3'/%3E%3Cpath d='M12 46 Q24 38 36 46' stroke='%23ffffff' stroke-width='2' fill='none' stroke-opacity='0.3'/%3E%3C/svg%3E" alt="Profile">
                             <div class="profile-picture-overlay">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
@@ -711,6 +706,11 @@
                             <span class="stat-label">Fans</span>
                         </div>
                     </div>
+                </div>
+                
+                <div class="sidebar-follow" id="peopleToFollow">
+                    <div class="sidebar-follow-title">People to follow</div>
+                    <div class="sidebar-follow-list" id="peopleToFollowList"></div>
                 </div>
                 
                 <!-- Main Navigation -->

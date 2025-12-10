@@ -1,0 +1,139 @@
+{
+  "profiles": [
+    {
+      "user_id": "user_kxc_aurora",
+      "username": "aurora",
+      "display_name": "Aurora Vale",
+      "avatar_url": "https://i.pravatar.cc/120?img=47",
+      "bio": "Motion designer crafting kinetic, minimal stories.",
+      "role": "Visual Artist",
+      "domains": ["movement", "visual"],
+      "location": "Barcelona",
+      "website": "https://auroravale.studio",
+      "posts": [
+        {
+          "id": "aurora_p1",
+          "content": "Micro loop study: easing curves that feel like breath. 12 keyframes, 3 colors.",
+          "created_at": "2025-02-02T09:00:00Z",
+          "likes": 124,
+          "reposts": 9,
+          "replies": 6
+        },
+        {
+          "id": "aurora_p2",
+          "content": "Process: blocking beats first, textures later. Saves 40% time on motion direction.",
+          "created_at": "2025-02-01T14:30:00Z",
+          "likes": 96,
+          "reposts": 7,
+          "replies": 4
+        }
+      ]
+    },
+    {
+      "user_id": "user_kxc_motif",
+      "username": "motif",
+      "display_name": "Motif Reyes",
+      "avatar_url": "https://i.pravatar.cc/120?img=12",
+      "bio": "Composer + sound designer blending modular and field layers.",
+      "role": "Composer / Teacher",
+      "domains": ["music", "sound"],
+      "location": "Mexico City",
+      "website": "https://motif.audio",
+      "posts": [
+        {
+          "id": "motif_p1",
+          "content": "30s motif: subway brakes pitched + OP-1 tape wobble. New texture for scene breaks.",
+          "created_at": "2025-02-02T07:45:00Z",
+          "likes": 188,
+          "reposts": 14,
+          "replies": 11
+        }
+      ]
+    },
+    {
+      "user_id": "user_kxc_sierra",
+      "username": "sierra",
+      "display_name": "Sierra Nkomo",
+      "avatar_url": "https://i.pravatar.cc/120?img=33",
+      "bio": "Analog craft + textile futurist, documenting process and pattern.",
+      "role": "Textile Artist",
+      "domains": ["craft", "design"],
+      "location": "Cape Town",
+      "website": "https://sierra.studio",
+      "posts": [
+        {
+          "id": "sierra_p1",
+          "content": "Hand-dyed gradients with iron + turmeric baths. Natural shimmer, zero synthetics.",
+          "created_at": "2025-02-01T18:10:00Z",
+          "likes": 142,
+          "reposts": 10,
+          "replies": 8
+        }
+      ]
+    },
+    {
+      "user_id": "user_kxc_ember",
+      "username": "ember",
+      "display_name": "Ember Coast",
+      "avatar_url": "https://i.pravatar.cc/120?img=15",
+      "bio": "Performance poet + movement storyteller, intimate rooms and late light.",
+      "role": "Performance Poet",
+      "domains": ["performance", "writing"],
+      "location": "Toronto",
+      "website": "https://embercoast.com",
+      "posts": [
+        {
+          "id": "ember_p1",
+          "content": "Stage note: leave 2s of silence after the break—audience leans in harder.",
+          "created_at": "2025-02-02T02:20:00Z",
+          "likes": 210,
+          "reposts": 22,
+          "replies": 15
+        }
+      ]
+    },
+    {
+      "user_id": "user_kxc_nova",
+      "username": "nova",
+      "display_name": "Nova Ishikawa",
+      "avatar_url": "https://i.pravatar.cc/120?img=52",
+      "bio": "Systems thinker mapping AI tools to human rituals.",
+      "role": "Systems Researcher",
+      "domains": ["systems", "ai"],
+      "location": "Tokyo",
+      "website": "https://novalab.jp",
+      "posts": [
+        {
+          "id": "nova_p1",
+          "content": "Workflow map: prompt → vector store → human critique → synthesize → publish. 18 min total.",
+          "created_at": "2025-02-02T05:05:00Z",
+          "likes": 173,
+          "reposts": 18,
+          "replies": 12
+        }
+      ]
+    },
+    {
+      "user_id": "user_kxc_lumen",
+      "username": "lumen",
+      "display_name": "Lumen Park",
+      "avatar_url": "https://i.pravatar.cc/120?img=68",
+      "bio": "Photographer teaching lighting micro-lessons and edit recipes.",
+      "role": "Photography Educator",
+      "domains": ["visual", "learning"],
+      "location": "Seoul",
+      "website": "https://lumenpark.photo",
+      "posts": [
+        {
+          "id": "lumen_p1",
+          "content": "Lighting stack: key 1/8 CTO, fill via bounce, hair with snoot; edit = lift blacks only.",
+          "created_at": "2025-02-01T22:40:00Z",
+          "likes": 159,
+          "reposts": 12,
+          "replies": 9
+        }
+      ]
+    }
+  ]
+}
+

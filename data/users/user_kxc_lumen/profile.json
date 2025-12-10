@@ -1,0 +1,17 @@
+{
+  "user_id": "user_kxc_lumen",
+  "username": "lumen",
+  "display_name": "Lumen Park",
+  "avatar_url": "https://i.pravatar.cc/120?img=68",
+  "bio": "Photographer teaching lighting micro-lessons and edit recipes.",
+  "role": "Photography Educator",
+  "domains": ["visual", "learning"],
+  "location": "Seoul",
+  "website": "https://lumenpark.photo",
+  "stats": {
+    "posts": 49,
+    "followers": 10100,
+    "following": 290
+  }
+}
+

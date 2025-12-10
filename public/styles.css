@@ -51,10 +51,10 @@
     --status-error: #ffffff;
     
     /* Typography */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-mono: 'JetBrains Mono', 'Monaco', 'Courier New', monospace;
+    --font-family: 'Inconsolata', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'Inconsolata', 'JetBrains Mono', 'Monaco', 'Courier New', monospace;
     /* Neue Montreal / Gotham Book alternative */
-    --font-brand: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-brand: 'Inconsolata', 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     
     /* Spacing - 4px Grid System */
     --grid-unit: 4px;
@@ -248,9 +248,7 @@ body {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.15), 0 0 16px rgba(255, 255, 255, 0.08);
     animation: thesidia-glow-pulse 4s ease-in-out infinite;
     pointer-events: none;
-    /* Neue Montreal Regular / Gotham Book - using Space Grotesk as alternative */
-    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    /* To use actual Neue Montreal or Gotham Book, add @font-face declarations */
+    font-family: var(--font-family);
 }
 
 /* Minimalist slash replacing the X */
@@ -693,6 +691,73 @@ body {
     font-size: 14px;
     color: var(--text-secondary);
     margin-right: 12px;
+}
+
+.sidebar-follow {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border: var(--border-width-thin) solid var(--border-color);
+    border-radius: 10px;
+}
+
+.sidebar-follow-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.sidebar-follow-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-follow-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: var(--bg-tertiary);
+}
+
+.sidebar-follow-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--bg-secondary);
+    flex-shrink: 0;
+}
+
+.sidebar-follow-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sidebar-follow-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sidebar-follow-name {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.sidebar-follow-handle {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.sidebar-follow-domain {
+    font-size: 11px;
+    color: var(--text-secondary);
 }
 
 /* Sidebar Navigation */
@@ -5660,5 +5725,79 @@ h1, h2, h3, h4, h5, h6 {
         padding: 6px 12px;
         font-size: 12px;
     }
+}
+
+/* Profile layout refinements */
+.profile-name-large {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+}
+
+.profile-username-large,
+.profile-handle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0 0 10px 0;
+    letter-spacing: 0.01em;
+}
+
+.profile-role {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 8px 0;
+}
+
+.profile-disciplines {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 6px 0 12px 0;
+}
+
+.profile-discipline-chip {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.profile-bio {
+    font-size: 13px;
+}
+
+.profile-picture-large.square {
+    border-radius: 8px;
+}
+
+.profile-picture-large.circle {
+    border-radius: 50%;
+}
+
+.avatar-toggle-group {
+    display: inline-flex;
+    gap: 6px;
+    margin-left: 12px;
+}
+
+.avatar-toggle-btn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.avatar-toggle-btn.active {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
 }
 

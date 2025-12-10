@@ -14,6 +14,38 @@ class NavigationSystem {
         this.init();
     }
     
+    async renderFollowSuggestions() {
+        const listEl = document.getElementById('peopleToFollowList');
+        if (!listEl) return;
+        
+        try {
+            const res = await fetch('/mock-profiles.json');
+            const data = await res.json();
+            const profiles = (data.profiles || []).slice(0, 4);
+            
+            if (profiles.length === 0) {
+                listEl.innerHTML = '<div class="text-secondary" style="font-size:12px;">No suggestions yet.</div>';
+                return;
+            }
+            
+            listEl.innerHTML = profiles.map(p => `
+                <a class="sidebar-follow-item" href="/profile.html?user_id=${encodeURIComponent(p.user_id)}">
+                    <div class="sidebar-follow-avatar">
+                        <img src="${p.avatar_url}" alt="${p.display_name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2228%22 height=%2228%22%3E%3Ccircle cx=%2214%22 cy=%2214%22 r=%2214%22 fill=%22%23ffffff%22 fill-opacity=%220.08%22/%3E%3C/svg%3E'">
+                    </div>
+                    <div class="sidebar-follow-meta">
+                        <div class="sidebar-follow-name">${p.display_name}</div>
+                        <div class="sidebar-follow-handle">@${p.username}</div>
+                        ${p.domains ? `<div class="sidebar-follow-domain">${p.domains.slice(0,2).join(' · ')}</div>` : ''}
+                    </div>
+                </a>
+            `).join('');
+        } catch (error) {
+            console.warn('Could not render follow suggestions', error);
+            listEl.innerHTML = '<div class="text-secondary" style="font-size:12px;">Unable to load suggestions.</div>';
+        }
+    }
+    
     init() {
         this.setupCarousel();
         this.setupNavigationButtons();
@@ -450,6 +482,9 @@ class NavigationSystem {
             if (goalProgressEl) goalProgressEl.textContent = `${goalProgress}%`;
             if (streakEl) streakEl.textContent = streak;
             if (engagementEl) engagementEl.textContent = engagement;
+
+            // People to follow rail (mock profiles)
+            await this.renderFollowSuggestions();
             
             // Goals widget
             const goalsList = document.getElementById('homeGoalsList');
@@ -706,6 +741,7 @@ class NavigationSystem {
         const timeAgo = this.formatTimeAgo(cut.created_at || cut.timestamp || new Date().toISOString());
         const domain = (cut.domains && cut.domains.length > 0) ? cut.domains[0] : (cut.domain || null);
         const author = cut.author || {};
+        const authorId = author.user_id || cut.author_id || 'unknown';
         const username = author.username || author.user_id || 'unknown';
         
         // Mock avatar images - tiny HD, no cartoon/nature
@@ -732,6 +768,8 @@ class NavigationSystem {
         const safeUsername = String(username).replace(/[<>&"']/g, '');
         const safeDomain = domain ? String(domain).replace(/[<>&"']/g, '') : '';
         const safeCutId = String(cut.id).replace(/[<>&"']/g, '');
+        const safeAuthorId = String(authorId).replace(/[<>&"']/g, '');
+        const profileHref = `/profile.html?user_id=${encodeURIComponent(safeAuthorId)}`;
         
         return `
             <article class="cut-item" data-cut-id="${safeCutId}">
@@ -739,12 +777,12 @@ class NavigationSystem {
                     ${videoUrl ? `<video class="cut-video" src="${videoUrl}" ${thumbnailUrl ? `poster="${thumbnailUrl}"` : ''} muted loading="lazy"></video>` : `<div class="cut-video-placeholder"></div>`}
                     
                     <!-- Creator Info Overlay (Top-Left) -->
-                    <div class="cut-creator-overlay">
+                    <a class="cut-creator-overlay" href="${profileHref}">
                         <div class="cut-avatar">
                             <img src="${avatarUrl}" alt="${safeUsername}" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\'%3E%3Ccircle cx=\'10\' cy=\'10\' r=\'10\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'10\' cy=\'7\' r=\'3\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M5 18 Q10 15 15 18\' stroke=\'%23ffffff\' stroke-width=\'1\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
                         </div>
                         <div class="cut-creator-name">/${safeUsername}</div>
-                    </div>
+                    </a>
                     
                     <!-- Metadata Overlay (Top-Right) -->
                     <div class="cut-metadata-overlay">

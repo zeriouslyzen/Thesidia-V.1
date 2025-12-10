@@ -1,0 +1,17 @@
+{
+  "user_id": "user_kxc_nova",
+  "username": "nova",
+  "display_name": "Nova Ishikawa",
+  "avatar_url": "https://i.pravatar.cc/120?img=52",
+  "bio": "Systems thinker mapping AI tools to human rituals.",
+  "role": "Systems Researcher",
+  "domains": ["systems", "ai"],
+  "location": "Tokyo",
+  "website": "https://novalab.jp",
+  "stats": {
+    "posts": 61,
+    "followers": 14200,
+    "following": 560
+  }
+}
+
