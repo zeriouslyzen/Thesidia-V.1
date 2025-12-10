@@ -206,7 +206,7 @@
 
         .profile-bio {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-primary);
             line-height: 1.5;
             margin: 0 0 12px 0;
@@ -217,8 +217,8 @@
         .profile-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 16px;
-            margin: 12px 0;
+            gap: 14px;
+            margin: 10px 0;
             font-size: 12px;
             color: var(--text-secondary);
         }
@@ -230,8 +230,8 @@
         }
 
         .profile-meta-item svg {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
         }
 
         .profile-meta-link {
@@ -246,7 +246,7 @@
 
         .profile-social-links {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-top: 6px;
         }
 
@@ -254,25 +254,26 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
+            width: 26px;
+            height: 26px;
+            border-radius: 7px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
             text-decoration: none;
-            margin-top: 8px;
-            transition: opacity 0.2s ease, border-color 0.2s ease;
+            margin-top: 6px;
+            transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
         }
 
         .profile-social-link svg {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
         }
 
         .profile-social-link:hover {
-            opacity: 0.85;
+            opacity: 0.9;
             border-color: var(--text-secondary);
+            transform: translateY(-1px);
         }
 
         .profile-social-link.ig {
@@ -283,6 +284,22 @@
         .profile-social-link.x {
             color: #ffffff;
             border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .profile-social-link.fb {
+            color: #1778f2;
+            border-color: rgba(23, 120, 242, 0.35);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
         }
 
         .profile-stats-large {
@@ -852,6 +869,12 @@
                                 <path d="M4 4l16 16M4 20 20 4"/>
                             </svg>
                             <span class="sr-only">X</span>
+                        </a>
+                        <a href="#" class="profile-social-link fb" id="profileSocialFB" target="_blank" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 8h2V4h-2a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h2.5l.5-4H14V8a1 1 0 0 1 1-1z"/>
+                            </svg>
+                            <span class="sr-only">Facebook</span>
                         </a>
                     </div>
 

@@ -102,15 +102,17 @@ class ProfilePage {
             websiteLink.href = profile.website.startsWith('http') ? profile.website : `https://${cleanUrl}`;
         }
         
-        const socialLink = document.getElementById('profileSocialLink');
-        const socialText = document.getElementById('profileSocialText');
         const igLink = document.getElementById('profileSocialIG');
         const xLink = document.getElementById('profileSocialX');
+        const fbLink = document.getElementById('profileSocialFB');
         if (igLink) {
             igLink.href = profile.ig || profile.socialUrl || '#';
         }
         if (xLink) {
             xLink.href = profile.x || '#';
+        }
+        if (fbLink) {
+            fbLink.href = profile.fb || '#';
         }
 
         const avatar = profile.avatar_url || localStorage.getItem('profileImage');
