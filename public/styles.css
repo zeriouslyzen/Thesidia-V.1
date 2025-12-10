@@ -5948,7 +5948,7 @@ body.profile-page-context {
 .portfolio-section-title {
     font-size: 14px;
     font-weight: 700;
-    color: var(--text-primary);
+    color: #67d0ff;
     margin-bottom: 8px;
 }
 
@@ -5956,8 +5956,8 @@ body.profile-page-context {
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 14px;
-    font-size: 15px;
+    padding: 16px;
+    font-size: 16px;
     line-height: 1.7;
     color: var(--text-primary);
 }
