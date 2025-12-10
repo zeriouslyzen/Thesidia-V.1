@@ -361,6 +361,189 @@
             border-bottom-color: var(--theme-neon);
         }
 
+        .tab-section { display: block; }
+        .tab-section.hidden { display: none; }
+
+        .portfolio-section {
+            padding: 12px 0 24px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .portfolio-hero {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .portfolio-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .portfolio-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .portfolio-reels {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .portfolio-reels-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .portfolio-reels-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .portfolio-reels-actions {
+            display: inline-flex;
+            gap: 6px;
+        }
+
+        .portfolio-reel-nav {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .portfolio-reel-nav:hover {
+            border-color: var(--text-secondary);
+        }
+
+        .portfolio-reels-track {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(200px, 1fr);
+            gap: 10px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 4px;
+        }
+
+        .portfolio-reel-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            scroll-snap-align: start;
+            min-width: 220px;
+        }
+
+        .portfolio-reel-thumb {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .portfolio-reel-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .portfolio-reel-title {
+            font-size: 13px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .portfolio-reel-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .portfolio-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .portfolio-origin-body {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .portfolio-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
+        }
+
+        .portfolio-link-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .portfolio-link-badge {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .portfolio-link-title {
+            font-size: 13px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .portfolio-link-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .portfolio-credentials-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .portfolio-credential-chip {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+        }
+
         /* Profile Timeline */
         .profile-timeline {
             padding: 0;
@@ -900,8 +1083,8 @@
                 <div class="profile-nav-item" data-tab="dojo">Dojo</div>
             </div>
 
-            <!-- Profile Timeline -->
-            <div class="profile-timeline" id="profileTimeline">
+            <!-- Stream Timeline -->
+            <div class="profile-timeline tab-section" data-tab="stream" id="profileTimeline">
                 <!-- Posts will be dynamically inserted here -->
                 <div class="profile-empty">
                     <div class="profile-empty-icon">
@@ -910,6 +1093,62 @@
                         </svg>
                     </div>
                     <p>No posts yet. Start sharing your thoughts!</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Section -->
+            <div class="portfolio-section tab-section" data-tab="portfolio" id="portfolioSection" style="display:none;">
+                <div class="portfolio-hero">
+                    <div class="portfolio-title" id="portfolioTitle">Portfolio</div>
+                    <div class="portfolio-subtitle" id="portfolioSubtitle">Focused work highlights</div>
+                </div>
+
+                <div class="portfolio-reels">
+                    <div class="portfolio-reels-header">
+                        <div class="portfolio-reels-title">Reels</div>
+                        <div class="portfolio-reels-actions">
+                            <button class="portfolio-reel-nav" id="reelsPrev" aria-label="Previous reels">&#8592;</button>
+                            <button class="portfolio-reel-nav" id="reelsNext" aria-label="Next reels">&#8594;</button>
+                        </div>
+                    </div>
+                    <div class="portfolio-reels-track" id="reelsTrack">
+                        <!-- reels cards inserted by JS -->
+                    </div>
+                </div>
+
+                <div class="portfolio-origin">
+                    <div class="portfolio-section-title">Origin</div>
+                    <div class="portfolio-origin-body" id="portfolioOrigin">
+                        <!-- origin story text -->
+                    </div>
+                </div>
+
+                <div class="portfolio-links" id="portfolioLinksContainer">
+                    <div class="portfolio-section-title">Studios & locations</div>
+                    <div class="portfolio-links-grid" id="portfolioLinks">
+                        <!-- links cards -->
+                    </div>
+                </div>
+
+                <div class="portfolio-credentials" id="portfolioCredentialsContainer">
+                    <div class="portfolio-section-title">Credentials</div>
+                    <div class="portfolio-credentials-list" id="portfolioCredentials">
+                        <!-- chips -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuts Placeholder -->
+            <div class="tab-section" data-tab="cuts" id="portfolioCuts" style="display:none;">
+                <div class="profile-empty">
+                    <p>Short cuts showcase coming soon.</p>
+                </div>
+            </div>
+
+            <!-- Dojo Placeholder -->
+            <div class="tab-section" data-tab="dojo" id="portfolioDojo" style="display:none;">
+                <div class="profile-empty">
+                    <p>Dojo sessions and training logs coming soon.</p>
                 </div>
             </div>
         </main>

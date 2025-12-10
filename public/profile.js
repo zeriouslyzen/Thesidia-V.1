@@ -366,9 +366,17 @@ class ProfilePage {
     }
 
     switchTab(tab) {
-        // Load different content based on tab
-        console.log('Switching to tab:', tab);
-        // TODO: Implement tab switching logic
+        document.querySelectorAll('.profile-nav-item').forEach(i => {
+            i.classList.toggle('active', i.dataset.tab === tab);
+        });
+        document.querySelectorAll('.tab-section').forEach(sec => {
+            sec.style.display = sec.dataset.tab === tab ? 'block' : 'none';
+        });
+        if (tab === 'stream') {
+            this.loadTimeline();
+        } else if (tab === 'portfolio') {
+            this.renderPortfolio();
+        }
     }
 
     async loadTimeline() {
@@ -476,6 +484,88 @@ class ProfilePage {
             post.pinned = !post.pinned;
             localStorage.setItem('profilePosts', JSON.stringify(posts));
             this.loadTimeline();
+        }
+    }
+
+    renderPortfolio() {
+        const profile = this.profileData || {};
+        const defaultPortfolio = {
+            summary: `${profile.display_name || 'Creator'} focuses on modern, expressive work with tight craft.`,
+            reels: [
+                { title: 'Kinetic Loop Study', thumb: 'https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=600&q=60', meta: '00:32' },
+                { title: 'Palette Motion', thumb: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=60', meta: '00:45' },
+                { title: 'Lighting Drill', thumb: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60', meta: '00:28' },
+                { title: 'Texture Study', thumb: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60', meta: '00:35' },
+                { title: 'Micro-tutorial', thumb: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60', meta: '00:40' }
+            ],
+            origin: profile.origin || `I started with analog experiments, moved into digital motion, and now merge both. I focus on rhythmic timing, minimal palettes, and human-centered pacing.`,
+            links: [
+                { type: 'Studio', title: 'Studio North', desc: 'Boutique motion & sound lab', url: 'https://example.com' },
+                { type: 'Location', title: 'Barcelona Residency', desc: 'Artist-in-residence space', url: 'https://example.com' },
+                { type: 'Gym', title: 'Movement Lab', desc: 'Physical prep & conditioning', url: 'https://example.com' }
+            ],
+            credentials: [
+                'Motion Design 10y', 'Analog Processes', 'Lighting Systems', 'Creative Direction', 'Workshop Lead'
+            ]
+        };
+
+        const portfolio = profile.portfolio || defaultPortfolio;
+
+        const titleEl = document.getElementById('portfolioTitle');
+        const subtitleEl = document.getElementById('portfolioSubtitle');
+        if (titleEl) titleEl.textContent = `${profile.display_name || 'Creator'} · Portfolio`;
+        if (subtitleEl) subtitleEl.textContent = portfolio.summary || defaultPortfolio.summary;
+
+        // Reels
+        const reelsTrack = document.getElementById('reelsTrack');
+        if (reelsTrack) {
+            const reels = portfolio.reels && portfolio.reels.length ? portfolio.reels : defaultPortfolio.reels;
+            reelsTrack.innerHTML = reels.map(r => `
+                <div class="portfolio-reel-card">
+                    <div class="portfolio-reel-thumb">${r.thumb ? `<img src="${r.thumb}" alt="${r.title}">` : ''}</div>
+                    <div class="portfolio-reel-title">${r.title || ''}</div>
+                    <div class="portfolio-reel-meta">${r.meta || ''}</div>
+                </div>
+            `).join('');
+
+            const trackEl = reelsTrack;
+            const prev = document.getElementById('reelsPrev');
+            const next = document.getElementById('reelsNext');
+            const scrollAmount = 260;
+            if (prev && next) {
+                prev.onclick = () => trackEl.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                next.onclick = () => trackEl.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        // Origin
+        const originEl = document.getElementById('portfolioOrigin');
+        if (originEl) {
+            originEl.textContent = portfolio.origin || defaultPortfolio.origin;
+        }
+
+        // Links
+        const linksContainer = document.getElementById('portfolioLinks');
+        const linksWrapper = document.getElementById('portfolioLinksContainer');
+        const links = portfolio.links && portfolio.links.length ? portfolio.links : defaultPortfolio.links;
+        if (linksContainer && linksWrapper) {
+            linksContainer.innerHTML = links.map(l => `
+                <a class="portfolio-link-card" href="${l.url || '#'}" target="_blank">
+                    <div class="portfolio-link-badge">${l.type || 'Link'}</div>
+                    <div class="portfolio-link-title">${l.title || ''}</div>
+                    <div class="portfolio-link-desc">${l.desc || ''}</div>
+                </a>
+            `).join('');
+            linksWrapper.style.display = links.length ? 'block' : 'none';
+        }
+
+        // Credentials
+        const credsEl = document.getElementById('portfolioCredentials');
+        const credsWrap = document.getElementById('portfolioCredentialsContainer');
+        const creds = portfolio.credentials && portfolio.credentials.length ? portfolio.credentials : defaultPortfolio.credentials;
+        if (credsEl && credsWrap) {
+            credsEl.innerHTML = creds.map(c => `<span class="portfolio-credential-chip">${c}</span>`).join('');
+            credsWrap.style.display = creds.length ? 'block' : 'none';
         }
     }
 
