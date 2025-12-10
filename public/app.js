@@ -42,6 +42,9 @@ class ThesidiaApp {
         // Universal sidebar infrastructure - setup for ALL pages
         this.setupSidebarInfrastructure();
         
+        // Universal scroll behaviors - setup for ALL pages
+        this.setupScrollBehaviors();
+        
         // Only setup context-specific features if on contexts page
         if (this.currentPage === 'contexts') {
             this.setupEventListeners();
@@ -120,13 +123,13 @@ class ThesidiaApp {
         
         // Helper to check if we're on home page
         const isOnHomePage = () => {
-            // Check if navigation system exists and we're on home
+            // Only allow sidebar swipe when explicitly on the home section
             if (window.navigationSystem && window.navigationSystem.currentSection === 'home') {
                 return true;
             }
-            // Fallback: check URL or page structure
+            // Fallback: only the root home pages count as home
             const path = window.location.pathname;
-            return path === '/' || path === '/index.html' || path === '/stream.html' || path.includes('stream.html');
+            return path === '/' || path === '/index.html';
         };
         
         // Touch start
@@ -176,6 +179,166 @@ class ThesidiaApp {
             // Reset
             touchStartX = 0;
         }, { passive: true });
+    }
+    
+    setupScrollBehaviors() {
+        // Scroll-based UI behaviors with high sensitivity and synchronized animations
+        // Works on ALL pages that have header-submenu and fab-orb
+        let ticking = false;
+        let lastScrollTop = 0;
+        
+        const headerSubmenu = document.querySelector('.header-submenu');
+        const fabOrb = document.getElementById('fabOrb');
+        const fabOrbGlow = fabOrb ? fabOrb.querySelector('.fab-orb-glow') : null;
+        const scrollContainers = document.querySelectorAll('.carousel-section');
+        const mainScrollContainer = document.querySelector('main') || document.querySelector('.chat-container') || window;
+        
+        // High sensitivity scroll threshold - reacts to small movements
+        const scrollThreshold = 20; // Very sensitive - reacts after 20px
+        const maxScrollForFullEffect = 100; // Full effect at 100px scroll
+        
+        function updateScrollState() {
+            let currentScrollTop = 0;
+            let activeContainer = null;
+            let scrollDirection = 'none';
+            
+            // Find the active scroll container (carousel sections first)
+            scrollContainers.forEach(container => {
+                if (container.classList.contains('active')) {
+                    activeContainer = container;
+                    currentScrollTop = container.scrollTop;
+                }
+            });
+            
+            // Fallback to main scroll container or window
+            if (!activeContainer) {
+                if (mainScrollContainer && mainScrollContainer !== window) {
+                    currentScrollTop = mainScrollContainer.scrollTop || 0;
+                } else {
+                    currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+                }
+            }
+            
+            // Calculate scroll progress (0 to 1) for smooth proportional animations
+            const scrollProgress = Math.min(currentScrollTop / maxScrollForFullEffect, 1);
+            const scrollDelta = currentScrollTop - lastScrollTop;
+            if (scrollDelta > 2) scrollDirection = 'down';
+            if (scrollDelta < -2) scrollDirection = 'up';
+            
+            // High sensitivity: Update on any scroll movement
+            if (Math.abs(scrollDelta) > 0) {
+                const header = document.querySelector('.header');
+                
+                // Update header - add scrolled class
+                if (header) {
+                    if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
+                        header.classList.add('scrolled-down');
+                    } else if (scrollDirection === 'up') {
+                        header.classList.remove('scrolled-down');
+                    }
+                }
+                
+                // Update header submenu - slide up proportionally
+                if (headerSubmenu) {
+                    // Use CSS custom property for smooth transitions
+                    headerSubmenu.style.setProperty('--scroll-progress', scrollProgress);
+                    
+                    // Apply proportional transforms for smooth synchronized movement
+                    const translateY = -scrollProgress * 100; // Slide up based on scroll progress
+                    const opacity = Math.max(0, 1 - scrollProgress); // Fade out as scrolling
+                    const maxHeight = Math.max(0, 60 * (1 - scrollProgress)); // Collapse height
+                    
+                    // Apply styles with smooth transitions
+                    headerSubmenu.style.transform = `translateY(${translateY}%)`;
+                    headerSubmenu.style.opacity = opacity;
+                    headerSubmenu.style.maxHeight = `${maxHeight}px`;
+                    
+                    // Add class for CSS transitions
+                    if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
+                        headerSubmenu.classList.add('scrolled-down');
+                    } else if (scrollDirection === 'up') {
+                        headerSubmenu.classList.remove('scrolled-down');
+                    }
+                }
+                
+                // Update FAB orb - dim proportionally (stay visible, just dim)
+                // Synchronized with header submenu animation
+                if (fabOrb && fabOrbGlow) {
+                    // Dim from 1.0 to 0.25 opacity based on scroll progress
+                    // Using same scroll progress for synchronization
+                    const orbOpacity = Math.max(0.25, 1 - (scrollProgress * 0.75)); // 1.0 to 0.25
+                    const glowOpacity = Math.max(0.25, 1 - (scrollProgress * 0.75)); // 1.0 to 0.25
+                    const glowIntensity = Math.max(0.3, 1 - (scrollProgress * 0.7)); // Reduce glow intensity
+                    
+                    // Apply opacity with smooth transitions (CSS handles the transition)
+                    fabOrb.style.opacity = orbOpacity;
+                    fabOrbGlow.style.opacity = glowOpacity;
+                    
+                    // Reduce glow shadow intensity proportionally
+                    const shadowBlur1 = 8 * glowIntensity;
+                    const shadowBlur2 = 16 * glowIntensity;
+                    const shadowBlur3 = 24 * glowIntensity;
+                    const shadowOpacity1 = 0.8 * glowIntensity;
+                    const shadowOpacity2 = 0.6 * glowIntensity;
+                    const shadowOpacity3 = 0.4 * glowIntensity;
+                    
+                    fabOrbGlow.style.boxShadow = `
+                        0 0 ${shadowBlur1}px rgba(255, 255, 255, ${shadowOpacity1}),
+                        0 0 ${shadowBlur2}px rgba(255, 255, 255, ${shadowOpacity2}),
+                        0 0 ${shadowBlur3}px rgba(255, 255, 255, ${shadowOpacity3})
+                    `;
+                    
+                    // Add class for state tracking and CSS transitions
+                    if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
+                        fabOrb.classList.remove('scrolled-up');
+                        fabOrb.classList.add('scrolled-down');
+                    } else if (scrollDirection === 'up') {
+                        fabOrb.classList.remove('scrolled-down');
+                        fabOrb.classList.add('scrolled-up');
+                    }
+                }
+            }
+            
+            lastScrollTop = currentScrollTop;
+            ticking = false;
+        }
+        
+        function onScroll() {
+            if (!ticking) {
+                window.requestAnimationFrame(updateScrollState);
+                ticking = true;
+            }
+        }
+        
+        // Attach scroll listeners with high sensitivity
+        scrollContainers.forEach(container => {
+            container.addEventListener('scroll', onScroll, { passive: true });
+        });
+        
+        // Main scroll container
+        if (mainScrollContainer && mainScrollContainer !== window) {
+            mainScrollContainer.addEventListener('scroll', onScroll, { passive: true });
+        }
+        
+        // Window scroll fallback
+        window.addEventListener('scroll', onScroll, { passive: true });
+        
+        // Touch events for mobile sensitivity
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', (e) => {
+            const touchY = e.touches[0].clientY;
+            const touchDelta = touchStartY - touchY;
+            if (Math.abs(touchDelta) > 5) { // High sensitivity for touch
+                onScroll();
+            }
+        }, { passive: true });
+        
+        // Initialize state
+        updateScrollState();
     }
     
     initColorTheme() {
@@ -324,6 +487,25 @@ class ThesidiaApp {
             }
         } catch (error) {
             console.error('Error setting up minimal listeners:', error);
+        }
+
+        // FAB orb haptics (best-effort; vibrate when supported)
+        try {
+            const fabOrb = document.getElementById('fabOrb');
+            if (fabOrb) {
+                // Avoid duplicate handlers
+                fabOrb.replaceWith(fabOrb.cloneNode(true));
+                const freshFabOrb = document.getElementById('fabOrb');
+                if (freshFabOrb) {
+                    freshFabOrb.addEventListener('click', () => {
+                        if (navigator.vibrate) {
+                            navigator.vibrate(15); // short haptic
+                        }
+                    });
+                }
+            }
+        } catch (err) {
+            console.warn('FAB haptic setup failed:', err);
         }
     }
     

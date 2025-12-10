@@ -256,8 +256,15 @@ class NavigationSystem {
         
         const newIndex = this.sections.indexOf(sectionName);
         if (newIndex === this.sectionIndex) {
-            console.log('Already on section, reloading content:', sectionName);
-            this.loadSectionContent(sectionName).catch(err => console.error('Error reloading:', err));
+            console.log('Already on section, scrolling to top:', sectionName);
+            // If already on this section, scroll to top instead of reloading
+            const activeSection = document.querySelector('.carousel-section.active');
+            if (activeSection) {
+                activeSection.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Fallback: scroll window to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
             return;
         }
         
@@ -425,37 +432,100 @@ class NavigationSystem {
             const data = await response.json();
             console.log('Home data loaded:', data);
             
-            // Update dashboard widgets
-            if (data.stats) {
-                const postsCount = document.getElementById('homePostsCount');
-                const interactionsCount = document.getElementById('homeInteractionsCount');
-                const connectionsCount = document.getElementById('homeConnectionsCount');
-                
-                if (postsCount) postsCount.textContent = data.stats.posts || 0;
-                if (interactionsCount) interactionsCount.textContent = data.stats.interactions || 0;
-                if (connectionsCount) connectionsCount.textContent = data.stats.connections || 0;
+            // Welcome hero
+            const displayName = data.user_name || localStorage.getItem('thesidia_display_name') || 'friend';
+            const welcomeName = document.getElementById('homeWelcomeName');
+            const welcomeSubtitle = document.getElementById('homeWelcomeSubtitle');
+            const goalProgressEl = document.getElementById('homeGoalProgress');
+            const streakEl = document.getElementById('homeStreak');
+            const engagementEl = document.getElementById('homeEngagement');
+            
+            const stats = data.stats || {};
+            const streak = data.streak || stats.streak || 0;
+            const engagement = stats.engagement || stats.interactions || 0;
+            const goalProgress = Math.min(100, Math.round(stats.goal_progress || stats.progress || 0));
+            
+            if (welcomeName) welcomeName.textContent = `hey ${displayName}`;
+            if (welcomeSubtitle) welcomeSubtitle.textContent = stats.summary || 'You’re on track to hit today’s goal.';
+            if (goalProgressEl) goalProgressEl.textContent = `${goalProgress}%`;
+            if (streakEl) streakEl.textContent = streak;
+            if (engagementEl) engagementEl.textContent = engagement;
+            
+            // Goals widget
+            const goalsList = document.getElementById('homeGoalsList');
+            const goalsMeta = document.getElementById('homeGoalsMeta');
+            const goals = (data.goals && data.goals.length) ? data.goals : [
+                { title: 'Post once today', current: stats.posts || 0, target: 1 },
+                { title: 'Engagement momentum', current: engagement, target: Math.max(10, engagement || 10) },
+                { title: 'Consistency streak', current: streak, target: streak + 1 }
+            ];
+            if (goalsMeta) goalsMeta.textContent = `${goals.length} goals`;
+            if (goalsList) {
+                goalsList.innerHTML = goals.map(goal => {
+                    const target = goal.target || 1;
+                    const pct = Math.min(100, Math.round((goal.current || 0) / target * 100));
+                    return `
+                        <div class="goal-row">
+                            <div class="goal-text">
+                                <div class="goal-title">${goal.title || 'Goal'}</div>
+                                <div class="goal-subtext">${goal.current || 0} / ${target}</div>
+                            </div>
+                            <div class="goal-progress">
+                                <div class="goal-progress-fill" style="width:${pct}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
             
-            // Update activity list
-            const activityList = document.getElementById('homeActivityList');
-            if (activityList) {
-                if (data.recent_activity && data.recent_activity.length > 0) {
-                    activityList.innerHTML = data.recent_activity.map(activity => `
-                        <div class="activity-item">
-                            <span class="activity-text">${activity.text}</span>
-                            <span class="activity-time">${activity.time}</span>
+            // News widget
+            const newsTiles = document.getElementById('homeNewsTiles');
+            const news = (data.news && data.news.length) ? data.news.slice(0, 6) : [
+                { title: 'AI research breakthrough reshapes creative tooling', source: 'Signal Desk', image: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=600&q=60' },
+                { title: 'Communities lean into micro-stories with higher retention', source: 'Insight Brief', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=60' },
+                { title: 'New engagement patterns favor short-form synthesis', source: 'Pulse', image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60' }
+            ];
+            if (newsTiles) {
+                newsTiles.innerHTML = news.map(item => `
+                    <div class="news-tile">
+                        ${item.image ? `<img src="${item.image}" alt="${item.title || 'news'}" />` : ''}
+                        <div class="news-overlay">
+                            <div class="news-title">${item.title || 'Untitled'}</div>
+                            <div class="news-source">${item.source || 'Signal'}</div>
                         </div>
-                    `).join('');
-                } else {
-                    activityList.innerHTML = '<div class="activity-item">No recent activity</div>';
-                }
+                    </div>
+                `).join('');
+            }
+            
+            // Quick actions (reuse existing handlers if any)
+            const quickActions = document.querySelectorAll('.quick-actions [data-action]');
+            quickActions.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const action = btn.dataset.action;
+                    if (action === 'create-post' && window.streamPage && typeof window.streamPage.openPostModal === 'function') {
+                        window.streamPage.openPostModal();
+                    }
+                    if (action === 'view-stats') {
+                        window.location.href = '/metrics_dashboard.html';
+                    }
+                    if (action === 'improve') {
+                        // Scroll to goals for now
+                        goalsList?.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Fixed layout: no reorder/hide; ensure widgets are visible
+            const grid = document.querySelector('.home-widgets-grid');
+            if (grid) {
+                grid.querySelectorAll('[data-widget]').forEach((w, idx) => {
+                    w.style.order = idx + 1;
+                    w.classList.remove('is-hidden');
+                    w.removeAttribute('aria-hidden');
+                });
             }
         } catch (error) {
             console.error('Error loading home content:', error);
-            const activityList = document.getElementById('homeActivityList');
-            if (activityList) {
-                activityList.innerHTML = '<div class="activity-item">Error loading activity</div>';
-            }
         }
     }
     

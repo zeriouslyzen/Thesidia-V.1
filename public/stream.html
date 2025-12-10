@@ -560,38 +560,62 @@
         <main class="stream-page-container">
             <div class="content-carousel">
                 <div class="carousel-track">
-                    <!-- Home Section - Dashboard -->
+                    <!-- Home Section - Gamified Dashboard -->
                     <section class="carousel-section" data-section="home">
                         <div class="home-dashboard">
-                            <div class="dashboard-header">
-                                <h2>Dashboard</h2>
+                            <div class="widget-card news-widget" data-widget="news">
+                                <div class="widget-header">
+                                    <div class="widget-title">Signal picks</div>
+                                    <div class="widget-meta">curated for you</div>
+                                </div>
+                                <div class="news-tiles" id="homeNewsTiles">
+                                    <div class="news-tile skeleton"></div>
+                                </div>
                             </div>
-                            <div class="dashboard-widgets">
-                                <div class="widget-card stats-widget">
-                                    <h3>Activity</h3>
-                                    <div class="stat-item">
-                                        <span class="stat-value" id="homePostsCount">0</span>
-                                        <span class="stat-label">Posts</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-value" id="homeInteractionsCount">0</span>
-                                        <span class="stat-label">Interactions</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-value" id="homeConnectionsCount">0</span>
-                                        <span class="stat-label">Connections</span>
+
+                            <div class="home-hero widget-card" data-widget="welcome">
+                                <div class="hero-greeting">
+                                    <div class="hero-eyebrow">welcome back</div>
+                                    <div class="hero-inline">
+                                        <div class="hero-title" id="homeWelcomeName">Katanx explorer</div>
+                                        <div class="hero-subtitle" id="homeWelcomeSubtitle">You're on track to hit today's goal.</div>
                                     </div>
                                 </div>
-                                <div class="widget-card quick-actions">
-                                    <h3>Quick Actions</h3>
-                                    <button class="action-btn" data-action="create-post">Create Post</button>
-                                    <button class="action-btn" data-action="explore">Explore</button>
-                                    <button class="action-btn" data-action="settings">Settings</button>
+                                <div class="hero-stats hero-inline compact-stats">
+                                    <div class="hero-pill">
+                                        <div class="hero-stat-value" id="homeGoalProgress">0%</div>
+                                        <div class="hero-stat-label">daily goal</div>
+                                    </div>
+                                    <div class="hero-pill">
+                                        <div class="hero-stat-value" id="homeStreak">0</div>
+                                        <div class="hero-stat-label">day streak</div>
+                                    </div>
+                                    <div class="hero-pill">
+                                        <div class="hero-stat-value" id="homeEngagement">0</div>
+                                        <div class="hero-stat-label">engagement</div>
+                                    </div>
                                 </div>
-                                <div class="widget-card recent-activity">
-                                    <h3>Recent Activity</h3>
-                                    <div class="activity-list" id="homeActivityList">
-                                        <div class="activity-item">Loading...</div>
+                            </div>
+
+                            <div class="home-widgets-grid">
+                                <div class="widget-card goals-widget" data-widget="goals">
+                                    <div class="widget-header">
+                                    <div class="widget-title">Goals & momentum</div>
+                                    <div class="widget-meta" id="homeGoalsMeta">loading...</div>
+                                    </div>
+                                    <div class="goals-list" id="homeGoalsList">
+                                        <div class="goal-row skeleton"></div>
+                                    </div>
+                                </div>
+
+                                <div class="widget-card quick-actions" data-widget="actions">
+                                    <div class="widget-header">
+                                        <div class="widget-title">Quick actions</div>
+                                    </div>
+                                    <div class="actions-row">
+                                        <button class="pill-btn" data-action="create-post">post</button>
+                                        <button class="pill-btn" data-action="view-stats">stats</button>
+                                        <button class="pill-btn" data-action="improve">improve</button>
                                     </div>
                                 </div>
                             </div>

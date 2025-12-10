@@ -3471,10 +3471,31 @@ if __name__ == '__main__':
                 continue
         return 5000  # Fallback
     
+    # Get local IP address for network access
+    def get_local_ip():
+        """Get the local IP address for network access"""
+        try:
+            # Connect to a remote address to determine local IP
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            try:
+                # Doesn't actually connect, just determines local IP
+                s.connect(('8.8.8.8', 80))
+                ip = s.getsockname()[0]
+            except Exception:
+                ip = '127.0.0.1'
+            finally:
+                s.close()
+            return ip
+        except Exception:
+            return '127.0.0.1'
+    
     # Use PORT from environment (Railway, Heroku, etc.) or find available port
     port = int(os.getenv('PORT', 0))
     if not port:
         port = find_free_port(5002)  # Use 5002 to match frontend
+    
+    # Get local IP for network access
+    local_ip = get_local_ip()
     
     # Security: Run on localhost by default
     # For production, use proper WSGI server (gunicorn, uwsgi)
@@ -3488,7 +3509,7 @@ if __name__ == '__main__':
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(str(cert_path), str(key_path))
         print(f"Starting server with HTTPS on https://0.0.0.0:{port}")
-        print(f"Access from your phone: https://192.168.1.130:{port}")
+        print(f"Access from your phone: https://{local_ip}:{port}")
         print("Note: You may need to accept the self-signed certificate warning on your phone")
         app.run(
             host='0.0.0.0',  # Bind to all interfaces for network access
@@ -3498,7 +3519,8 @@ if __name__ == '__main__':
         )
     else:
         print(f"Starting server on http://0.0.0.0:{port}")
-        print(f"Access from your phone: http://192.168.1.130:{port}")
+        print(f"Access from your phone: http://{local_ip}:{port}")
+        print(f"Access from this computer: http://localhost:{port}")
         app.run(
             host='0.0.0.0',  # Bind to all interfaces for network access
             port=port,
