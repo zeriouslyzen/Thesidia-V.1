@@ -80,7 +80,8 @@ class ProfilePage {
         await this.loadMockProfiles();
         this.loadProfileData();
         this.setupEventListeners();
-        this.switchTab('stream');
+        // Default to portfolio so it is visible in demo
+        this.switchTab('portfolio');
     }
 
     loadProfileData() {
