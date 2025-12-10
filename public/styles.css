@@ -5894,7 +5894,15 @@ body.profile-page-context {
     scroll-snap-type: x mandatory;
     padding-bottom: 4px;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* soft fade to imply overflow without showing a bar */
+    mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+}
+
+.portfolio-reels-track::-webkit-scrollbar {
+    display: none;
 }
 
 .portfolio-reel-card {
