@@ -34,10 +34,10 @@
     --accent-hover: #e0e0e0;
     --accent-subtle: rgba(255, 255, 255, 0.05);
     
-    /* Theme Colors - Neon Accents (Default: White) - Subtle & Refined */
-    --theme-neon: #ffffff;
-    --theme-neon-glow: rgba(255, 255, 255, 0.15);
-    --theme-neon-border: rgba(255, 255, 255, 0.15);
+    /* Theme Colors - Neon Accents */
+    --theme-neon: #d4d400;
+    --theme-neon-glow: rgba(212, 212, 0, 0.15);
+    --theme-neon-border: rgba(212, 212, 0, 0.15);
     
     /* Functional Shadows - Minimal */
     --shadow-subtle: rgba(255, 255, 255, 0.02);
@@ -115,6 +115,21 @@ body {
     padding: 0;
     width: 100%;
     overflow-y: hidden;
+}
+
+a {
+    color: var(--theme-neon);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--theme-neon);
+    text-decoration: underline;
+}
+
+::selection {
+    background: rgba(212, 212, 0, 0.25);
+    color: #ffffff;
 }
 
 #app {
@@ -5738,7 +5753,7 @@ h1, h2, h3, h4, h5, h6 {
 .profile-username-large,
 .profile-handle {
     font-size: 12px;
-    color: var(--text-secondary);
+    color: var(--theme-neon);
     margin: 0 0 10px 0;
     letter-spacing: 0.01em;
 }
