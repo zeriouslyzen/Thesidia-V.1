@@ -80,7 +80,7 @@ class ProfilePage {
         await this.loadMockProfiles();
         this.loadProfileData();
         this.setupEventListeners();
-        this.loadTimeline();
+        this.switchTab('stream');
     }
 
     loadProfileData() {
