@@ -523,7 +523,7 @@ class ProfilePage {
             const reels = portfolio.reels && portfolio.reels.length ? portfolio.reels : defaultPortfolio.reels;
             reelsTrack.innerHTML = reels.map(r => `
                 <div class="portfolio-reel-card">
-                    <div class="portfolio-reel-thumb">${r.thumb ? `<img src="${r.thumb}" alt="${r.title}">` : ''}</div>
+                    <div class="portfolio-reel-thumb">${r.thumb ? `<img src="${r.thumb}" alt="${r.title}" loading="lazy" onerror="this.style.display='none';">` : ''}</div>
                     <div class="portfolio-reel-title">${r.title || ''}</div>
                     <div class="portfolio-reel-meta">${r.meta || ''}</div>
                 </div>
