@@ -106,15 +106,13 @@ class ProfilePage {
         const igLink = document.getElementById('profileSocialIG');
         const xLink = document.getElementById('profileSocialX');
         const fbLink = document.getElementById('profileSocialFB');
-        if (igLink) {
-            igLink.href = profile.ig || profile.socialUrl || '#';
-        }
-        if (xLink) {
-            xLink.href = profile.x || '#';
-        }
-        if (fbLink) {
-            fbLink.href = profile.fb || '#';
-        }
+        const ttLink = document.getElementById('profileSocialTT');
+        const lnLink = document.getElementById('profileSocialLN');
+        if (igLink) igLink.href = profile.ig || profile.socialUrl || '#';
+        if (xLink) xLink.href = profile.x || '#';
+        if (fbLink) fbLink.href = profile.fb || '#';
+        if (ttLink) ttLink.href = profile.tt || '#';
+        if (lnLink) lnLink.href = profile.ln || profile.linkedin || '#';
 
         const avatar = profile.avatar_url || localStorage.getItem('profileImage');
         if (avatar) {
@@ -493,11 +491,11 @@ class ProfilePage {
         const defaultPortfolio = {
             summary: `${profile.display_name || 'Creator'} focuses on modern, expressive work with tight craft.`,
             reels: [
-                { title: 'Kinetic Loop Study', thumb: 'https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=600&q=60', meta: '00:32' },
-                { title: 'Palette Motion', thumb: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=60', meta: '00:45' },
-                { title: 'Lighting Drill', thumb: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60', meta: '00:28' },
-                { title: 'Texture Study', thumb: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60', meta: '00:35' },
-                { title: 'Micro-tutorial', thumb: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60', meta: '00:40' }
+                { title: 'Kinetic Loop Study', thumb: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80', meta: '00:32' },
+                { title: 'Chromatic Motion', thumb: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80', meta: '00:45' },
+                { title: 'Lightfield Drift', thumb: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=80', meta: '00:28' },
+                { title: 'Texture Bloom', thumb: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=600&q=80', meta: '00:35' },
+                { title: 'Micro Tutorial', thumb: 'https://images.unsplash.com/photo-1458530970867-aaa3700e966d?auto=format&fit=crop&w=600&q=80', meta: '00:40' }
             ],
             origin: {
                 paragraphs: [
@@ -550,10 +548,11 @@ class ProfilePage {
         // Reels
         const reelsTrack = document.getElementById('reelsTrack');
         if (reelsTrack) {
+            const defaultReelThumb = 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80';
             const reels = portfolio.reels && portfolio.reels.length ? portfolio.reels : defaultPortfolio.reels;
             reelsTrack.innerHTML = reels.map(r => `
                 <div class="portfolio-reel-card">
-                    <div class="portfolio-reel-thumb">${r.thumb ? `<img src="${r.thumb}" alt="${r.title}" loading="lazy" onerror="this.style.display='none';">` : ''}</div>
+                    <div class="portfolio-reel-thumb">${r.thumb || defaultReelThumb ? `<img src="${r.thumb || defaultReelThumb}" alt="${r.title}" loading="lazy" onerror="this.src='${defaultReelThumb}'; this.onerror=null;">` : ''}</div>
                     <div class="portfolio-reel-title">${r.title || ''}</div>
                     <div class="portfolio-reel-meta">${r.meta || ''}</div>
                 </div>

@@ -90,7 +90,7 @@
         .profile-header {
             position: relative;
             padding: 0 16px 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: none;
         }
 
         .profile-picture-large {
@@ -257,8 +257,8 @@
             width: 26px;
             height: 26px;
             border-radius: 7px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
+            background: transparent;
+            border: 0;
             color: var(--text-primary);
             text-decoration: none;
             margin-top: 6px;
@@ -272,23 +272,27 @@
 
         .profile-social-link:hover {
             opacity: 0.9;
-            border-color: var(--text-secondary);
             transform: translateY(-1px);
         }
 
         .profile-social-link.ig {
             color: #e1306c;
-            border-color: rgba(225, 48, 108, 0.4);
         }
 
         .profile-social-link.x {
             color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.35);
         }
 
         .profile-social-link.fb {
             color: #1778f2;
-            border-color: rgba(23, 120, 242, 0.35);
+        }
+
+        .profile-social-link.tt {
+            color: #010101;
+        }
+
+        .profile-social-link.ln {
+            color: #0a66c2;
         }
 
         .sr-only {
@@ -863,6 +867,16 @@
                         <a href="#" class="profile-social-link fb" id="profileSocialFB" target="_blank" aria-label="Facebook">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M14 8h2V4h-2a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h2.5l.5-4H14V8a1 1 0 0 1 1-1z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="profile-social-link tt" id="profileSocialTT" target="_blank" aria-label="TikTok">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 3h2.3c.2 2.2 1.8 3.7 3.7 3.8v2.3c-1.2 0-2.3-.3-3.4-.9v5.7c0 3-2.4 5.5-5.5 5.8-3.2.3-6-2.1-6.3-5.3-.3-3.2 2.1-6 5.3-6.3.2 0 .5 0 .7.1v2.5c-.2 0-.4-.1-.6-.1-1.6.1-2.9 1.5-2.8 3.2.1 1.7 1.6 3 3.3 2.9 1.6-.1 2.9-1.5 2.9-3.1V3z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="profile-social-link ln" id="profileSocialLN" target="_blank" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.08 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V22h-4V8zm7 0h3.8v1.9h.1c.5-1 1.7-2 3.6-2 3.8 0 4.5 2.5 4.5 5.8V22h-4v-6.2c0-1.5 0-3.5-2.1-3.5-2.1 0-2.4 1.6-2.4 3.4V22h-4V8z"/>
                             </svg>
                         </a>
                     </div>
