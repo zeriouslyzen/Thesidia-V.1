@@ -82,6 +82,7 @@ class ProfilePage {
         this.setupEventListeners();
         // Default to portfolio so it is visible in demo
         this.switchTab('portfolio');
+        this.updateNavIndicator();
     }
 
     loadProfileData() {
@@ -189,6 +190,8 @@ class ProfilePage {
                 this.switchTab(item.dataset.tab);
             });
         });
+
+        window.addEventListener('resize', () => this.updateNavIndicator());
 
         // Crop modal
         document.getElementById('cancelCropBtn').addEventListener('click', () => this.closeCropModal());
@@ -371,11 +374,21 @@ class ProfilePage {
         document.querySelectorAll('.tab-section').forEach(sec => {
             sec.classList.toggle('hidden', sec.dataset.tab !== tab);
         });
+        this.updateNavIndicator();
         if (tab === 'stream') {
             this.loadTimeline();
         } else if (tab === 'portfolio') {
             this.renderPortfolio();
         }
+    }
+
+    updateNavIndicator() {
+        const indicator = document.getElementById('profileNavIndicator');
+        const active = document.querySelector('.profile-nav-item.active');
+        if (!indicator || !active) return;
+        const { offsetLeft, offsetWidth } = active;
+        const center = offsetLeft + offsetWidth / 2;
+        indicator.style.left = `${center}px`;
     }
 
     async loadTimeline() {
