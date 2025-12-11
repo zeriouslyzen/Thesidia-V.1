@@ -5888,11 +5888,12 @@ body.profile-page-context {
 .portfolio-reels-track {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: calc((100% - 20px) / 3);
-    gap: 10px;
+    grid-auto-columns: 150px;
+    gap: 12px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    padding-bottom: 4px;
+    padding: 0 12px 10px;
+    scroll-padding-inline: 16px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -5914,7 +5915,7 @@ body.profile-page-context {
     flex-direction: column;
     gap: 8px;
     scroll-snap-align: start;
-    min-width: 220px;
+    min-width: 150px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
 }
 
