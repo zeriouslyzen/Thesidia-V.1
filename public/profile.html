@@ -840,18 +840,9 @@
                     
                     <div class="profile-meta">
                         <div class="profile-meta-item" id="profileLocation">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                <circle cx="12" cy="10" r="3"/>
-                            </svg>
                             <span>San Francisco, CA</span>
                         </div>
                         <div class="profile-meta-item" id="profileWebsite">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                <polyline points="15 3 21 3 21 9"/>
-                                <line x1="10" y1="14" x2="21" y2="3"/>
-                            </svg>
                             <a href="#" class="profile-meta-link" id="profileWebsiteLink" target="_blank">thesidia.com</a>
                         </div>
                     </div>
@@ -931,23 +922,121 @@
                 </div>
 
                 <div class="portfolio-origin">
-                    <div class="portfolio-section-title">Origin</div>
+                    <div class="portfolio-section-header">
+                        <div class="portfolio-section-title">Origin</div>
+                        <button class="portfolio-edit-btn" data-section="origin" aria-label="Edit origin story">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                    </div>
                     <div class="portfolio-origin-body" id="portfolioOrigin">
-                        <!-- origin story text -->
+                        <!-- origin story text and images -->
+                    </div>
+                </div>
+
+                <div class="portfolio-education" id="portfolioEducationContainer">
+                    <div class="portfolio-section-header">
+                        <div class="portfolio-section-title">Education</div>
+                        <button class="portfolio-edit-btn" data-section="education" aria-label="Edit education">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="portfolio-education-content" id="portfolioEducation">
+                        <!-- education items -->
+                    </div>
+                </div>
+
+                <div class="portfolio-services" id="portfolioServicesContainer">
+                    <div class="portfolio-section-header">
+                        <div class="portfolio-section-title">Services</div>
+                        <button class="portfolio-edit-btn" data-section="services" aria-label="Edit services">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="portfolio-services-grid" id="portfolioServices">
+                        <!-- service cards -->
+                    </div>
+                </div>
+
+                <div class="portfolio-reading" id="portfolioReadingContainer">
+                    <div class="portfolio-section-header">
+                        <div class="portfolio-section-title">Reading</div>
+                        <button class="portfolio-edit-btn" data-section="reading" aria-label="Edit reading">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="portfolio-reading-grid" id="portfolioReading">
+                        <!-- reading items -->
+                    </div>
+                </div>
+
+                <div class="portfolio-disciplines" id="portfolioDisciplinesContainer">
+                    <div class="portfolio-section-header">
+                        <div class="portfolio-section-title">Mind-Body Disciplines</div>
+                        <button class="portfolio-edit-btn" data-section="disciplines" aria-label="Edit disciplines">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="portfolio-disciplines-grid" id="portfolioDisciplines">
+                        <!-- discipline items -->
                     </div>
                 </div>
 
                 <div class="portfolio-links" id="portfolioLinksContainer">
-                    <div class="portfolio-section-title">Studios & locations</div>
+                    <div class="portfolio-section-header">
+                        <div class="portfolio-section-title">Studios & locations</div>
+                        <button class="portfolio-edit-btn" data-section="links" aria-label="Edit links">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                    </div>
                     <div class="portfolio-links-grid" id="portfolioLinks">
                         <!-- links cards -->
                     </div>
                 </div>
 
                 <div class="portfolio-credentials" id="portfolioCredentialsContainer">
-                    <div class="portfolio-section-title">Credentials</div>
+                    <div class="portfolio-section-header">
+                        <div class="portfolio-section-title">Credentials</div>
+                        <button class="portfolio-edit-btn" data-section="credentials" aria-label="Edit credentials">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </button>
+                    </div>
                     <div class="portfolio-credentials-list" id="portfolioCredentials">
                         <!-- chips -->
+                    </div>
+                </div>
+
+                <div class="portfolio-resume" id="portfolioResumeContainer">
+                    <div class="portfolio-section-header">
+                        <div class="portfolio-section-title">Resume / CV</div>
+                        <button class="portfolio-edit-btn" data-section="resume" aria-label="Upload resume">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="portfolio-resume-content" id="portfolioResume">
+                        <!-- resume display/upload -->
                     </div>
                 </div>
             </div>
@@ -1111,9 +1200,24 @@
         </div>
     </div>
 
+    <!-- Image Popup Modal -->
+    <div class="image-popup-modal" id="imagePopupModal">
+        <div class="image-popup-backdrop" id="imagePopupClose"></div>
+        <div class="image-popup-content">
+            <button class="image-popup-close" id="imagePopupCloseBtn" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <img id="imagePopupImg" src="" alt="Expanded view">
+        </div>
+    </div>
+
     <!-- Hidden file inputs -->
     <input type="file" id="bannerImageInput" accept="image/*" style="display: none;">
     <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+    <input type="file" id="resumeUploadInput" accept=".pdf,.doc,.docx" style="display: none;">
 
     <script src="app.js"></script>
     <script src="profile.js"></script>

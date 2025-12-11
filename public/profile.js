@@ -371,7 +371,7 @@ class ProfilePage {
             i.classList.toggle('active', i.dataset.tab === tab);
         });
         document.querySelectorAll('.tab-section').forEach(sec => {
-            sec.style.display = sec.dataset.tab === tab ? 'block' : 'none';
+            sec.classList.toggle('hidden', sec.dataset.tab !== tab);
         });
         if (tab === 'stream') {
             this.loadTimeline();
@@ -499,7 +499,37 @@ class ProfilePage {
                 { title: 'Texture Study', thumb: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60', meta: '00:35' },
                 { title: 'Micro-tutorial', thumb: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60', meta: '00:40' }
             ],
-            origin: profile.origin || `I started with analog experiments, moved into digital motion, and now merge both. I focus on rhythmic timing, minimal palettes, and human-centered pacing.`,
+            origin: {
+                paragraphs: [
+                    'I started with analog experiments, moved into digital motion, and now merge both. I focus on rhythmic timing, minimal palettes, and human-centered pacing.',
+                    'The journey began in a small studio where I learned the fundamentals of motion through frame-by-frame animation. Over the years, I\'ve developed a unique approach that combines traditional techniques with modern digital tools, always prioritizing the emotional impact of movement.'
+                ],
+                images: [
+                    'https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=300&q=80',
+                    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=300&q=80'
+                ]
+            },
+            education: {
+                cert: { title: 'Motion Design Certification', org: 'School of Visual Arts', url: 'https://example.com/cert' },
+                university: { title: 'BFA in Digital Media', org: 'Art Institute', url: 'https://example.com/uni' }
+            },
+            services: [
+                { title: 'Motion Direction', desc: 'Full creative direction for motion projects' },
+                { title: 'Workshop Facilitation', desc: 'Teaching kinetic design principles' }
+            ],
+            resume: { name: 'Aurora_Vale_CV.pdf', url: 'https://example.com/resume.pdf', uploaded: '2024-01-15' },
+            reading: [
+                { title: 'The Art of Looking Sideways', author: 'Alan Fletcher', url: 'https://example.com/book1', image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=300&q=80' },
+                { title: 'Steal Like an Artist', author: 'Austin Kleon', url: 'https://example.com/book2', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80' },
+                { title: 'The Design of Everyday Things', author: 'Don Norman', url: 'https://example.com/book3', image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=300&q=80' },
+                { title: 'Thinking, Fast and Slow', author: 'Daniel Kahneman', url: 'https://example.com/book4', image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80' }
+            ],
+            disciplines: [
+                'Vinyasa Yoga',
+                'Meditation',
+                'Breathwork',
+                'Movement Flow'
+            ],
             links: [
                 { type: 'Studio', title: 'Studio North', desc: 'Boutique motion & sound lab', url: 'https://example.com' },
                 { type: 'Location', title: 'Barcelona Residency', desc: 'Artist-in-residence space', url: 'https://example.com' },
@@ -539,10 +569,177 @@ class ProfilePage {
             }
         }
 
-        // Origin
+        // Origin with paragraphs and images
         const originEl = document.getElementById('portfolioOrigin');
         if (originEl) {
-            originEl.textContent = portfolio.origin || defaultPortfolio.origin;
+            const origin = portfolio.origin || defaultPortfolio.origin;
+            const paragraphs = typeof origin === 'string' ? [origin] : (origin.paragraphs || defaultPortfolio.origin.paragraphs);
+            const images = typeof origin === 'string' ? [] : (origin.images || defaultPortfolio.origin.images);
+            
+            let html = '';
+            paragraphs.forEach((para, idx) => {
+                html += `<p>${this.escapeHtml(para)}</p>`;
+                // Insert images after first paragraph
+                if (idx === 0 && images.length > 0) {
+                    html += '<div class="portfolio-origin-images">';
+                    images.forEach(img => {
+                        html += `<img class="portfolio-origin-image" src="${img}" alt="Origin story" loading="lazy" onerror="this.style.display='none';">`;
+                    });
+                    html += '</div>';
+                }
+            });
+            originEl.innerHTML = html;
+            
+            // Add click handlers for images
+            originEl.querySelectorAll('.portfolio-origin-image').forEach(img => {
+                img.addEventListener('click', () => this.openImagePopup(img.src));
+            });
+        }
+
+        // Education
+        const educationEl = document.getElementById('portfolioEducation');
+        const educationWrap = document.getElementById('portfolioEducationContainer');
+        if (educationEl && educationWrap) {
+            const edu = portfolio.education || defaultPortfolio.education;
+            if (edu && (edu.cert || edu.university)) {
+                let html = '';
+                if (edu.cert) {
+                    html += `
+                        <div class="portfolio-education-item">
+                            <div class="portfolio-education-item-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                                    <path d="M6 12v5c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-5"/>
+                                </svg>
+                            </div>
+                            <div class="portfolio-education-item-content">
+                                <div class="portfolio-education-item-title">
+                                    <a href="${edu.cert.url || '#'}" target="_blank">${this.escapeHtml(edu.cert.title)}</a>
+                                </div>
+                                <div class="portfolio-education-item-desc">${this.escapeHtml(edu.cert.org)}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                if (edu.university) {
+                    html += `
+                        <div class="portfolio-education-item">
+                            <div class="portfolio-education-item-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                                </svg>
+                            </div>
+                            <div class="portfolio-education-item-content">
+                                <div class="portfolio-education-item-title">
+                                    <a href="${edu.university.url || '#'}" target="_blank">${this.escapeHtml(edu.university.title)}</a>
+                                </div>
+                                <div class="portfolio-education-item-desc">${this.escapeHtml(edu.university.org)}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                educationEl.innerHTML = html;
+                educationWrap.style.display = 'block';
+            } else {
+                educationWrap.style.display = 'none';
+            }
+        }
+
+        // Services
+        const servicesEl = document.getElementById('portfolioServices');
+        const servicesWrap = document.getElementById('portfolioServicesContainer');
+        if (servicesEl && servicesWrap) {
+            const services = portfolio.services || defaultPortfolio.services;
+            if (services && services.length > 0) {
+                servicesEl.innerHTML = services.slice(0, 2).map(s => `
+                    <div class="portfolio-service-card">
+                        <div class="portfolio-service-title">${this.escapeHtml(s.title)}</div>
+                        <div class="portfolio-service-desc">${this.escapeHtml(s.desc)}</div>
+                    </div>
+                `).join('');
+                servicesWrap.style.display = 'block';
+            } else {
+                servicesWrap.style.display = 'none';
+            }
+        }
+
+        // Resume
+        const resumeEl = document.getElementById('portfolioResume');
+        const resumeWrap = document.getElementById('portfolioResumeContainer');
+        if (resumeEl && resumeWrap) {
+            const resume = portfolio.resume || defaultPortfolio.resume;
+            if (resume && resume.name) {
+                resumeEl.innerHTML = `
+                    <div class="portfolio-resume-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                    </div>
+                    <div class="portfolio-resume-info">
+                        <div class="portfolio-resume-name">
+                            <a href="${resume.url || '#'}" target="_blank">${this.escapeHtml(resume.name)}</a>
+                        </div>
+                        <div class="portfolio-resume-meta">Uploaded ${resume.uploaded || 'recently'}</div>
+                    </div>
+                    <button class="portfolio-resume-upload" onclick="document.getElementById('resumeUploadInput')?.click()">Upload new</button>
+                `;
+                resumeWrap.style.display = 'block';
+            } else {
+                resumeEl.innerHTML = `
+                    <div class="portfolio-resume-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                        </svg>
+                    </div>
+                    <div class="portfolio-resume-info">
+                        <div class="portfolio-resume-name">No resume uploaded</div>
+                        <div class="portfolio-resume-meta">Upload your CV or resume</div>
+                    </div>
+                    <button class="portfolio-resume-upload" onclick="document.getElementById('resumeUploadInput')?.click()">Upload</button>
+                `;
+                resumeWrap.style.display = 'block';
+            }
+        }
+
+        // Reading
+        const readingEl = document.getElementById('portfolioReading');
+        const readingWrap = document.getElementById('portfolioReadingContainer');
+        if (readingEl && readingWrap) {
+            const reading = portfolio.reading || defaultPortfolio.reading;
+            if (reading && reading.length > 0) {
+                readingEl.innerHTML = reading.slice(0, 4).map(r => `
+                    <a href="${r.url || '#'}" target="_blank" class="portfolio-reading-item">
+                        <div class="portfolio-reading-cover">
+                            ${r.image ? `<img src="${r.image}" alt="${this.escapeHtml(r.title)}" loading="lazy" onerror="this.style.display='none';">` : ''}
+                        </div>
+                        <div class="portfolio-reading-title">${this.escapeHtml(r.title)}</div>
+                        <div class="portfolio-reading-author">${this.escapeHtml(r.author)}</div>
+                    </a>
+                `).join('');
+                readingWrap.style.display = 'block';
+            } else {
+                readingWrap.style.display = 'none';
+            }
+        }
+
+        // Mind-Body Disciplines
+        const disciplinesEl = document.getElementById('portfolioDisciplines');
+        const disciplinesWrap = document.getElementById('portfolioDisciplinesContainer');
+        if (disciplinesEl && disciplinesWrap) {
+            const disciplines = portfolio.disciplines || defaultPortfolio.disciplines;
+            if (disciplines && disciplines.length > 0) {
+                disciplinesEl.innerHTML = disciplines.slice(0, 4).map(d => `
+                    <div class="portfolio-discipline-chip">${this.escapeHtml(d)}</div>
+                `).join('');
+                disciplinesWrap.style.display = 'block';
+            } else {
+                disciplinesWrap.style.display = 'none';
+            }
         }
 
         // Links
@@ -568,6 +765,45 @@ class ProfilePage {
             credsEl.innerHTML = creds.map(c => `<span class="portfolio-credential-chip">${c}</span>`).join('');
             credsWrap.style.display = creds.length ? 'block' : 'none';
         }
+
+        // Setup edit button handlers
+        this.setupPortfolioEditHandlers();
+        
+        // Setup image popup handlers
+        this.setupImagePopup();
+    }
+
+    openImagePopup(src) {
+        const modal = document.getElementById('imagePopupModal');
+        const img = document.getElementById('imagePopupImg');
+        if (modal && img) {
+            img.src = src;
+            modal.classList.add('open');
+        }
+    }
+
+    setupImagePopup() {
+        const modal = document.getElementById('imagePopupModal');
+        const closeBtn = document.getElementById('imagePopupCloseBtn');
+        const backdrop = document.getElementById('imagePopupClose');
+        
+        const close = () => modal?.classList.remove('open');
+        
+        if (closeBtn) closeBtn.addEventListener('click', close);
+        if (backdrop) backdrop.addEventListener('click', close);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal?.classList.contains('open')) close();
+        });
+    }
+
+    setupPortfolioEditHandlers() {
+        document.querySelectorAll('.portfolio-edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const section = e.currentTarget.dataset.section;
+                console.log('Edit section:', section);
+                // TODO: Open edit modal for section
+            });
+        });
     }
 
     escapeHtml(text) {

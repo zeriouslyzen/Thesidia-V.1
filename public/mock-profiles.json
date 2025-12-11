@@ -17,7 +17,37 @@
           {"title": "Palette Motion", "thumb": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=60", "meta": "00:45"},
           {"title": "Lighting Drill", "thumb": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60", "meta": "00:28"}
         ],
-        "origin": "Started with analog rotoscoping, shifted into digital kinetic typography. Focused on breath-like timing and restrained palettes.",
+        "origin": {
+          "paragraphs": [
+            "Started with analog rotoscoping, shifted into digital kinetic typography. Focused on breath-like timing and restrained palettes.",
+            "The journey began in a small Barcelona studio where I learned frame-by-frame animation. Over the years, I've developed a unique approach that combines traditional techniques with modern digital tools, always prioritizing the emotional impact of movement."
+          ],
+          "images": [
+            "https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=300&q=80",
+            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=300&q=80"
+          ]
+        },
+        "education": {
+          "cert": {"title": "Advanced Motion Design", "org": "School of Visual Arts", "url": "https://example.com/cert"},
+          "university": {"title": "BFA Digital Media", "org": "Barcelona Art Institute", "url": "https://example.com/uni"}
+        },
+        "services": [
+          {"title": "Motion Direction", "desc": "Full creative direction for motion projects"},
+          {"title": "Workshop Facilitation", "desc": "Teaching kinetic design principles"}
+        ],
+        "resume": {"name": "Aurora_Vale_CV.pdf", "url": "https://example.com/resume.pdf", "uploaded": "2024-01-15"},
+        "reading": [
+          {"title": "The Art of Looking Sideways", "author": "Alan Fletcher", "url": "https://example.com/book1", "image": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=300&q=80"},
+          {"title": "Steal Like an Artist", "author": "Austin Kleon", "url": "https://example.com/book2", "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80"},
+          {"title": "The Design of Everyday Things", "author": "Don Norman", "url": "https://example.com/book3", "image": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=300&q=80"},
+          {"title": "Thinking, Fast and Slow", "author": "Daniel Kahneman", "url": "https://example.com/book4", "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80"}
+        ],
+        "disciplines": [
+          "Vinyasa Yoga",
+          "Meditation",
+          "Breathwork",
+          "Movement Flow"
+        ],
         "links": [
           {"type": "Studio", "title": "Studio North", "desc": "Barcelona micro-studio for kinetic pieces", "url": "https://example.com/studionorth"},
           {"type": "Location", "title": "Residency BCN", "desc": "Artist-in-residence loft", "url": "https://example.com/residency"}
