@@ -336,16 +336,17 @@
         /* Profile Navigation Tabs */
         .profile-nav {
             display: flex;
+            gap: 20px;
+            justify-content: center;
             border-bottom: none;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            overflow: hidden;
             position: relative;
+            margin-top: 12px;
+            padding: 12px 0 18px;
         }
 
         .profile-nav-item {
-            flex: 1;
-            min-width: 120px;
-            padding: 16px;
+            padding: 12px 14px;
             text-align: center;
             color: var(--text-secondary);
             font-size: 15px;
@@ -368,7 +369,7 @@
 
         .profile-nav-indicator {
             position: absolute;
-            bottom: -2px;
+            bottom: -4px;
             width: 8px;
             height: 8px;
             border-radius: 50%;
