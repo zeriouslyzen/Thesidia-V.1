@@ -336,17 +336,15 @@
         /* Profile Navigation Tabs */
         .profile-nav {
             display: flex;
-            gap: 20px;
-            justify-content: center;
-            border-bottom: none;
-            overflow: hidden;
-            position: relative;
-            margin-top: 12px;
-            padding: 12px 0 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .profile-nav-item {
-            padding: 12px 14px;
+            flex: 1;
+            min-width: 120px;
+            padding: 16px;
             text-align: center;
             color: var(--text-secondary);
             font-size: 15px;
@@ -364,26 +362,7 @@
 
         .profile-nav-item.active {
             color: var(--theme-neon);
-            border-bottom-color: transparent;
-        }
-
-        .profile-nav-indicator {
-            position: absolute;
-            bottom: -4px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-            transform: translate(-50%, 4px);
-            transition: left 0.25s ease, transform 0.25s ease;
-            pointer-events: none;
-            animation: navPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes navPulse {
-            0%, 100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.4); opacity: 0.8; }
-            50% { box-shadow: 0 0 14px rgba(255, 255, 255, 0.7); opacity: 1; }
+            border-bottom-color: var(--theme-neon);
         }
 
 
@@ -925,7 +904,6 @@
                 <div class="profile-nav-item active" data-tab="portfolio">Portfolio</div>
                 <div class="profile-nav-item" data-tab="cuts">KX Cuts</div>
                 <div class="profile-nav-item" data-tab="dojo">Dojo</div>
-                <div class="profile-nav-indicator" id="profileNavIndicator"></div>
             </div>
 
             <!-- Stream Timeline -->
