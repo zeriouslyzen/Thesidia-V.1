@@ -171,7 +171,7 @@ Katanx serves as a unified platform where practitioners across all nine categori
 - **Educational content**: Learn from practitioners and teachers
 
 ### Build Community
-- **Circles**: Join or create communities around specific disciplines
+- **Forums**: Join or create communities around specific disciplines
 - **Resonating**: Connect with content and people that resonate with your practice
 - **Friends & Fans**: Build meaningful connections with fellow practitioners
 - **Studio integration**: Link to studios, gyms, and training locations
@@ -207,7 +207,7 @@ Katanx serves as a unified platform where practitioners across all nine categori
 
 ### Navigation & Status
 - **Status system**: Online, Offline, Away, Focused
-- **Clean navigation**: Home, Stream, KX Cuts, Circles, Studio
+- **Clean navigation**: Home, Stream, KX Cuts, Forums, Studio
 - **Responsive design**: Mobile-first, works on all devices
 
 ### Design Philosophy
