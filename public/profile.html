@@ -44,6 +44,42 @@
             background: var(--bg-primary);
         }
 
+        /* Back Button */
+        .profile-back-btn {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 36px;
+            height: 36px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+            backdrop-filter: blur(8px);
+        }
+
+        .profile-back-btn:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(-2px);
+        }
+
+        .profile-back-btn svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-primary);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .profile-back-btn:hover svg {
+            transform: translateX(-2px);
+        }
+
         /* Profile Banner */
         .profile-banner {
             width: 100%;
@@ -147,11 +183,11 @@
 
         .edit-profile-btn {
             background: transparent;
-            border: 0;
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: var(--text-primary);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 15px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -160,6 +196,7 @@
         .edit-profile-btn:hover {
             background: rgba(255, 255, 255, 0.08);
         }
+
 
         /* Profile Info */
         .profile-info {
@@ -288,7 +325,7 @@
         }
 
         .profile-social-link.tt {
-            color: #010101;
+            color: #69c9d0;
         }
 
         .profile-social-link.ln {
@@ -618,32 +655,297 @@
             color: #ff4444;
         }
 
-        .edit-profile-social-select {
-            display: flex;
-            gap: 12px;
+        .edit-profile-social-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
             margin-bottom: 12px;
         }
 
-        .edit-profile-social-option {
-            flex: 1;
-            padding: 10px;
+        .edit-profile-social-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
             background: var(--bg-secondary);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .edit-profile-social-item label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            min-width: 60px;
+        }
+
+        .edit-profile-social-item input {
+            flex: 1;
+            background: transparent;
+            border: 0;
             color: var(--text-primary);
-            font-size: 14px;
+            font-size: 12px;
+            padding: 4px 0;
+        }
+
+        .edit-profile-social-item input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .edit-profile-disciplines-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .edit-profile-discipline-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .edit-profile-discipline-category {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            color: var(--text-primary);
+            font-size: 12px;
             cursor: pointer;
-            text-align: center;
             transition: all 0.2s ease;
         }
 
-        .edit-profile-social-option:hover {
-            background: rgba(255, 255, 255, 0.05);
+        .edit-profile-discipline-category:focus {
+            outline: none;
+            border-color: var(--theme-neon);
         }
 
-        .edit-profile-social-option.selected {
-            border-color: var(--theme-neon-border);
+        .edit-profile-discipline-sub {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            color: var(--text-primary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .edit-profile-discipline-sub:focus {
+            outline: none;
+            border-color: var(--theme-neon);
+        }
+
+        .edit-profile-discipline-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .edit-profile-discipline-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--text-primary);
+        }
+
+        .edit-profile-discipline-tag button {
+            background: transparent;
+            border: 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-profile-metrics-field {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .edit-profile-metric-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .edit-profile-metric-item label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .edit-profile-metric-item input {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 6px 8px;
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+
+        /* Metric Popout Modal */
+        .metric-popout-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .metric-popout-modal.open {
+            display: flex;
+        }
+
+        .metric-popout-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+        }
+
+        .metric-popout-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .metric-popout-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .metric-popout-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .metric-popout-close {
+            background: transparent;
+            border: 0;
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .metric-popout-close:hover {
             background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .metric-popout-close svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .metric-popout-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 80px);
+        }
+
+        .metric-popout-section {
+            margin-bottom: 20px;
+        }
+
+        .metric-popout-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .metric-popout-profiles {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .metric-popout-profile-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .metric-popout-profile-card:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--theme-neon-border);
+        }
+
+        .metric-popout-profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--bg-tertiary);
+        }
+
+        .metric-popout-profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .metric-popout-profile-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .metric-popout-profile-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .metric-popout-profile-handle {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
         .edit-profile-actions {
@@ -805,6 +1107,13 @@
 
         <!-- Main Content -->
         <main class="profile-page">
+            <!-- Back Button -->
+            <a href="/" class="profile-back-btn" aria-label="Back to home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </a>
+
             <!-- Profile Banner -->
             <div class="profile-banner" id="profileBanner">
                 <div class="profile-banner-edit" id="bannerEditBtn">
@@ -831,7 +1140,7 @@
 
                 <!-- Profile Actions -->
                 <div class="profile-actions">
-                    <button class="edit-profile-btn no-border" id="editProfileBtn">Edit profile</button>
+                    <button class="edit-profile-btn no-border" id="editProfileBtn">optimize profile</button>
                 </div>
 
                 <!-- Profile Info -->
@@ -882,17 +1191,21 @@
                     </div>
 
                     <div class="profile-stats-large">
-                        <div class="profile-stat">
-                            <span class="profile-stat-number" id="profileFollowingCount">150</span>
-                            <span>Top links</span>
+                        <div class="profile-stat" data-metric="friends" id="profileStatFriends">
+                            <span class="profile-stat-number" id="profileFriendsCount">0</span>
+                            <span>Friends</span>
                         </div>
-                        <div class="profile-stat">
-                            <span class="profile-stat-number" id="profileFollowersCount">1.2K</span>
+                        <div class="profile-stat" data-metric="fans" id="profileStatFans">
+                            <span class="profile-stat-number" id="profileFansCount">0</span>
+                            <span>Fans</span>
+                        </div>
+                        <div class="profile-stat" data-metric="resonating" id="profileStatResonating">
+                            <span class="profile-stat-number" id="profileResonatingCount">0</span>
                             <span>Resonating</span>
                         </div>
-                        <div class="profile-stat">
-                            <span class="profile-stat-number" id="profilePostsCount">42</span>
-                            <span>Works</span>
+                        <div class="profile-stat" data-metric="cuts" id="profileStatCuts">
+                            <span class="profile-stat-number" id="profileCutsCount">0</span>
+                            <span>Cuts</span>
                         </div>
                     </div>
                 </div>
@@ -900,10 +1213,10 @@
 
             <!-- Profile Navigation -->
             <div class="profile-nav">
-                <div class="profile-nav-item" data-tab="stream">Stream</div>
-                <div class="profile-nav-item active" data-tab="portfolio">Portfolio</div>
-                <div class="profile-nav-item" data-tab="cuts">KX Cuts</div>
-                <div class="profile-nav-item" data-tab="dojo">Dojo</div>
+                <div class="profile-nav-item" data-tab="stream">stream</div>
+                <div class="profile-nav-item active" data-tab="portfolio">portfolio</div>
+                <div class="profile-nav-item" data-tab="cuts">kx cuts</div>
+                <div class="profile-nav-item" data-tab="dojo">dojo</div>
             </div>
 
             <!-- Stream Timeline -->
@@ -1188,11 +1501,74 @@
                 </div>
                 <div class="edit-profile-field">
                     <label class="edit-profile-label">Social Media</label>
-                    <div class="edit-profile-social-select">
-                        <div class="edit-profile-social-option" data-social="facebook">Facebook</div>
-                        <div class="edit-profile-social-option selected" data-social="instagram">Instagram</div>
+                    <div class="edit-profile-social-grid">
+                        <div class="edit-profile-social-item">
+                            <label>Instagram</label>
+                            <input type="url" id="editSocialIG" placeholder="@username">
+                        </div>
+                        <div class="edit-profile-social-item">
+                            <label>X (Twitter)</label>
+                            <input type="url" id="editSocialX" placeholder="@username">
+                        </div>
+                        <div class="edit-profile-social-item">
+                            <label>Facebook</label>
+                            <input type="url" id="editSocialFB" placeholder="@username">
+                        </div>
+                        <div class="edit-profile-social-item">
+                            <label>TikTok</label>
+                            <input type="url" id="editSocialTT" placeholder="@username">
+                        </div>
+                        <div class="edit-profile-social-item">
+                            <label>LinkedIn</label>
+                            <input type="url" id="editSocialLN" placeholder="@username">
+                        </div>
                     </div>
-                    <input type="url" class="edit-profile-input" id="editSocialUrl" placeholder="https://instagram.com/username">
+                </div>
+                <div class="edit-profile-field">
+                    <label class="edit-profile-label">Disciplines</label>
+                    <div class="edit-profile-disciplines-field">
+                        <div class="edit-profile-discipline-selector">
+                            <select class="edit-profile-discipline-category" id="editDisciplineCategory">
+                                <option value="">Select category</option>
+                                <option value="martial">Martial & Combative Arts</option>
+                                <option value="movement">Movement Arts</option>
+                                <option value="visual">Visual Arts</option>
+                                <option value="internal">Internal/Spiritual Arts</option>
+                                <option value="performance">Performance Arts</option>
+                                <option value="healing">Healing Arts</option>
+                                <option value="intellectual">Intellectual Arts</option>
+                                <option value="creative">Creative/Inventive Arts</option>
+                                <option value="social">Social/Leadership Arts</option>
+                            </select>
+                            <select class="edit-profile-discipline-sub" id="editDisciplineSub" disabled>
+                                <option value="">Select discipline</option>
+                            </select>
+                        </div>
+                        <div class="edit-profile-discipline-tags" id="editDisciplinesContainer">
+                            <!-- Dynamic discipline tags -->
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-profile-field">
+                    <label class="edit-profile-label">Metrics Labels</label>
+                    <div class="edit-profile-metrics-field">
+                        <div class="edit-profile-metric-item">
+                            <label>First Metric</label>
+                            <input type="text" id="editMetric1" placeholder="Friends" maxlength="20">
+                        </div>
+                        <div class="edit-profile-metric-item">
+                            <label>Second Metric</label>
+                            <input type="text" id="editMetric2" placeholder="Fans" maxlength="20">
+                        </div>
+                        <div class="edit-profile-metric-item">
+                            <label>Third Metric</label>
+                            <input type="text" id="editMetric3" placeholder="Resonating" maxlength="20">
+                        </div>
+                        <div class="edit-profile-metric-item">
+                            <label>Fourth Metric</label>
+                            <input type="text" id="editMetric4" placeholder="Cuts" maxlength="20">
+                        </div>
+                    </div>
                 </div>
             </form>
             <div class="edit-profile-actions">
@@ -1225,6 +1601,25 @@
                 </svg>
             </button>
             <img id="imagePopupImg" src="" alt="Expanded view">
+        </div>
+    </div>
+
+    <!-- Metric Popout Modals -->
+    <div class="metric-popout-modal" id="metricPopoutModal">
+        <div class="metric-popout-backdrop" id="metricPopoutClose"></div>
+        <div class="metric-popout-content">
+            <div class="metric-popout-header">
+                <h3 class="metric-popout-title" id="metricPopoutTitle">Friends</h3>
+                <button class="metric-popout-close" id="metricPopoutCloseBtn" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="metric-popout-body" id="metricPopoutBody">
+                <!-- Dynamic content -->
+            </div>
         </div>
     </div>
 

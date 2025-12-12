@@ -519,10 +519,30 @@
             
             <!-- Sub Menu -->
             <div class="header-submenu">
-                <!-- Astrological Time Indicator - Far Left -->
-                <div class="astro-time-indicator" id="astroTimeIndicator">
-                    <span class="astro-time-text" id="astroTimeText">00:00</span>
-                    <span class="astro-time-dot"></span>
+                <!-- User Status Indicator - Far Left -->
+                <div class="user-status-indicator" id="userStatusIndicator">
+                    <span class="user-name-text" id="userNameText">Katanx Explore</span>
+                    <span class="status-orb status-online" id="statusOrb" title="Status: Online"></span>
+                </div>
+                
+                <!-- Status Selector Dropdown -->
+                <div class="status-selector-dropdown" id="statusSelectorDropdown">
+                    <div class="status-option" data-status="online">
+                        <span class="status-orb status-online"></span>
+                        <span>Online</span>
+                    </div>
+                    <div class="status-option" data-status="offline">
+                        <span class="status-orb status-offline"></span>
+                        <span>Offline</span>
+                    </div>
+                    <div class="status-option" data-status="away">
+                        <span class="status-orb status-away"></span>
+                        <span>Away</span>
+                    </div>
+                    <div class="status-option" data-status="focused">
+                        <span class="status-orb status-focused"></span>
+                        <span>Focused</span>
+                    </div>
                 </div>
                 
                 <nav class="advanced-nav">

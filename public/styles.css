@@ -349,7 +349,7 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 24px;
+    gap: 40px;
     position: relative;
     padding: 0 8px;
 }
@@ -362,9 +362,11 @@ a:hover {
     border-top: none !important;
     border-bottom: none !important;
     color: var(--text-secondary);
-    font-size: 14px; /* Increased from 13px */
+    font-size: 16px;
     padding: 8px 12px;
     cursor: pointer;
+    text-shadow: 0 0 6px rgba(212, 212, 0, 0.2);
+    animation: nav-glow 4s ease-in-out infinite;
     transition: color 0.3s ease-out;
     border-radius: 0;
     position: relative;
@@ -392,7 +394,7 @@ a:hover {
 
 .advanced-nav .nav-item.active {
     color: var(--text-primary);
-    font-weight: 500;
+    font-weight: 600;
     background: none !important;
     border: none !important;
     border-left: none !important;
@@ -401,6 +403,16 @@ a:hover {
     border-bottom: none !important;
     box-shadow: none !important;
     outline: none !important;
+    text-shadow: 0 0 10px rgba(212, 212, 0, 0.4);
+}
+
+@keyframes nav-glow {
+    0%, 100% {
+        text-shadow: 0 0 6px rgba(212, 212, 0, 0.2);
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(212, 212, 0, 0.35);
+    }
 }
 
 .advanced-nav .nav-item:focus {
@@ -436,28 +448,126 @@ a:hover {
 }
 
 /* Astrological Time Indicator - Far Left */
-.astro-time-indicator {
+.user-status-indicator {
     position: absolute;
     left: 16px;
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: var(--font-size-xs);
-    color: var(--text-tertiary);
-    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    font-weight: 500;
+    z-index: 10;
 }
 
-.astro-time-text {
-    opacity: 0.6;
+.user-name-text {
+    opacity: 0.9;
+    text-shadow: 0 0 8px rgba(212, 212, 0, 0.3);
+    animation: glow-pulse 3s ease-in-out infinite;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
 }
 
-.astro-time-dot {
-    width: 4px;
-    height: 4px;
+.user-name-text:hover {
+    opacity: 1;
+}
+
+.status-orb {
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    background: var(--text-primary);
-    opacity: 0.4;
-    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+    box-shadow: 0 0 4px currentColor;
+    animation: orb-pulse 2s ease-in-out infinite;
+    align-self: center;
+    margin-top: 2px;
+}
+
+.status-orb.status-online {
+    background: #66cc66;
+    color: #66cc66;
+}
+
+.status-orb.status-offline {
+    background: #cc6666;
+    color: #cc6666;
+}
+
+.status-orb.status-away {
+    background: #cc9966;
+    color: #cc9966;
+}
+
+.status-orb.status-focused {
+    background: #6699cc;
+    color: #6699cc;
+}
+
+@keyframes orb-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 6px currentColor;
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+        box-shadow: 0 0 10px currentColor;
+    }
+}
+
+@keyframes glow-pulse {
+    0%, 100% {
+        opacity: 0.9;
+        text-shadow: 0 0 8px rgba(212, 212, 0, 0.3);
+    }
+    50% {
+        opacity: 1;
+        text-shadow: 0 0 12px rgba(212, 212, 0, 0.5);
+    }
+}
+
+/* Status Selector Dropdown */
+.status-selector-dropdown {
+    display: none;
+    position: absolute;
+    left: 16px;
+    top: 100%;
+    margin-top: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 4px;
+    min-width: 120px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.status-selector-dropdown.open {
+    display: block;
+}
+
+.status-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 13px;
+    transition: background 0.2s ease;
+}
+
+.status-option:hover {
+    background: var(--bg-tertiary);
+}
+
+.status-option .status-orb {
+    width: 6px;
+    height: 6px;
+    margin-top: 0;
 }
 
 @keyframes pulse {
@@ -4118,22 +4228,37 @@ html:has(#app.sidebar-pushed) {
     }
     
     .advanced-nav {
-        gap: 12px; /* Closer spacing between nav items */
+        gap: 28px; /* Wider spacing between nav items */
         padding: 0 4px;
         z-index: 2; /* Ensure it's above other elements */
     }
     
     .advanced-nav .nav-item {
-        font-size: 11px; /* Increased from 10px */
+        font-size: 14px; /* Increased font size */
         padding: 4px 6px; /* Reduced padding */
         line-height: 1.1; /* Tighter line height */
         margin: 0;
     }
     
     /* Ensure nav doesn't overlap with icon */
-    .astro-time-indicator {
+    .user-status-indicator {
         z-index: 1; /* Behind nav */
         left: 8px; /* Slightly adjust position */
+        font-size: 11px;
+        gap: 5px;
+    }
+    
+    .user-status-indicator .status-orb {
+        width: 4px;
+        height: 4px;
+    }
+    
+    .advanced-nav {
+        gap: 24px; /* Wider spacing on mobile too */
+    }
+    
+    .advanced-nav .nav-item {
+        font-size: 13px; /* Slightly larger on mobile */
     }
     
     .star-notepad-btn {
@@ -4201,14 +4326,23 @@ html:has(#app.sidebar-pushed) {
     }
     
     .advanced-nav {
-        gap: 8px; /* Very close spacing between items */
+        gap: 16px; /* Wider spacing between items */
         padding: 0 2px;
     }
     
     .advanced-nav .nav-item {
-        font-size: 10px; /* Increased from 9px */
+        font-size: 12px; /* Increased font size */
         padding: 3px 4px; /* Minimal padding */
         line-height: 1.0; /* Very tight line height */
+    }
+    
+    .user-status-indicator {
+        font-size: 10px;
+    }
+    
+    .user-status-indicator .status-orb {
+        width: 4px;
+        height: 4px;
     }
 }
 

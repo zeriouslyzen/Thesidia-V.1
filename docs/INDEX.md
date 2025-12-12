@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last Updated**: 2025-11-20
+**Last Updated**: 2025-01-XX
 
 Complete index of Thesidia documentation organized by category.
 
@@ -21,7 +21,26 @@ Complete index of Thesidia documentation organized by category.
 
 ## Technical Documentation
 
+### Engineering
+- **`engineering/README.md`**: Engineering documentation index
+- **`engineering/ENGINEERING_REVIEW.md`**: Engineering review and assessment
+- **`engineering/DEV_SERVER_SETUP.md`**: Development server setup instructions
+- **`engineering/DEBUG_ROUTING_ISSUES.md`**: Routing issues and debugging
+- **`engineering/COMPREHENSIVE_CODE_ANALYSIS.md`**: Complete codebase analysis
+- **`engineering/DUPLICATION_ROOT_CAUSE_ANALYSIS.md`**: Code duplication analysis
+- **`engineering/LLM_ARCHITECTURE_INVESTIGATION.md`**: LLM architecture investigation
+- **`engineering/AUTHENTICATION_IMPLEMENTATION.md`**: Authentication system implementation
+- **`engineering/AUTHENTICATION_SUMMARY.md`**: Authentication system summary
+- **`engineering/TESTING_INSTRUCTIONS.md`**: Testing guidelines
+- **`engineering/QUICK_START_DEVELOPMENT.md`**: Developer quick start guide
+
 ### Architecture
+- **`architecture/README.md`**: Architecture documentation index
+- **`architecture/ARCHITECTURE_REFACTORING_PLAN.md`**: Architecture refactoring plan
+- **`architecture/SCAFFOLDING_ROADMAP.md`**: Development scaffolding roadmap
+- **`architecture/PROJECT_REVIEW_AND_MVP_ANALYSIS.md`**: Project review and MVP analysis
+- **`architecture/PROJECT_ASSESSMENT.md`**: Project assessment
+- **`architecture/PROJECT_ANALYSIS_FOR_MIT.md`**: Project analysis for MIT
 - **`technical/TECHNICAL_IMPLEMENTATION_AND_CAPABILITIES.md`**: Complete technical architecture
 - **`SOPHIA_ARCHITECTURE_ENHANCEMENT.md`**: Sophia memory system design
 - **`SOPHIA_ARCHITECTURE_DIAGRAM.md`**: Visual architecture diagrams
@@ -40,6 +59,25 @@ Complete index of Thesidia documentation organized by category.
 - **`REAL_PATTERNS_UPDATE.md`**: Real pattern implementation
 - **`LINGUISTIC_INTELLIGENCE_UPDATE.md`**: Linguistic intelligence features
 - **`DIRECTIVE_FOCUSED_UPDATE.md`**: Directive handling system
+
+### Social Features
+- **`social/README.md`**: Social features documentation index
+- **`social/BOT_SYSTEM_COMPLETE.md`**: Complete bot system documentation
+- **`social/BOT_SYSTEM_DOCUMENTATION.md`**: Bot system technical documentation
+- **`social/BOT_SYSTEM_EXPLAINED.md`**: Bot system explanation
+- **`social/BOT_SYSTEM_QUICK_START.md`**: Bot system quick start guide
+- **`social/FEED_SYSTEM_SUMMARY.md`**: Feed system overview
+- **`social/FEED_ENHANCEMENTS_COMPLETE.md`**: Feed enhancements completion
+- **`social/DASHBOARD_REVIEW_AND_ENGAGEMENT_STRATEGY.md`**: Dashboard review and engagement strategy
+- **`social/API_REFERENCE.md`**: Social API reference
+- **`social/SECURITY_GUIDE.md`**: Social security guide
+- **`social/SETTINGS_GUIDE.md`**: Settings guide
+
+### UX Design
+- **`ux/README.md`**: UX design documentation index
+- **`ux/KX_CUTS_UX_DESIGN.md`**: KX Cuts page UX design
+- **`ux/KX_CUTS_GAMIFICATION_DESIGN.md`**: Gamification design for KX Cuts
+- **`ux/DEEP_ANALYSIS_ADVANTAGES_AND_UX.md`**: Deep analysis of UX advantages
 
 ---
 

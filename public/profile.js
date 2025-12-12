@@ -9,6 +9,17 @@ class ProfilePage {
         this.cropCanvas = null;
         this.cropImage = null;
         this.cropContext = null;
+        this.disciplineData = {
+            martial: ['Kung Fu', 'Shaolin Arts', 'Qigong', 'Neigong', 'Karate', 'Taekwondo', 'Jeet Kune Do', 'Budo systems', 'Boxing', 'Muay Thai', 'Wrestling', 'Jiu-Jitsu', 'Weapons arts', 'Internal martial arts'],
+            movement: ['Dance', 'Parkour', 'Freerunning', 'Acrobatics', 'Gymnastics', 'Capoeira', 'Yoga', 'Contemporary movement', 'Flow arts'],
+            visual: ['Drawing', 'Painting', 'Sculpture', 'Calligraphy', 'Photography', 'Film', 'Animation', 'Architecture', 'Design', 'Crafts'],
+            internal: ['Meditation', 'Pranayama', 'Breathwork', 'Qigong', 'Yoga', 'Shamanic practices', 'Ritual arts', 'Mystical arts'],
+            performance: ['Theater', 'Spoken word', 'Poetry', 'Singing', 'Music', 'Ritual performance', 'Martial dance'],
+            healing: ['Traditional Chinese Medicine', 'Acupuncture', 'Acupressure', 'Herbalism', 'Massage', 'Bodywork', 'Thai massage', 'Physical therapy', 'Energetic healing'],
+            intellectual: ['Philosophy', 'Science', 'Mathematics', 'Language', 'Linguistics', 'Systems thinking', 'Strategy', 'Game theory'],
+            creative: ['Invention', 'Engineering', 'Architecture', 'Programming', 'Alchemy', 'Machine-building', 'Mechanism design'],
+            social: ['Rhetoric', 'Diplomacy', 'Teaching', 'Leadership', 'Community building', 'Psychosocial development']
+        };
         this.init();
     }
 
@@ -82,7 +93,6 @@ class ProfilePage {
         this.setupEventListeners();
         // Default to portfolio so it is visible in demo
         this.switchTab('portfolio');
-        this.updateNavIndicator();
     }
 
     loadProfileData() {
@@ -126,17 +136,48 @@ class ProfilePage {
             roleEl.textContent = profile.role || 'Practitioner';
         }
 
-        // Disciplines (show max 2)
+        // Disciplines (show max 2 as chips)
         const disciplinesEl = document.getElementById('profileDisciplines');
         if (disciplinesEl) {
-            const labels = this.getDisciplineLabels(profile.domains || profile.disciplines || []);
-            disciplinesEl.innerHTML = labels.slice(0, 2).map(l => `<span class="profile-discipline-chip">${l}</span>`).join('');
+            const savedData = JSON.parse(localStorage.getItem('profileData') || '{}');
+            const disciplines = savedData.disciplines || this.getDisciplineLabels(profile.domains || []) || [];
+            disciplinesEl.innerHTML = disciplines.slice(0, 2).map(l => `<span class="profile-discipline-chip">${l}</span>`).join('');
         }
 
-        // Stats
-        document.getElementById('profileFollowingCount').textContent = profile.stats?.following ?? '0';
-        document.getElementById('profileFollowersCount').textContent = profile.stats?.followers ?? '0';
-        document.getElementById('profilePostsCount').textContent = profile.posts ? profile.posts.length : '0';
+        // Metrics labels and counts
+        const savedData = JSON.parse(localStorage.getItem('profileData') || '{}');
+        const friendsEl = document.getElementById('profileStatFriends');
+        const fansEl = document.getElementById('profileStatFans');
+        const resonatingEl = document.getElementById('profileStatResonating');
+        const cutsEl = document.getElementById('profileStatCuts');
+        
+        if (friendsEl) {
+            const labelEl = friendsEl.querySelector('span:last-child');
+            if (labelEl) labelEl.textContent = savedData.metric1 || 'Friends';
+            const countEl = document.getElementById('profileFriendsCount');
+            if (countEl) countEl.textContent = savedData.friendsCount || profile.stats?.friends || '0';
+        }
+        if (fansEl) {
+            const labelEl = fansEl.querySelector('span:last-child');
+            if (labelEl) labelEl.textContent = savedData.metric2 || 'Fans';
+            const countEl = document.getElementById('profileFansCount');
+            if (countEl) countEl.textContent = savedData.fansCount || profile.stats?.fans || '0';
+        }
+        if (resonatingEl) {
+            const labelEl = resonatingEl.querySelector('span:last-child');
+            if (labelEl) labelEl.textContent = savedData.metric3 || 'Resonating';
+            const countEl = document.getElementById('profileResonatingCount');
+            if (countEl) countEl.textContent = savedData.resonatingCount || profile.stats?.resonating || '0';
+        }
+        if (cutsEl) {
+            const labelEl = cutsEl.querySelector('span:last-child');
+            if (labelEl) labelEl.textContent = savedData.metric4 || 'Cuts';
+            const countEl = document.getElementById('profileCutsCount');
+            if (countEl) countEl.textContent = savedData.cutsCount || profile.stats?.cuts || '0';
+        }
+
+        // Setup metric click handlers
+        this.setupMetricPopouts();
 
         // Sidebar sync
         const sidebarName = document.getElementById('sidebarProfileNameProfile');
@@ -174,13 +215,45 @@ class ProfilePage {
             bioTextarea.addEventListener('input', () => this.updateCharCount());
         }
 
-        // Social media selection
-        document.querySelectorAll('.edit-profile-social-option').forEach(option => {
-            option.addEventListener('click', () => {
-                document.querySelectorAll('.edit-profile-social-option').forEach(o => o.classList.remove('selected'));
-                option.classList.add('selected');
+        // Discipline dropdowns
+        const categorySelect = document.getElementById('editDisciplineCategory');
+        const subSelect = document.getElementById('editDisciplineSub');
+        const disciplinesContainer = document.getElementById('editDisciplinesContainer');
+        
+        if (categorySelect && subSelect) {
+            categorySelect.addEventListener('change', (e) => {
+                const category = e.target.value;
+                subSelect.innerHTML = '<option value="">Select discipline</option>';
+                subSelect.disabled = !category;
+                
+                if (category && this.disciplineData[category]) {
+                    this.disciplineData[category].forEach(sub => {
+                        const option = document.createElement('option');
+                        option.value = sub;
+                        option.textContent = sub;
+                        subSelect.appendChild(option);
+                    });
+                }
             });
-        });
+            
+            subSelect.addEventListener('change', (e) => {
+                const value = e.target.value;
+                if (value) {
+                    const category = categorySelect.value;
+                    const categoryCount = Array.from(disciplinesContainer.children).filter(tag => 
+                        tag.dataset.category === category
+                    ).length;
+                    
+                    if (categoryCount < 2 && disciplinesContainer.children.length < 4) {
+                        this.addDisciplineTag(value, category);
+                        subSelect.value = '';
+                    } else if (categoryCount >= 2) {
+                        alert('Maximum 2 disciplines per category');
+                        subSelect.value = '';
+                    }
+                }
+            });
+        }
 
         // Tab navigation
         document.querySelectorAll('.profile-nav-item').forEach(item => {
@@ -190,8 +263,6 @@ class ProfilePage {
                 this.switchTab(item.dataset.tab);
             });
         });
-
-        window.addEventListener('resize', () => this.updateNavIndicator());
 
         // Crop modal
         document.getElementById('cancelCropBtn').addEventListener('click', () => this.closeCropModal());
@@ -203,24 +274,90 @@ class ProfilePage {
     openEditModal() {
         const modal = document.getElementById('editProfileModal');
         const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
+        const profile = this.profileData || {};
         
         // Populate form
-        document.getElementById('editName').value = profileData.name || profileData.display_name || '';
-        document.getElementById('editUsername').value = profileData.username || '';
+        document.getElementById('editName').value = profileData.name || profile.display_name || profile.name || '';
+        document.getElementById('editUsername').value = profileData.username || profile.username || '';
         document.getElementById('editTag').value = profileData.tag || '';
-        document.getElementById('editBio').value = profileData.bio || '';
-        document.getElementById('editLocation').value = profileData.location || '';
-        document.getElementById('editWebsite').value = profileData.website || '';
-        document.getElementById('editSocialUrl').value = profileData.socialUrl || '';
+        document.getElementById('editBio').value = profileData.bio || profile.bio || '';
+        document.getElementById('editLocation').value = profileData.location || profile.location || '';
+        document.getElementById('editWebsite').value = profileData.website || profile.website || '';
         
-        // Set social type
-        const socialType = profileData.socialType || 'instagram';
-        document.querySelectorAll('.edit-profile-social-option').forEach(o => {
-            o.classList.toggle('selected', o.dataset.social === socialType);
-        });
+        // Populate social media
+        const igEl = document.getElementById('editSocialIG');
+        const xEl = document.getElementById('editSocialX');
+        const fbEl = document.getElementById('editSocialFB');
+        const ttEl = document.getElementById('editSocialTT');
+        const lnEl = document.getElementById('editSocialLN');
+        if (igEl) igEl.value = profileData.ig || profile.ig || '';
+        if (xEl) xEl.value = profileData.x || profile.x || '';
+        if (fbEl) fbEl.value = profileData.fb || profile.fb || '';
+        if (ttEl) ttEl.value = profileData.tt || profile.tt || '';
+        if (lnEl) lnEl.value = profileData.ln || profile.ln || profile.linkedin || '';
+        
+        // Populate disciplines (clear first to remove leftovers)
+        const disciplinesContainer = document.getElementById('editDisciplinesContainer');
+        if (disciplinesContainer) {
+            // Always clear first to remove any leftover tags
+            disciplinesContainer.innerHTML = '';
+            const disciplines = profileData.disciplines || this.getDisciplineLabels(profile.domains || []) || [];
+            disciplines.forEach(d => {
+                if (typeof d === 'string') {
+                    // Find category for this discipline
+                    let category = '';
+                    for (const [cat, subs] of Object.entries(this.disciplineData)) {
+                        if (subs.includes(d)) {
+                            category = cat;
+                            break;
+                        }
+                    }
+                    this.addDisciplineTag(d, category);
+                }
+            });
+        }
+        
+        // Reset discipline dropdowns
+        const categorySelect = document.getElementById('editDisciplineCategory');
+        const subSelect = document.getElementById('editDisciplineSub');
+        if (categorySelect) categorySelect.value = '';
+        if (subSelect) {
+            subSelect.innerHTML = '<option value="">Select discipline</option>';
+            subSelect.disabled = true;
+        }
+        
+        // Populate metrics
+        const metric1 = document.getElementById('editMetric1');
+        const metric2 = document.getElementById('editMetric2');
+        const metric3 = document.getElementById('editMetric3');
+        const metric4 = document.getElementById('editMetric4');
+        if (metric1) metric1.value = profileData.metric1 || 'Friends';
+        if (metric2) metric2.value = profileData.metric2 || 'Fans';
+        if (metric3) metric3.value = profileData.metric3 || 'Resonating';
+        if (metric4) metric4.value = profileData.metric4 || 'Cuts';
         
         this.updateCharCount();
         modal.classList.add('open');
+    }
+
+    addDisciplineTag(value, category = '') {
+        const container = document.getElementById('editDisciplinesContainer');
+        if (!container) return;
+        
+        // Check if already added
+        const existing = Array.from(container.children).some(tag => 
+            tag.querySelector('span')?.textContent === value
+        );
+        if (existing) return;
+        
+        const tag = document.createElement('div');
+        tag.className = 'edit-profile-discipline-tag';
+        tag.dataset.category = category;
+        tag.innerHTML = `
+            <span>${this.escapeHtml(value)}</span>
+            <button type="button" onclick="this.parentElement.remove()" aria-label="Remove">×</button>
+        `;
+        container.appendChild(tag);
     }
 
     closeEditModal() {
@@ -245,6 +382,12 @@ class ProfilePage {
     }
 
     saveProfile() {
+        const disciplinesContainer = document.getElementById('editDisciplinesContainer');
+        const disciplines = Array.from(disciplinesContainer?.children || []).map(tag => {
+            const text = tag.querySelector('span')?.textContent || '';
+            return text.trim();
+        }).filter(Boolean);
+
         const profileData = {
             name: document.getElementById('editName').value.trim(),
             username: document.getElementById('editUsername').value.trim(),
@@ -252,8 +395,16 @@ class ProfilePage {
             bio: document.getElementById('editBio').value.trim(),
             location: document.getElementById('editLocation').value.trim(),
             website: document.getElementById('editWebsite').value.trim(),
-            socialUrl: document.getElementById('editSocialUrl').value.trim(),
-            socialType: document.querySelector('.edit-profile-social-option.selected')?.dataset.social || 'instagram'
+            ig: document.getElementById('editSocialIG')?.value.trim() || '',
+            x: document.getElementById('editSocialX')?.value.trim() || '',
+            fb: document.getElementById('editSocialFB')?.value.trim() || '',
+            tt: document.getElementById('editSocialTT')?.value.trim() || '',
+            ln: document.getElementById('editSocialLN')?.value.trim() || '',
+            disciplines: disciplines,
+            metric1: document.getElementById('editMetric1')?.value.trim() || 'Friends',
+            metric2: document.getElementById('editMetric2')?.value.trim() || 'Fans',
+            metric3: document.getElementById('editMetric3')?.value.trim() || 'Resonating',
+            metric4: document.getElementById('editMetric4')?.value.trim() || 'Cuts'
         };
 
         // Validation
@@ -374,21 +525,11 @@ class ProfilePage {
         document.querySelectorAll('.tab-section').forEach(sec => {
             sec.classList.toggle('hidden', sec.dataset.tab !== tab);
         });
-        this.updateNavIndicator();
         if (tab === 'stream') {
             this.loadTimeline();
         } else if (tab === 'portfolio') {
             this.renderPortfolio();
         }
-    }
-
-    updateNavIndicator() {
-        const indicator = document.getElementById('profileNavIndicator');
-        const active = document.querySelector('.profile-nav-item.active');
-        if (!indicator || !active) return;
-        const { offsetLeft, offsetWidth } = active;
-        const center = offsetLeft + offsetWidth / 2;
-        indicator.style.left = `${center}px`;
     }
 
     async loadTimeline() {
@@ -806,6 +947,124 @@ class ProfilePage {
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal?.classList.contains('open')) close();
         });
+    }
+
+    setupMetricPopouts() {
+        const friendsStat = document.getElementById('profileStatFriends');
+        const fansStat = document.getElementById('profileStatFans');
+        const resonatingStat = document.getElementById('profileStatResonating');
+        const cutsStat = document.getElementById('profileStatCuts');
+        
+        if (friendsStat) friendsStat.addEventListener('click', () => this.openMetricPopout('friends'));
+        if (fansStat) fansStat.addEventListener('click', () => this.openMetricPopout('fans'));
+        if (resonatingStat) resonatingStat.addEventListener('click', () => this.openMetricPopout('resonating'));
+        if (cutsStat) cutsStat.addEventListener('click', () => this.openMetricPopout('cuts'));
+
+        const modal = document.getElementById('metricPopoutModal');
+        const closeBtn = document.getElementById('metricPopoutCloseBtn');
+        const backdrop = document.getElementById('metricPopoutClose');
+        
+        const close = () => modal?.classList.remove('open');
+        
+        if (closeBtn) closeBtn.addEventListener('click', close);
+        if (backdrop) backdrop.addEventListener('click', close);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal?.classList.contains('open')) close();
+        });
+    }
+
+    openMetricPopout(type) {
+        const modal = document.getElementById('metricPopoutModal');
+        const titleEl = document.getElementById('metricPopoutTitle');
+        const bodyEl = document.getElementById('metricPopoutBody');
+        
+        if (!modal || !titleEl || !bodyEl) return;
+
+        const titles = {
+            friends: 'Friends',
+            fans: 'Fans',
+            resonating: 'Resonating',
+            cuts: 'Cuts'
+        };
+
+        titleEl.textContent = titles[type] || type;
+        bodyEl.innerHTML = this.renderMetricContent(type);
+        modal.classList.add('open');
+    }
+
+    renderMetricContent(type) {
+        const mockProfiles = this.mockProfiles.slice(0, 10);
+        
+        if (type === 'friends') {
+            const top5 = mockProfiles.slice(0, 5);
+            const others = mockProfiles.slice(5);
+            
+            return `
+                <div class="metric-popout-section">
+                    <div class="metric-popout-section-title">Top 5 Friends</div>
+                    <div class="metric-popout-profiles">
+                        ${top5.map(p => this.renderProfileCard(p)).join('')}
+                    </div>
+                </div>
+                ${others.length > 0 ? `
+                <div class="metric-popout-section">
+                    <div class="metric-popout-section-title">Others You Interact With</div>
+                    <div class="metric-popout-profiles">
+                        ${others.map(p => this.renderProfileCard(p)).join('')}
+                    </div>
+                </div>
+                ` : ''}
+            `;
+        } else if (type === 'fans') {
+            const top5 = mockProfiles.slice(0, 5);
+            return `
+                <div class="metric-popout-section">
+                    <div class="metric-popout-section-title">Top 5 Fans</div>
+                    <div class="metric-popout-profiles">
+                        ${top5.map(p => this.renderProfileCard(p)).join('')}
+                    </div>
+                </div>
+            `;
+        } else if (type === 'resonating') {
+            return `
+                <div class="metric-popout-section">
+                    <div class="metric-popout-section-title">People Who Resonate With You</div>
+                    <div style="padding: 20px; text-align: center; color: var(--text-secondary);">
+                        This shows people who have resonated with your content via resonate likes.
+                    </div>
+                </div>
+            `;
+        } else if (type === 'cuts') {
+            const top5 = mockProfiles.slice(0, 5);
+            return `
+                <div class="metric-popout-section">
+                    <div class="metric-popout-section-title">Your Top 5 Cuts</div>
+                    <div class="metric-popout-profiles">
+                        ${top5.map(p => this.renderProfileCard(p)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        return '';
+    }
+
+    renderProfileCard(profile) {
+        const avatar = profile.avatar_url || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%23ffffff\' fill-opacity=\'0.06\'/%3E%3C/svg%3E';
+        const name = profile.display_name || profile.name || 'User';
+        const handle = profile.username || 'user';
+        const userId = profile.user_id || '';
+        
+        return `
+            <a href="/profile.html?user_id=${userId}" class="metric-popout-profile-card" onclick="document.getElementById('metricPopoutModal')?.classList.remove('open')">
+                <div class="metric-popout-profile-avatar">
+                    <img src="${avatar}" alt="${this.escapeHtml(name)}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%23ffffff\' fill-opacity=\'0.06\'/%3E%3C/svg%3E'">
+                </div>
+                <div class="metric-popout-profile-info">
+                    <div class="metric-popout-profile-name">${this.escapeHtml(name)}</div>
+                    <div class="metric-popout-profile-handle">//${this.escapeHtml(handle)}</div>
+                </div>
+            </a>
+        `;
     }
 
     setupPortfolioEditHandlers() {

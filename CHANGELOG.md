@@ -4,6 +4,76 @@ All notable changes to Thesidia will be documented in this file.
 
 ## [Unreleased] - 2025-01-XX
 
+### Added - Web Interface & Social Features
+- **Profile Page Revamp**: Complete redesign of user profile page
+  - Rectangular avatar display (default, with option to change in settings)
+  - Username format changed to `//username` style
+  - Discipline chips display (grey boxes with category/subcategory support)
+  - Portfolio section with modular content:
+    - Reels carousel (upright rectangles, horizontal scroll, 3 visible at once)
+    - Origin story section with e-reading friendly fonts and images
+    - Reading section (up to 4 books with cover images as modular cards)
+    - Mind-Body Disciplines section (up to 4 items)
+    - Studios/Locations/Gyms links with previews
+    - Credentials, Education, Services sections
+    - Resume/CV section at bottom
+  - Metrics system: Friends, Fans, Resonating, Cuts (replacing Following/Followers/Posts)
+  - Metric popouts with top 5 selections and scrollable lists
+  - Social media icons: Instagram, X (Twitter), Facebook, TikTok, LinkedIn with brand colors
+  - Tab navigation: stream, portfolio, kx cuts, dojo
+  - "optimize profile" button with square border
+  - Back button in top left for navigation
+  - Font change to Inconsolata across entire site
+- **Status Selector System**: User status management in navigation
+  - "Katanx Explore" user name display with status orb indicator
+  - Clickable name to open status dropdown
+  - Status options: Online (green), Offline (red), Away (orange), Focused (blue)
+  - Status persistence in localStorage
+  - Muted neon colors for status indicators
+  - Glowing and pulsing effects on user name
+- **Navigation Enhancements**:
+  - Wider spacing between nav items (40px desktop, 28px tablet, 16px mobile)
+  - Increased font size (16px desktop, 14px tablet, 12px mobile)
+  - Text shadow and glow-pulse animation on user name
+  - Status orb with pulse animation
+- **Mock Profile System**: Comprehensive mock user profiles integrated
+  - Detailed profile data with roles, disciplines, social links
+  - Portfolio content for each mock user
+  - Integration with KX Cuts page for "live" feel
+  - Profile cards for metric popouts
+
+### Changed - Web Interface
+- **Profile Page Layout**:
+  - Removed join date display
+  - Website display format changed to `//domain` (no https://)
+  - Role display with smaller font
+  - Bio text made bold and slightly bigger
+  - Location text made smaller, icon removed
+  - Website link pop-out icon removed
+  - Removed borders from metrics display
+  - Removed borders from social media links
+- **Portfolio Section**:
+  - Reels title removed
+  - Reels changed to upright rectangles (not wide)
+  - Three reels visible at once with horizontal scroll
+  - Portfolio title and section titles changed to light neon blue (#67d0ff)
+  - Origin section made larger for life story
+  - Reading section displays book covers as small modular cards
+  - Resume/CV moved to bottom of portfolio
+- **Navigation**:
+  - Replaced time indicator with user status indicator
+  - Status orb positioned on right side of name
+  - Menu orb remains in original position (green when active)
+
+### Fixed - Web Interface
+- **Status Selector Click Handler**: Multiple event handlers (onclick, click, mousedown) for reliable mouse click detection
+- **Portfolio Visibility**: Fixed portfolio section not appearing in browser (removed inline display:none)
+- **Vertical Scrolling**: Fixed scrolling not working on profile page
+- **Reels Layout**: Adjusted size and spacing for proper horizontal scrolling
+- **TikTok Icon**: Fixed visibility issue (changed to brand teal color)
+- **Metric Display**: Fixed errors from removed profile stat elements
+- **Discipline Selection**: Fixed leftover discipline boxes in settings modal
+
 ### Planning
 - **V2.0 Roadmap Created**: Comprehensive 16-week plan for advanced reasoning, multi-modal, and autonomous intelligence
 - **M1/M4 Optimization Strategy**: MLX-based batch processing, unified memory efficiency, batch size 2 for beam search

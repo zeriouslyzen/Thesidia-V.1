@@ -232,6 +232,9 @@ pip3 install --user --break-system-packages requests beautifulsoup4 lxml yt-dlp
 
 ### Key Documents
 
+**Platform Overview**:
+- `README_KATANX.md`: **Katanx platform overview** - The Arts of Human Development, platform purpose, and philosophy
+
 **Philosophy & Principles**:
 - `docs/philosophy/DEEPER_PURPOSE_AND_PHILOSOPHY.md`: Core philosophical framework
 - `docs/philosophy/THE_DEEPER_MEANING_OF_GNOSTIC.md`: Gnostic understanding explained

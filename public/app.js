@@ -1785,6 +1785,9 @@ try {
                 
                 // Initialize star notepad
                 initStarNotepad();
+                
+                // Initialize status selector
+                initStatusSelector();
             } catch (error) {
                 console.error('Error initializing Thesidia app:', error);
                 // Show error message to user
@@ -1814,6 +1817,9 @@ try {
             
             // Initialize star notepad
             initStarNotepad();
+            
+            // Initialize status selector
+            initStatusSelector();
         } catch (error) {
             console.error('Error initializing Thesidia app:', error);
             const app = document.getElementById('app');
@@ -2025,6 +2031,89 @@ function initStarNotepad() {
             notepadPanel.classList.remove('open');
         }
     });
+}
+
+// Initialize Status Selector
+function initStatusSelector() {
+    const userNameText = document.getElementById('userNameText');
+    const statusOrb = document.getElementById('statusOrb');
+    const statusDropdown = document.getElementById('statusSelectorDropdown');
+    
+    if (!userNameText || !statusOrb || !statusDropdown) {
+        console.warn('Status selector elements not found, retrying...');
+        setTimeout(initStatusSelector, 100);
+        return;
+    }
+    
+    console.log('Initializing status selector...');
+    
+    // Load saved status from localStorage
+    const savedStatus = localStorage.getItem('userStatus') || 'online';
+    updateStatus(savedStatus);
+    
+    // Toggle dropdown on name click - use multiple event types for reliability
+    function handleClick(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        statusDropdown.classList.toggle('open');
+        console.log('Status selector clicked, dropdown open:', statusDropdown.classList.contains('open'));
+    }
+    
+    // Remove any existing handlers first
+    userNameText.onclick = null;
+    const newHandler = handleClick;
+    
+    // Set onclick handler
+    userNameText.onclick = newHandler;
+    
+    // Also add event listeners for mouse events
+    userNameText.addEventListener('click', newHandler, false);
+    userNameText.addEventListener('mousedown', function(e) {
+        e.stopPropagation();
+        statusDropdown.classList.toggle('open');
+    }, false);
+    
+    // Handle status option clicks
+    statusDropdown.querySelectorAll('.status-option').forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const status = option.dataset.status;
+            updateStatus(status);
+            localStorage.setItem('userStatus', status);
+            statusDropdown.classList.remove('open');
+        });
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (statusDropdown.classList.contains('open') && 
+            !statusDropdown.contains(e.target) && 
+            !userNameText.contains(e.target)) {
+            statusDropdown.classList.remove('open');
+        }
+    });
+    
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && statusDropdown.classList.contains('open')) {
+            statusDropdown.classList.remove('open');
+        }
+    });
+    
+    function updateStatus(status) {
+        // Remove all status classes
+        statusOrb.classList.remove('status-online', 'status-offline', 'status-away', 'status-focused');
+        // Add new status class
+        statusOrb.classList.add(`status-${status}`);
+        // Update title
+        const statusNames = {
+            'online': 'Online',
+            'offline': 'Offline',
+            'away': 'Away',
+            'focused': 'Focused'
+        };
+        statusOrb.title = `Status: ${statusNames[status]}`;
+    }
 }
 
 // Service Worker for PWA (optional)

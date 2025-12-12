@@ -651,3 +651,5 @@ pytest tests/unit/test_synthesis.py::test_synthesize_basic -v
 **Welcome to Thesidia! Let's build something amazing.** 🚀
 
 
+
+
