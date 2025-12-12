@@ -1471,6 +1471,22 @@ def get_posts():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/posts/tags', methods=['GET'])
+def get_post_tags():
+    """Get all unique tags from posts in database"""
+    try:
+        if not post_manager:
+            # Fallback: return empty tags
+            return jsonify({'tags': []})
+        
+        # Get all unique tags from posts
+        tags = post_manager.get_all_tags()
+        
+        return jsonify({'tags': tags})
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc(), 'tags': []}), 500
+
 @app.route('/api/posts/<post_id>', methods=['GET'])
 def get_post(post_id):
     """Get a post by ID"""
@@ -1523,18 +1539,24 @@ def delete_post(post_id):
 
 @app.route('/api/feed', methods=['GET'])
 def get_feed():
-    """Get user feed"""
+    """Get user feed with filter and vibe support"""
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    filter_type = request.args.get('filter', 'for-you')  # for-you, discover
+    vibe = request.args.get('vibe')  # relaxing, exciting, inspiring, focused, creative, analytical
+    limit = int(request.args.get('limit', 20))
+    offset = int(request.args.get('offset', 0))
+    
     if not feed_manager or not interaction_manager or not user_memory_manager:
         # Mock fallback feed when managers are unavailable
         from data.mock.mock_posts import generate_posts
         posts = generate_posts(count=limit, author_ids=[f"user_kxc_{i}" for i in ['aurora','motif','sierra','ember','nova','lumen']], seed=42)
-        return jsonify({'posts': posts, 'has_more': False})
-    
-    user_id = request.args.get('user_id')
-    session_id = request.args.get('session_id')
-    feed_type = request.args.get('type', 'chronological')  # chronological, quality, personalized
-    limit = int(request.args.get('limit', 20))
-    offset = int(request.args.get('offset', 0))
+        
+        # Apply vibe filter if specified
+        if vibe:
+            posts = _filter_posts_by_vibe(posts, vibe, limit)
+        
+        return jsonify({'items': posts, 'has_more': False})
     
     if not user_id and not session_id:
         return jsonify({'error': 'user_id or session_id required'}), 400
@@ -1547,8 +1569,20 @@ def get_feed():
         if not user_id:
             return jsonify({'error': 'User not found'}), 404
         
+        # Determine feed type based on filter
+        if filter_type == 'for-you':
+            feed_type = 'personalized'  # Personalized feed for user
+        elif filter_type == 'discover':
+            feed_type = 'quality'  # Quality/discovery feed
+        else:
+            feed_type = 'chronological'  # Default fallback
+        
         # Get feed
         posts = feed_manager.get_feed(user_id, feed_type, limit, offset)
+        
+        # Apply vibe filter if specified
+        if vibe:
+            posts = _filter_posts_by_vibe(posts, vibe, limit)
         
         # Add interactions and author info to each post
         from webapp.utils.profile_loader import attach_author_to_post
@@ -1567,7 +1601,72 @@ def get_feed():
             'limit': limit
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+def _filter_posts_by_vibe(posts, vibe, limit=20):
+    """
+    Filter posts by vibe using content analysis and metadata
+    
+    Vibe mappings:
+    - relaxing: calm, peaceful, meditative content
+    - exciting: high energy, dynamic, engaging content
+    - inspiring: motivational, uplifting, transformative content
+    - focused: technical, detailed, educational content
+    - creative: artistic, innovative, experimental content
+    - analytical: data-driven, research-based, critical content
+    """
+    if not vibe or not posts:
+        return posts
+    
+    # Vibe scoring keywords and patterns
+    vibe_keywords = {
+        'relaxing': ['calm', 'peaceful', 'meditation', 'breath', 'zen', 'mindful', 'quiet', 'serene', 'gentle', 'soft'],
+        'exciting': ['energy', 'dynamic', 'intense', 'thrilling', 'adventure', 'action', 'power', 'vibrant', 'electric', 'pulse'],
+        'inspiring': ['inspire', 'motivate', 'transform', 'breakthrough', 'discover', 'journey', 'growth', 'elevate', 'awaken', 'vision'],
+        'focused': ['technical', 'detail', 'precision', 'method', 'system', 'analysis', 'structure', 'framework', 'protocol', 'process'],
+        'creative': ['art', 'creative', 'innovative', 'experimental', 'design', 'imagine', 'express', 'original', 'unique', 'visionary'],
+        'analytical': ['data', 'research', 'study', 'evidence', 'analysis', 'critical', 'examine', 'evaluate', 'metrics', 'quantify']
+    }
+    
+    keywords = vibe_keywords.get(vibe.lower(), [])
+    if not keywords:
+        return posts
+    
+    # Score posts based on vibe
+    scored_posts = []
+    for post in posts:
+        content = (post.get('content', '') or '').lower()
+        tags = [tag.lower() for tag in (post.get('tags', []) or [])]
+        
+        # Calculate vibe score
+        score = 0
+        for keyword in keywords:
+            if keyword in content:
+                score += 2  # Content match is stronger
+            if any(keyword in tag for tag in tags):
+                score += 1  # Tag match
+        
+        # Also consider AI score and engagement for certain vibes
+        ai_score = post.get('ai_score', 0) or 0
+        interactions = post.get('interactions', {}) or {}
+        engagement = (interactions.get('likes', 0) or 0) + (interactions.get('comments', 0) or 0)
+        
+        if vibe == 'exciting' and engagement > 10:
+            score += 1
+        if vibe == 'inspiring' and ai_score > 0.7:
+            score += 1
+        if vibe == 'analytical' and ai_score > 0.6:
+            score += 1
+        
+        scored_posts.append((score, post))
+    
+    # Sort by score (highest first) and return top posts
+    scored_posts.sort(key=lambda x: x[0], reverse=True)
+    
+    # Return posts with score > 0, or all if none match
+    filtered = [post for score, post in scored_posts if score > 0]
+    return filtered if filtered else posts
 
 # Section-specific API endpoints
 @app.route('/api/sections/home', methods=['GET'])
@@ -1840,12 +1939,31 @@ def connect_cut(cut_id):
         import traceback
         return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
 
+@app.route('/api/categories', methods=['GET'])
+def get_categories():
+    """Get full category structure with subcategories"""
+    try:
+        from data.mock.forum_categories import FORUM_CATEGORIES, TAG_LEVELS, TAG_FORMATS, TAG_SOURCING
+        
+        return jsonify({
+            'categories': FORUM_CATEGORIES,
+            'tag_options': {
+                'levels': TAG_LEVELS,
+                'formats': TAG_FORMATS,
+                'sourcing': TAG_SOURCING
+            }
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
 @app.route('/api/sections/circles', methods=['GET'])
 def get_circles_section():
     """Get circles forum threads"""
     user_id = request.args.get('user_id')
     session_id = request.args.get('session_id')
     filter_type = request.args.get('filter', 'all')
+    category_filter = request.args.get('category')  # New: filter by category/subcategory
     limit = int(request.args.get('limit', 20))
     
     try:
@@ -1862,9 +1980,10 @@ def get_circles_section():
         except:
             pass
         
-        # Generate mock threads
+        # Generate mock threads - use one per category for demo
+        from data.mock.mock_circles import generate_one_thread_per_category
         author_ids = [f"user_{i}" for i in range(10)]
-        threads = generate_threads(count=limit-1, author_ids=author_ids, seed=456)  # -1 to make room for welcome thread
+        threads = generate_one_thread_per_category(author_ids=author_ids, seed=456)
         
         # Add welcome thread at the beginning
         welcome_thread = {
@@ -1877,8 +1996,16 @@ def get_circles_section():
             'downvotes': 0,
             'comment_count': 5,
             'views': 150,
-            'circle': 'General',
+            'circle': 'meta-guidelines/posting-rules',
+            'category_id': 'meta-guidelines',
+            'subcategory_id': 'posting-rules',
+            'category_name': 'Meta / Guidelines',
+            'subcategory_name': 'Posting Rules',
             'tags': ['welcome', 'guide', 'getting-started'],
+            'tag_metadata': {
+                'format': 'guide',
+                'level': 'beginner'
+            },
             'author': {
                 'user_id': 'user_0',
                 'username': 'admin',
@@ -1887,6 +2014,20 @@ def get_circles_section():
             }
         }
         threads.insert(0, welcome_thread)
+        
+        # Apply category filter if specified
+        if category_filter and category_filter != 'all':
+            filtered_threads = []
+            for thread in threads:
+                thread_circle = thread.get('circle', '')
+                thread_category_id = thread.get('category_id', '')
+                # Match exact circle path, category ID, or parent category
+                if (thread_circle == category_filter or 
+                    thread_circle.startswith(category_filter + '/') or
+                    thread_category_id == category_filter or
+                    thread_circle.split('/')[0] == category_filter):
+                    filtered_threads.append(thread)
+            threads = filtered_threads
         
         # Apply filter
         if filter_type == 'trending':
@@ -1930,17 +2071,46 @@ def get_circles_section():
                     'avatar_url': ''
                 }
         
-        # Get available categories from CIRCLE_TOPICS
-        from data.mock.mock_circles import CIRCLE_TOPICS
+        # Get available categories from new category structure
+        from data.mock.forum_categories import FORUM_CATEGORIES, get_all_subcategories
+        
         categories = []
-        for topic in CIRCLE_TOPICS:
-            # Count threads in this category
-            topic_threads = [t for t in threads if t.get('circle') == topic]
+        
+        # Add main categories
+        for cat_id, cat_data in FORUM_CATEGORIES.items():
+            # Count threads in this category (including subcategories)
+            topic_threads = [
+                t for t in threads 
+                if t.get('category_id') == cat_id or t.get('circle', '').startswith(cat_id + '/')
+            ]
             categories.append({
-                'id': topic,
-                'name': topic.title(),
-                'slug': topic,
+                'id': cat_id,
+                'name': cat_data['name'],
+                'slug': cat_id,
+                'description': cat_data.get('description', ''),
                 'thread_count': len(topic_threads),
+                'type': 'category',
+                'has_subcategories': len(cat_data.get('subcategories', [])) > 0,
+                'avatar_url': None  # Will be generated client-side
+            })
+        
+        # Add subcategories (flattened for easy filtering)
+        all_subcategories = get_all_subcategories()
+        for subcat in all_subcategories:
+            # Count threads in this subcategory
+            topic_threads = [
+                t for t in threads 
+                if t.get('circle') == f"{subcat['parent_category_id']}/{subcat['id']}"
+            ]
+            categories.append({
+                'id': f"{subcat['parent_category_id']}/{subcat['id']}",
+                'name': subcat['name'],
+                'slug': subcat['id'],
+                'description': subcat.get('description', ''),
+                'parent_category_id': subcat['parent_category_id'],
+                'parent_category_name': subcat['parent_category_name'],
+                'thread_count': len(topic_threads),
+                'type': 'subcategory',
                 'avatar_url': None  # Will be generated client-side
             })
         
@@ -1976,6 +2146,7 @@ def get_thread_detail(thread_id):
         
         # Generate threads to find the one we need
         # In a real system, this would query by ID
+        from data.mock.forum_categories import FORUM_CATEGORIES
         author_ids = [f"user_{i}" for i in range(10)]
         all_threads = generate_threads(count=100, author_ids=author_ids, seed=456)
         
@@ -2022,8 +2193,16 @@ This platform is designed for thoughtful, meaningful discussions. Take your time
                 'downvotes': 0,
                 'comment_count': 5,
                 'views': 150,
-                'circle': 'General',
-                'tags': ['welcome', 'guide', 'getting-started']
+                'circle': 'meta-guidelines/posting-rules',
+                'category_id': 'meta-guidelines',
+                'subcategory_id': 'posting-rules',
+                'category_name': 'Meta / Guidelines',
+                'subcategory_name': 'Posting Rules',
+                'tags': ['welcome', 'guide', 'getting-started'],
+                'tag_metadata': {
+                    'format': 'guide',
+                    'level': 'beginner'
+                }
             }
         else:
             # Find thread by ID (or generate one if not found)
@@ -2036,8 +2215,22 @@ This platform is designed for thoughtful, meaningful discussions. Take your time
             # If not found, generate a new one with the ID
             if not thread:
                 import random
+                from data.mock.forum_categories import FORUM_CATEGORIES
                 random.seed(hash(thread_id) % 1000)
-                topic = random.choice(CIRCLE_TOPICS)
+                
+                # Select random category and subcategory
+                category_id = random.choice(list(FORUM_CATEGORIES.keys()))
+                category = FORUM_CATEGORIES[category_id]
+                subcategories = category.get('subcategories', [])
+                
+                if subcategories:
+                    subcategory = random.choice(subcategories)
+                    circle = f"{category_id}/{subcategory['id']}"
+                    topic = f"{category['name']} - {subcategory['name']}"
+                else:
+                    circle = category_id
+                    topic = category['name']
+                
                 thread = {
                     'id': thread_id,
                     'author_id': random.choice(author_ids),
@@ -2048,8 +2241,13 @@ This platform is designed for thoughtful, meaningful discussions. Take your time
                     'downvotes': random.randint(0, 50),
                     'comment_count': random.randint(0, 100),
                     'views': random.randint(10, 5000),
-                    'circle': topic,
-                    'tags': [topic]
+                    'circle': circle,
+                    'category_id': category_id,
+                    'subcategory_id': subcategory['id'] if subcategories else None,
+                    'category_name': category['name'],
+                    'subcategory_name': subcategory['name'] if subcategories else None,
+                    'tags': [circle],
+                    'tag_metadata': {}
                 }
         
         # Attach author profile
@@ -2182,7 +2380,9 @@ def get_thread_comments(thread_id):
         
         # If no comments, generate mock comments
         if not comments:
-            comments = _generate_mock_comments(thread_id, limit)
+            # For category threads, generate exactly 3 comments
+            comment_count = 3 if thread_id.startswith('thread_cat_') else limit
+            comments = _generate_mock_comments(thread_id, comment_count)
             
             # Attach vote states and awards to mock comments
             for comment in comments:
@@ -2275,6 +2475,22 @@ def _generate_mock_comments(thread_id, count=10):
     comments = []
     author_ids = [f"user_{i}" for i in range(10)]
     
+    # Use consistent seed for category threads to get same comments each time
+    if thread_id.startswith('thread_cat_'):
+        random.seed(hash(thread_id) % 10000)
+    
+    # Comment templates for more realistic content
+    comment_templates = [
+        "This is a great point. I've been thinking about this from a different angle - what if we consider {perspective}?",
+        "I agree with the main idea here. In my experience, {experience} has shown that {insight}.",
+        "Interesting perspective. I'd like to add that {addition}. What do others think about this?",
+        "This resonates with me. I've found that {finding} when exploring {topic}.",
+        "Good discussion. One thing to consider is {consideration}. Has anyone else noticed this?",
+        "I appreciate this insight. From what I understand, {understanding} plays a key role here.",
+        "This is helpful. I'm curious about {curiosity}. Does anyone have thoughts on this?",
+        "Well said. I think {thought} is particularly relevant here. What's your take?"
+    ]
+    
     for i in range(count):
         comment_id = f"comment_{thread_id}_{i}"
         author_id = random.choice(author_ids)
@@ -2299,21 +2515,36 @@ def _generate_mock_comments(thread_id, count=10):
         except:
             pass
         
-        # Random parent (some top-level, some replies)
+        # For category threads (3 comments), make them all top-level
+        # For other threads, allow some nesting
         parent_id = None
-        if i > 2 and random.random() > 0.4:
+        if not thread_id.startswith('thread_cat_') and i > 2 and random.random() > 0.4:
             parent_id = comments[random.randint(0, min(i-1, 5))]['id']
         
-        upvotes = random.randint(0, 100)
-        downvotes = random.randint(0, 20)
+        # Generate more realistic comment content
+        if thread_id.startswith('thread_cat_'):
+            # Use simple, clear comments for demo
+            content_options = [
+                "This is a thoughtful discussion. I appreciate the insights shared here.",
+                "Great points made. I'd like to add that this topic deserves deeper exploration.",
+                "Interesting perspective. I'm looking forward to seeing more discussion on this."
+            ]
+            content = content_options[i % len(content_options)]
+        else:
+            template = random.choice(comment_templates)
+            # Simple placeholder replacement
+            content = template.replace('{perspective}', 'the practical applications').replace('{experience}', 'working with this').replace('{insight}', 'there are multiple valid approaches').replace('{addition}', 'context matters here').replace('{finding}', 'patterns emerge').replace('{topic}', 'this area').replace('{consideration}', 'the broader implications').replace('{understanding}', 'collaboration').replace('{curiosity}', 'how this connects to other concepts').replace('{thought}', 'the underlying principles')
+        
+        upvotes = random.randint(2, 25) if thread_id.startswith('thread_cat_') else random.randint(0, 100)
+        downvotes = random.randint(0, 3) if thread_id.startswith('thread_cat_') else random.randint(0, 20)
         
         comment = {
             'id': comment_id,
             'thread_id': thread_id,
             'parent_id': parent_id,
             'author': author,
-            'content': f"This is a mock comment #{i+1}. It contains some thoughtful discussion about the topic.",
-            'created_at': (datetime.now() - timedelta(hours=random.randint(0, 48))).isoformat(),
+            'content': content,
+            'created_at': (datetime.now() - timedelta(hours=random.randint(1, 24))).isoformat(),
             'score': upvotes - downvotes,
             'upvotes': upvotes,
             'downvotes': downvotes,

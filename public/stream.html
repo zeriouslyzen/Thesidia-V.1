@@ -508,7 +508,7 @@
             <div class="header-content">
                 <!-- Katanx Branding - Left (replaced profile) -->
                 <div class="header-branding">
-                    <span class="thesidia-text">katanx</span>
+                    <span class="thesidia-text"><span class="katanx-slash">/</span>katanx</span>
                 </div>
                 
                 <!-- Menu Orb - Right -->
@@ -578,6 +578,16 @@
                     <!-- Home Section - Gamified Dashboard -->
                     <section class="carousel-section" data-section="home">
                         <div class="home-dashboard">
+                            <div class="home-hero widget-card" data-widget="welcome">
+                                <div class="hero-greeting">
+                                    <div class="hero-eyebrow">welcome back</div>
+                                    <div class="hero-inline">
+                                        <div class="hero-title" id="homeWelcomeName">Katanx explorer</div>
+                                        <div class="hero-subtitle" id="homeWelcomeSubtitle">You're on track to hit today's goal.</div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="widget-card news-widget" data-widget="news">
                                 <div class="widget-header">
                                     <div class="widget-title">Signal picks</div>
@@ -588,49 +598,51 @@
                                 </div>
                             </div>
 
-                            <div class="home-hero widget-card" data-widget="welcome">
-                                <div class="hero-greeting">
-                                    <div class="hero-eyebrow">welcome back</div>
-                                    <div class="hero-inline">
-                                        <div class="hero-title" id="homeWelcomeName">Katanx explorer</div>
-                                        <div class="hero-subtitle" id="homeWelcomeSubtitle">You're on track to hit today's goal.</div>
-                                    </div>
+                            <!-- What You're Following -->
+                            <div class="widget-card following-widget" data-widget="following">
+                                <div class="widget-header">
+                                    <div class="widget-title">What you're following</div>
+                                    <div class="widget-meta" id="followingMeta">view all</div>
                                 </div>
-                                <div class="hero-stats hero-inline compact-stats">
-                                    <div class="hero-pill">
-                                        <div class="hero-stat-value" id="homeGoalProgress">0%</div>
-                                        <div class="hero-stat-label">daily goal</div>
-                                    </div>
-                                    <div class="hero-pill">
-                                        <div class="hero-stat-value" id="homeStreak">0</div>
-                                        <div class="hero-stat-label">day streak</div>
-                                    </div>
-                                    <div class="hero-pill">
-                                        <div class="hero-stat-value" id="homeEngagement">0</div>
-                                        <div class="hero-stat-label">engagement</div>
+                                <div class="following-grid" id="followingGrid">
+                                    <div class="following-item skeleton">
+                                        <div class="following-icon"></div>
+                                        <div class="following-label">Loading...</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="home-widgets-grid">
-                                <div class="widget-card goals-widget" data-widget="goals">
-                                    <div class="widget-header">
-                                    <div class="widget-title">Goals & momentum</div>
-                                    <div class="widget-meta" id="homeGoalsMeta">loading...</div>
-                                    </div>
-                                    <div class="goals-list" id="homeGoalsList">
-                                        <div class="goal-row skeleton"></div>
+                            <!-- Activity Feed -->
+                            <div class="widget-card activity-widget" data-widget="activity">
+                                <div class="widget-header">
+                                    <div class="widget-title">Resonates & refines</div>
+                                    <div class="widget-meta" id="activityMeta">recent activity</div>
+                                </div>
+                                <div class="activity-list" id="activityList">
+                                    <div class="activity-item skeleton">
+                                        <div class="activity-content">Loading activity...</div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="widget-card quick-actions" data-widget="actions">
-                                    <div class="widget-header">
-                                        <div class="widget-title">Quick actions</div>
+                            <!-- Mindful Tips -->
+                            <div class="widget-card mindful-tips-widget" data-widget="mindful-tips">
+                                <div class="widget-header">
+                                    <div class="widget-title">Mindful tips</div>
+                                    <div class="widget-meta" id="tipsMeta">daily & weekly</div>
+                                </div>
+                                <div class="tips-container" id="tipsContainer">
+                                    <div class="tips-daily" id="dailyTips">
+                                        <div class="tips-section-header">Today</div>
+                                        <div class="tips-list" id="dailyTipsList">
+                                            <div class="tip-item skeleton">Loading daily tips...</div>
+                                        </div>
                                     </div>
-                                    <div class="actions-row">
-                                        <button class="pill-btn" data-action="create-post">post</button>
-                                        <button class="pill-btn" data-action="view-stats">stats</button>
-                                        <button class="pill-btn" data-action="improve">improve</button>
+                                    <div class="tips-weekly" id="weeklyTips">
+                                        <div class="tips-section-header">This week</div>
+                                        <div class="tips-list" id="weeklyTipsList">
+                                            <div class="tip-item skeleton">Loading weekly goals...</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -639,6 +651,41 @@
                     
                     <!-- Stream Section - Curated Algorithmic Feed -->
                     <section class="carousel-section" data-section="stream">
+                        <!-- Stream Filter Bar -->
+                        <div class="stream-filter-bar">
+                            <div class="stream-filter-left">
+                                <div class="stream-filter-search">
+                                    <input type="text" id="streamSearchInput" class="stream-search-input" placeholder="Search stream..." />
+                                    <svg class="stream-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.35-4.35"></path>
+                                    </svg>
+                                    <div class="stream-search-suggestions" id="streamSearchSuggestions">
+                                        <!-- Tags will appear here as suggestions -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stream-filter-right">
+                                <button class="stream-filter-btn" id="streamForYouBtn" data-filter="for-you">For you</button>
+                                <button class="stream-filter-btn" id="streamDiscoverBtn" data-filter="discover">Discover</button>
+                                <div class="stream-vibe-selector">
+                                    <button class="stream-filter-btn stream-vibe-btn" id="streamVibeBtn">
+                                        <span id="streamVibeLabel">Vibe</span>
+                                        <svg class="vibe-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </button>
+                                    <div class="stream-vibe-dropdown" id="streamVibeDropdown">
+                                        <button class="vibe-option" data-vibe="relaxing">Relaxing</button>
+                                        <button class="vibe-option" data-vibe="exciting">Exciting</button>
+                                        <button class="vibe-option" data-vibe="inspiring">Inspiring</button>
+                                        <button class="vibe-option" data-vibe="focused">Focused</button>
+                                        <button class="vibe-option" data-vibe="creative">Creative</button>
+                                        <button class="vibe-option" data-vibe="analytical">Analytical</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="stream-feed-container">
                             <!-- Stream Feed -->
                             <div class="stream-feed" id="streamFeed">
@@ -719,11 +766,8 @@
                     <div class="profile-info">
                         <div class="profile-name" id="sidebarProfileName">Loading...</div>
                         <div class="profile-tag" id="sidebarProfileTag">@loading</div>
-                        <div class="profile-stats">
-                            <span class="stat-number" id="sidebarFriendsCount">0</span>
-                            <span class="stat-label">Friends</span>
-                            <span class="stat-number" id="sidebarFansCount">0</span>
-                            <span class="stat-label">Fans</span>
+                        <div class="profile-insight" id="sidebarProfileInsight">
+                            Where practice meets presence, and discipline becomes discovery.
                         </div>
                     </div>
                 </div>
@@ -797,6 +841,9 @@
                 this.loading = false;
                 this.pendingMedia = [];
                 this.currentAutocomplete = null;
+                this.tagRotationInterval = null;
+                this.currentFilter = 'for-you';
+                this.currentVibe = null;
                 this.init();
             }
             
@@ -806,6 +853,275 @@
                 await this.loadPosts();
                 this.setupEventListeners();
                 this.setupInfiniteScroll();
+                this.setupStreamFilter();
+            }
+            
+            setupStreamFilter() {
+                // Setup search input with animated tag suggestions
+                const searchInput = document.getElementById('streamSearchInput');
+                const suggestionsContainer = document.getElementById('streamSearchSuggestions');
+                
+                if (searchInput && suggestionsContainer) {
+                    let searchTimeout;
+                    let tagRotationInterval = null;
+                    let currentTagIndex = 0;
+                    let allTags = [];
+                    
+                    // Load available tags
+                    this.loadAvailableTags().then(tags => {
+                        allTags = tags;
+                    });
+                    
+                    searchInput.addEventListener('input', (e) => {
+                        const query = e.target.value.trim();
+                        clearTimeout(searchTimeout);
+                        
+                        if (query.length > 0) {
+                            // Show suggestions with animated tag rotation
+                            this.showSearchSuggestions(query, allTags, suggestionsContainer);
+                            this.startTagRotation(allTags, suggestionsContainer, query);
+                        } else {
+                            // Hide suggestions when empty
+                            suggestionsContainer.innerHTML = '';
+                            suggestionsContainer.style.display = 'none';
+                            if (this.tagRotationInterval) {
+                                clearInterval(this.tagRotationInterval);
+                                this.tagRotationInterval = null;
+                            }
+                        }
+                        
+                        searchTimeout = setTimeout(() => {
+                            this.filterPosts(query);
+                        }, 300);
+                    });
+                    
+                    searchInput.addEventListener('blur', () => {
+                        // Keep suggestions visible briefly on blur
+                        setTimeout(() => {
+                            if (document.activeElement !== searchInput) {
+                                suggestionsContainer.style.display = 'none';
+                                if (this.tagRotationInterval) {
+                                    clearInterval(this.tagRotationInterval);
+                                    this.tagRotationInterval = null;
+                                }
+                            }
+                        }, 200);
+                    });
+                    
+                    searchInput.addEventListener('focus', () => {
+                        if (searchInput.value.trim().length > 0) {
+                            suggestionsContainer.style.display = 'block';
+                            this.startTagRotation(allTags, suggestionsContainer, searchInput.value.trim());
+                        }
+                    });
+                }
+                
+                // Setup filter buttons
+                const forYouBtn = document.getElementById('streamForYouBtn');
+                const discoverBtn = document.getElementById('streamDiscoverBtn');
+                const vibeBtn = document.getElementById('streamVibeBtn');
+                const vibeDropdown = document.getElementById('streamVibeDropdown');
+                const vibeSelector = vibeBtn?.closest('.stream-vibe-selector');
+                
+                this.currentFilter = localStorage.getItem('stream_filter') || 'for-you';
+                this.currentVibe = localStorage.getItem('stream_vibe');
+                
+                // Set active state
+                if (forYouBtn && discoverBtn) {
+                    if (this.currentFilter === 'for-you') {
+                        forYouBtn.classList.add('active');
+                    } else if (this.currentFilter === 'discover') {
+                        discoverBtn.classList.add('active');
+                    }
+                }
+                
+                // For you button
+                if (forYouBtn) {
+                    forYouBtn.addEventListener('click', () => {
+                        forYouBtn.classList.add('active');
+                        if (discoverBtn) discoverBtn.classList.remove('active');
+                        this.currentFilter = 'for-you';
+                        localStorage.setItem('stream_filter', 'for-you');
+                        this.loadPosts(0, 20);
+                    });
+                }
+                
+                // Discover button
+                if (discoverBtn) {
+                    discoverBtn.addEventListener('click', () => {
+                        discoverBtn.classList.add('active');
+                        if (forYouBtn) forYouBtn.classList.remove('active');
+                        this.currentFilter = 'discover';
+                        localStorage.setItem('stream_filter', 'discover');
+                        this.loadPosts(0, 20);
+                    });
+                }
+                
+                // Vibe selector
+                if (vibeBtn && vibeDropdown && vibeSelector) {
+                    // Update vibe label if one is selected
+                    if (this.currentVibe) {
+                        const vibeLabel = document.getElementById('streamVibeLabel');
+                        if (vibeLabel) {
+                            vibeLabel.textContent = this.currentVibe.charAt(0).toUpperCase() + this.currentVibe.slice(1);
+                        }
+                        const activeOption = vibeDropdown.querySelector(`[data-vibe="${this.currentVibe}"]`);
+                        if (activeOption) activeOption.classList.add('active');
+                    }
+                    
+                    vibeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        vibeSelector.classList.toggle('open');
+                    });
+                    
+                    // Close dropdown when clicking outside
+                    document.addEventListener('click', (e) => {
+                        if (!vibeSelector.contains(e.target)) {
+                            vibeSelector.classList.remove('open');
+                        }
+                    });
+                    
+                    // Vibe option clicks
+                    vibeDropdown.querySelectorAll('.vibe-option').forEach(option => {
+                        option.addEventListener('click', () => {
+                            const vibe = option.dataset.vibe;
+                            
+                            // Toggle: if same vibe clicked, clear it
+                            if (this.currentVibe === vibe) {
+                                this.currentVibe = null;
+                                localStorage.removeItem('stream_vibe');
+                                
+                                // Reset label
+                                const vibeLabel = document.getElementById('streamVibeLabel');
+                                if (vibeLabel) {
+                                    vibeLabel.textContent = 'Vibe';
+                                }
+                                
+                                // Remove active state
+                                vibeDropdown.querySelectorAll('.vibe-option').forEach(opt => opt.classList.remove('active'));
+                            } else {
+                                this.currentVibe = vibe;
+                                localStorage.setItem('stream_vibe', vibe);
+                                
+                                // Update label
+                                const vibeLabel = document.getElementById('streamVibeLabel');
+                                if (vibeLabel) {
+                                    vibeLabel.textContent = vibe.charAt(0).toUpperCase() + vibe.slice(1);
+                                }
+                                
+                                // Update active state
+                                vibeDropdown.querySelectorAll('.vibe-option').forEach(opt => opt.classList.remove('active'));
+                                option.classList.add('active');
+                            }
+                            
+                            // Close dropdown
+                            vibeSelector.classList.remove('open');
+                            
+                            // Reload posts with vibe filter
+                            this.loadPosts(0, 20);
+                        });
+                    });
+                }
+            }
+            
+            async loadAvailableTags() {
+                try {
+                    // Get discipline/category tags from README structure
+                    const disciplineTags = [
+                        'martial-combative', 'movement', 'visual', 'internal-spiritual',
+                        'healing', 'intellectual-science', 'performance', 'social-leadership',
+                        'creative-inventive', 'research-evidence', 'meta-guidelines'
+                    ];
+                    
+                    // Fetch tags from API/database
+                    let dbTags = [];
+                    try {
+                        const response = await fetch('/api/posts/tags');
+                        if (response.ok) {
+                            const data = await response.json();
+                            dbTags = data.tags || [];
+                        }
+                    } catch (e) {
+                        console.warn('Could not fetch tags from API, using post tags:', e);
+                        // Fallback: extract unique tags from current posts
+                        const allTags = new Set();
+                        this.posts.forEach(post => {
+                            if (post.tags && Array.isArray(post.tags)) {
+                                post.tags.forEach(tag => allTags.add(tag));
+                            }
+                        });
+                        dbTags = Array.from(allTags);
+                    }
+                    
+                    // Combine and return all tags
+                    return [...new Set([...disciplineTags, ...dbTags])];
+                } catch (error) {
+                    console.error('Error loading available tags:', error);
+                    return [];
+                }
+            }
+            
+            showSearchSuggestions(query, tags, container) {
+                // Filter tags that match query
+                const matchingTags = tags.filter(tag => 
+                    tag.toLowerCase().includes(query.toLowerCase())
+                ).slice(0, 5); // Show max 5 suggestions
+                
+                if (matchingTags.length > 0) {
+                    container.style.display = 'block';
+                } else {
+                    container.style.display = 'none';
+                }
+            }
+            
+            startTagRotation(tags, container, query) {
+                if (this.tagRotationInterval) {
+                    clearInterval(this.tagRotationInterval);
+                }
+                
+                const matchingTags = tags.filter(tag => 
+                    tag.toLowerCase().includes(query.toLowerCase())
+                );
+                
+                if (matchingTags.length === 0) return;
+                
+                let currentTagIndex = 0;
+                
+                const rotateTag = () => {
+                    if (matchingTags.length > 0) {
+                        const tag = matchingTags[currentTagIndex % matchingTags.length];
+                        container.innerHTML = `
+                            <div class="stream-search-tag-suggestion">
+                                //${this.escapeHtml(tag)}
+                            </div>
+                        `;
+                        currentTagIndex++;
+                    }
+                };
+                
+                rotateTag(); // Show immediately
+                this.tagRotationInterval = setInterval(rotateTag, 2000); // Rotate every 2 seconds
+            }
+            
+            filterPosts(searchQuery = '') {
+                let filtered = this.posts;
+                
+                // Filter by search query
+                if (searchQuery.trim()) {
+                    const query = searchQuery.toLowerCase();
+                    filtered = filtered.filter(post => {
+                        const content = (post.content || '').toLowerCase();
+                        const authorName = (post.author?.display_name || post.author?.username || '').toLowerCase();
+                        const postTags = (post.tags || []).map(t => t.toLowerCase()).join(' ');
+                        return content.includes(query) || authorName.includes(query) || postTags.includes(query);
+                    });
+                }
+                
+                // Re-render filtered posts
+                const originalPosts = this.posts;
+                this.posts = filtered;
+                this.renderPosts();
+                this.posts = originalPosts; // Restore for future filtering
             }
             
             async loadUserSession() {
@@ -928,25 +1244,33 @@
                     const userId = localStorage.getItem('thesidia_user_id');
                     const sessionId = localStorage.getItem('thesidia_session_id');
                     
-                    // Resolve feed type from URL first, then fallback to localStorage
-                    const params = new URLSearchParams(window.location.search);
-                    let feedType = params.get('type');
-                    if (!feedType) {
-                        feedType = localStorage.getItem('feed_type') || 'chronological';
-                    }
-                    // Persist chosen feed type for subsequent loads
-                    localStorage.setItem('feed_type', feedType);
+                    // Get filter and vibe
+                    const filter = this.currentFilter || localStorage.getItem('stream_filter') || 'for-you';
+                    const vibe = this.currentVibe || localStorage.getItem('stream_vibe') || null;
                     
-                    const response = await fetch(`/api/feed?user_id=${userId}&session_id=${sessionId}&type=${feedType}&limit=${limit}&offset=${page * limit}`);
+                    // Build query params
+                    const params = new URLSearchParams({
+                        user_id: userId || '',
+                        session_id: sessionId || '',
+                        filter: filter,
+                        limit: limit.toString(),
+                        offset: (page * limit).toString()
+                    });
+                    
+                    if (vibe) {
+                        params.append('vibe', vibe);
+                    }
+                    
+                    const response = await fetch(`/api/feed?${params.toString()}`);
                     const data = await response.json();
                     console.log('Stream data received:', data);
                     
                     if (data.items) {
                         console.log('Items count:', data.items.length);
                         if (page === 0) {
-                            this.posts = data.items;
+                            this.posts = data.items || [];
                         } else {
-                            this.posts = [...this.posts, ...data.items];
+                            this.posts = [...this.posts, ...(data.items || [])];
                         }
                         this.hasMore = data.has_more || false;
                         this.currentPage = page;
@@ -1030,22 +1354,54 @@
                 const aiSentiment = post.ai_sentiment || { sentiment: 'neutral', confidence: 0.5 };
                 const qualityBadge = aiScore > 0.7 ? 'high-quality' : aiScore > 0.4 ? 'medium-quality' : 'low-quality';
                 
+                // Author info
+                const authorName = post.author?.display_name || post.author?.username || 'User';
+                const authorUsername = post.author?.username || '';
+                const authorAvatar = post.author?.avatar_url || '';
+                
+                // Tags - only show if post has tags
+                const tags = post.tags || [];
+                const tagsHtml = tags.length > 0 ? `
+                    <div class="post-tags">
+                        ${tags.map(tag => `<span class="post-tag">//${this.escapeHtml(tag)}</span>`).join('')}
+                    </div>
+                ` : '';
+                
                 return `
                     <div class="stream-post" data-post-id="${post.id}">
-                        <div class="post-header">
-                            <div class="post-author">
+                        <div class="post-avatar-square">
+                            ${authorAvatar ? `
+                                <img src="${this.escapeHtml(authorAvatar)}" alt="${this.escapeHtml(authorName)}" onerror="this.onerror=null; this.classList.add('post-avatar-placeholder'); this.style.backgroundColor='${this.getAvatarColor(post.author_id || 'user_0')}'; this.style.display='block';">
+                            ` : `
                                 <div class="post-avatar-placeholder" data-user-id="${post.author_id || 'user_0'}" style="background-color: ${this.getAvatarColor(post.author_id || 'user_0')};"></div>
-                                <div class="post-author-info">
-                                    <div class="post-author-name">${this.escapeHtml(post.author?.display_name || post.author?.username || 'User')}</div>
-                                    <div class="post-time">${timeAgo}</div>
-                                </div>
-                            </div>
+                            `}
                         </div>
-                        <div class="post-content">${this.escapeHtml(post.content || '')}</div>
-                        ${post.media && post.media.length > 0 ? `
-                            <div class="post-media">
-                                ${post.media.length > 1 ? `
-                                    <div class="post-media-carousel" style="grid-template-columns: repeat(${Math.min(post.media.length, 2)}, 1fr);">
+                        <div class="post-header">
+                            <div class="post-author-info">
+                                <span class="post-author-name">
+                                    ${this.escapeHtml(authorName)}
+                                    ${authorUsername ? `<span class="post-author-username"> //${this.escapeHtml(authorUsername)}</span>` : ''}
+                                </span>
+                                <span class="post-time">${timeAgo}</span>
+                            </div>
+                            <div class="post-content">${this.escapeHtml(post.content || '')}</div>
+                            ${tagsHtml}
+                            ${post.media && post.media.length > 0 ? `
+                                <div class="post-media">
+                                    ${post.media.length > 1 ? `
+                                        <div class="post-media-carousel" style="grid-template-columns: repeat(${Math.min(post.media.length, 2)}, 1fr);">
+                                            ${post.media.map(mediaItem => {
+                                                if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
+                                                    return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                                } else if (mediaItem.type === 'image') {
+                                                    return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                                } else if (mediaItem.type === 'video') {
+                                                    return `<video src="${mediaItem.url}" controls class="post-media-item"></video>`;
+                                                }
+                                                return '';
+                                            }).join('')}
+                                        </div>
+                                    ` : `
                                         ${post.media.map(mediaItem => {
                                             if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
                                                 return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
@@ -1056,41 +1412,30 @@
                                             }
                                             return '';
                                         }).join('')}
-                                    </div>
-                                ` : `
-                                    ${post.media.map(mediaItem => {
-                                        if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
-                                            return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
-                                        } else if (mediaItem.type === 'image') {
-                                            return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
-                                        } else if (mediaItem.type === 'video') {
-                                            return `<video src="${mediaItem.url}" controls class="post-media-item"></video>`;
-                                        }
-                                        return '';
-                                    }).join('')}
-                                `}
-                            </div>
-                        ` : ''}
-                        ${aiSummary ? `<div class="ai-summary">AI Summary: ${this.escapeHtml(aiSummary)}</div>` : ''}
-                        ${aiSentiment.sentiment !== 'neutral' ? `<div class="ai-sentiment sentiment-${aiSentiment.sentiment}">${aiSentiment.sentiment} sentiment</div>` : ''}
-                        <div class="post-actions">
-                            <div class="post-actions-cyberpunk">
-                                <button class="cyberpunk-action-btn" data-action="resonate" data-post-id="${post.id}" data-count="${likes || 0}">
-                                    <span class="cyberpunk-label">resonate</span>
-                                    <span class="cyberpunk-count" style="display: none;">${likes || 0}</span>
-                                </button>
-                                <button class="cyberpunk-action-btn" data-action="respect" data-post-id="${post.id}" data-count="${validations || 0}">
-                                    <span class="cyberpunk-label">respect</span>
-                                    <span class="cyberpunk-count" style="display: none;">${validations || 0}</span>
-                                </button>
-                                <button class="cyberpunk-action-btn" data-action="refine" data-post-id="${post.id}" data-count="${references || 0}">
-                                    <span class="cyberpunk-label">refine</span>
-                                    <span class="cyberpunk-count" style="display: none;">${references || 0}</span>
-                                </button>
-                                <button class="cyberpunk-action-btn" data-action="repost" data-post-id="${post.id}" data-count="${reposts || 0}">
-                                    <span class="cyberpunk-label">repost</span>
-                                    <span class="cyberpunk-count" style="display: none;">${reposts || 0}</span>
-                                </button>
+                                    `}
+                                </div>
+                            ` : ''}
+                            ${aiSummary ? `<div class="ai-summary">AI Summary: ${this.escapeHtml(aiSummary)}</div>` : ''}
+                            ${aiSentiment.sentiment !== 'neutral' ? `<div class="ai-sentiment sentiment-${aiSentiment.sentiment}">${aiSentiment.sentiment} sentiment</div>` : ''}
+                            <div class="post-actions">
+                                <div class="post-actions-cyberpunk">
+                                    <button class="cyberpunk-action-btn" data-action="resonate" data-post-id="${post.id}" data-count="${likes || 0}">
+                                        <span class="cyberpunk-label">resonate</span>
+                                        <span class="cyberpunk-count" style="display: none;">${likes || 0}</span>
+                                    </button>
+                                    <button class="cyberpunk-action-btn" data-action="respect" data-post-id="${post.id}" data-count="${validations || 0}">
+                                        <span class="cyberpunk-label">respect</span>
+                                        <span class="cyberpunk-count" style="display: none;">${validations || 0}</span>
+                                    </button>
+                                    <button class="cyberpunk-action-btn" data-action="refine" data-post-id="${post.id}" data-count="${references || 0}">
+                                        <span class="cyberpunk-label">refine</span>
+                                        <span class="cyberpunk-count" style="display: none;">${references || 0}</span>
+                                    </button>
+                                    <button class="cyberpunk-action-btn" data-action="repost" data-post-id="${post.id}" data-count="${reposts || 0}">
+                                        <span class="cyberpunk-label">repost</span>
+                                        <span class="cyberpunk-count" style="display: none;">${reposts || 0}</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

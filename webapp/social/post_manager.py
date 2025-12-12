@@ -248,6 +248,38 @@ class PostManager:
         except Exception:
             return []
     
+    def get_all_tags(self) -> List[str]:
+        """
+        Get all unique tags from all posts
+        
+        Returns:
+            List of unique tag strings
+        """
+        tags_set = set()
+        
+        # Load index to get all post IDs
+        index_file = self.base_dir / "data" / "social" / "indexes" / "posts_by_date.json"
+        if not index_file.exists():
+            return []
+        
+        try:
+            with open(index_file, 'r', encoding='utf-8') as f:
+                index_data = json.load(f)
+            
+            post_ids = index_data.get('index', [])
+            
+            # Get tags from all posts
+            for post_id in post_ids:
+                post = self.get_post(post_id)
+                if post and post.get('tags'):
+                    for tag in post['tags']:
+                        if tag:  # Only add non-empty tags
+                            tags_set.add(tag)
+            
+            return sorted(list(tags_set))
+        except Exception:
+            return []
+    
     def _update_indexes(self, post: Dict[str, Any]):
         """Update all indexes with post"""
         post_id = post['id']

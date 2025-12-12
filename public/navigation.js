@@ -10,6 +10,9 @@ class NavigationSystem {
         this.touchEndX = 0;
         this.swipeThreshold = 50;
         this.selectedCategory = null; // For filtering circles by category
+        this.followSuggestions = [];
+        this.currentSuggestionIndex = 0;
+        this.followRotationInterval = null;
         
         this.init();
     }
@@ -21,29 +24,52 @@ class NavigationSystem {
         try {
             const res = await fetch('/mock-profiles.json');
             const data = await res.json();
-            const profiles = (data.profiles || []).slice(0, 4);
+            const profiles = (data.profiles || []).slice(0, 10); // Get more profiles for rotation
             
             if (profiles.length === 0) {
                 listEl.innerHTML = '<div class="text-secondary" style="font-size:12px;">No suggestions yet.</div>';
                 return;
             }
             
-            listEl.innerHTML = profiles.map(p => `
-                <a class="sidebar-follow-item" href="/profile.html?user_id=${encodeURIComponent(p.user_id)}">
-                    <div class="sidebar-follow-avatar">
-                        <img src="${p.avatar_url}" alt="${p.display_name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2228%22 height=%2228%22%3E%3Ccircle cx=%2214%22 cy=%2214%22 r=%2214%22 fill=%22%23ffffff%22 fill-opacity=%220.08%22/%3E%3C/svg%3E'">
-                    </div>
-                    <div class="sidebar-follow-meta">
-                        <div class="sidebar-follow-name">${p.display_name}</div>
-                        <div class="sidebar-follow-handle">@${p.username}</div>
-                        ${p.domains ? `<div class="sidebar-follow-domain">${p.domains.slice(0,2).join(' · ')}</div>` : ''}
-                    </div>
-                </a>
-            `).join('');
+            // Store profiles for rotation
+            this.followSuggestions = profiles;
+            this.currentSuggestionIndex = 0;
+            
+            // Render first suggestion
+            this.renderCurrentSuggestion();
+            
+            // Start slideshow rotation every 2 seconds
+            if (this.followRotationInterval) {
+                clearInterval(this.followRotationInterval);
+            }
+            this.followRotationInterval = setInterval(() => {
+                this.currentSuggestionIndex = (this.currentSuggestionIndex + 1) % this.followSuggestions.length;
+                this.renderCurrentSuggestion();
+            }, 2000);
         } catch (error) {
             console.warn('Could not render follow suggestions', error);
             listEl.innerHTML = '<div class="text-secondary" style="font-size:12px;">Unable to load suggestions.</div>';
         }
+    }
+    
+    renderCurrentSuggestion() {
+        const listEl = document.getElementById('peopleToFollowList');
+        if (!listEl || !this.followSuggestions || this.followSuggestions.length === 0) return;
+        
+        const profile = this.followSuggestions[this.currentSuggestionIndex];
+        
+        listEl.innerHTML = `
+            <a class="sidebar-follow-item" href="/profile.html?user_id=${encodeURIComponent(profile.user_id)}">
+                <div class="sidebar-follow-avatar">
+                    <img src="${profile.avatar_url}" alt="${profile.display_name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2228%22 height=%2228%22%3E%3Ccircle cx=%2214%22 cy=%2214%22 r=%2214%22 fill=%22%23ffffff%22 fill-opacity=%220.08%22/%3E%3C/svg%3E'">
+                </div>
+                <div class="sidebar-follow-meta">
+                    <div class="sidebar-follow-name">${this.escapeHtml(profile.display_name)}</div>
+                    <div class="sidebar-follow-handle">@${this.escapeHtml(profile.username)}</div>
+                    ${profile.domains ? `<div class="sidebar-follow-domain">${this.escapeHtml(profile.domains.slice(0,2).join(' · '))}</div>` : ''}
+                </div>
+            </a>
+        `;
     }
     
     init() {
@@ -486,9 +512,24 @@ class NavigationSystem {
             // People to follow rail (mock profiles)
             await this.renderFollowSuggestions();
             
-            // Goals widget
+            // What You're Following widget
+            await this.loadFollowingWidget();
+            
+            // Activity widget
+            await this.loadActivityWidget();
+            
+            // Mindful Tips widget
+            await this.loadMindfulTipsWidget();
+            
+            // Legacy goals widget (removed but keeping code for reference)
             const goalsList = document.getElementById('homeGoalsList');
             const goalsMeta = document.getElementById('homeGoalsMeta');
+            if (goalsList || goalsMeta) {
+                // Widget removed, skip
+            }
+            
+            // Legacy code kept for reference:
+            /*
             const goals = (data.goals && data.goals.length) ? data.goals : [
                 { title: 'Post once today', current: stats.posts || 0, target: 1 },
                 { title: 'Engagement momentum', current: engagement, target: Math.max(10, engagement || 10) },
@@ -512,6 +553,7 @@ class NavigationSystem {
                     `;
                 }).join('');
             }
+            */
             
             // News widget
             const newsTiles = document.getElementById('homeNewsTiles');
@@ -532,33 +574,7 @@ class NavigationSystem {
                 `).join('');
             }
             
-            // Quick actions (reuse existing handlers if any)
-            const quickActions = document.querySelectorAll('.quick-actions [data-action]');
-            quickActions.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const action = btn.dataset.action;
-                    if (action === 'create-post' && window.streamPage && typeof window.streamPage.openPostModal === 'function') {
-                        window.streamPage.openPostModal();
-                    }
-                    if (action === 'view-stats') {
-                        window.location.href = '/metrics_dashboard.html';
-                    }
-                    if (action === 'improve') {
-                        // Scroll to goals for now
-                        goalsList?.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
-
-            // Fixed layout: no reorder/hide; ensure widgets are visible
-            const grid = document.querySelector('.home-widgets-grid');
-            if (grid) {
-                grid.querySelectorAll('[data-widget]').forEach((w, idx) => {
-                    w.style.order = idx + 1;
-                    w.classList.remove('is-hidden');
-                    w.removeAttribute('aria-hidden');
-                });
-            }
+            // Legacy quick actions removed - widgets replaced
         } catch (error) {
             console.error('Error loading home content:', error);
         }
@@ -914,7 +930,12 @@ class NavigationSystem {
             const filterBtn = activeSection ? activeSection.querySelector('.circles-filters .filter-btn.active') : document.querySelector('.circles-filters .filter-btn.active');
             const filter = filterBtn?.dataset.filter || 'all';
             
-            const url = `/api/sections/circles?user_id=${userId || ''}&session_id=${sessionId || ''}&filter=${filter}&limit=20`;
+            // Add category filter to URL if selected
+            let url = `/api/sections/circles?user_id=${userId || ''}&session_id=${sessionId || ''}&filter=${filter}&limit=20`;
+            if (this.selectedCategory && this.selectedCategory !== 'all') {
+                url += `&category=${encodeURIComponent(this.selectedCategory)}`;
+            }
+            
             console.log('Fetching Circles from:', url);
             const response = await fetch(url);
             
@@ -924,6 +945,20 @@ class NavigationSystem {
             
             const data = await response.json();
             console.log('Circles data loaded:', data);
+            
+            // Filter threads by selected category if needed
+            let threadsToDisplay = data.threads || [];
+            if (this.selectedCategory && this.selectedCategory !== 'all') {
+                threadsToDisplay = threadsToDisplay.filter(thread => {
+                    const threadCircle = thread.circle || '';
+                    const threadCategoryId = thread.category_id || '';
+                    // Match exact circle path or category ID
+                    return threadCircle === this.selectedCategory || 
+                           threadCircle.startsWith(this.selectedCategory + '/') ||
+                           threadCategoryId === this.selectedCategory ||
+                           threadCircle.split('/')[0] === this.selectedCategory;
+                });
+            }
             
             // Load categories first
             await this.loadCirclesCategories(data.categories || []);
@@ -943,18 +978,18 @@ class NavigationSystem {
             }
             
             if (threadsContainer) {
-                console.log('✅ Found circlesThreads, rendering', data.threads?.length || 0, 'threads');
-                if (data.threads && data.threads.length > 0) {
-                    threadsContainer.innerHTML = data.threads.map(thread => this.renderThread(thread)).join('');
-                    console.log('✅ Rendered', data.threads.length, 'threads');
+                console.log('✅ Found circlesThreads, rendering', threadsToDisplay.length, 'threads');
+                if (threadsToDisplay.length > 0) {
+                    threadsContainer.innerHTML = threadsToDisplay.map(thread => this.renderThread(thread)).join('');
+                    console.log('✅ Rendered', threadsToDisplay.length, 'threads');
                     
                     // Initialize shifting previews
-                    this.initializeShiftingPreviews(data.threads);
+                    this.initializeShiftingPreviews(threadsToDisplay);
                     
                     // Add click handlers for navigation to thread detail
                     this.initializeThreadClickHandlers(threadsContainer);
                 } else {
-                    threadsContainer.innerHTML = '<div class="threads-loading">No threads found.</div>';
+                    threadsContainer.innerHTML = '<div class="threads-loading">No threads found in this category.</div>';
                 }
             } else {
                 console.error('❌ Could not find circlesThreads element');
@@ -1001,12 +1036,15 @@ class NavigationSystem {
         const categoryItems = categoriesContainer.querySelectorAll('.circle-category-item');
         categoryItems.forEach(item => {
             item.addEventListener('click', (e) => {
-                const category = item.dataset.category;
+                const category = item.dataset.category; // Use full ID (includes category-id/subcategory-id for subcategories)
                 if (category) {
                     this.filterByCategory(category);
                 }
             });
         });
+        
+        // Show main categories first, then subcategories (or group by parent)
+        // This could be enhanced to show hierarchical structure
     }
     
     async filterByCategory(category) {
@@ -1018,7 +1056,9 @@ class NavigationSystem {
             const categoryItems = categoriesContainer.querySelectorAll('.circle-category-item');
             categoryItems.forEach(item => {
                 item.classList.remove('active');
-                if (item.dataset.category === category) {
+                // Match by category ID or slug
+                const itemCategory = item.dataset.category;
+                if (itemCategory === category || itemCategory === category.split('/')[0]) {
                     item.classList.add('active');
                 }
             });
@@ -1027,7 +1067,7 @@ class NavigationSystem {
         // Store selected category for filtering
         this.selectedCategory = category === 'all' ? null : category;
         
-        // Reload threads - filtering will be handled in loadCirclesContent if needed
+        // Reload threads with category filter
         await this.loadCirclesContent();
     }
     
@@ -1036,6 +1076,8 @@ class NavigationSystem {
         const slug = category.slug || category.id || '';
         const threadCount = category.thread_count;
         const isAll = slug === 'all';
+        const isSubcategory = category.type === 'subcategory';
+        const categoryId = category.id || slug; // Use full ID for subcategories (category-id/subcategory-id)
         
         // Special handling for "All" category
         let avatarUrl, fallbackAvatarUrl, initial, color;
@@ -1047,7 +1089,7 @@ class NavigationSystem {
             fallbackAvatarUrl = `https://ui-avatars.com/api/?name=All&background=666&color=fff&size=64&bold=true`;
         } else {
             // Use real photos for categories too
-            const seed = slug || category.id || 'default';
+            const seed = categoryId || slug || 'default';
             let seedHash = 0;
             const seedString = seed.toString();
             for (let i = 0; i < seedString.length; i++) {
@@ -1063,8 +1105,13 @@ class NavigationSystem {
             color = this.getCircleColor(slug);
         }
         
+        // Add visual indicator for subcategories
+        const subcategoryClass = isSubcategory ? 'subcategory' : '';
+        const parentIndicator = isSubcategory && category.parent_category_name ? 
+            `<div class="category-parent-name">${this.escapeHtml(category.parent_category_name)}</div>` : '';
+        
         return `
-            <div class="circle-category-item ${isAll ? 'active' : ''}" data-category="${slug}">
+            <div class="circle-category-item ${isAll ? 'active' : ''} ${subcategoryClass}" data-category="${categoryId}" data-slug="${slug}">
                 <div class="circle-category-avatar-wrapper">
                     <img 
                         src="${avatarUrl}" 
@@ -1076,6 +1123,7 @@ class NavigationSystem {
                     <div class="circle-category-avatar-fallback" style="display: none; background-color: ${color};">
                     </div>
                 </div>
+                ${parentIndicator}
                 <div class="circle-category-name">${this.escapeHtml(name)}</div>
                 ${threadCount !== null && threadCount > 0 ? `<div class="circle-category-count">${threadCount}</div>` : ''}
             </div>
@@ -1232,12 +1280,38 @@ class NavigationSystem {
     }
     
     renderThread(thread) {
-        const topic = thread.circle || thread.title || 'Topic';
+        // Get category display name - prefer structured names, fallback to circle
+        let categoryDisplay = '';
+        if (thread.subcategory_name && thread.category_name) {
+            categoryDisplay = `${thread.category_name} • ${thread.subcategory_name}`;
+        } else if (thread.category_name) {
+            categoryDisplay = thread.category_name;
+        } else if (thread.circle) {
+            // Parse circle path (category-id/subcategory-id) or use as-is
+            const circleParts = thread.circle.split('/');
+            if (circleParts.length === 2) {
+                // Format: "Category Name • Subcategory Name"
+                categoryDisplay = circleParts.map(part => 
+                    part.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+                ).join(' • ');
+            } else {
+                categoryDisplay = thread.circle.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+            }
+        } else {
+            categoryDisplay = thread.title || 'Topic';
+        }
+        
+        const topic = categoryDisplay;
         const authorId = thread.author_id || thread.author?.user_id || null;
         const authorAvatarUrl = thread.author?.avatar_url || null;
         const avatarUrl = this.getAvatarUrl(topic, authorId, authorAvatarUrl);
         const fallbackAvatarUrl = this.getFallbackAvatarUrl(topic, authorId);
         const timeAgo = this.formatMessageTime(thread.created_at);
+        
+        // Get thread title for display
+        const threadTitle = thread.title || 'Untitled Thread';
         
         // Get first part of paragraph (static preview) - shorter for compact mobile view
         const bodyText = (thread.body || '').trim();
@@ -1264,9 +1338,28 @@ class NavigationSystem {
         
         const threadId = thread.id || `thread_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const commentCount = thread.comment_count || 0;
+        const circlePath = thread.circle || '';
+        
+        // Build tag badges if tag_metadata exists
+        let tagBadges = '';
+        if (thread.tag_metadata) {
+            const tags = [];
+            if (thread.tag_metadata.level) {
+                tags.push(`<span class="thread-tag level-${thread.tag_metadata.level}">${thread.tag_metadata.level}</span>`);
+            }
+            if (thread.tag_metadata.format) {
+                tags.push(`<span class="thread-tag format-${thread.tag_metadata.format}">${thread.tag_metadata.format}</span>`);
+            }
+            if (thread.tag_metadata.sourcing) {
+                tags.push(`<span class="thread-tag sourcing-${thread.tag_metadata.sourcing}">${thread.tag_metadata.sourcing}</span>`);
+            }
+            if (tags.length > 0) {
+                tagBadges = `<div class="thread-tags">${tags.join('')}</div>`;
+            }
+        }
         
         return `
-            <div class="circle-message-item" data-thread-id="${threadId}" data-category="${this.escapeHtml(topic)}">
+            <div class="circle-message-item" data-thread-id="${threadId}" data-category="${this.escapeHtml(circlePath)}">
                 <img 
                     src="${avatarUrl}" 
                     alt="${this.escapeHtml(topic)}" 
@@ -1278,8 +1371,12 @@ class NavigationSystem {
                 </div>
                 <div class="circle-message-content">
                     <div class="circle-message-header">
-                        <span class="circle-topic-name">${this.escapeHtml(topic)}</span>
-                        <span class="circle-message-time">${timeAgo}</span>
+                        <div class="circle-header-top">
+                            <span class="circle-topic-name">${this.escapeHtml(categoryDisplay)}</span>
+                            <span class="circle-message-time">${timeAgo}</span>
+                        </div>
+                        <div class="circle-thread-title">${this.escapeHtml(threadTitle)}</div>
+                        ${tagBadges}
                     </div>
                     <div class="circle-paragraph-preview">${paragraphPreview}</div>
                     <div class="circle-message-footer">
@@ -1408,6 +1505,231 @@ class NavigationSystem {
                 indicatorElement.dataset.intervalId = intervalId;
             }, 150 * index); // Stagger initialization
         });
+    }
+    
+    async loadFollowingWidget() {
+        const followingGrid = document.getElementById('followingGrid');
+        if (!followingGrid) {
+            console.warn('followingGrid not found');
+            return;
+        }
+        
+        try {
+            console.log('Loading following widget...');
+            // Mock data for what user is following
+            const followingItems = [
+                { type: 'projects', label: 'Projects', icon: '📁', count: 3 },
+                { type: 'streams', label: 'Streams', icon: '📡', count: 12 },
+                { type: 'posts', label: 'Posts', icon: '📝', count: 28 },
+                { type: 'classes', label: 'Classes', icon: '🎓', count: 5 }
+            ];
+            
+            followingGrid.innerHTML = followingItems.map(item => `
+                <div class="following-item" data-type="${item.type}">
+                    <div class="following-icon">${item.icon}</div>
+                    <div class="following-label">${item.label}</div>
+                    <div class="following-count">${item.count}</div>
+                </div>
+            `).join('');
+            
+            console.log('Following widget loaded:', followingItems.length, 'items');
+            
+            // Add click handlers
+            followingGrid.querySelectorAll('.following-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const type = item.dataset.type;
+                    // Navigate to filtered view based on type
+                    console.log('Navigate to:', type);
+                    // Future: Navigate to filtered view
+                });
+            });
+        } catch (error) {
+            console.error('Error loading following widget:', error);
+            if (followingGrid) {
+                followingGrid.innerHTML = '<div style="padding: 12px; color: var(--text-tertiary); font-size: 12px;">Unable to load</div>';
+            }
+        }
+    }
+    
+    async loadActivityWidget() {
+        const activityList = document.getElementById('activityList');
+        if (!activityList) {
+            console.warn('activityList not found');
+            return;
+        }
+        
+        try {
+            console.log('Loading activity widget...');
+            // Mock activity data - resonates, refines, reposts
+            const activities = [
+                { type: 'resonate', content: 'Resonated with "Exploring Internal Arts" in Streams', time: '2h ago' },
+                { type: 'refine', content: 'Refined answer in Forums: "Martial Arts & Combative"', time: '5h ago' },
+                { type: 'repost', content: 'Reposted from @user_3 in Streams', time: '1d ago' },
+                { type: 'resonate', content: 'Resonated with "Visual Design Principles"', time: '2d ago' }
+            ];
+            
+            activityList.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-content">
+                        <span class="activity-type">${this.escapeHtml(activity.type)}:</span>
+                        <span class="activity-text">${this.escapeHtml(activity.content)}</span>
+                        <span class="activity-time">${this.escapeHtml(activity.time)}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            console.log('Activity widget loaded:', activities.length, 'activities');
+        } catch (error) {
+            console.error('Error loading activity widget:', error);
+            if (activityList) {
+                activityList.innerHTML = '<div style="padding: 12px; color: var(--text-tertiary); font-size: 12px;">Unable to load activity</div>';
+            }
+        }
+    }
+    
+    async loadMindfulTipsWidget() {
+        const dailyTipsList = document.getElementById('dailyTipsList');
+        const weeklyTipsList = document.getElementById('weeklyTipsList');
+        
+        if (!dailyTipsList && !weeklyTipsList) {
+            console.warn('Tip lists not found');
+            return;
+        }
+        
+        try {
+            console.log('Loading mindful tips widget...');
+            // Daily tips - actionable items for today
+            const dailyTips = [
+                { 
+                    title: 'Post a thought', 
+                    description: 'Share something you learned today',
+                    action: 'Post',
+                    actionType: 'post'
+                },
+                { 
+                    title: 'Meditate for 10 minutes', 
+                    description: 'Take a mindful break',
+                    action: 'Start',
+                    actionType: 'meditate'
+                },
+                { 
+                    title: 'Learn a new system', 
+                    description: 'Explore a category you haven\'t visited',
+                    action: 'Explore',
+                    actionType: 'learn'
+                }
+            ];
+            
+            // Weekly tips - engagement goals
+            const weeklyTips = [
+                { 
+                    title: 'Engage with 5 posts this week', 
+                    description: 'Comment or resonate with community content',
+                    action: 'View',
+                    actionType: 'engage',
+                    badge: 'weekly'
+                },
+                { 
+                    title: 'Write a detailed post', 
+                    description: 'Share your insights on a topic you care about',
+                    action: 'Write',
+                    actionType: 'write',
+                    badge: 'weekly'
+                },
+                { 
+                    title: 'Connect with 3 new people', 
+                    description: 'Follow and engage with community members',
+                    action: 'Connect',
+                    actionType: 'connect',
+                    badge: 'weekly'
+                }
+            ];
+            
+            if (dailyTipsList) {
+                dailyTipsList.innerHTML = dailyTips.map(tip => `
+                    <div class="tip-item" data-action-type="${tip.actionType}">
+                        <div class="tip-content">
+                            <div class="tip-title">${this.escapeHtml(tip.title)}</div>
+                            <div class="tip-description">${this.escapeHtml(tip.description)}</div>
+                        </div>
+                        <button class="tip-action" data-action="${tip.actionType}">${this.escapeHtml(tip.action)}</button>
+                    </div>
+                `).join('');
+                console.log('Daily tips loaded:', dailyTips.length);
+            }
+            
+            if (weeklyTipsList) {
+                weeklyTipsList.innerHTML = weeklyTips.map(tip => `
+                    <div class="tip-item" data-action-type="${tip.actionType}">
+                        <div class="tip-content">
+                            <div class="tip-title">
+                                ${this.escapeHtml(tip.title)}
+                                ${tip.badge ? `<span class="tip-badge">${tip.badge}</span>` : ''}
+                            </div>
+                            <div class="tip-description">${this.escapeHtml(tip.description)}</div>
+                        </div>
+                        <button class="tip-action" data-action="${tip.actionType}">${this.escapeHtml(tip.action)}</button>
+                    </div>
+                `).join('');
+                console.log('Weekly tips loaded:', weeklyTips.length);
+            }
+            
+            // Add click handlers for tip actions
+            setTimeout(() => {
+                document.querySelectorAll('.tip-action').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const actionType = btn.dataset.action;
+                        this.handleTipAction(actionType);
+                    });
+                });
+            }, 100);
+        } catch (error) {
+            console.error('Error loading mindful tips:', error);
+            if (dailyTipsList) dailyTipsList.innerHTML = '<div style="padding: 12px; color: var(--text-tertiary); font-size: 12px;">Unable to load tips</div>';
+            if (weeklyTipsList) weeklyTipsList.innerHTML = '<div style="padding: 12px; color: var(--text-tertiary); font-size: 12px;">Unable to load goals</div>';
+        }
+    }
+    
+    handleTipAction(actionType) {
+        switch(actionType) {
+            case 'post':
+                // Open post creation modal
+                if (window.streamPage && typeof window.streamPage.openPostModal === 'function') {
+                    window.streamPage.openPostModal();
+                } else {
+                    // Navigate to stream page to post
+                    this.navigateToSection('stream');
+                }
+                break;
+            case 'meditate':
+                // Could navigate to a meditation/wellness section or open a timer
+                console.log('Start meditation');
+                // Future: Open meditation timer or navigate to wellness section
+                break;
+            case 'learn':
+                // Navigate to circles/forums to explore
+                this.navigateToSection('circles');
+                break;
+            case 'engage':
+                // Navigate to stream to engage with posts
+                this.navigateToSection('stream');
+                break;
+            case 'write':
+                // Open post creation with focus on longer form
+                if (window.streamPage && typeof window.streamPage.openPostModal === 'function') {
+                    window.streamPage.openPostModal();
+                } else {
+                    this.navigateToSection('stream');
+                }
+                break;
+            case 'connect':
+                // Navigate to profiles or stream to find people
+                this.navigateToSection('stream');
+                break;
+            default:
+                console.log('Unknown action:', actionType);
+        }
     }
     
     async loadStudioContent() {

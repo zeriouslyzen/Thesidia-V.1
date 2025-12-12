@@ -352,17 +352,17 @@ class ThesidiaApp {
     
     setColorTheme(theme) {
         // Remove all theme classes
-        document.body.classList.remove('theme-yellow', 'theme-green', 'theme-purple', 'theme-pink');
-        document.documentElement.classList.remove('theme-yellow', 'theme-green', 'theme-purple', 'theme-pink');
+        document.body.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
+        document.documentElement.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
         
         // Apply new theme (default doesn't need a class)
-        if (theme !== 'default') {
+        if (theme && theme !== 'default') {
             document.body.classList.add(`theme-${theme}`);
             document.documentElement.classList.add(`theme-${theme}`);
         }
         
         // Save to localStorage
-        localStorage.setItem('thesidia_color_theme', theme);
+        localStorage.setItem('thesidia_color_theme', theme || 'default');
     }
     
     setupThemeSelector() {
@@ -377,46 +377,109 @@ class ThesidiaApp {
         const themeSelector = document.createElement('div');
         themeSelector.id = 'themeSelector';
         themeSelector.className = 'theme-selector';
+        const currentTheme = localStorage.getItem('thesidia_color_theme') || 'default';
+        const themeLabels = {
+            'default': 'Default',
+            'yellow': 'Yellow',
+            'tan': 'Tan',
+            'red': 'Red',
+            'orange': 'Orange',
+            'blue': 'Blue'
+        };
+        
         themeSelector.innerHTML = `
             <div class="settings-label" style="margin-top: 16px;">Color Theme</div>
-            <div class="theme-options">
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'default' ? 'active' : ''}" data-theme="default" title="Default White">
-                    <span class="theme-color" style="background: #ffffff; box-shadow: 0 0 8px rgba(255,255,255,0.6);"></span>
-                    <span>Default</span>
+            <div class="theme-dropdown-wrapper">
+                <button class="theme-dropdown-btn" id="themeDropdownBtn">
+                    <span class="theme-dropdown-label">
+                        <span class="theme-color-preview" style="background: ${currentTheme === 'default' ? '#ffffff' : currentTheme === 'yellow' ? '#d4d400' : currentTheme === 'tan' ? '#d2b48c' : currentTheme === 'red' ? '#ff4444' : currentTheme === 'orange' ? '#ff8800' : '#4488ff'};"></span>
+                        <span>${themeLabels[currentTheme]}</span>
+                    </span>
+                    <svg class="theme-dropdown-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
                 </button>
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'yellow' ? 'active' : ''}" data-theme="yellow" title="Yellow Neon">
-                    <span class="theme-color" style="background: #ffff00; box-shadow: 0 0 8px rgba(255,255,0,0.6);"></span>
-                    <span>Yellow</span>
-                </button>
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'green' ? 'active' : ''}" data-theme="green" title="Green Neon">
-                    <span class="theme-color" style="background: #00ff00; box-shadow: 0 0 8px rgba(0,255,0,0.6);"></span>
-                    <span>Green</span>
-                </button>
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'purple' ? 'active' : ''}" data-theme="purple" title="Purple Neon">
-                    <span class="theme-color" style="background: #ff00ff; box-shadow: 0 0 8px rgba(255,0,255,0.6);"></span>
-                    <span>Purple</span>
-                </button>
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'pink' ? 'active' : ''}" data-theme="pink" title="Pink Neon">
-                    <span class="theme-color" style="background: #ff00aa; box-shadow: 0 0 8px rgba(255,0,170,0.6);"></span>
-                    <span>Pink</span>
-                </button>
+                <div class="theme-dropdown-menu" id="themeDropdownMenu">
+                    <button class="theme-dropdown-option ${currentTheme === 'default' ? 'active' : ''}" data-theme="default">
+                        <span class="theme-color" style="background: #ffffff;"></span>
+                        <span>Default</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'yellow' ? 'active' : ''}" data-theme="yellow">
+                        <span class="theme-color" style="background: #d4d400;"></span>
+                        <span>Yellow</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'tan' ? 'active' : ''}" data-theme="tan">
+                        <span class="theme-color" style="background: #d2b48c;"></span>
+                        <span>Tan</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'red' ? 'active' : ''}" data-theme="red">
+                        <span class="theme-color" style="background: #ff4444;"></span>
+                        <span>Red</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'orange' ? 'active' : ''}" data-theme="orange">
+                        <span class="theme-color" style="background: #ff8800;"></span>
+                        <span>Orange</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'blue' ? 'active' : ''}" data-theme="blue">
+                        <span class="theme-color" style="background: #4488ff;"></span>
+                        <span>Blue</span>
+                    </button>
+                </div>
             </div>
         `;
         
         // Insert after settings nav
         settingsNav.parentElement.appendChild(themeSelector);
         
-        // Add click handlers
-        themeSelector.querySelectorAll('.theme-option').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const theme = btn.dataset.theme;
-                this.setColorTheme(theme);
-                
-                // Update active state
-                themeSelector.querySelectorAll('.theme-option').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        // Setup dropdown toggle
+        const dropdownBtn = document.getElementById('themeDropdownBtn');
+        const dropdownMenu = document.getElementById('themeDropdownMenu');
+        const dropdownWrapper = dropdownBtn?.closest('.theme-dropdown-wrapper');
+        
+        if (dropdownBtn && dropdownMenu && dropdownWrapper) {
+            dropdownBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownWrapper.classList.toggle('open');
             });
-        });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!dropdownWrapper.contains(e.target)) {
+                    dropdownWrapper.classList.remove('open');
+                }
+            });
+            
+            // Handle option clicks
+            dropdownMenu.querySelectorAll('.theme-dropdown-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const theme = option.dataset.theme;
+                    this.setColorTheme(theme);
+                    
+                    // Update button label
+                    const label = dropdownBtn.querySelector('.theme-dropdown-label span:last-child');
+                    const preview = dropdownBtn.querySelector('.theme-color-preview');
+                    if (label) label.textContent = themeLabels[theme];
+                    if (preview) {
+                        const colors = {
+                            'default': '#ffffff',
+                            'yellow': '#d4d400',
+                            'tan': '#d2b48c',
+                            'red': '#ff4444',
+                            'orange': '#ff8800',
+                            'blue': '#4488ff'
+                        };
+                        preview.style.background = colors[theme];
+                    }
+                    
+                    // Update active state
+                    dropdownMenu.querySelectorAll('.theme-dropdown-option').forEach(opt => opt.classList.remove('active'));
+                    option.classList.add('active');
+                    
+                    // Close dropdown
+                    dropdownWrapper.classList.remove('open');
+                });
+            });
+        }
     }
     
     setupMinimalListeners() {
