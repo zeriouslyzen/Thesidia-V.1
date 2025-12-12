@@ -218,6 +218,29 @@ Katanx serves as a unified platform where practitioners across all nine categori
 
 ---
 
+## Forums: Categories & Subcategories
+
+Top-level categories (keep subs lean, 3–6 each) with suggested subcategories:
+
+- **Martial / Movement**: Combatives; Internal arts (Taiji/Bagua/Xingyi, Qigong/Neigong); Movement arts (dance, parkour, acrobatics, gymnastics, capoeira, flow arts); Conditioning & biomechanics; Coaching / pedagogy
+- **Visual**: Drawing/painting/sculpture; Design (graphic, UX/UI, product); Photo/film/animation; Architecture; Crafts/making (jewelry, engraving, fabrication)
+- **Internal / Spiritual**: Meditation & contemplative practice; Breathwork / pranayama; Ritual/indigenous/mystical arts (sourcing respect); Energy practices (qigong internal, etc.); Ethics & safeguarding
+- **Healing**: Clinical & evidence-based (PT, sports med, rehab); Traditional systems (TCM, acupuncture, herbalism); Bodywork & manual therapies; Recovery & longevity; Safety / contraindications
+- **Intellectual / Science**: Philosophy & epistemology; Neuroscience / cognition; Physiology / biomechanics; Data, modeling, systems thinking; Methodology & study design
+- **Performance**: Music & voice; Theater / spoken word / storytelling; Performance movement (wushu performance, stage martial, dance performance); Stagecraft / production; Presence & audience dynamics
+- **Social / Leadership**: Teaching & pedagogy; Facilitation & community building; Rhetoric & diplomacy; Leadership & mentoring; Group dynamics / psychology
+- **Creative / Inventive**: Invention / engineering; Programming / tooling; Alchemy/metaphor, mechanism design; Prototyping / fabrication; Interaction design
+- **Research & Evidence**: Paper summaries; Study discussions; Replication / critiques; Protocols and methods; Bibliographies / resource lists
+- **Meta / Guidelines**: Posting rules (sourcing, civility, no dogma); Tagging conventions; Moderation policy; How to contribute / improve evidence quality; Changelog / announcements
+
+Tagging guidance:
+- Level: beginner / intermediate / advanced
+- Format: guide / question / study / critique / resource
+- Sourcing: peer-reviewed / clinical / traditional
+- Prefer single ownership per topic (avoid cross-posting); keep threads in the most specific fitting subcategory.
+
+---
+
 ## Technical Architecture
 
 Katanx is built as a modern web application with:
