@@ -1132,6 +1132,92 @@ html:has(#app.sidebar-pushed) {
     display: flex;
     flex-direction: column;
     align-items: center;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.stream-feed-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Scuba Depth Indicator */
+.scuba-depth-indicator {
+    position: fixed;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 0;
+    height: 25vh;
+    min-height: 150px;
+    max-height: 25vh;
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 1;
+}
+
+.depth-line {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0.25) 25%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        rgba(255, 255, 255, 0.1) 100%);
+    z-index: 1;
+}
+
+.depth-marker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    z-index: 2;
+}
+
+.depth-marker[data-depth="0"] { top: 0%; }
+.depth-marker[data-depth="10"] { top: 5%; }
+.depth-marker[data-depth="20"] { top: 10%; }
+.depth-marker[data-depth="30"] { top: 15%; }
+.depth-marker[data-depth="40"] { top: 20%; }
+.depth-marker[data-depth="50"] { top: 25%; }
+.depth-marker[data-depth="60"] { top: 30%; }
+.depth-marker[data-depth="70"] { top: 35%; }
+.depth-marker[data-depth="80"] { top: 40%; }
+.depth-marker[data-depth="90"] { top: 45%; }
+.depth-marker[data-depth="100"] { top: 50%; }
+.depth-marker[data-depth="110"] { top: 55%; }
+.depth-marker[data-depth="120"] { top: 60%; }
+.depth-marker[data-depth="130"] { top: 65%; }
+.depth-marker[data-depth="140"] { top: 70%; }
+.depth-marker[data-depth="150"] { top: 75%; }
+.depth-marker[data-depth="160"] { top: 80%; }
+.depth-marker[data-depth="170"] { top: 85%; }
+.depth-marker[data-depth="180"] { top: 90%; }
+.depth-marker[data-depth="190"] { top: 95%; }
+.depth-marker[data-depth="200"] { top: 100%; }
+
+.depth-marker::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 3px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.15s ease;
+}
+
+.depth-marker.active::before {
+    width: 5px;
+    background: var(--theme-neon);
+    box-shadow: 0 0 3px var(--theme-neon-glow);
 }
 
 .stream-page-container {
@@ -2997,7 +3083,8 @@ html:has(#app.sidebar-pushed) {
     gap: 16px;
     padding: 0;
     width: 100%;
-    max-width: 800px;
+    flex: 1;
+    min-width: 0;
 }
 
 .stream-loading {

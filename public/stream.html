@@ -747,6 +747,32 @@
             </div>
         </main>
         
+        <!-- Scuba Depth Indicator - Fixed to right side of screen -->
+        <div class="scuba-depth-indicator" id="scubaDepthIndicator">
+            <div class="depth-line"></div>
+            <div class="depth-marker" data-depth="0"></div>
+            <div class="depth-marker" data-depth="10"></div>
+            <div class="depth-marker" data-depth="20"></div>
+            <div class="depth-marker" data-depth="30"></div>
+            <div class="depth-marker" data-depth="40"></div>
+            <div class="depth-marker" data-depth="50"></div>
+            <div class="depth-marker" data-depth="60"></div>
+            <div class="depth-marker" data-depth="70"></div>
+            <div class="depth-marker" data-depth="80"></div>
+            <div class="depth-marker" data-depth="90"></div>
+            <div class="depth-marker" data-depth="100"></div>
+            <div class="depth-marker" data-depth="110"></div>
+            <div class="depth-marker" data-depth="120"></div>
+            <div class="depth-marker" data-depth="130"></div>
+            <div class="depth-marker" data-depth="140"></div>
+            <div class="depth-marker" data-depth="150"></div>
+            <div class="depth-marker" data-depth="160"></div>
+            <div class="depth-marker" data-depth="170"></div>
+            <div class="depth-marker" data-depth="180"></div>
+            <div class="depth-marker" data-depth="190"></div>
+            <div class="depth-marker" data-depth="200"></div>
+        </div>
+
         <!-- Left Sidebar -->
         <div class="left-sidebar" id="leftSidebar">
             <div class="sidebar-content">
@@ -854,6 +880,61 @@
                 this.setupEventListeners();
                 this.setupInfiniteScroll();
                 this.setupStreamFilter();
+                this.setupScubaDepthIndicator();
+            }
+            
+            setupScubaDepthIndicator() {
+                const feedContainer = document.querySelector('.stream-feed-container');
+                const depthIndicator = document.getElementById('scubaDepthIndicator');
+                
+                if (!feedContainer || !depthIndicator) return;
+                
+                // Always show the indicator on stream page
+                depthIndicator.style.display = 'flex';
+                
+                let rafId = null;
+                
+                const updateDepth = () => {
+                    const scrollTop = feedContainer.scrollTop;
+                    const scrollHeight = feedContainer.scrollHeight;
+                    const clientHeight = feedContainer.clientHeight;
+                    const maxScroll = scrollHeight - clientHeight;
+                    
+                    if (maxScroll <= 0 || scrollHeight <= clientHeight) return;
+                    
+                    // Calculate depth percentage (0-100%)
+                    const scrollPercent = Math.min(100, Math.max(0, (scrollTop / maxScroll) * 100));
+                    
+                    // Map to depth in meters (0-200m)
+                    const depth = Math.min(200, Math.round((scrollPercent / 100) * 200));
+                    
+                    // Highlight current depth marker with smooth animation
+                    const markers = depthIndicator.querySelectorAll('.depth-marker');
+                    markers.forEach(marker => {
+                        const markerDepth = parseInt(marker.dataset.depth);
+                        if (Math.abs(depth - markerDepth) < 5) {
+                            marker.classList.add('active');
+                        } else {
+                            marker.classList.remove('active');
+                        }
+                    });
+                };
+                
+                const smoothUpdate = () => {
+                    updateDepth();
+                    rafId = null;
+                };
+                
+                feedContainer.addEventListener('scroll', () => {
+                    if (!rafId) {
+                        rafId = requestAnimationFrame(smoothUpdate);
+                    }
+                }, { passive: true });
+                
+                updateDepth(); // Initial update
+                
+                // Update on resize
+                window.addEventListener('resize', updateDepth);
             }
             
             setupStreamFilter() {
