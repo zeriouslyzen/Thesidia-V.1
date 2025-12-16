@@ -14,10 +14,24 @@
     {
       "source": "/",
       "destination": "/landing.html"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/server.py"
     },
     {
-      "source": "/(.*)",
-      "destination": "/landing.html"
+      "src": "/home",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/",
+      "dest": "/landing.html"
+    },
+    {
+      "src": "/(.*\\.(html|css|js|json|xml|txt|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
+      "dest": "/$1"
     }
   ]
 }
