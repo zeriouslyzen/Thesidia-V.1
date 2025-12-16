@@ -158,7 +158,7 @@ class ThesidiaApp {
             }
             // Fallback: only the root home pages count as home
             const path = window.location.pathname;
-            return path === '/' || path === '/index.html';
+            return path === '/home' || path === '/index.html';
         };
         
         // Touch start

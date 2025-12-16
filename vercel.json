@@ -8,8 +8,16 @@
       "destination": "/api/server.py"
     },
     {
-      "source": "/(.*)",
+      "source": "/home",
       "destination": "/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/landing.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/landing.html"
     }
   ]
 }

@@ -288,7 +288,55 @@ def check_rate_limit(ip):
 
 @app.route('/')
 def index():
-    """Serve main HTML file - index.html is the main entry point"""
+    """Serve landing page - landing.html is the main entry point for katanx.com"""
+    try:
+        # Check public/ directory first (for Vercel), then current directory
+        static_dir = Path(__file__).parent.parent / 'public'
+        if static_dir.exists():
+            landing_path = static_dir / 'landing.html'
+            if landing_path.exists():
+                try:
+                    return send_from_directory(str(static_dir), 'landing.html')
+                except Exception as file_error:
+                    print(f"Error sending landing.html: {file_error}")
+        # Fallback to current directory
+        current_landing = Path('landing.html')
+        if current_landing.exists():
+            try:
+                return send_from_directory('.', 'landing.html')
+            except Exception as file_error:
+                print(f"Error sending current landing.html: {file_error}")
+    except Exception as route_error:
+        # If file serving fails, return a simple HTML response
+        import traceback
+        error_msg = str(route_error) if route_error else "Unknown error"
+        print(f"Error in index route: {error_msg}")
+        traceback.print_exc()
+    
+    # Final fallback - always return something
+    try:
+        return """<!DOCTYPE html>
+<html>
+<head>
+    <title>katanx</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>window.location.href = '/landing.html';</script>
+</head>
+<body>
+    <h1>katanx</h1>
+    <p>Application is loading...</p>
+    <p>If you are not redirected, please <a href="/landing.html">click here</a>.</p>
+</body>
+</html>""", 200, {'Content-Type': 'text/html'}
+    except Exception as final_error:
+        # Absolute last resort - return plain text
+        error_msg = str(final_error) if final_error else "Unknown error"
+        return f"Error: {error_msg}", 500, {'Content-Type': 'text/plain'}
+
+@app.route('/home')
+def home():
+    """Serve main application - index.html is the home page for katanx.com/home"""
     try:
         # Check public/ directory first (for Vercel), then current directory
         static_dir = Path(__file__).parent.parent / 'public'
@@ -322,10 +370,10 @@ def index():
         # If file serving fails, return a simple HTML response
         import traceback
         error_msg = str(route_error) if route_error else "Unknown error"
-        print(f"Error in index route: {error_msg}")
+        print(f"Error in home route: {error_msg}")
         traceback.print_exc()
     
-    # Final fallback - always return something
+    # Final fallback - redirect to landing
     try:
         return """<!DOCTYPE html>
 <html>
