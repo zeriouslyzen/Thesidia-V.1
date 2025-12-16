@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#000000"><!-- Supported by Chrome, Safari, Edge; warning for Firefox is acceptable -->
     <title>katanx</title>
     <meta name="description" content="See patterns others miss. A platform for practitioners of the arts of human development.">
     <!-- Version: 2025-12-15-v4 - Webhook test -->
@@ -50,8 +50,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
+            image-rendering: -webkit-optimize-contrast; /* Edge 79+ support */
             margin: 0;
             padding: 0;
         }
@@ -395,6 +394,10 @@
             margin-bottom: 1rem;
         }
 
+        .demo-cta {
+            margin-top: 2rem;
+        }
+
         /* Footer */
         .footer {
             background: #000000;
@@ -713,7 +716,7 @@
                         </div>
                     </div>
 
-                    <div style="margin-top: 2rem;">
+                    <div class="demo-cta">
                         <a href="index.html" class="btn btn-primary">Try Thesidia AI</a>
                     </div>
                 </div>
