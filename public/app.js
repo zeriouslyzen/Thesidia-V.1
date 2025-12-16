@@ -46,14 +46,16 @@ class ThesidiaApp {
         if ('speechSynthesis' in window) {
             // Store reference to this for voice loading callback
             const self = this;
+            // Use arrow function to preserve 'this' context
+            const initTTS = () => {
+                if (self && typeof self.initializeTTS === 'function') {
+                    self.initializeTTS();
+                }
+            };
             if (speechSynthesis.getVoices().length > 0) {
-                self.initializeTTS();
+                initTTS();
             } else {
-                speechSynthesis.onvoiceschanged = function() {
-                    if (self && typeof self.initializeTTS === 'function') {
-                        self.initializeTTS();
-                    }
-                };
+                speechSynthesis.onvoiceschanged = initTTS;
             }
         }
     }
