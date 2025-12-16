@@ -20,7 +20,7 @@ Disallow: /test.html
 Disallow: /test-sidebar.html
 
 # Sitemap
-Sitemap: https://www.thesidia.com/sitemap.xml
+Sitemap: https://katanx.com/sitemap.xml
 
 # Crawl-delay (optional, helps prevent server overload)
 Crawl-delay: 1
