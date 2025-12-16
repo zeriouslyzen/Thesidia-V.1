@@ -1493,6 +1493,951 @@
       "defensiveness_detected": false,
       "expansion_detected": false,
       "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 123,
+      "timestamp": "2025-12-13T16:37:05.138393",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 118,
+      "timestamp": "2025-12-13T16:37:52.351394",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you thesidia? do you rememeber our last conversations?",
+      "response_length": 348,
+      "timestamp": "2025-12-13T16:39:07.365129",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "so are you able to fact check things basically?",
+      "response_length": 290,
+      "timestamp": "2025-12-13T16:40:56.217629",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 137,
+      "timestamp": "2025-12-13T16:51:52.448541",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "do you remember our last conversation?",
+      "response_length": 774,
+      "timestamp": "2025-12-13T16:52:24.476438",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 159,
+      "timestamp": "2025-12-13T23:16:09.911897",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 61,
+      "timestamp": "2025-12-13T23:17:23.920011",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 101,
+      "timestamp": "2025-12-13T23:22:57.892069",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 98,
+      "timestamp": "2025-12-13T23:30:44.094034",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 156,
+      "timestamp": "2025-12-13T23:35:09.689698",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "sdfas",
+      "response_length": 49,
+      "timestamp": "2025-12-13T23:36:30.495067",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 156,
+      "timestamp": "2025-12-13T23:37:15.230065",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 155,
+      "timestamp": "2025-12-13T23:39:02.370266",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 118,
+      "timestamp": "2025-12-13T23:40:12.733021",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 98,
+      "timestamp": "2025-12-13T23:41:06.233491",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 118,
+      "timestamp": "2025-12-13T23:41:46.746880",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 155,
+      "timestamp": "2025-12-13T23:42:32.084009",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-13T23:51:59.320341",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-13T23:52:52.807949",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-13T23:53:22.109923",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-13T23:54:04.084550",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-13T23:55:21.775717",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-13T23:56:09.308424",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T00:01:01.659033",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T00:01:53.295607",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T00:02:20.305556",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 155,
+      "timestamp": "2025-12-14T00:33:58.079422",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie",
+      "response_length": 49,
+      "timestamp": "2025-12-14T00:34:45.216896",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 98,
+      "timestamp": "2025-12-14T00:53:38.502139",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 27,
+      "timestamp": "2025-12-14T00:54:48.301990",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "who are you",
+      "response_length": 49,
+      "timestamp": "2025-12-14T00:54:59.840278",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 176,
+      "timestamp": "2025-12-14T00:56:01.273487",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 69,
+      "timestamp": "2025-12-14T00:56:38.609491",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T00:57:18.228905",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 142,
+      "timestamp": "2025-12-14T00:57:34.834507",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T00:57:46.035398",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T00:58:25.815908",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 95,
+      "timestamp": "2025-12-14T00:59:11.972993",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T00:59:21.151231",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me more about that",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:00:11.229912",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you doing?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:00:26.092146",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 102,
+      "timestamp": "2025-12-14T01:00:42.819705",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:00:55.567781",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:01:40.787777",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me more about that",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:02:05.087251",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you doing?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:02:43.284034",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 27,
+      "timestamp": "2025-12-14T01:03:34.954929",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 104,
+      "timestamp": "2025-12-14T01:03:46.975253",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:04:32.606402",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:05:31.398027",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me more about that",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:06:04.294062",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you doing?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:06:12.441095",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:06:53.831422",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 124,
+      "timestamp": "2025-12-14T01:08:20.461763",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:08:45.213377",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:09:37.634481",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me more",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:10:14.497155",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:11:02.670199",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 121,
+      "timestamp": "2025-12-14T01:13:27.155745",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:14:01.489618",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:14:59.041254",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me more",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:16:03.334943",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you?",
+      "response_length": 49,
+      "timestamp": "2025-12-14T01:16:40.116435",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 134,
+      "timestamp": "2025-12-14T04:47:23.298885",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 780,
+      "timestamp": "2025-12-14T04:47:44.879137",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 78,
+      "timestamp": "2025-12-14T04:48:51.058996",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 730,
+      "timestamp": "2025-12-14T04:49:12.234072",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 1774,
+      "timestamp": "2025-12-14T04:49:59.644972",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me more",
+      "response_length": 1646,
+      "timestamp": "2025-12-14T04:50:38.013621",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you?",
+      "response_length": 1298,
+      "timestamp": "2025-12-14T04:51:19.388632",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 94,
+      "timestamp": "2025-12-14T21:15:14.465107",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 121,
+      "timestamp": "2025-12-14T21:15:16.582309",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 71,
+      "timestamp": "2025-12-14T21:15:18.525490",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 136,
+      "timestamp": "2025-12-14T21:16:17.359679",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Very long query: what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness?",
+      "response_length": 1209,
+      "timestamp": "2025-12-14T21:16:27.402836",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 180,
+      "timestamp": "2025-12-14T21:16:59.803261",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a short story about a robot",
+      "response_length": 2006,
+      "timestamp": "2025-12-14T21:17:20.307324",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 118,
+      "timestamp": "2025-12-14T21:17:34.806031",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 81,
+      "timestamp": "2025-12-14T21:17:49.617935",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite color?",
+      "response_length": 946,
+      "timestamp": "2025-12-14T21:17:58.895359",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 124,
+      "timestamp": "2025-12-14T21:18:35.326398",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hey there",
+      "response_length": 201,
+      "timestamp": "2025-12-14T21:18:50.090943",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Special chars: !@#$%^&amp;*()",
+      "response_length": 1837,
+      "timestamp": "2025-12-14T21:19:23.879418",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Unicode: 你好 こんにちは مرحبا",
+      "response_length": 1580,
+      "timestamp": "2025-12-14T21:19:35.701466",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "greetings",
+      "response_length": 99,
+      "timestamp": "2025-12-14T21:20:02.190831",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "why?",
+      "response_length": 728,
+      "timestamp": "2025-12-14T21:21:08.061605",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "thanks!",
+      "response_length": 2343,
+      "timestamp": "2025-12-14T21:21:27.568399",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Mixed: Hello! 123 @#$ what?",
+      "response_length": 1554,
+      "timestamp": "2025-12-14T21:21:54.941676",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me more about that",
+      "response_length": 1536,
+      "timestamp": "2025-12-14T21:22:09.268881",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Numbers: 1234567890",
+      "response_length": 1172,
+      "timestamp": "2025-12-14T21:22:19.454374",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats your favorite movie?",
+      "response_length": 945,
+      "timestamp": "2025-12-14T21:22:31.147607",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you?",
+      "response_length": 852,
+      "timestamp": "2025-12-14T21:22:56.728083",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about yourself",
+      "response_length": 862,
+      "timestamp": "2025-12-14T21:23:16.088836",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you do?",
+      "response_length": 811,
+      "timestamp": "2025-12-14T21:23:46.868433",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 1350,
+      "timestamp": "2025-12-14T21:24:29.473971",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "explain quantum physics",
+      "response_length": 2556,
+      "timestamp": "2025-12-14T21:25:13.956482",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is bitcoin?",
+      "response_length": 1417,
+      "timestamp": "2025-12-14T21:25:56.946507",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me more",
+      "response_length": 2008,
+      "timestamp": "2025-12-14T21:26:37.831547",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "can you elaborate?",
+      "response_length": 2025,
+      "timestamp": "2025-12-14T21:27:14.966301",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what else?",
+      "response_length": 806,
+      "timestamp": "2025-12-14T21:27:40.558933",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is photosynthesis?",
+      "response_length": 764,
+      "timestamp": "2025-12-14T21:28:18.319605",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is photosynthesis?",
+      "response_length": 861,
+      "timestamp": "2025-12-14T21:28:52.168680",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "a",
+      "response_length": 2070,
+      "timestamp": "2025-12-14T21:29:38.345993",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "??????????????????????????????????????????????????",
+      "response_length": 1524,
+      "timestamp": "2025-12-14T21:30:22.617239",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
     }
   ],
   "expansion_metrics": [],

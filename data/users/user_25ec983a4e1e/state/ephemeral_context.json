@@ -1,0 +1,16 @@
+{
+  "interactions": [
+    {
+      "user": "whats your favorite movie?",
+      "assistant": "Error: name 'coaching_enhancement' is not defined",
+      "timestamp": "2025-12-14T01:14:01.496146",
+      "metadata": {
+        "timestamp": "2025-12-14T01:14:01.493063",
+        "response_length": 49,
+        "user_id": "user_25ec983a4e1e",
+        "session_id": "4642da3e-a254-46ca-a0fa-f9ee44fb8a25"
+      }
+    }
+  ],
+  "last_updated": "2025-12-14T01:14:01.496153"
+}

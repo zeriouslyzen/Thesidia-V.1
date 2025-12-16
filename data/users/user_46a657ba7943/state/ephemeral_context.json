@@ -1,0 +1,16 @@
+{
+  "interactions": [
+    {
+      "user": "what is consciousness?",
+      "assistant": "Error: name 'coaching_enhancement' is not defined",
+      "timestamp": "2025-12-14T01:05:31.406058",
+      "metadata": {
+        "timestamp": "2025-12-14T01:05:31.401513",
+        "response_length": 49,
+        "user_id": "user_46a657ba7943",
+        "session_id": "17cfdc82-8b9e-4e17-8b6a-5c350134b59f"
+      }
+    }
+  ],
+  "last_updated": "2025-12-14T01:05:31.406067"
+}

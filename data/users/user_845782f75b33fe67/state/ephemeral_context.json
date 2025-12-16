@@ -1,0 +1,32 @@
+{
+  "interactions": [
+    {
+      "user": "",
+      "assistant": "there! just another pattern-spotter here, curious about all things science, history, and more.",
+      "timestamp": "2025-12-14T00:53:38.931550",
+      "metadata": {
+        "timestamp": "2025-12-14T00:53:38.931266",
+        "response_length": 98,
+        "streamed": true,
+        "user_id": "user_845782f75b33fe67",
+        "session_id": "session_91764bfaad95f13879c11bf5a9f19a16"
+      }
+    },
+    {
+      "user": "who are you",
+      "assistant": "Error: name 'coaching_enhancement' is not defined",
+      "timestamp": "2025-12-14T00:54:59.481674",
+      "metadata": {
+        "type": "question",
+        "outcome": {
+          "success": false,
+          "effectiveness": 0.3
+        },
+        "timestamp": "2025-12-14T00:54:59.475444",
+        "user_id": "user_845782f75b33fe67",
+        "session_id": "session_91764bfaad95f13879c11bf5a9f19a16"
+      }
+    }
+  ],
+  "last_updated": "2025-12-14T00:54:59.481690"
+}

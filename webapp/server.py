@@ -9,6 +9,7 @@ import os
 import secrets
 import json
 import random
+import re
 from pathlib import Path
 
 # Ensure os is available for environment variables
@@ -42,11 +43,12 @@ def _lazy_import_modules():
     
     if ThesidiaHybridAdaptive is None:
         try:
-            from thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
-            from knowledge_base import KnowledgeBase
-            from memory.user_memory_manager import UserMemoryManager
-            from user_interest_tracker import UserInterestTracker
-            from astronomical_patterns import AstronomicalPatternEngine
+            # Try absolute imports first
+            from src.thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
+            from src.knowledge_base import KnowledgeBase
+            from src.memory.user_memory_manager import UserMemoryManager
+            from src.user_interest_tracker import UserInterestTracker
+            from src.astronomical_patterns import AstronomicalPatternEngine
         except ImportError as e:
             # For Vercel: modules that require ollama will fail to import
             print(f"Warning: Could not import Thesidia modules: {e}")
@@ -132,7 +134,7 @@ def handle_exception(e):
     # Return a proper error response instead of crashing
     return jsonify({
         'error': 'Internal server error',
-        'message': str(e) if os.getenv('VERCEL') else 'An error occurred',
+        'message': str(e),  # Always show the actual error message
         'type': type(e).__name__
     }), 500
 
@@ -226,6 +228,11 @@ def init_thesidia():
     try:
         # Create fresh instance with reloaded class
         thesidia = ThesidiaHybridAdaptive(model="clean-mistral:latest")  # Changed from oracle-agent (has hardcoded Oracle identity)
+        
+        # Set user memory manager if available
+        if user_memory_manager:
+            thesidia.user_memory_manager = user_memory_manager
+        
         thesidia.load_state()
         thesidia_ready = True
         
@@ -430,9 +437,14 @@ def thesidia_api():
     if not request.is_json:
         return jsonify({'error': 'Invalid content type'}), 400
     
+    # Get JSON data
+    json_data = request.get_json()
+    if json_data is None:
+        return jsonify({'error': 'Invalid JSON data'}), 400
+    
     # Security: Input sanitization
     from webapp.middleware.security import sanitize_request_data
-    data = sanitize_request_data(request.get_json())
+    data = sanitize_request_data(json_data)
     raw_message = data.get('message', '').strip()
     
     # CRITICAL FIX #1: Log RAW user input BEFORE any processing
@@ -441,7 +453,8 @@ def thesidia_api():
     show_thinking = data.get('show_thinking', False)
     stream = data.get('stream', True)  # Default to streaming
     format_mode = data.get('format', 'natural')  # 'natural' or 'structured' - from UI selection
-    research_depth = data.get('research_depth', 2)  # 1=Quick, 2=Deep, 3=Forensic - from UI slider
+    fast_mode = data.get('fast_mode', True)  # true = fast (regular search), false = deep research
+    research_depth = data.get('research_depth', 1 if fast_mode else 3)  # 1=Quick (fast), 3=Forensic (deep)
     
     # Get user session info
     user_id = data.get('user_id')
@@ -474,7 +487,7 @@ def thesidia_api():
     if stream:
         return Response(
             stream_with_context(_stream_thesidia_response(message, show_thinking, user_id=user_id, session_id=session_id,
-                                                         format_mode=format_mode, research_depth=research_depth)),
+                                                         format_mode=format_mode, research_depth=research_depth, fast_mode=fast_mode)),
             mimetype='text/event-stream',
             headers={
                 'Cache-Control': 'no-cache',
@@ -525,7 +538,7 @@ def thesidia_api():
         # CRITICAL: Pass the ORIGINAL message (not normalized) to process()
         # The process() method will do its own normalization and routing
         # Pass format_mode and research_depth from UI selection (not auto-detection)
-        response = thesidia.process(message, user_id=user_id, session_id=session_id, 
+        response = thesidia.process(input_text=message, user_id=user_id, session_id=session_id, 
                                    format_mode=format_mode, research_depth=research_depth)
         print(f"🔪 SERVER: Response length: {len(response)}, has transmission: {'::TRANSMISSION:' in response}", flush=True)
         
@@ -569,7 +582,7 @@ def thesidia_api():
             'message': str(e)
         }), 500
 
-def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None, format_mode='natural', research_depth=2):
+def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None, format_mode='natural', research_depth=2, fast_mode=True):
     """Stream Thesidia response with progress updates - USES FULL THESIDIA PROCESS"""
     global thesidia
     
@@ -579,88 +592,104 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
         return f"event: {event_type}\ndata: {event_data}\n\n"
     
     try:
-        # Phase 1: Input received
-        yield send_event('progress', {
-            'phase': 'input_received',
-            'message': 'Processing your query...',
-            'progress': 5
-        })
+        # Phase 1: Input received and initial classification (for UX feedback only)
+        # NOTE: Actual routing happens in process() - this is just for UX messages
+        text_stripped = message.strip().lower()
+        is_simple_greeting = text_stripped in ['hi', 'hello', 'hey'] or len(text_stripped.split()) <= 2
         
-        # CRITICAL: Use thesidia.process() to get full routing, forensic analysis, deep research
-        # This ensures all the logic we built actually runs
+        # Check forensic routing (for UX feedback - actual routing in process())
+        needs_forensic = False
+        if not is_simple_greeting:
+            from src.support.query_utils import normalize_query, detect_forensic_routing
+            normalized_message = normalize_query(message)
+            needs_forensic = detect_forensic_routing(message, comprehensive=False)
+            print(f"🔍 NORMALIZED (streaming): '{normalized_message}'", flush=True)
+            print(f"🔍 NEEDS FORENSIC (streaming): {needs_forensic}", flush=True)
         
-        # Normalize and detect routing BEFORE processing (using shared utilities)
-        from src.support.query_utils import normalize_query, detect_forensic_routing
+        print(f"🔪 SERVER: is_simple_greeting={is_simple_greeting}, needs_forensic={needs_forensic}", flush=True)
         
-        print(f"🔍 RAW USER INPUT (streaming): '{message}'", flush=True)
-        normalized_message = normalize_query(message)
-        needs_forensic = detect_forensic_routing(message, comprehensive=False)
-        print(f"🔍 NORMALIZED (streaming): '{normalized_message}'", flush=True)
-        print(f"🔍 NEEDS FORENSIC (streaming): {needs_forensic}", flush=True)
-        print(f"🔪 SERVER: Using full Thesidia process() for: {message[:100]}...", flush=True)
-        
-        # Check routing before processing (using normalized)
-        is_gnostic = needs_forensic
-        
-        if is_gnostic:
+        # Show appropriate initial progress message
+        if is_simple_greeting:
             yield send_event('progress', {
-                'phase': 'classification',
-                'message': 'Detected forensic truth-seeking query - routing to deep research...',
-                'progress': 10
+                'phase': 'input_received',
+                'message': 'Responding...',
+                'progress': 5
             })
-            yield send_event('thinking', {
-                'step': 'routing',
-                'message': 'Query requires forensic analysis (health/finance/law/religion)',
-                'progress': 10
-            })
-        
-        # Phase 2: Web search (if needed)
-        if thesidia._needs_research(message) and thesidia.web_search:
+        elif needs_forensic:
             yield send_event('progress', {
-                'phase': 'web_search',
-                'message': 'Searching the web for sources...',
-                'progress': 20
+                'phase': 'input_received',
+                'message': 'Detected forensic query - routing to deep research...',
+                'progress': 5
             })
-            yield send_event('thinking', {
-                'step': 'web_search',
-                'message': 'Gathering information from multiple sources',
-                'progress': 20
+            if show_thinking:
+                yield send_event('thinking', {
+                    'step': 'classification',
+                    'message': 'Query requires forensic analysis (health/finance/law/religion)',
+                    'progress': 5
+                })
+        else:
+            yield send_event('progress', {
+                'phase': 'input_received',
+                'message': 'Processing your query...',
+                'progress': 5
             })
         
-        # Phase 3: Processing with Thesidia (includes routing, forensic analysis, synthesis)
-        yield send_event('progress', {
-            'phase': 'processing',
-            'message': 'Processing with Thesidia (routing, forensic analysis, synthesis)...',
-            'progress': 30
-        })
-        yield send_event('thinking', {
-            'step': 'processing',
-            'message': 'Using full Thesidia system: routing, deep research, forensic analysis',
-            'progress': 30
-        })
+        # Check if conversational (for UX messages only - actual routing happens in process())
+        # This is ONLY for showing appropriate progress messages, not for actual routing
+        conversational_patterns = [
+            r'what.*?your favorite', r'what.*?you think about', r'^i\'?m thinking about',
+            r'^tell me a random', r'^what.*?you like', r'^do you like', r'^are you.*\?$'
+        ]
+        is_conversational = any(re.search(pattern, text_stripped) for pattern in conversational_patterns)
         
-        # Phase 4: Prepare for streaming generation
-        # We'll do research/routing first, then stream the final generation
-        yield send_event('progress', {
-            'phase': 'preparing',
-            'message': 'Preparing response generation...',
-            'progress': 40
-        })
+        # Phase 2: Show appropriate progress based on query type
+        # NOTE: Actual routing/research happens inside process() - we're just showing UX feedback
+        if is_simple_greeting:
+            # Simple greeting - minimal processing, fast response
+            yield send_event('progress', {
+                'phase': 'processing',
+                'message': 'Responding...',
+                'progress': 30
+            })
+        elif is_conversational:
+            # Conversational query - direct response, no research
+            yield send_event('progress', {
+                'phase': 'processing',
+                'message': 'Processing query...',
+                'progress': 30
+            })
+        elif needs_forensic:
+            # Forensic query - will route to deep research
+            yield send_event('progress', {
+                'phase': 'processing',
+                'message': 'Analyzing query and routing to deep research...',
+                'progress': 30
+            })
+            if show_thinking:
+                yield send_event('thinking', {
+                    'step': 'routing',
+                    'message': 'Query requires forensic analysis - routing to deep research',
+                    'progress': 30
+                })
+        else:
+            # Regular query - may need research
+            yield send_event('progress', {
+                'phase': 'processing',
+                'message': 'Processing query...',
+                'progress': 30
+            })
         
-        # Get the full response using process() to ensure all routing/research happens
-        # This is fast (research/routing), then we'll stream the final generation
-        # For now, we'll use process() and then stream it, but in future we can optimize
-        # by intercepting the final Ollama call
+        # Phase 3: Call process() - this handles ALL routing, research, and generation
+        # NOTE: We don't check _needs_research() here because process() will handle it
+        # This prevents duplicate work and ensures consistency
+        response = thesidia.process(input_text=message, user_id=user_id, session_id=session_id,
+                                   format_mode=format_mode, research_depth=research_depth, fast_mode=fast_mode)
         
-        # TEMPORARY: Use process() to get complete response, then stream it
-        # TODO: Optimize to stream final generation directly from Ollama
-        response = thesidia.process(message, user_id=user_id, session_id=session_id,
-                                   format_mode=format_mode, research_depth=research_depth)
-        
-        # Phase 5: Stream the response token-by-token for optimal UX
+        # Phase 4: Stream the response token-by-token for optimal UX
+        # Response is already generated by process(), now we stream it
         yield send_event('progress', {
             'phase': 'streaming',
-            'message': 'Generating response...',
+            'message': 'Streaming response...',
             'progress': 50
         })
         

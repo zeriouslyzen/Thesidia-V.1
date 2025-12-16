@@ -1,0 +1,16 @@
+{
+  "interactions": [
+    {
+      "user": "tell me more about that",
+      "assistant": "Error: name 'coaching_enhancement' is not defined",
+      "timestamp": "2025-12-14T01:02:05.093254",
+      "metadata": {
+        "timestamp": "2025-12-14T01:02:05.091284",
+        "response_length": 49,
+        "user_id": "user_a54d1526ddd1",
+        "session_id": "243ce929-71f0-48f5-bb16-43b0bb44aee4"
+      }
+    }
+  ],
+  "last_updated": "2025-12-14T01:02:05.093262"
+}

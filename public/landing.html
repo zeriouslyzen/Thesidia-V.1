@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Primary Meta Tags -->
+    <title>Katanx - See Patterns Others Miss</title>
+    <meta name="title" content="Katanx - See Patterns Others Miss">
+    <meta name="description" content="Katanx helps you think clearer by showing you connections across time, cultures, and domains. A platform for practitioners of the arts of human development.">
+    <meta name="keywords" content="pattern recognition, human development, research platform, thinking tools, Katanx">
+    <meta name="author" content="Katanx">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.katanx.com/landing">
+    <meta property="og:title" content="Katanx - See Patterns Others Miss">
+    <meta property="og:description" content="Think clearer. Ask better questions. See patterns across everything.">
+    <meta property="og:site_name" content="Katanx">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Katanx - See Patterns Others Miss">
+    <meta name="twitter:description" content="Think clearer. Ask better questions.">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app" class="landing-app">
+        <!-- Hero Section -->
+        <section class="landing-hero">
+            <div class="landing-hero-background">
+                <canvas class="landing-particles" id="landingParticles"></canvas>
+            </div>
+            <div class="landing-hero-content">
+                <h1 class="landing-hero-title">
+                    <span class="landing-brand">katanx</span>
+                </h1>
+                <p class="landing-hero-subtitle">See Patterns Others Miss</p>
+                <p class="landing-hero-description">
+                    Katanx helps you think clearer by showing you connections across time, cultures, and domains. 
+                    A platform for practitioners of the arts of human development.
+                </p>
+                <div class="landing-hero-ctas">
+                    <a href="auth.html" class="landing-cta-primary">Start Exploring</a>
+                    <a href="#features" class="landing-cta-secondary">See How It Works</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Features Section (Dashboard Widgets) -->
+        <section class="landing-features" id="features">
+            <div class="landing-container">
+                <h2 class="landing-section-title">Core Capabilities</h2>
+                <div class="landing-dashboard-grid">
+                    <!-- Widget 1: Pattern Recognition -->
+                    <div class="landing-widget" data-widget="pattern">
+                        <div class="landing-widget-header">
+                            <h3 class="landing-widget-title">Pattern Recognition</h3>
+                            <div class="landing-widget-visual">
+                                <div class="landing-pattern-viz">
+                                    <svg class="landing-pattern-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                        <circle class="landing-pattern-node" cx="50" cy="50" r="8" />
+                                        <circle class="landing-pattern-node" cx="150" cy="50" r="8" />
+                                        <circle class="landing-pattern-node" cx="50" cy="150" r="8" />
+                                        <circle class="landing-pattern-node" cx="150" cy="150" r="8" />
+                                        <circle class="landing-pattern-node" cx="100" cy="100" r="10" />
+                                        <line class="landing-pattern-line" x1="50" y1="50" x2="100" y2="100" />
+                                        <line class="landing-pattern-line" x1="150" y1="50" x2="100" y2="100" />
+                                        <line class="landing-pattern-line" x1="50" y1="150" x2="100" y2="100" />
+                                        <line class="landing-pattern-line" x1="150" y1="150" x2="100" y2="100" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="landing-widget-description">
+                            See patterns across everything—like how the same structures appear in ancient texts, modern systems, and everything in between. 
+                            Like learning to read between the lines, but for everything.
+                        </p>
+                        <div class="landing-widget-placeholder">
+                            <div class="landing-placeholder-content">Image placeholder</div>
+                        </div>
+                    </div>
+
+                    <!-- Widget 2: Deep Research -->
+                    <div class="landing-widget" data-widget="research">
+                        <div class="landing-widget-header">
+                            <h3 class="landing-widget-title">Deep Research</h3>
+                            <div class="landing-widget-visual">
+                                <div class="landing-research-viz">
+                                    <div class="landing-research-flow">
+                                        <div class="landing-flow-node">Source 1</div>
+                                        <div class="landing-flow-arrow">→</div>
+                                        <div class="landing-flow-node">Synthesis</div>
+                                        <div class="landing-flow-arrow">→</div>
+                                        <div class="landing-flow-node">Insight</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="landing-widget-description">
+                            Reads multiple sources, finds what's missing, and connects everything together. 
+                            Like a researcher who reads everything, not just one book.
+                        </p>
+                        <div class="landing-widget-placeholder">
+                            <div class="landing-placeholder-content">Image placeholder</div>
+                        </div>
+                    </div>
+
+                    <!-- Widget 3: Community & Creators -->
+                    <div class="landing-widget" data-widget="community">
+                        <div class="landing-widget-header">
+                            <h3 class="landing-widget-title">Community & Creators</h3>
+                            <div class="landing-widget-visual">
+                                <div class="landing-creator-grid">
+                                    <div class="landing-creator-placeholder"></div>
+                                    <div class="landing-creator-placeholder"></div>
+                                    <div class="landing-creator-placeholder"></div>
+                                    <div class="landing-creator-placeholder"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="landing-widget-description">
+                            Connect with practitioners across all disciplines of human development. 
+                            Discover teachers, share insights, and build your practice.
+                        </p>
+                        <div class="landing-widget-cta">
+                            <a href="stream.html" class="landing-widget-link">Explore Creators</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Frontier Systems Integration -->
+        <section class="landing-frontier">
+            <div class="landing-container">
+                <h2 class="landing-section-title">Advanced Systems</h2>
+                <div class="landing-frontier-grid">
+                    <div class="landing-frontier-card" data-system="sophia">
+                        <h3 class="landing-frontier-title">Memory System</h3>
+                        <p class="landing-frontier-description">
+                            Tracks connections and patterns over time, helping you build understanding through conversation.
+                        </p>
+                        <div class="landing-frontier-timeline">
+                            <div class="landing-timeline-dot"></div>
+                            <div class="landing-timeline-dot"></div>
+                            <div class="landing-timeline-dot"></div>
+                        </div>
+                    </div>
+                    <div class="landing-frontier-card" data-system="analysis">
+                        <h3 class="landing-frontier-title">Deep Analysis</h3>
+                        <p class="landing-frontier-description">
+                            Performs thorough research on any topic, finding connections others might miss.
+                        </p>
+                    </div>
+                    <div class="landing-frontier-card" data-system="synthesis">
+                        <h3 class="landing-frontier-title">Synthesis Engine</h3>
+                        <p class="landing-frontier-description">
+                            Creates new insights by combining information from multiple sources, not just retrieving existing knowledge.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Story Section (Advanced Features) -->
+        <section class="landing-story">
+            <div class="landing-container">
+                <h2 class="landing-section-title">Platform Evolution</h2>
+                <div class="landing-story-timeline">
+                    <div class="landing-story-item" data-year="1">
+                        <div class="landing-story-marker"></div>
+                        <div class="landing-story-content">
+                            <h3 class="landing-story-title">Pattern Recognition</h3>
+                            <p class="landing-story-text">
+                                Built to help you see connections across domains, cultures, and time periods.
+                            </p>
+                            <div class="landing-story-placeholder">
+                                <div class="landing-placeholder-content">Screenshot placeholder</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="landing-story-item" data-year="2">
+                        <div class="landing-story-marker"></div>
+                        <div class="landing-story-content">
+                            <h3 class="landing-story-title">Research & Synthesis</h3>
+                            <p class="landing-story-text">
+                                Advanced capabilities for deep research and knowledge creation through multi-source analysis.
+                            </p>
+                            <div class="landing-story-placeholder">
+                                <div class="landing-placeholder-content">Screenshot placeholder</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="landing-story-item" data-year="3">
+                        <div class="landing-story-marker"></div>
+                        <div class="landing-story-content">
+                            <h3 class="landing-story-title">Community Platform</h3>
+                            <p class="landing-story-text">
+                                A social platform connecting practitioners of the arts of human development.
+                            </p>
+                            <div class="landing-story-placeholder">
+                                <div class="landing-placeholder-content">Screenshot placeholder</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call-to-Action Section -->
+        <section class="landing-cta-section">
+            <div class="landing-container">
+                <h2 class="landing-cta-title">Join Katanx</h2>
+                <p class="landing-cta-description">
+                    Start exploring patterns, connecting with practitioners, and thinking clearer.
+                </p>
+                <div class="landing-cta-buttons">
+                    <a href="auth.html" class="landing-cta-primary-large">Join Katanx</a>
+                    <a href="index.html" class="landing-cta-secondary-large">Start Conversation</a>
+                    <a href="stream.html" class="landing-cta-secondary-large">Browse Platform</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="landing-footer">
+            <div class="landing-container">
+                <div class="landing-footer-content">
+                    <div class="landing-footer-brand">
+                        <span class="landing-brand-small">katanx</span>
+                    </div>
+                    <nav class="landing-footer-nav">
+                        <a href="stream.html" class="landing-footer-link">Platform</a>
+                        <a href="index.html" class="landing-footer-link">Conversation</a>
+                        <a href="auth.html" class="landing-footer-link">Sign Up</a>
+                    </nav>
+                    <div class="landing-footer-copyright">
+                        <p>&copy; 2025 Katanx. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="landing.js"></script>
+</body>
+</html>
+

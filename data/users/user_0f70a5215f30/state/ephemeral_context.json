@@ -1,0 +1,16 @@
+{
+  "interactions": [
+    {
+      "user": "",
+      "assistant": "there! nice to meet ya.",
+      "timestamp": "2025-12-14T00:54:48.307299",
+      "metadata": {
+        "type": "greeting",
+        "timestamp": "2025-12-14T00:54:48.306520",
+        "user_id": "user_0f70a5215f30",
+        "session_id": "12cc94c5-f8d1-43e4-812d-412c4a1511c4"
+      }
+    }
+  ],
+  "last_updated": "2025-12-14T00:54:48.307317"
+}

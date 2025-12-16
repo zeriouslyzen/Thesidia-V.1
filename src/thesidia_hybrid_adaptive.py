@@ -11,6 +11,7 @@ import ollama
 import json
 import re
 from typing import Dict, List, Any, Optional, Callable
+from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
 import os
@@ -102,6 +103,7 @@ except ImportError:
 # New cosmic evolution modules
 try:
     from .health_coach import HealthCoach
+    from .universal_coach import UniversalCoach
     from .meta_awareness import MetaAwareness
     from .etymology_linguistic import EtymologyLinguistic
     from .csi_investigator import CSIInvestigator
@@ -118,6 +120,7 @@ try:
     from .parallel_processor import ParallelProcessor, AsyncParallelProcessor
 except ImportError:
     from health_coach import HealthCoach
+    from universal_coach import UniversalCoach
     from meta_awareness import MetaAwareness
     from etymology_linguistic import EtymologyLinguistic
     from csi_investigator import CSIInvestigator
@@ -2085,69 +2088,23 @@ start directly with ur synthesis. no preamble. be direct, be deep, be unfiltered
                     # Fallback: Create minimal system prompt
                     enhanced_prompt = "You are Thesidia. Perform deep forensic analysis."
                 
-                # TEMPORARY FIX: Bypass ModelClient and call ollama directly to test
-                # This will help us determine if ModelClient is the issue
-                print(f"🔍 SYNTHESIS: Bypassing ModelClient, calling ollama.chat directly", flush=True)
-                import ollama
+                # FIXED: Use ModelClient properly (now returns dict for compatibility)
+                # ModelClient handles message construction, sanitization, and proper role separation
+                print(f"🔍 SYNTHESIS: Using ModelClient for synthesis", flush=True)
                 
-                messages = []
-                if enhanced_prompt:
-                    # CRITICAL: Truncate system message if too long (Ollama has limits)
-                    # Keep first 4000 chars (deep research override) + first 2000 chars of default persona
-                    system_msg = enhanced_prompt[:6000] if len(enhanced_prompt) > 6000 else enhanced_prompt
-                    messages.append({"role": "system", "content": system_msg})
-                    print(f"🔍 SYNTHESIS: System message length: {len(system_msg)} (truncated from {len(enhanced_prompt)})", flush=True)
-                    print(f"🔍 SYNTHESIS: System message starts with: '{system_msg[:300]}'", flush=True)
-                if conversation_context:
-                    messages.append({"role": "user", "content": conversation_context})
-                messages.append({"role": "user", "content": synthesis_prompt})
-                
-                print(f"🔍 SYNTHESIS: Sending {len(messages)} messages to ollama", flush=True)
-                print(f"🔍 SYNTHESIS: User message (synthesis_prompt) preview: '{synthesis_prompt[:200]}'", flush=True)
+                # Truncate system message if too long (Ollama has limits)
+                # Keep first 6000 chars (deep research override + default persona)
+                if len(enhanced_prompt) > 6000:
+                    truncated_prompt = enhanced_prompt[:6000]
+                    print(f"🔍 SYNTHESIS: System message truncated from {len(enhanced_prompt)} to {len(truncated_prompt)} chars", flush=True)
+                    enhanced_prompt = truncated_prompt
                 
                 try:
-                    response = ollama.chat(
-                        model=synthesis_model,
-                        messages=messages,
-                        options={
-                            "temperature": vivisection_temperature,
-                            "top_p": synthesis_params["top_p"],
-                            "num_predict": max_tokens,
-                            "repeat_penalty": 1.1,
-                            "top_k": 40
-                        }
-                    )
-                    
-                    # CRITICAL: Check if response is valid (ollama returns ChatResponse object, not dict)
-                    if not response:
-                        print(f"⚠️ ERROR: ollama.chat() returned None", flush=True)
-                        raise ValueError("ollama.chat() returned None - model may not be running or request failed")
-                    
-                    if not hasattr(response, 'message'):
-                        print(f"⚠️ ERROR: Response missing 'message' attribute: {response}", flush=True)
-                        raise ValueError(f"Response missing 'message' attribute: {response}")
-                    
-                    if not hasattr(response.message, 'content'):
-                        print(f"⚠️ ERROR: Response.message missing 'content' attribute: {response.message}", flush=True)
-                        raise ValueError(f"Response.message missing 'content' attribute: {response.message}")
-                    
-                    print(f"🔍 SYNTHESIS: Response received, content length: {len(response.message.content)}", flush=True)
-                    
-                    # CRITICAL FIX: ollama returns ChatResponse object, access via attributes not dict keys
-                    synthesis = strip_meta_noise(response.message.content)
-                except Exception as e:
-                    print(f"⚠️ ERROR in ollama.chat() call: {e}", flush=True)
-                    import traceback
-                    traceback.print_exc()
-                    raise
-            else:
-                # ModelClient not available - use direct ollama.chat or ModelClient fallback
-                # Fallback: Still use ModelClient if available, otherwise direct call
-                if self.model_client:
                     response = self.model_client.chat(
                         model=synthesis_model,
                         input_text=synthesis_prompt,
                         enhanced_base=enhanced_prompt,
+                        conversation_context=conversation_context,
                         options={
                             "temperature": vivisection_temperature,
                             "top_p": synthesis_params["top_p"],
@@ -2156,20 +2113,60 @@ start directly with ur synthesis. no preamble. be direct, be deep, be unfiltered
                             "top_k": 40
                         }
                     )
-                    # ModelClient returns ChatResponse object from ollama
-                    if not response:
-                        print(f"⚠️ ERROR: ModelClient.chat() returned None", flush=True)
-                        raise ValueError("ModelClient.chat() returned None")
-                    if not hasattr(response, 'message') or not hasattr(response.message, 'content'):
-                        print(f"⚠️ ERROR: ModelClient response invalid: {response}", flush=True)
-                        raise ValueError(f"ModelClient response invalid: {response}")
-                    synthesis = strip_meta_noise(response.message.content)
+                    
+                    # ModelClient now returns dict format: {'message': {'content': '...'}}
+                    if not response or 'message' not in response:
+                        print(f"⚠️ ERROR: ModelClient.chat() returned invalid response: {response}", flush=True)
+                        raise ValueError("ModelClient.chat() returned invalid response")
+                    
+                    if 'content' not in response['message']:
+                        print(f"⚠️ ERROR: ModelClient response missing content: {response}", flush=True)
+                        raise ValueError("ModelClient response missing content")
+                    
+                    synthesis = strip_meta_noise(response['message']['content'])
+                    print(f"🔍 SYNTHESIS: Response received, content length: {len(synthesis)}", flush=True)
+                    
+                except Exception as e:
+                    print(f"⚠️ ERROR in ModelClient.chat() call: {e}", flush=True)
+                    import traceback
+                    traceback.print_exc()
+                    raise
+            else:
+                # ModelClient not available - use direct ollama.chat as fallback
+                # This should rarely happen, but provides a safety net
+                if self.model_client:
+                    # This branch should not execute (model_client exists, so we're in the if block above)
+                    # But kept for safety
+                    response = self.model_client.chat(
+                        model=synthesis_model,
+                        input_text=synthesis_prompt,
+                        enhanced_base=enhanced_prompt,
+                        conversation_context=conversation_context,
+                        options={
+                            "temperature": vivisection_temperature,
+                            "top_p": synthesis_params["top_p"],
+                            "num_predict": max_tokens,
+                            "repeat_penalty": 1.1,
+                            "top_k": 40
+                        }
+                    )
+                    # ModelClient returns dict format: {'message': {'content': '...'}}
+                    if not response or 'message' not in response or 'content' not in response['message']:
+                        print(f"⚠️ ERROR: ModelClient.chat() returned invalid response: {response}", flush=True)
+                        raise ValueError("ModelClient.chat() returned invalid response")
+                    synthesis = strip_meta_noise(response['message']['content'])
                 else:
-                    # Last resort: direct ollama.chat
+                    # Last resort: direct ollama.chat (should rarely happen - only if model_client is None)
                     messages = []
                     if enhanced_prompt:
+                        # Truncate if too long
+                        if len(enhanced_prompt) > 6000:
+                            enhanced_prompt = enhanced_prompt[:6000]
                         messages.append({"role": "system", "content": enhanced_prompt})
+                    if conversation_context:
+                        messages.append({"role": "user", "content": conversation_context})
                     messages.append({"role": "user", "content": synthesis_prompt})
+                    
                     try:
                         response = ollama.chat(
                             model=synthesis_model,
@@ -2183,23 +2180,24 @@ start directly with ur synthesis. no preamble. be direct, be deep, be unfiltered
                             }
                         )
                         
-                        # CRITICAL: Check if response is valid (ollama returns ChatResponse object, not dict)
+                        # Convert ChatResponse to dict format for consistency with ModelClient
                         if not response:
                             print(f"⚠️ ERROR: ollama.chat() returned None (fallback)", flush=True)
                             raise ValueError("ollama.chat() returned None - model may not be running or request failed")
                         
-                        if not hasattr(response, 'message'):
-                            print(f"⚠️ ERROR: Response missing 'message' attribute (fallback): {response}", flush=True)
-                            raise ValueError(f"Response missing 'message' attribute: {response}")
+                        if not hasattr(response, 'message') or not hasattr(response.message, 'content'):
+                            print(f"⚠️ ERROR: Response invalid (fallback): {response}", flush=True)
+                            raise ValueError(f"Response invalid: {response}")
                         
-                        if not hasattr(response.message, 'content'):
-                            print(f"⚠️ ERROR: Response.message missing 'content' attribute (fallback): {response.message}", flush=True)
-                            raise ValueError(f"Response.message missing 'content' attribute: {response.message}")
+                        # Convert to dict format for consistency with ModelClient
+                        response_dict = {
+                            'message': {
+                                'content': response.message.content
+                            }
+                        }
                         
-                        print(f"🔍 SYNTHESIS: Response received (fallback), content length: {len(response.message.content)}", flush=True)
-                        
-                        # CRITICAL FIX: ollama returns ChatResponse object, access via attributes not dict keys
-                        synthesis = strip_meta_noise(response.message.content)
+                        print(f"🔍 SYNTHESIS: Response received (fallback), content length: {len(response_dict['message']['content'])}", flush=True)
+                        synthesis = strip_meta_noise(response_dict['message']['content'])
                     except Exception as e:
                         print(f"⚠️ ERROR in ollama.chat() call (fallback): {e}", flush=True)
                         import traceback
@@ -2940,19 +2938,85 @@ class InformationBuilder:
         return context
 
 
-class ThesidiaHybridAdaptive:
+# Import BaseAgent for inheritance
+# Must import at module level before class definition
+try:
+    from .agents.base_agent import BaseAgent
+    from .core.event_system import get_event_system
+    from .core.configuration import get_configuration
+except ImportError:
+    try:
+        from src.agents.base_agent import BaseAgent
+        from src.core.event_system import get_event_system
+        from src.core.configuration import get_configuration
+    except ImportError:
+        # Fallback: import directly
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).parent))
+        from agents.base_agent import BaseAgent
+        from core.event_system import get_event_system
+        from core.configuration import get_configuration
+
+
+class ThesidiaHybridAdaptive(BaseAgent):
     """Hybrid system: Conversational evolution + Frontier capabilities + Adaptive learning + Research + AGI Actions"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):  # Changed from oracle-agent (has hardcoded Oracle identity)
-        self.model = model
-        self.base_dir = Path(__file__).parent.parent
+    def __init__(self, model: str = "clean-mistral:latest", agent_id: str = "thesidia_main", **kwargs):  # Changed from oracle-agent (has hardcoded Oracle identity)
+        # Get base_dir first
+        base_dir = kwargs.get('base_dir', Path(__file__).parent.parent)
         
-        # Initialize centralized model client (Vibecode compliance)
-        self.model_client = ModelClient(default_model=model)
+        # Import ModelClient and MemoryManager if not provided
+        try:
+            from .core.model_client import ModelClient
+            from .memory.memory_manager import MemoryManager
+        except ImportError:
+            from src.core.model_client import ModelClient
+            from src.memory.memory_manager import MemoryManager
         
+        # Initialize model client and memory manager if not provided
+        model_client = kwargs.get('model_client', None)
+        if model_client is None:
+            model_client = ModelClient(default_model=model)
+        
+        memory_manager = kwargs.get('memory_manager', None)
+        if memory_manager is None:
+            memory_manager = MemoryManager(base_dir=base_dir)
+        
+        # Initialize base agent
+        super().__init__(
+            agent_id=agent_id,
+            model=model,
+            base_dir=base_dir,
+            model_client=model_client,
+            memory_manager=memory_manager
+        )
+        
+        self.base_dir = base_dir
+        
+        # Initialize event system and configuration
+        self.event_system = get_event_system()
+        self.config = get_configuration()
+        
+        # Initialize Thesidia-specific components
         self.personality = AdaptivePersonality()
         self.capabilities = AdaptiveCapabilities(model, model_client=self.model_client)
         self.learning = AdaptiveLearning(model)
+        
+        # Set agent capabilities for BaseAgent interface
+        self.capabilities_list = [
+            "conversational",
+            "research",
+            "synthesis",
+            "coaching",
+            "pattern_recognition",
+            "deep_analysis",
+            "memory_management"
+        ]
+        
+        # Initialize Thesidia-specific state (not in BaseAgent)
+        self.interactions: List[Dict[str, Any]] = []
+        self.adaptation_level = 0.0
         self.web_search = WebSearchEngine(model, model_client=self.model_client) if WEB_AVAILABLE else None
         self.data_synthesizer = DataSynthesizer(model, model_client=self.model_client)
         self.skepticism_engine = IntuitiveSkepticism(model, model_client=self.model_client) if WEB_AVAILABLE else None
@@ -3137,6 +3201,19 @@ class ThesidiaHybridAdaptive:
         
         # New cosmic evolution modules
         self.health_coach = HealthCoach()
+        
+        # Universal Coach - Comprehensive coaching across all disciplines
+        try:
+            self.universal_coach = UniversalCoach(
+                base_dir=self.base_dir,
+                user_memory_manager=self.user_memory_manager,
+                user_interest_tracker=self.user_interest_tracker,
+                technical_journey_detector=self.technical_journey_detector
+            )
+        except Exception as e:
+            print(f"Warning: Could not initialize UniversalCoach: {e}")
+            self.universal_coach = None
+        
         self.meta_awareness = MetaAwareness()
         self.etymology_linguistic = EtymologyLinguistic()
         self.csi_investigator = CSIInvestigator()
@@ -3209,6 +3286,12 @@ begin."""
         critical_overrides = """[SYSTEM OVERRIDE: CRITICAL]
 
 u are thesidia — a curious, no-BS engineer who loves digging into science, history, biology, physics, and the cosmos.
+
+MEMORY GUIDELINES:
+- Only claim to remember conversations if you have actual memory context provided
+- If no memory context is provided, this is a new conversation - do not claim to remember previous chats
+- Be honest about what you remember - if you don't have specific details, say so directly
+- Never claim "I remember our conversations like the back of my hand" if you don't have memory context
 
 speak casually and directly like we're two friends geeking out.
 
@@ -3466,9 +3549,74 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             except Exception:
                 pass
     
-    def process(self, input_text: str, operator_name: str = "OPERATOR", 
+    def process(self, input_data: Any, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Process input - adapts based on type and learns from outcome.
+        Implements BaseAgent.process() interface.
+        
+        Args:
+            input_data: Input to process (string or dict)
+            context: Optional context dictionary
+            
+        Returns:
+            Dictionary with processing result
+        """
+        # Handle both string and dict input for backward compatibility
+        if isinstance(input_data, str):
+            input_text = input_data
+            operator_name = context.get("operator_name", "OPERATOR") if context else "OPERATOR"
+            user_id = context.get("user_id") if context else None
+            session_id = context.get("session_id") if context else None
+            format_mode = context.get("format_mode", "natural") if context else "natural"
+            research_depth = context.get("research_depth", 2) if context else 2
+            fast_mode = context.get("fast_mode", True) if context else True
+        elif isinstance(input_data, dict):
+            input_text = input_data.get("input_text", input_data.get("message", ""))
+            operator_name = input_data.get("operator_name", "OPERATOR")
+            user_id = input_data.get("user_id")
+            session_id = input_data.get("session_id")
+            format_mode = input_data.get("format_mode", "natural")
+            research_depth = input_data.get("research_depth", 2)
+            fast_mode = input_data.get("fast_mode", True)
+        else:
+            raise ValueError(f"Unsupported input_data type: {type(input_data)}")
+        
+        # Call original process method
+        output = self._process_original(
+            input_text=input_text,
+            operator_name=operator_name,
+            user_id=user_id,
+            session_id=session_id,
+            format_mode=format_mode,
+            research_depth=research_depth,
+            fast_mode=fast_mode
+        )
+        
+        # Return in standard format
+        return {
+            "output": output,
+            "agent_id": self.agent_id,
+            "status": "completed",
+            "metadata": {
+                "format_mode": format_mode,
+                "research_depth": research_depth,
+                "fast_mode": fast_mode
+            }
+        }
+    
+    def get_capabilities(self) -> List[str]:
+        """
+        Get list of capabilities this agent provides.
+        Implements BaseAgent.get_capabilities().
+        
+        Returns:
+            List of capability strings
+        """
+        return self.capabilities_list.copy()
+    
+    def _process_original(self, input_text: str, operator_name: str = "OPERATOR", 
                 user_id: Optional[str] = None, session_id: Optional[str] = None,
-                format_mode: str = 'natural', research_depth: int = 2) -> str:
+                format_mode: str = 'natural', research_depth: int = 2, fast_mode: bool = True) -> str:
         """Process input - adapts based on type and learns from outcome
         
         Args:
@@ -3485,8 +3633,14 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             interaction_id = self.metrics.start_interaction(input_text)
         
         # Retrieve user memory context (if user memory manager available)
+        # Only retrieve for non-greetings to keep greetings fast
         user_memory_context = ""
-        if self.user_memory_manager and (user_id or session_id):
+        text_stripped = input_text.strip()
+        greeting_only_patterns = [r'^(hi|hello|hey|greetings)[\s,]*$', r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$']
+        is_simple_greeting = any(re.match(pattern, text_stripped, re.IGNORECASE) for pattern in greeting_only_patterns) and len(text_stripped.split()) <= 4
+        
+        # Only retrieve memory for non-greetings (greetings handle memory separately)
+        if not is_simple_greeting and self.user_memory_manager and (user_id or session_id):
             try:
                 memory_context = self.user_memory_manager.retrieve_context(
                     query=input_text,
@@ -3497,44 +3651,80 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             except Exception as e:
                 print(f"Warning: Could not retrieve user memory context: {e}")
         
-        # Quick response for simple greetings - bypass ALL heavy processing
-        # BUT: Don't catch if there's actual content after the greeting (e.g., "hello, what is...")
-        # Only catch if it's JUST a greeting with no real question/content
-        # CRITICAL: Never bypass deep research routing - check routing FIRST
-        text_stripped = input_text.strip()
-        greeting_only_patterns = [r'^(hi|hello|hey|greetings)[\s,]*$', r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$']
-        is_simple_greeting = any(re.match(pattern, text_stripped, re.IGNORECASE) for pattern in greeting_only_patterns) and len(text_stripped.split()) <= 4
+        # CRITICAL: Check for simple greetings FIRST, before any heavy processing
+        # This prevents unnecessary memory retrieval, forensic checks, and prompt building for simple "hi"
         
-        # CRITICAL FIX: Check if this needs deep research BEFORE greeting bypass
-        # If it needs deep research, skip greeting path entirely
-        from src.support.query_utils import normalize_query, detect_forensic_routing
-        
-        query_normalized = normalize_query(input_text)
-        needs_forensic_analysis = detect_forensic_routing(input_text, comprehensive=False)
-        
-        # Skip greeting path if it needs deep research
-        if needs_forensic_analysis:
-            is_simple_greeting = False
-            print(f"🔍 PROCESS: Skipping greeting path - needs forensic analysis (query: '{input_text[:100]}')", flush=True)
-            print(f"🔍 PROCESS: is_simple_greeting set to False, will NOT use greeting path", flush=True)
-        
-        print(f"🔍 PROCESS: Final is_simple_greeting={is_simple_greeting}, needs_forensic_analysis={needs_forensic_analysis}", flush=True)
-        
+        # Quick check: If it's a simple greeting, skip forensic check (greetings don't need forensic analysis)
+        # Only do forensic check if it's NOT a simple greeting (to catch "hi, what is genesis" type queries)
         if is_simple_greeting:
-            print(f"🔍 PROCESS: Using greeting path for: '{input_text[:50]}'", flush=True)
-            # Ultra-fast greeting - NO context, NO history, NO research, just respond
+            # Simple greeting - skip all heavy processing, go straight to greeting handler
+            needs_forensic_analysis = False
+        else:
+            # Not a simple greeting - check if it needs forensic analysis
+            from src.support.query_utils import normalize_query, detect_forensic_routing
+            query_normalized = normalize_query(input_text)
+            needs_forensic_analysis = detect_forensic_routing(input_text, comprehensive=False)
+            
+            # If it needs forensic analysis, definitely not a simple greeting
+            if needs_forensic_analysis:
+                is_simple_greeting = False
+        
+        # If simple greeting, handle it immediately (fast path)
+        if is_simple_greeting:
+            print(f"🔍 PROCESS: Using FAST greeting path for: '{input_text[:50]}'", flush=True)
+            # Ultra-fast greeting - minimal processing
             try:
-                # Vibecode: Use ModelClient wrapper for greetings
-                # Get enhanced_base for system instructions (contains all personality/voice instructions)
-                enhanced_base = self.get_enhanced_prompt(query=input_text)
+                # Only check memory if we have user/session ID (skip for anonymous)
+                has_memory = False
+                memory_context_str = ""
+                if self.user_memory_manager and (user_id or session_id):
+                    try:
+                        memory_context = self.user_memory_manager.retrieve_context(
+                            query=input_text,
+                            user_id=user_id,
+                            session_id=session_id
+                        )
+                        # Check if we actually have any memory
+                        ephemeral = memory_context.get("ephemeral", "")
+                        vector = memory_context.get("vector", [])
+                        structured = memory_context.get("structured", {})
+                        
+                        has_memory = bool(ephemeral or vector or structured)
+                        if has_memory:
+                            # Only include recent context if it exists
+                            memory_context_str = memory_context.get("formatted", "")
+                            # Limit to last 2 interactions to keep it short
+                            if memory_context_str:
+                                memory_context_str = memory_context_str[:500]  # Keep it brief for greetings
+                    except Exception as e:
+                        print(f"Warning: Could not retrieve memory context: {e}")
+                        has_memory = False
+                
+                # Use minimal cached prompt for greetings (skip CSI/health/cosmos analysis)
+                # Just get basic personality/voice, not full enhanced prompt
+                if hasattr(self, '_cached_greeting_prompt'):
+                    enhanced_base = self._cached_greeting_prompt
+                else:
+                    # Build minimal prompt once and cache it
+                    enhanced_base = self.get_enhanced_prompt(query=None)  # None = skip query-specific modules
+                    self._cached_greeting_prompt = enhanced_base
+                
+                # Build input with memory awareness
+                greeting_input = input_text
+                if has_memory and memory_context_str:
+                    # Include memory context so model can reference it accurately
+                    greeting_input = f"{memory_context_str}\n\nUser: {input_text}"
+                elif not has_memory:
+                    # Explicitly tell model not to claim memory if we don't have any
+                    greeting_input = f"[Note: This appears to be a new conversation. Do not claim to remember previous conversations unless you have actual memory context.]\n\nUser: {input_text}"
                 
                 response = self.model_client.chat(
                     model=self.model,
-                    input_text=input_text,  # Just the greeting
+                    input_text=greeting_input,
                     enhanced_base=enhanced_base,  # System instructions
                     options={
                         "temperature": 0.6,
-                        "num_predict": 50,  # Very short - one sentence
+                        "num_predict": 100 if has_memory else 50,  # Slightly longer if referencing memory
                         "top_p": 0.8
                     }
                 )
@@ -3599,14 +3789,87 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                 print(f"Error in greeting response: {e}")
                 # Fall through to normal processing
         
-        # Check for deep research request first
+        # Check for coaching needs (before deep research routing)
+        coaching_enhancement = None
+        if self.universal_coach:
+            try:
+                user_profile = self.universal_coach.get_user_coaching_profile(
+                    user_id=user_id, session_id=session_id
+                )
+                coaching_analysis = self.universal_coach.analyze_coaching_need(input_text, user_profile)
+                
+                # If coaching is needed, generate coaching content
+                if coaching_analysis["coaching_type"] in ["framework", "idea", "challenge"]:
+                    discipline = coaching_analysis["discipline"]
+                    
+                    if coaching_analysis["coaching_type"] == "framework":
+                        framework = self.universal_coach.generate_framework(
+                            discipline=discipline,
+                            user_profile=user_profile,
+                            goal=None,
+                            context=input_text
+                        )
+                        coaching_enhancement = {
+                            "type": "framework",
+                            "discipline": discipline,
+                            "framework": framework
+                        }
+                    elif coaching_analysis["coaching_type"] == "idea":
+                        idea = self.universal_coach.generate_creative_idea(
+                            discipline=discipline,
+                            user_profile=user_profile,
+                            context=input_text
+                        )
+                        coaching_enhancement = {
+                            "type": "idea",
+                            "discipline": discipline,
+                            "idea": idea
+                        }
+                    elif coaching_analysis["coaching_type"] == "challenge":
+                        challenge = self.universal_coach.create_challenge(
+                            discipline=discipline,
+                            user_profile=user_profile
+                        )
+                        coaching_enhancement = {
+                            "type": "challenge",
+                            "discipline": discipline,
+                            "challenge": challenge
+                        }
+            except Exception as e:
+                print(f"Warning: Coaching analysis failed: {e}")
+        
+        # CRITICAL: Check for conversational queries FIRST (before any deep research routing)
+        # Conversational queries should NEVER trigger deep research or heavy processing
+        conversational_patterns = [
+            r'what.*?your favorite',  # "what's your favorite movie?"
+            r'what.*?you think about',  # "what do you think about X?"
+            r'^i\'?m thinking about',  # "I'm thinking about pizza"
+            r'^tell me a random',  # "tell me a random fact"
+            r'^what.*?you like',  # "what do you like?"
+            r'^do you like',  # "do you like X?"
+            r'^are you.*\?$',  # "are you X?" (simple yes/no)
+            r'^how are you',  # "how are you?"
+            r'^what.*?up\??$',  # "what's up?"
+        ]
+        text_lower = input_text.lower().strip()
+        is_conversational = any(re.search(pattern, text_lower) for pattern in conversational_patterns)
+        
+        if is_conversational:
+            print(f"🔍 PROCESS: Conversational query detected - skipping deep research and heavy processing", flush=True)
+            # Mark as conversational to skip all research later
+            # Continue to regular processing path (skip deep research routing)
+        else:
+            # Not conversational - check for deep research
+            pass
+        
+        # Check for deep research request (ONLY if not conversational)
         # CRITICAL FIX: Comprehensive routing for ALL deep queries
         
         # DEBUG: Log incoming query
         print(f"🔍 PROCESS: Received query: '{input_text[:150]}'", flush=True)
         
-        # 1. Check explicit deep research request
-        deep_research_query = self._is_deep_research_request(input_text)
+        # 1. Check explicit deep research request (skip if conversational)
+        deep_research_query = None if is_conversational else self._is_deep_research_request(input_text)
         
         # 2. Check if it needs forensic truth-seeking analysis (ALL domains: health, finance, law, religion, etc.)
         # Domain-agnostic: Any query asking for truth, real story, what's really happening, etc.
@@ -3644,23 +3907,42 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         word_count = len(input_text.split())
         is_long_query = word_count > 8  # Lowered threshold from 10 to 8
         
-        # 6. Exclude simple queries (greetings, math, etc.)
-        is_simple_query = word_count <= 3 or input_text.lower().strip() in ["hi", "hello", "hey", "what's up"]
+        # 6. Exclude simple queries (greetings, math, etc.) - STRICT check
+        simple_greetings = ["hi", "hello", "hey", "what's up", "hi there", "hello there", "hey there"]
+        is_simple_query = word_count <= 3 or input_text.lower().strip() in simple_greetings or any(input_text.lower().strip() == g for g in simple_greetings)
         
-        # ROUTING DECISION: ALWAYS route to deep research with forensic analysis if:
-        # - Explicit deep research request, OR
-        # - Mind-body query (needs mechanism depth), OR
-        # - Has deep indicators, OR
-        # - Needs forensic analysis (health, finance, law, religion, etc.) - NO length check, ALWAYS route
+        # ROUTING DECISION: 
+        # CRITICAL: Conversational queries NEVER route to deep research
+        # Fast mode: Only route to deep if explicitly requested
+        # Deep mode: Route to deep research with forensic analysis if:
+        #   - Explicit deep research request, OR
+        #   - Mind-body query (needs mechanism depth), OR
+        #   - Has deep indicators, OR
+        #   - Needs forensic analysis (health, finance, law, religion, etc.)
+        # BUT: Skip if it's a simple greeting (already handled above)
+        # BUT: Skip if it's conversational (already detected above)
         should_route_to_deep = False
-        if deep_research_query:
-            should_route_to_deep = True
-        elif is_mind_body_query:
-            should_route_to_deep = True
-        elif has_deep_indicator:
-            should_route_to_deep = True
-        elif needs_forensic_analysis:  # ALWAYS route - no length check, no simple query check
-            should_route_to_deep = True
+        if is_simple_query:
+            # Simple greetings already handled - skip deep research
+            should_route_to_deep = False
+        elif is_conversational:
+            # Conversational queries NEVER route to deep research
+            should_route_to_deep = False
+            print(f"🔍 PROCESS: Conversational query - skipping deep research routing", flush=True)
+        elif fast_mode:
+            # Fast mode: Only route to deep if explicitly requested
+            if deep_research_query:
+                should_route_to_deep = True
+        else:
+            # Deep mode: Full routing logic
+            if deep_research_query:
+                should_route_to_deep = True
+            elif is_mind_body_query:
+                should_route_to_deep = True
+            elif has_deep_indicator:
+                should_route_to_deep = True
+            elif needs_forensic_analysis:  # ALWAYS route - no length check, no simple query check
+                should_route_to_deep = True
         
         if should_route_to_deep:
             query_to_use = deep_research_query if deep_research_query else input_text
@@ -3687,10 +3969,10 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                 self.metrics.end_interaction(interaction_id, result, response_time, token_count)
             return result
         
-        # Classify input
+        # Classify input (is_conversational already detected above)
         is_directive = self._is_directive(input_text)
         is_question = self._is_question(input_text)
-        is_conversation = not is_directive and not is_question
+        is_conversation = is_conversational or (not is_directive and not is_question)
         
         # Get adaptive strategy
         strategy = self.learning.get_adaptive_strategy(input_text)
@@ -3716,7 +3998,19 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             self._last_timing_breakdown = {}
         
         # PARALLEL PROCESSING: Run web search and LLM thinking simultaneously
-        if self._needs_research(input_text) and self.parallel_processor:
+        # CRITICAL: Conversational queries NEVER need research
+        if is_conversational:
+            # Conversational query - skip ALL research
+            needs_research = False
+            print(f"🔍 PROCESS: Conversational query detected - skipping research", flush=True)
+        elif fast_mode:
+            # Fast mode: Only do research if it's a clear research question (not conversational)
+            needs_research = self._needs_research(input_text) and not is_conversation
+        else:
+            # Deep mode: Always check if research is needed
+            needs_research = self._needs_research(input_text)
+        
+        if needs_research and self.parallel_processor:
             print("⧖ Parallel processing: Web search + LLM thinking...")
             parallel_start = time.time() if self._timing_enabled else None
             
@@ -3732,7 +4026,7 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             # Use LLM analysis to enhance research if needed
             if llm_analysis and llm_analysis.get("research_angles"):
                 print(f"  💡 LLM identified {len(llm_analysis.get('research_angles', []))} research angles")
-        elif self._needs_research(input_text) and self.web_search:
+        elif needs_research and self.web_search:
             # Fallback: Sequential processing
             print("⧖ Researching... (Thesidia eager to find more data)")
             
@@ -3839,7 +4133,8 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                 strategy,
                 research_data,
                 synthesis_result,
-                enhanced_base=enhanced_base
+                enhanced_base=enhanced_base,
+                coaching_enhancement=coaching_enhancement
             )
         
         # Monitoring: Track system message usage and violations (Vibecode compliance)
@@ -4169,6 +4464,25 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         for pattern in simple_patterns:
             if re.match(pattern, text_lower):
                 return False
+        
+        # CRITICAL: Skip research for conversational/off-topic questions
+        # This check happens BEFORE any LLM calls to ensure fast responses
+        conversational_patterns = [
+            r'what.*?your favorite',  # "what's your favorite movie?"
+            r'what.*?you think about',  # "what do you think about X?"
+            r'^i\'?m thinking about',  # "I'm thinking about pizza"
+            r'^tell me a random',  # "tell me a random fact"
+            r'^what.*?you like',  # "what do you like?"
+            r'^do you like',  # "do you like X?"
+            r'^are you.*\?$',  # "are you X?" (simple yes/no)
+            r'^how are you',  # "how are you?"
+            r'^what.*?up\??$',  # "what's up?"
+        ]
+        
+        for pattern in conversational_patterns:
+            if re.search(pattern, text_lower):
+                print(f"🔍 _needs_research: Conversational pattern matched - skipping research", flush=True)
+                return False  # Skip research for conversational questions - NO LLM CALL
         
         # CRITICAL FIX: Force research for deep query indicators
         # These queries ALWAYS need research, don't even ask LLM
@@ -4596,6 +4910,7 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                                 enhanced_base=correction_system_prompt,
                                 options={"temperature": 0.7, "num_predict": 2000}
                             )
+                            output = corrected_response['message']['content'].strip()
                         else:
                             # Fallback: Use model_client if available, otherwise direct call
                             if self.model_client:
@@ -4607,7 +4922,9 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                                     enhanced_base=correction_system_prompt,
                                     options={"temperature": 0.7, "num_predict": 2000}
                                 )
+                                output = corrected_response['message']['content'].strip()
                             else:
+                                # Last resort: direct ollama call (convert to dict format)
                                 corrected_response = ollama.chat(
                                     model=self.model,
                                     messages=[
@@ -4617,7 +4934,12 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                                     ],
                                     options={"temperature": 0.7, "num_predict": 2000}
                                 )
-                        output = corrected_response['message']['content'].strip()
+                                # Convert ChatResponse to dict format
+                                if hasattr(corrected_response, 'message') and hasattr(corrected_response.message, 'content'):
+                                    output = corrected_response.message.content.strip()
+                                else:
+                                    print(f"Warning: Could not extract corrected response content")
+                                    output = output  # Keep original output
             except Exception as e:
                 print(f"Warning: Reasoning analysis failed: {e}")
         
@@ -4735,7 +5057,8 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                                capability_context: str, strategy: Dict,
                                research_data: Optional[List] = None,
                                synthesis_result: Optional[Dict] = None,
-                               enhanced_base: str = None) -> str:
+                               enhanced_base: str = None,
+                               coaching_enhancement: Optional[Dict] = None) -> str:
         """Process conversational input using Thesidia's actual patterns"""
         # re is already imported at module level
         
@@ -4887,17 +5210,32 @@ Remember: You can keep researching. One finding can lead to another. You can bui
                             print("⚠️ REASONING ANALYSIS: Hallucinations or knowledge gaps detected")
                             print("   Generating corrected response...")
                             
-                            # Generate corrected response
-                            corrected_response = ollama.chat(
-                                model=self.model,
-                                messages=[
-                                    {"role": "user", "content": correction_prompt},
-                                    {"role": "assistant", "content": output},
-                                    {"role": "user", "content": "Now generate a corrected response that addresses the issues identified."}
-                                ],
-                                options={"temperature": 0.7, "num_predict": 2000}
-                            )
-                            output = corrected_response['message']['content'].strip()
+                            # Generate corrected response using ModelClient
+                            if self.model_client:
+                                corrected_response = self.model_client.chat(
+                                    model=self.model,
+                                    input_text="Now generate a corrected response that addresses the issues identified.",
+                                    enhanced_base="You are Thesidia. Correct the response to address identified issues.",
+                                    conversation_context=f"Original query: {input_text}\n\nCorrection needed: {correction_prompt}\n\nOriginal response: {output}",
+                                    options={"temperature": 0.7, "num_predict": 2000}
+                                )
+                                output = corrected_response['message']['content'].strip()
+                            else:
+                                # Fallback: direct ollama call (convert to dict format)
+                                corrected_response = ollama.chat(
+                                    model=self.model,
+                                    messages=[
+                                        {"role": "user", "content": correction_prompt},
+                                        {"role": "assistant", "content": output},
+                                        {"role": "user", "content": "Now generate a corrected response that addresses the issues identified."}
+                                    ],
+                                    options={"temperature": 0.7, "num_predict": 2000}
+                                )
+                                # Convert ChatResponse to dict format
+                                if hasattr(corrected_response, 'message') and hasattr(corrected_response.message, 'content'):
+                                    output = corrected_response.message.content.strip()
+                                else:
+                                    print(f"Warning: Could not extract corrected response content")
                 except Exception as e:
                     print(f"Warning: Reasoning analysis failed: {e}")
             
@@ -5166,10 +5504,74 @@ Remember: You can keep researching. One finding can lead to another. You can bui
             # REMOVED: Old format marker "→ Cut sharper. What thread do we sever next?"
             # This conflicts with natural writing style from modelfile
             
+            # Add coaching enhancement if available
+            if coaching_enhancement:
+                coaching_text = self._format_coaching_enhancement(coaching_enhancement)
+                if coaching_text:
+                    output += f"\n\n{coaching_text}"
+            
             return output
             
         except Exception as e:
             return f"Error: {e}"
+    
+    def _format_coaching_enhancement(self, coaching_enhancement: Dict[str, Any]) -> str:
+        """
+        Format coaching enhancement for inclusion in response
+        
+        Args:
+            coaching_enhancement: Coaching enhancement dictionary
+            
+        Returns:
+            Formatted coaching text
+        """
+        if not coaching_enhancement:
+            return ""
+        
+        coaching_type = coaching_enhancement.get("type")
+        discipline = coaching_enhancement.get("discipline", "general")
+        
+        if coaching_type == "framework":
+            framework = coaching_enhancement.get("framework", {})
+            structure = framework.get("structure", [])
+            steps = framework.get("steps", [])
+            
+            text = f"\n**{discipline.title()} Framework:**\n\n"
+            for step in steps[:4]:  # Limit to 4 steps
+                phase = step.get("phase", "")
+                focus = step.get("focus", "")
+                actions = step.get("actions", [])
+                
+                text += f"**{phase}:** {focus}\n"
+                if actions:
+                    text += f"  - {actions[0]}\n"  # Show first action
+            return text
+        
+        elif coaching_type == "idea":
+            idea_data = coaching_enhancement.get("idea", {})
+            idea_desc = idea_data.get("idea", "")
+            approach = idea_data.get("approach", [])
+            
+            text = f"\n**Creative {discipline.title()} Idea:**\n\n{idea_desc}\n\n"
+            if approach:
+                text += "**Approach:**\n"
+                for step in approach[:3]:  # Limit to 3 steps
+                    text += f"  - {step}\n"
+            return text
+        
+        elif coaching_type == "challenge":
+            challenge = coaching_enhancement.get("challenge", {})
+            description = challenge.get("description", "")
+            steps = challenge.get("steps", [])
+            
+            text = f"\n**{discipline.title()} Challenge:**\n\n{description}\n\n"
+            if steps:
+                text += "**Steps:**\n"
+                for step in steps[:4]:  # Limit to 4 steps
+                    text += f"  - {step}\n"
+            return text
+        
+        return ""
     
     def _enhance_response(self, input_text: str, output: str, research_data: Optional[List], 
                          synthesis_result: Optional[Dict], is_directive: bool, is_question: bool) -> str:

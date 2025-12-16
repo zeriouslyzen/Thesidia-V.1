@@ -127,7 +127,20 @@ class ModelClient:
             options=options
         )
         
-        return response
+        # CRITICAL FIX: Return dict for backward compatibility
+        # Ollama returns ChatResponse object, but codebase expects dict format
+        # This ensures all 121 places using response['message']['content'] continue to work
+        if not response:
+            return {'message': {'content': ''}}
+        
+        # Convert ChatResponse object to dict format
+        return {
+            'message': {
+                'content': response.message.content if hasattr(response, 'message') and hasattr(response.message, 'content') else '',
+                'role': response.message.role if hasattr(response, 'message') and hasattr(response.message, 'role') else 'assistant'
+            },
+            '_raw_response': response  # Preserve full object if needed for debugging
+        }
     
     def _sanitize_system_prompt(self, prompt: str) -> str:
         """Remove TODOs, debug text, commented instructions (Vibecode #5)"""

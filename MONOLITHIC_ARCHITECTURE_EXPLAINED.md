@@ -516,3 +516,8 @@ class ThesidiaCore:
 **Timeline**: 6 weeks (1 module per week)
 
 **Priority**: High (affects all future development)
+
+
+
+
+

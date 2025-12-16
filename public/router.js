@@ -8,6 +8,7 @@ class Router {
         this.routes = {
             '/': 'contexts',
             '/contexts.html': 'contexts',
+            '/landing.html': 'landing',
             '/stream.html': 'stream',
             '/atlas.html': 'atlas',
             '/reactor.html': 'reactor',
