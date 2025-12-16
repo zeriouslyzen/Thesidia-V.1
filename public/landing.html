@@ -243,6 +243,97 @@
             }
         }
 
+        /* X Slice Effect */
+        .x-slice {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .x-slice.active {
+            opacity: 1;
+            animation: xSliceExpand 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .x-slice-line {
+            position: absolute;
+            background: #00d4ff;
+            box-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 60px #00d4ff;
+        }
+
+        .x-slice-line-1 {
+            width: 0;
+            height: 4px;
+            transform: rotate(45deg);
+            transform-origin: center;
+            animation: xSliceLine1 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .x-slice-line-2 {
+            width: 0;
+            height: 4px;
+            transform: rotate(-45deg);
+            transform-origin: center;
+            animation: xSliceLine2 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes xSliceExpand {
+            0% {
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes xSliceLine1 {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 200vw;
+            }
+        }
+
+        @keyframes xSliceLine2 {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 200vw;
+            }
+        }
+
+        /* Screen shake effect */
+        body.screen-shake,
+        html.screen-shake {
+            animation: screenShake 0.8s ease-in-out;
+            overflow-x: hidden;
+        }
+
+        @keyframes screenShake {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            5%, 15%, 25%, 35%, 45%, 55%, 65%, 75%, 85%, 95% {
+                transform: translate(-4px, -3px) rotate(-0.8deg);
+            }
+            10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90% {
+                transform: translate(4px, 3px) rotate(0.8deg);
+            }
+        }
+
         .hero-subtitle .cursor {
             display: inline-block;
             width: 2px;
@@ -581,6 +672,12 @@
     <!-- Initial Black Screen -->
     <div class="initial-screen" id="initialScreen"></div>
 
+    <!-- X Slice Effect -->
+    <div class="x-slice" id="xSlice">
+        <div class="x-slice-line x-slice-line-1"></div>
+        <div class="x-slice-line x-slice-line-2"></div>
+    </div>
+
     <!-- Hero -->
     <section class="hero">
         <div class="container">
@@ -876,9 +973,30 @@
                                                         typeWriterWithCursor(heroSubtitle, 'A platform for practitioners of the arts of human development.', 30, () => {
                                                             heroSubtitle.classList.add('visible');
                                                             
-                                                            // Nav bar slides down
+                                                            // X slice effect with screen shake
                                                             setTimeout(() => {
-                                                                nav.classList.add('visible');
+                                                                const xSlice = document.getElementById('xSlice');
+                                                                const body = document.body;
+                                                                const html = document.documentElement;
+                                                                
+                                                                // Trigger screen shake on both body and html
+                                                                body.classList.add('screen-shake');
+                                                                html.classList.add('screen-shake');
+                                                                
+                                                                // Trigger X slice
+                                                                xSlice.classList.add('active');
+                                                                
+                                                                // Remove shake after animation
+                                                                setTimeout(() => {
+                                                                    body.classList.remove('screen-shake');
+                                                                    html.classList.remove('screen-shake');
+                                                                    xSlice.classList.remove('active');
+                                                                }, 1200);
+                                                                
+                                                                // Nav bar slides down after slice
+                                                                setTimeout(() => {
+                                                                    nav.classList.add('visible');
+                                                                }, 800);
                                                             }, 500);
                                                         });
                                                     }, 400);
