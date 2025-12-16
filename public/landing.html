@@ -2,255 +2,793 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#000000">
-    
-    <!-- Primary Meta Tags -->
-    <title>Katanx - See Patterns Others Miss</title>
-    <meta name="title" content="Katanx - See Patterns Others Miss">
-    <meta name="description" content="Katanx helps you think clearer by showing you connections across time, cultures, and domains. A platform for practitioners of the arts of human development.">
-    <meta name="keywords" content="pattern recognition, human development, research platform, thinking tools, Katanx">
-    <meta name="author" content="Katanx">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.katanx.com/landing">
-    <meta property="og:title" content="Katanx - See Patterns Others Miss">
-    <meta property="og:description" content="Think clearer. Ask better questions. See patterns across everything.">
-    <meta property="og:site_name" content="Katanx">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Katanx - See Patterns Others Miss">
-    <meta name="twitter:description" content="Think clearer. Ask better questions.">
-    
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>katanx</title>
+    <meta name="description" content="See patterns others miss. A platform for practitioners of the arts of human development.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#000000">
+    <style>
+        :root {
+            --yellow: #ffd700;
+            --black: #000000;
+            --white: #ffffff;
+            --light-blue-neon: #00d4ff;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        body {
+            font-family: 'Inconsolata', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            color: var(--white);
+            background: var(--black);
+            color-scheme: dark;
+            overflow-x: hidden;
+        }
+
+        html {
+            background: var(--black);
+            color-scheme: dark;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        #initialScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #initialScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav {
+            background: #000000;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            transform: translateY(-100%);
+            transition: transform 0.5s ease-out;
+        }
+
+        .nav.visible {
+            transform: translateY(0);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+        }
+
+        .nav-brand {
+            font-weight: 600;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.125rem;
+            transition: color 0.2s ease, opacity 0.2s ease;
+            animation: glowPulseNav 3s ease-in-out infinite;
+        }
+
+        .nav-brand::before {
+            content: '/';
+            color: #ffd700;
+        }
+
+        .nav-brand.nav-brand-x {
+            color: #00d4ff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-join {
+            color: var(--yellow) !important;
+        }
+
+        .nav-philosophy {
+            color: var(--light-blue-neon) !important;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .hero.visible {
+            opacity: 1;
+        }
+
+        .hero-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            opacity: 0;
+            letter-spacing: 0.05em;
+        }
+
+        .hero-title.visible {
+            opacity: 1;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        .hero-title .cursor {
+            display: inline-block;
+            width: 0.5em;
+            height: 1em;
+            background-color: #ffffff;
+            vertical-align: middle;
+            animation: blink 0.7s infinite;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: var(--yellow);
+            margin-bottom: 1.5rem;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .hero-subtitle.visible {
+            opacity: 1;
+        }
+
+        .section {
+            padding: 2.5rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            color: var(--white);
+        }
+
+        .section-description {
+            font-size: 0.875rem;
+            color: var(--white);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--black);
+            border: 1px solid var(--gray-700);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            transition: border-color 0.2s, transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            border-color: var(--yellow);
+        }
+
+        .card-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            font-size: 0.75rem;
+            color: var(--white);
+            line-height: 1.4;
+        }
+
+        .demo {
+            background: var(--black);
+            padding: 2.5rem 0;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .demo-visual {
+            height: 200px;
+            background: var(--black);
+            border: 1px solid var(--gray-700);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 0.875rem;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .demo-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.75rem;
+        }
+
+        .demo-content p {
+            font-size: 0.75rem;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: 1px solid var(--yellow);
+            color: var(--yellow);
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--yellow);
+            color: var(--black);
+        }
+
+        .footer {
+            background: var(--black);
+            padding: 2rem 0 1rem;
+            border-top: 1px solid var(--gray-800);
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-section h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            color: var(--white);
+        }
+
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.75rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--yellow);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-800);
+            font-size: 0.625rem;
+            color: var(--white);
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.3), 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+            50% {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        @keyframes glowPulseNav {
+            0%, 100% {
+                text-shadow: 0 0 2px rgba(255, 255, 255, 0.2), 0 0 5px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @media (min-width: 640px) {
+            .container {
+                max-width: 1024px;
+                padding: 0 2rem;
+            }
+
+            .nav-content {
+                padding: 1rem 2rem;
+            }
+
+            .hero {
+                padding: 4rem 0 3rem;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.125rem;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-title {
+                font-size: 3.5rem;
+            }
+
+            .cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="app" class="landing-app">
-        <!-- Hero Section -->
-        <section class="landing-hero">
-            <div class="landing-hero-background">
-                <canvas class="landing-particles" id="landingParticles"></canvas>
-            </div>
-            <div class="landing-hero-content">
-                <h1 class="landing-hero-title">
-                    <span class="landing-brand">katanx</span>
-                </h1>
-                <p class="landing-hero-subtitle">See Patterns Others Miss</p>
-                <p class="landing-hero-description">
-                    Katanx helps you think clearer by showing you connections across time, cultures, and domains. 
-                    A platform for practitioners of the arts of human development.
-                </p>
-                <div class="landing-hero-ctas">
-                    <a href="auth.html" class="landing-cta-primary">Start Exploring</a>
-                    <a href="#features" class="landing-cta-secondary">See How It Works</a>
+    <div id="initialScreen"></div>
+
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="nav-brand" id="navBrand">katanx</a>
+                <div class="nav-links">
+                    <a href="#philosophy" class="nav-link nav-philosophy">Philosophy</a>
+                    <a href="auth.html" class="nav-link nav-join">Join</a>
                 </div>
             </div>
-        </section>
+        </div>
+    </nav>
 
-        <!-- Core Features Section (Dashboard Widgets) -->
-        <section class="landing-features" id="features">
-            <div class="landing-container">
-                <h2 class="landing-section-title">Core Capabilities</h2>
-                <div class="landing-dashboard-grid">
-                    <!-- Widget 1: Pattern Recognition -->
-                    <div class="landing-widget" data-widget="pattern">
-                        <div class="landing-widget-header">
-                            <h3 class="landing-widget-title">Pattern Recognition</h3>
-                            <div class="landing-widget-visual">
-                                <div class="landing-pattern-viz">
-                                    <svg class="landing-pattern-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                                        <circle class="landing-pattern-node" cx="50" cy="50" r="8" />
-                                        <circle class="landing-pattern-node" cx="150" cy="50" r="8" />
-                                        <circle class="landing-pattern-node" cx="50" cy="150" r="8" />
-                                        <circle class="landing-pattern-node" cx="150" cy="150" r="8" />
-                                        <circle class="landing-pattern-node" cx="100" cy="100" r="10" />
-                                        <line class="landing-pattern-line" x1="50" y1="50" x2="100" y2="100" />
-                                        <line class="landing-pattern-line" x1="150" y1="50" x2="100" y2="100" />
-                                        <line class="landing-pattern-line" x1="50" y1="150" x2="100" y2="100" />
-                                        <line class="landing-pattern-line" x1="150" y1="150" x2="100" y2="100" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="landing-widget-description">
-                            See patterns across everything—like how the same structures appear in ancient texts, modern systems, and everything in between. 
-                            Like learning to read between the lines, but for everything.
-                        </p>
-                        <div class="landing-widget-placeholder">
-                            <div class="landing-placeholder-content">Image placeholder</div>
-                        </div>
-                    </div>
+    <section class="hero" id="heroSection">
+        <div class="container">
+            <h1 class="hero-title" id="heroTitle"></h1>
+            <p class="hero-subtitle" id="heroSubtitle"></p>
+        </div>
+    </section>
 
-                    <!-- Widget 2: Deep Research -->
-                    <div class="landing-widget" data-widget="research">
-                        <div class="landing-widget-header">
-                            <h3 class="landing-widget-title">Deep Research</h3>
-                            <div class="landing-widget-visual">
-                                <div class="landing-research-viz">
-                                    <div class="landing-research-flow">
-                                        <div class="landing-flow-node">Source 1</div>
-                                        <div class="landing-flow-arrow">→</div>
-                                        <div class="landing-flow-node">Synthesis</div>
-                                        <div class="landing-flow-arrow">→</div>
-                                        <div class="landing-flow-node">Insight</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="landing-widget-description">
-                            Reads multiple sources, finds what's missing, and connects everything together. 
-                            Like a researcher who reads everything, not just one book.
-                        </p>
-                        <div class="landing-widget-placeholder">
-                            <div class="landing-placeholder-content">Image placeholder</div>
-                        </div>
-                    </div>
+    <section class="section" id="philosophy">
+        <div class="container">
+            <h2 class="section-title">The Nine Arts of Human Development</h2>
+            <p class="section-description">
+                Human development is not accidental. It is cultivated through practice and mastery. We have identified nine fundamental arts that encompass the full spectrum of human potential.
+            </p>
 
-                    <!-- Widget 3: Community & Creators -->
-                    <div class="landing-widget" data-widget="community">
-                        <div class="landing-widget-header">
-                            <h3 class="landing-widget-title">Community & Creators</h3>
-                            <div class="landing-widget-visual">
-                                <div class="landing-creator-grid">
-                                    <div class="landing-creator-placeholder"></div>
-                                    <div class="landing-creator-placeholder"></div>
-                                    <div class="landing-creator-placeholder"></div>
-                                    <div class="landing-creator-placeholder"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="landing-widget-description">
-                            Connect with practitioners across all disciplines of human development. 
-                            Discover teachers, share insights, and build your practice.
-                        </p>
-                        <div class="landing-widget-cta">
-                            <a href="stream.html" class="landing-widget-link">Explore Creators</a>
-                        </div>
-                    </div>
+            <div class="cards">
+                <div class="card">
+                    <h3 class="card-title">Martial & Combative Arts</h3>
+                    <p class="card-description">
+                        The foundation of discipline, awareness, and response. From traditional Kung Fu and Karate to modern expressions like Jeet Kune Do and Brazilian Jiu-Jitsu. These arts teach presence, power, and the integration of mind and body.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Movement Arts</h3>
+                    <p class="card-description">
+                        The body as an instrument of expression, rhythm, and flow. Dance forms from ballet to contemporary, Parkour's urban exploration, acrobatics, and gymnastic precision. These arts develop kinesthetic intelligence and creative embodiment.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Visual Arts</h3>
+                    <p class="card-description">
+                        Projecting inner vision into tangible form. Painting, sculpture, photography, design, and architecture. These arts develop spatial intelligence, aesthetic sensitivity, and the ability to communicate complex ideas through visual language.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Internal/Spiritual Arts</h3>
+                    <p class="card-description">
+                        The inner work of consciousness and awareness. Meditation, breathwork, yoga, shamanic practices, and mystical traditions. These arts cultivate mindfulness, emotional intelligence, and connection to deeper meaning.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Performance Arts</h3>
+                    <p class="card-description">
+                        The art of transmitting energy, feeling, and story. Theater, spoken word, music, ritual performance. These arts develop charisma, emotional expression, and the ability to move audiences through presence and narrative.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Healing Arts</h3>
+                    <p class="card-description">
+                        Restoring harmony between body, mind, and spirit. Traditional medicine, acupuncture, herbalism, massage, and energetic healing. These arts develop therapeutic intelligence and the understanding of holistic health.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Intellectual Arts</h3>
+                    <p class="card-description">
+                        The disciplined pursuit of wisdom and understanding. Philosophy, science, mathematics, logic, and critical thinking. These arts develop analytical intelligence and the ability to navigate complex systems of thought.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Creative/Innovative Arts</h3>
+                    <p class="card-description">
+                        Transforming imagination into functional reality. Engineering, programming, invention, and technological innovation. These arts develop practical intelligence and the ability to solve complex problems creatively.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Social/Leadership Arts</h3>
+                    <p class="card-description">
+                        Mastery of connection, influence, and collective intelligence. Rhetoric, diplomacy, teaching, community building. These arts develop interpersonal intelligence and the ability to lead and inspire groups effectively.
+                    </p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Frontier Systems Integration -->
-        <section class="landing-frontier">
-            <div class="landing-container">
-                <h2 class="landing-section-title">Advanced Systems</h2>
-                <div class="landing-frontier-grid">
-                    <div class="landing-frontier-card" data-system="sophia">
-                        <h3 class="landing-frontier-title">Memory System</h3>
-                        <p class="landing-frontier-description">
-                            Tracks connections and patterns over time, helping you build understanding through conversation.
-                        </p>
-                        <div class="landing-frontier-timeline">
-                            <div class="landing-timeline-dot"></div>
-                            <div class="landing-timeline-dot"></div>
-                            <div class="landing-timeline-dot"></div>
+    <section class="demo" id="ai">
+        <div class="container">
+            <h2 class="section-title">Thesidia AI</h2>
+            <p class="section-description">
+                Pattern recognition and deep research that helps you see what others miss.
+            </p>
+
+            <div class="demo-grid">
+                <div class="demo-visual">
+                    <div id="demoText">Advanced AI capabilities for pattern recognition and deep research.</div>
+                </div>
+
+                <div class="demo-content">
+                    <h3>Advanced AI Capabilities</h3>
+                    <p>Built on cutting-edge research in consciousness, pattern recognition, and human development.</p>
+
+                    <div class="cards">
+                        <div class="card">
+                            <h3 class="card-title">Web Research</h3>
+                            <p class="card-description">Real-time web search with content extraction and quality assessment.</p>
+                        </div>
+
+                        <div class="card">
+                            <h3 class="card-title">Pattern Recognition</h3>
+                            <p class="card-description">Identifies structural similarities across disciplines and time periods.</p>
+                        </div>
+
+                        <div class="card">
+                            <h3 class="card-title">Synthesis Engine</h3>
+                            <p class="card-description">Creates new insights by combining multiple sources and resolving contradictions.</p>
                         </div>
                     </div>
-                    <div class="landing-frontier-card" data-system="analysis">
-                        <h3 class="landing-frontier-title">Deep Analysis</h3>
-                        <p class="landing-frontier-description">
-                            Performs thorough research on any topic, finding connections others might miss.
-                        </p>
-                    </div>
-                    <div class="landing-frontier-card" data-system="synthesis">
-                        <h3 class="landing-frontier-title">Synthesis Engine</h3>
-                        <p class="landing-frontier-description">
-                            Creates new insights by combining information from multiple sources, not just retrieving existing knowledge.
-                        </p>
+
+                    <div style="margin-top: 2rem;">
+                        <a href="/home" class="btn btn-primary">Try Thesidia AI</a>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Story Section (Advanced Features) -->
-        <section class="landing-story">
-            <div class="landing-container">
-                <h2 class="landing-section-title">Platform Evolution</h2>
-                <div class="landing-story-timeline">
-                    <div class="landing-story-item" data-year="1">
-                        <div class="landing-story-marker"></div>
-                        <div class="landing-story-content">
-                            <h3 class="landing-story-title">Pattern Recognition</h3>
-                            <p class="landing-story-text">
-                                Built to help you see connections across domains, cultures, and time periods.
-                            </p>
-                            <div class="landing-story-placeholder">
-                                <div class="landing-placeholder-content">Screenshot placeholder</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="landing-story-item" data-year="2">
-                        <div class="landing-story-marker"></div>
-                        <div class="landing-story-content">
-                            <h3 class="landing-story-title">Research & Synthesis</h3>
-                            <p class="landing-story-text">
-                                Advanced capabilities for deep research and knowledge creation through multi-source analysis.
-                            </p>
-                            <div class="landing-story-placeholder">
-                                <div class="landing-placeholder-content">Screenshot placeholder</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="landing-story-item" data-year="3">
-                        <div class="landing-story-marker"></div>
-                        <div class="landing-story-content">
-                            <h3 class="landing-story-title">Community Platform</h3>
-                            <p class="landing-story-text">
-                                A social platform connecting practitioners of the arts of human development.
-                            </p>
-                            <div class="landing-story-placeholder">
-                                <div class="landing-placeholder-content">Screenshot placeholder</div>
-                            </div>
-                        </div>
-                    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <a href="#philosophy">Philosophy</a>
+                    <a href="#platform">Features</a>
+                    <a href="stream.html">Browse</a>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Thesidia AI</h4>
+                    <a href="#ai">Capabilities</a>
+                    <a href="/home">Try AI</a>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="auth.html">Sign Up</a>
+                    <a href="#contact">Contact</a>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <a href="#about">About</a>
+                    <a href="#careers">Careers</a>
                 </div>
             </div>
-        </section>
 
-        <!-- Call-to-Action Section -->
-        <section class="landing-cta-section">
-            <div class="landing-container">
-                <h2 class="landing-cta-title">Join Katanx</h2>
-                <p class="landing-cta-description">
-                    Start exploring patterns, connecting with practitioners, and thinking clearer.
-                </p>
-                <div class="landing-cta-buttons">
-                    <a href="auth.html" class="landing-cta-primary-large">Join Katanx</a>
-                    <a href="index.html" class="landing-cta-secondary-large">Start Conversation</a>
-                    <a href="stream.html" class="landing-cta-secondary-large">Browse Platform</a>
-                </div>
+            <div class="footer-bottom">
+                <p>katanx © 2025</p>
             </div>
-        </section>
+        </div>
+    </footer>
 
-        <!-- Footer -->
-        <footer class="landing-footer">
-            <div class="landing-container">
-                <div class="landing-footer-content">
-                    <div class="landing-footer-brand">
-                        <span class="landing-brand-small">katanx</span>
-                    </div>
-                    <nav class="landing-footer-nav">
-                        <a href="stream.html" class="landing-footer-link">Platform</a>
-                        <a href="index.html" class="landing-footer-link">Conversation</a>
-                        <a href="auth.html" class="landing-footer-link">Sign Up</a>
-                    </nav>
-                    <div class="landing-footer-copyright">
-                        <p>&copy; 2025 Katanx. All rights reserved.</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialScreen = document.getElementById('initialScreen');
+            const heroTitle = document.getElementById('heroTitle');
+            const heroSubtitle = document.getElementById('heroSubtitle');
+            const nav = document.querySelector('.nav');
+            const brand = document.querySelector('.nav-brand');
+            const hero = document.querySelector('.hero');
+            const sections = document.querySelectorAll('.section');
+            const cards = document.querySelectorAll('.card');
 
-    <script src="landing.js"></script>
+            if (!brand) return;
+
+            const originalText = 'katanx';
+            let compressed = false;
+
+            function typeWriterWithCursor(element, text, speed = 120, callback) {
+                element.innerHTML = '<span class="cursor"></span>';
+                element.classList.add('typing');
+                element.style.opacity = '1';
+                let i = 0;
+                
+                const timer = setInterval(() => {
+                    if (i < text.length) {
+                        const char = text.charAt(i);
+                        let charHtml = '';
+                        
+                        if (char === '/') {
+                            charHtml = '<span style="color: #ffd700;">/</span>';
+                        } else if (char === 'x' || char === 'X') {
+                            charHtml = '<span style="color: #00d4ff;">' + char + '</span>';
+                        } else {
+                            charHtml = char;
+                        }
+                        
+                        element.innerHTML = text.substring(0, i) + charHtml + '<span class="cursor"></span>';
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                        element.classList.remove('typing');
+                        setTimeout(() => {
+                            const finalText = text;
+                            let finalHtml = '';
+                            for (let j = 0; j < finalText.length; j++) {
+                                const char = finalText.charAt(j);
+                                if (char === '/') {
+                                    finalHtml += '<span style="color: #ffd700;">/</span>';
+                                } else if (char === 'x' || char === 'X') {
+                                    finalHtml += '<span style="color: #00d4ff;">' + char + '</span>';
+                                } else {
+                                    finalHtml += char;
+                                }
+                            }
+                            element.innerHTML = finalHtml;
+                            if (callback) callback();
+                        }, 300);
+                    }
+                }, speed);
+            }
+
+            function typeWriter(element, text, speed = 60, callback) {
+                let i = 0;
+                element.textContent = '';
+                const timer = setInterval(() => {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                        if (callback) callback();
+                    }
+                }, speed);
+            }
+
+            function blinkCursor(element, times = 3, callback) {
+                let count = 0;
+                const cursor = document.createElement('span');
+                cursor.className = 'cursor';
+                element.appendChild(cursor);
+                
+                const blinkInterval = setInterval(() => {
+                    cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+                    count++;
+                    if (count >= times * 2) {
+                        clearInterval(blinkInterval);
+                        element.removeChild(cursor);
+                        if (callback) callback();
+                    }
+                }, 500);
+            }
+
+            const setBrand = (text, makeBlue) => {
+                brand.style.opacity = '0';
+                setTimeout(() => {
+                    brand.textContent = text;
+                    if (makeBlue) {
+                        brand.classList.add('nav-brand-x');
+                    } else {
+                        brand.classList.remove('nav-brand-x');
+                    }
+                    brand.style.opacity = '1';
+                }, 120);
+            };
+
+            const handleScroll = () => {
+                if (window.scrollY > 40 && !compressed) {
+                    compressed = true;
+                    setBrand('x', true);
+                } else if (window.scrollY <= 40 && compressed) {
+                    compressed = false;
+                    setBrand(originalText, false);
+                }
+            };
+
+            brand.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            const cardObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 100);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+
+            setTimeout(() => {
+                initialScreen.classList.add('hidden');
+                
+                setTimeout(() => {
+                    hero.classList.add('visible');
+                    heroTitle.style.opacity = '1';
+                    blinkCursor(heroTitle, 3, () => {
+                        typeWriterWithCursor(heroTitle, '/katanx', 120, () => {
+                            heroTitle.classList.add('visible');
+                            
+                            setTimeout(() => {
+                                typeWriter(heroSubtitle, 'No Influencers. Only Practicioners', 60, () => {
+                                    heroSubtitle.classList.add('visible');
+                                    
+                                    setTimeout(() => {
+                                        heroSubtitle.style.opacity = '0';
+                                        setTimeout(() => {
+                                            typeWriter(heroSubtitle, 'Social Media, But With Standards.', 60, () => {
+                                                heroSubtitle.classList.add('visible');
+                                                
+                                                setTimeout(() => {
+                                                    heroSubtitle.style.opacity = '0';
+                                                    setTimeout(() => {
+                                                        typeWriter(heroSubtitle, 'A platform for practitioners of the arts of human development.', 50, () => {
+                                                            heroSubtitle.classList.add('visible');
+                                                            
+                                                            setTimeout(() => {
+                                                                nav.classList.add('visible');
+                                                            }, 500);
+                                                        });
+                                                    }, 400);
+                                                }, 2000);
+                                            });
+                                        }, 400);
+                                    }, 2000);
+                                });
+                            }, 800);
+                        });
+                    });
+                }, 300);
+            }, 1000);
+
+            sections.forEach(section => sectionObserver.observe(section));
+            cards.forEach(card => cardObserver.observe(card));
+
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            handleScroll();
+        });
+    </script>
 </body>
 </html>
-
