@@ -15,22 +15,5 @@
       "source": "/",
       "destination": "/landing.html"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/server.py"
-    },
-    {
-      "src": "/",
-      "dest": "/landing.html",
-      "headers": {
-        "Cache-Control": "no-cache, no-store, must-revalidate"
-      }
-    },
-    {
-      "src": "/home",
-      "dest": "/app.html"
-    }
   ]
 }
