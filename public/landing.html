@@ -5,17 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark">
     <meta name="theme-color" content="#000000"><!-- Supported by Chrome, Safari, Edge; warning for Firefox is acceptable -->
+    <script>
+        // Prevent scroll restoration on page load
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        // Immediately scroll to top
+        window.scrollTo(0, 0);
+    </script>
     <title>katanx</title>
     <meta name="description" content="See patterns others miss. A platform for practitioners of the arts of human development.">
     <!-- Version: 2025-12-15-v4 - Webhook test -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --yellow: #ffd700;
             --yellow-dark: #ffb700;
+            --green: #00ff88;
+            --tan: #d2b48c;
             --black: #000000;
+            --space-black: #0a0a0a;
+            --space-gray-dark: #1a1a1a;
+            --space-gray: #2a2a2a;
+            --space-gray-light: #3a3a3a;
+            --space-white: #ffffff;
+            --space-white-soft: #f5f5f5;
+            --space-white-warm: #fafafa;
+            --text-black: #000000;
+            --text-gray-dark: #1a1a1a;
+            --text-gray: #4a4a4a;
+            --text-gray-light: #6a6a6a;
+            --text-gray-lighter: #8a8a8a;
             --gray-900: #111827;
             --gray-800: #1f2937;
             --gray-700: #374151;
@@ -41,26 +63,54 @@
         }
 
         body {
-            font-family: 'Inconsolata', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 16px;
-            line-height: 1.5;
-            color: #ffffff;
-            background: #000000;
+            line-height: 1.6;
+            color: var(--text-black);
+            background: var(--space-black);
             color-scheme: dark;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            image-rendering: -webkit-optimize-contrast; /* Edge 79+ support */
+            image-rendering: -webkit-optimize-contrast;
             margin: 0;
             padding: 0;
         }
 
+        /* Typography Hierarchy - Inconsolata for headers, Inter for body */
+        h1, h2, h3, h4, h5, h6,
+        .nav-brand,
+        .hero-title,
+        .section-title,
+        .card-title,
+        .feature-title {
+            font-family: 'Inconsolata', monospace;
+        }
+
+        p, span, a, li,
+        .section-description,
+        .card-description,
+        .card-essence,
+        .feature-description,
+        .feature-tagline {
+            font-family: 'Inter', sans-serif;
+        }
+
         html {
-            background: #000000;
+            background: var(--space-black);
             color-scheme: dark;
             scroll-behavior: smooth;
             margin: 0;
             padding: 0;
+            scroll-padding-top: 0;
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
+        body {
+            scroll-padding-top: 0;
         }
 
         .container {
@@ -76,7 +126,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000000;
+            background: var(--space-black);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -91,7 +141,7 @@
 
         /* Navigation */
         .nav {
-            background: #000000;
+            background: var(--space-black);
             border-bottom: none;
             position: sticky;
             top: 0;
@@ -113,16 +163,15 @@
 
         .nav-brand {
             font-weight: 600;
-            color: #ffffff;
+            color: var(--space-white);
             text-decoration: none;
             font-size: 1.125rem;
             transition: color 0.2s ease, opacity 0.2s ease;
-            animation: glowPulseNav 3s ease-in-out infinite;
         }
 
         .nav-brand::before {
             content: '/';
-            color: #ffd700;
+            color: var(--yellow);
         }
 
         @keyframes glowPulseNav {
@@ -148,18 +197,47 @@
         }
 
         .nav-link {
-            color: var(--white);
+            color: var(--text-gray-lighter);
             text-decoration: none;
             font-size: 0.875rem;
+            font-family: 'Inconsolata', monospace;
             padding: 0.5rem;
+            transition: all 0.2s ease;
+            position: relative;
+            border-radius: 0.5rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--space-white);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
         }
 
         .nav-link:hover {
-            color: #ffffff;
+            color: var(--space-white);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-link:focus {
+            outline: 2px solid var(--space-white);
+            outline-offset: 2px;
         }
 
         .nav-join {
-            color: #ffd700 !important;
+            color: var(--yellow) !important;
         }
 
         .nav-philosophy {
@@ -179,7 +257,7 @@
         .hero-title {
             font-size: 2.25rem;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--space-white);
             margin-bottom: 1rem;
             opacity: 0;
             letter-spacing: 0.05em;
@@ -187,14 +265,32 @@
 
         .hero-title.visible {
             opacity: 1;
-            animation: glowPulse 3s ease-in-out infinite;
+            animation: heroGlowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes heroGlowPulse {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px rgba(255, 255, 255, 0.3),
+                    0 0 20px rgba(255, 255, 255, 0.2),
+                    0 0 30px rgba(255, 255, 255, 0.1);
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 
+                    0 0 15px rgba(255, 255, 255, 0.5),
+                    0 0 30px rgba(255, 255, 255, 0.3),
+                    0 0 45px rgba(255, 255, 255, 0.2),
+                    0 0 60px rgba(255, 255, 255, 0.1);
+                transform: scale(1.01);
+            }
         }
 
         .hero-title .cursor {
             display: inline-block;
             width: 2px;
             height: 1.2em;
-            background: #ffd700;
+            background: var(--space-white);
             margin-left: 2px;
             animation: blink 1s infinite;
             vertical-align: baseline;
@@ -220,7 +316,7 @@
 
         .hero-subtitle {
             font-size: 1rem;
-            color: #ffcc99;
+            color: var(--tan);
             margin-bottom: 1.5rem;
             max-width: 480px;
             margin-left: auto;
@@ -396,7 +492,7 @@
             display: inline-block;
             width: 2px;
             height: 1em;
-            background: #ffcc99;
+            background: var(--tan);
             margin-left: 2px;
             animation: blink 0.7s infinite;
             vertical-align: baseline;
@@ -417,12 +513,12 @@
             font-weight: 600;
             text-align: center;
             margin-bottom: 0.75rem;
-            color: #ffffff;
+            color: var(--space-white);
         }
 
         .section-description {
             font-size: 0.875rem;
-            color: var(--white);
+            color: var(--text-gray-lighter);
             text-align: center;
             margin-bottom: 1.5rem;
             max-width: 480px;
@@ -441,58 +537,226 @@
         .card {
             background: #000000;
             border: 1px solid var(--gray-700);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            transition: border-color 0.2s;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.08),
+                0 1px 2px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 215, 0, 0.1) 50%,
+                transparent 100%);
+            transition: left 0.6s ease;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, 
+                rgba(255, 215, 0, 0.4) 0%,
+                rgba(255, 215, 0, 0.2) 25%,
+                rgba(255, 215, 0, 0.1) 50%,
+                rgba(255, 215, 0, 0.2) 75%,
+                rgba(255, 215, 0, 0.4) 100%);
+            background-size: 300% 300%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            animation: shimmerBorder 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmerBorder {
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover::after {
+            opacity: 1;
         }
 
         .card:hover {
             border-color: var(--yellow);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 
+                0 8px 24px rgba(255, 215, 0, 0.15),
+                0 4px 8px rgba(255, 215, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 0 1px rgba(255, 215, 0, 0.2);
+        }
+
+        .card:active {
+            transform: translateY(-1px) scale(1.005);
         }
 
         .card-title {
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #ffffff;
             margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
         }
 
         .card-description {
             font-size: 0.75rem;
             color: var(--white);
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.01em;
+        }
+
+        .card-tagline {
+            font-size: 0.75rem;
+            color: var(--tan);
+            margin-bottom: 0.5rem;
             line-height: 1.4;
+            font-weight: 600;
+            letter-spacing: -0.005em;
+        }
+
+        .card-essence {
+            font-size: 0.625rem;
+            color: var(--gray-600);
+            margin-top: 0.75rem;
+            line-height: 1.6;
+            font-style: italic;
+            letter-spacing: 0.01em;
         }
 
         /* Features */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 0.5rem;
-            margin-top: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
         .feature {
             text-align: center;
-            padding: 0.75rem;
+            padding: 1.5rem 1rem;
             background: #000000;
-            border-radius: 0.375rem;
+            border: 1px solid var(--gray-700);
+            border-radius: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.08),
+                0 1px 2px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(210, 180, 140, 0.1) 50%,
+                transparent 100%);
+            transition: left 0.6s ease;
+        }
+
+        .feature::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, 
+                rgba(210, 180, 140, 0.4) 0%,
+                rgba(210, 180, 140, 0.2) 25%,
+                rgba(210, 180, 140, 0.1) 50%,
+                rgba(210, 180, 140, 0.2) 75%,
+                rgba(210, 180, 140, 0.4) 100%);
+            background-size: 300% 300%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            animation: shimmerBorder 4s ease-in-out infinite;
+        }
+
+        .feature:hover::before {
+            left: 100%;
+        }
+
+        .feature:hover::after {
+            opacity: 1;
+        }
+
+        .feature:hover {
+            border-color: var(--tan);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 
+                0 8px 24px rgba(210, 180, 140, 0.15),
+                0 4px 8px rgba(210, 180, 140, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 0 1px rgba(210, 180, 140, 0.2);
         }
 
         .feature-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--white);
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #ffffff;
             margin-bottom: 0.25rem;
+            letter-spacing: -0.01em;
         }
 
         .feature-description {
+            font-size: 0.75rem;
+            color: var(--tan);
+            line-height: 1.5;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .feature-tagline {
             font-size: 0.625rem;
-            color: var(--white);
+            color: var(--text-gray-light);
+            line-height: 1.5;
+            font-style: italic;
+            letter-spacing: 0.01em;
         }
 
         /* Demo */
         .demo {
-            background: #000000;
+            background: var(--space-black);
             padding: 2.5rem 0;
         }
 
@@ -506,9 +770,11 @@
         .demo-visual {
             background: #000000;
             border: 1px solid var(--gray-700);
-            border-radius: 0.5rem;
+            border-radius: 1rem;
             padding: 1.5rem;
             text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            color: #ffffff;
         }
 
         .demo-input {
@@ -519,7 +785,7 @@
             width: 100%;
             padding: 0.5rem;
             border: 1px solid var(--gray-600);
-            border-radius: 0.375rem;
+            border-radius: 0.75rem;
             font-size: 0.875rem;
             background: #000000;
             color: #ffffff;
@@ -534,7 +800,7 @@
             font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 0.75rem;
-            color: var(--black);
+            color: #ffffff;
         }
 
         .demo-content p {
@@ -549,10 +815,10 @@
 
         /* Footer */
         .footer {
-            background: #000000;
-            color: #ffffff;
+            background: var(--space-black);
+            color: var(--text-gray-lighter);
             padding: 1.5rem 0 1rem;
-            border-top: 1px solid var(--gray-800);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-content {
@@ -568,27 +834,28 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 0.75rem;
-            color: var(--white);
+            color: var(--space-white);
         }
 
         .footer-section a {
-            color: var(--white);
+            color: var(--text-gray-lighter);
             text-decoration: none;
             font-size: 0.75rem;
             display: block;
             margin-bottom: 0.5rem;
+            transition: color 0.2s ease;
         }
 
         .footer-section a:hover {
-            color: var(--yellow);
+            color: var(--space-white);
         }
 
         .footer-bottom {
             text-align: center;
             padding-top: 1rem;
-            border-top: 1px solid var(--gray-800);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 0.625rem;
-            color: var(--white);
+            color: var(--text-gray-lighter);
         }
 
         /* Animations */
@@ -711,17 +978,262 @@
                 grid-template-columns: repeat(3, 1fr);
             }
         }
+
+        /* V2 UX Enhancements */
+
+        /* Toast Notification System */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-width: 400px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: #000000;
+            border: 1px solid var(--gray-700);
+            border-left: 3px solid var(--yellow);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left-color: #00ff00;
+        }
+
+        .toast.error {
+            border-left-color: #ff4444;
+        }
+
+        .toast-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        /* Loading States / Skeleton Screens */
+        .skeleton {
+            background: linear-gradient(90deg, #000000 0%, var(--gray-900) 50%, #000000 100%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s ease-in-out infinite;
+            border-radius: 0.25rem;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton-text {
+            height: 1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .skeleton-title {
+            height: 1.5em;
+            width: 60%;
+            margin-bottom: 1rem;
+        }
+
+        /* Enhanced Mobile Touch Targets */
+        @media (max-width: 768px) {
+            .nav-link,
+            .card,
+            .feature {
+                min-height: 44px;
+                touch-action: manipulation;
+            }
+
+            .card {
+                -webkit-tap-highlight-color: rgba(255, 215, 0, 0.1);
+            }
+        }
+
+        /* Focus Indicators for Accessibility */
+        *:focus-visible {
+            outline: 2px solid var(--yellow);
+            outline-offset: 2px;
+            border-radius: 0.25rem;
+        }
+
+        /* Skip to Content Link */
+        .skip-to-content {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            background: var(--yellow);
+            color: #000000;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            font-weight: 600;
+            z-index: 10001;
+            border-radius: 0 0 0.25rem 0;
+        }
+
+        .skip-to-content:focus {
+            top: 0;
+        }
+
+        /* Smooth Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        /* Performance: Will-change hints */
+        .card,
+        .feature,
+        .nav-link {
+            will-change: transform;
+        }
+
+        /* Lazy Loading Placeholder */
+        img[loading="lazy"] {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        img[loading="lazy"].loaded {
+            opacity: 1;
+        }
+
+        /* Enhanced Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--space-white);
+            color: var(--text-black);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.75rem;
+            font-family: 'Inconsolata', monospace;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background: var(--space-white-soft);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid var(--space-white);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: var(--space-white);
+            color: var(--text-black);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--yellow);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ARIA Live Region for Screen Readers */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Enhanced Section Transitions */
+        .section {
+            scroll-margin-top: 80px;
+        }
+
+        /* Keyboard Navigation Indicator */
+        .keyboard-nav .card:focus,
+        .keyboard-nav .feature:focus {
+            outline: 2px solid var(--yellow);
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body>
+    <!-- Skip to Content Link for Accessibility -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ARIA Live Region for Screen Readers -->
+    <div class="sr-only" id="ariaLive" aria-live="polite" aria-atomic="true"></div>
+
     <!-- Navigation -->
-    <nav class="nav">
+    <nav class="nav" role="navigation" aria-label="Main navigation">
         <div class="container">
             <div class="nav-content">
-                <a href="/" class="nav-brand">katanx</a>
+                <a href="/" class="nav-brand" aria-label="katanx home">katanx</a>
                 <div class="nav-links">
-                    <a href="#philosophy" class="nav-link nav-philosophy">Philosophy</a>
-                    <a href="auth.html" class="nav-link nav-join">Join</a>
+                    <a href="#philosophy" class="nav-link nav-philosophy" aria-label="View philosophy section">Philosophy</a>
+                    <a href="auth.html" class="nav-link nav-join" aria-label="Join katanx">Join</a>
                 </div>
             </div>
         </div>
@@ -744,77 +1256,158 @@
     </div>
 
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero" id="main-content">
         <div class="container">
-            <h1 class="hero-title" id="heroTitle"></h1>
-            <p class="hero-subtitle" id="heroSubtitle"></p>
+            <h1 class="hero-title" id="heroTitle" aria-live="polite"></h1>
+            <p class="hero-subtitle" id="heroSubtitle" aria-live="polite"></p>
         </div>
     </section>
 
     <!-- Philosophy -->
-    <section class="section" id="philosophy">
+    <section class="section" id="philosophy" aria-labelledby="philosophy-title">
         <div class="container">
-            <h2 class="section-title">The Nine Arts</h2>
+            <h2 class="section-title" id="philosophy-title">The Nine Arts</h2>
             <p class="section-description">
                 Human development is cultivated through nine interconnected arts—each a path to mastery, expression, and growth.
             </p>
 
             <div class="cards">
                 <div class="card">
-                    <h3 class="card-title">Physical Arts</h3>
+                    <h3 class="card-title">Martial & Combative Arts</h3>
+                    <p class="card-tagline"><strong>Power, presence, and self-mastery.</strong></p>
                     <p class="card-description">
-                        Martial arts, movement, dance, and bodywork. The foundation of human expression through physical mastery.
+                        Kung Fu, Qigong, Karate, Boxing, Muay Thai, Wrestling, and more.
                     </p>
+                    <p class="card-essence">The refinement of movement, awareness, discipline, and character through embodied challenge.</p>
                 </div>
 
                 <div class="card">
-                    <h3 class="card-title">Creative Arts</h3>
+                    <h3 class="card-title">Movement Arts</h3>
+                    <p class="card-tagline"><strong>Flow, agility, and embodied creativity.</strong></p>
                     <p class="card-description">
-                        Visual arts, music, performance, and invention. Bringing imagination into tangible reality.
+                        Dance, Parkour, Acrobatics, Gymnastics, Capoeira, Flow Arts.
                     </p>
+                    <p class="card-essence">The body as an instrument of rhythm, expression, and dynamic intelligence.</p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Visual Arts</h3>
+                    <p class="card-tagline"><strong>Form, perception, and vision made tangible.</strong></p>
+                    <p class="card-description">
+                        Drawing, Painting, Photography, Film, Architecture, Design.
+                    </p>
+                    <p class="card-essence">Translating inner worlds into physical form through shape, color, and space.</p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Internal & Spiritual Arts</h3>
+                    <p class="card-tagline"><strong>Awareness, energy, and inner clarity.</strong></p>
+                    <p class="card-description">
+                        Meditation, Pranayama, Qigong, Yoga, Ritual Arts.
+                    </p>
+                    <p class="card-essence">Cultivating perception, refining consciousness, and aligning with deeper meaning.</p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Performance Arts</h3>
+                    <p class="card-tagline"><strong>Story, emotion, and embodied expression.</strong></p>
+                    <p class="card-description">
+                        Theater, Spoken Word, Poetry, Singing, Music, Ritual Performance.
+                    </p>
+                    <p class="card-essence">The art of transmitting feeling, energy, and narrative through presence.</p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Healing Arts</h3>
+                    <p class="card-tagline"><strong>Balance, vitality, and restoration.</strong></p>
+                    <p class="card-description">
+                        Traditional Chinese Medicine, Acupuncture, Herbalism, Bodywork, Physical Therapy.
+                    </p>
+                    <p class="card-essence">Restoring harmony to the body-mind and supporting long-term wellbeing.</p>
                 </div>
 
                 <div class="card">
                     <h3 class="card-title">Intellectual Arts</h3>
+                    <p class="card-tagline"><strong>Understanding, pattern, and insight.</strong></p>
                     <p class="card-description">
-                        Philosophy, science, mathematics, and strategy. Sharpening understanding and expanding awareness.
+                        Philosophy, Science, Mathematics, Language, Systems Thinking, Strategy.
                     </p>
+                    <p class="card-essence">Sharpening cognition while expanding perception and wisdom.</p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Creative & Inventive Arts</h3>
+                    <p class="card-tagline"><strong>Innovation, construction, and realization.</strong></p>
+                    <p class="card-description">
+                        Invention, Engineering, Architecture, Programming, Alchemy, Machine-Building.
+                    </p>
+                    <p class="card-essence">Transforming imagination into functional reality.</p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Social & Leadership Arts</h3>
+                    <p class="card-tagline"><strong>Connection, influence, and collective purpose.</strong></p>
+                    <p class="card-description">
+                        Rhetoric, Diplomacy, Teaching, Leadership, Community Building, Psychosocial Development.
+                    </p>
+                    <p class="card-essence">Mastery of communication, group dynamics, and shared vision.</p>
                 </div>
             </div>
 
             <div class="features">
-                <div class="feature">
-                    <h4 class="feature-title">Martial Arts</h4>
-                    <p class="feature-description">Movement, discipline, awareness</p>
+                <div class="feature" data-art="martial">
+                    <h4 class="feature-title">Kung Fu</h4>
+                    <p class="feature-description">Martial & Combative Arts</p>
+                    <p class="feature-tagline">Discipline through embodied challenge</p>
                 </div>
-                <div class="feature">
+                <div class="feature" data-art="movement">
+                    <h4 class="feature-title">Dance</h4>
+                    <p class="feature-description">Movement Arts</p>
+                    <p class="feature-tagline">Rhythm and dynamic expression</p>
+                </div>
+                <div class="feature" data-art="visual">
+                    <h4 class="feature-title">Photography</h4>
+                    <p class="feature-description">Visual Arts</p>
+                    <p class="feature-tagline">Vision translated into form</p>
+                </div>
+                <div class="feature" data-art="spiritual">
                     <h4 class="feature-title">Meditation</h4>
-                    <p class="feature-description">Consciousness, mindfulness</p>
+                    <p class="feature-description">Internal & Spiritual Arts</p>
+                    <p class="feature-tagline">Consciousness refined and aligned</p>
                 </div>
-                <div class="feature">
+                <div class="feature" data-art="performance">
+                    <h4 class="feature-title">Theater</h4>
+                    <p class="feature-description">Performance Arts</p>
+                    <p class="feature-tagline">Presence transmitting narrative</p>
+                </div>
+                <div class="feature" data-art="healing">
+                    <h4 class="feature-title">Acupuncture</h4>
+                    <p class="feature-description">Healing Arts</p>
+                    <p class="feature-tagline">Balance restored to body-mind</p>
+                </div>
+                <div class="feature" data-art="intellectual">
+                    <h4 class="feature-title">Philosophy</h4>
+                    <p class="feature-description">Intellectual Arts</p>
+                    <p class="feature-tagline">Understanding expanded through insight</p>
+                </div>
+                <div class="feature" data-art="creative">
                     <h4 class="feature-title">Engineering</h4>
-                    <p class="feature-description">Creation, innovation</p>
+                    <p class="feature-description">Creative & Inventive Arts</p>
+                    <p class="feature-tagline">Imagination made functional</p>
                 </div>
-                <div class="feature">
-                    <h4 class="feature-title">Leadership</h4>
-                    <p class="feature-description">Connection, influence</p>
-                </div>
-                <div class="feature">
-                    <h4 class="feature-title">Healing</h4>
-                    <p class="feature-description">Harmony, restoration</p>
-                </div>
-                <div class="feature">
-                    <h4 class="feature-title">Performance</h4>
-                    <p class="feature-description">Expression, storytelling</p>
+                <div class="feature" data-art="social">
+                    <h4 class="feature-title">Teaching</h4>
+                    <p class="feature-description">Social & Leadership Arts</p>
+                    <p class="feature-tagline">Connection through shared vision</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Platform -->
-    <section class="section" id="platform">
+    <section class="section" id="platform" aria-labelledby="platform-title">
         <div class="container">
-            <h2 class="section-title">Platform</h2>
+            <h2 class="section-title" id="platform-title">Platform</h2>
             <p class="section-description">
                 Connect with practitioners, showcase your disciplines, and discover new paths of development.
             </p>
@@ -845,9 +1438,9 @@
     </section>
 
     <!-- AI -->
-    <section class="demo" id="ai">
+    <section class="demo" id="ai" aria-labelledby="ai-title">
         <div class="container">
-            <h2 class="section-title">Thesidia AI</h2>
+            <h2 class="section-title" id="ai-title">Thesidia AI</h2>
             <p class="section-description">
                 Pattern recognition and deep research that helps you see what others miss.
             </p>
@@ -912,7 +1505,7 @@
                 <div class="footer-section">
                     <h4>Company</h4>
                     <a href="#about">About</a>
-                    <a href="#careers">Careers</a>
+                    <a href="careers.html">Careers</a>
                 </div>
             </div>
 
@@ -923,7 +1516,30 @@
     </footer>
 
     <script>
+        // Ensure page starts at top on load
+        window.addEventListener('load', () => {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        });
+
+        // Also scroll to top immediately if page is already loaded
+        if (document.readyState === 'complete') {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        } else {
+            window.addEventListener('beforeunload', () => {
+                window.scrollTo(0, 0);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Force scroll to top on DOM ready
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+
             const initialScreen = document.getElementById('initialScreen');
             const heroTitle = document.getElementById('heroTitle');
             const heroSubtitle = document.getElementById('heroSubtitle');
@@ -1237,6 +1853,202 @@
             // Initial scroll handler
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
+
+            // V2 UX Enhancements
+
+            // Toast Notification System
+            function showToast(message, type = 'info', duration = 3000) {
+                const toastContainer = document.getElementById('toastContainer');
+                if (!toastContainer) return;
+
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'polite');
+                
+                const icon = type === 'success' ? '✓' : type === 'error' ? '×' : 'ℹ';
+                toast.innerHTML = `
+                    <span class="toast-icon" aria-hidden="true">${icon}</span>
+                    <span>${message}</span>
+                `;
+
+                toastContainer.appendChild(toast);
+
+                // Trigger animation
+                requestAnimationFrame(() => {
+                    toast.classList.add('show');
+                });
+
+                // Remove after duration
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                }, duration);
+            }
+
+            // Keyboard Navigation
+            let isKeyboardNav = false;
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    isKeyboardNav = true;
+                    document.body.classList.add('keyboard-nav');
+                }
+            });
+
+            document.addEventListener('mousedown', () => {
+                isKeyboardNav = false;
+                document.body.classList.remove('keyboard-nav');
+            });
+
+            // Enhanced Card Interactions
+            cards.forEach((card, index) => {
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('role', 'article');
+                card.setAttribute('aria-label', `Art category: ${card.querySelector('.card-title')?.textContent || 'Unknown'}`);
+
+                // Keyboard support
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+
+                // Click handler for cards
+                card.addEventListener('click', () => {
+                    const title = card.querySelector('.card-title')?.textContent;
+                    if (title) {
+                        showToast(`Exploring ${title}`, 'info', 2000);
+                    }
+                });
+            });
+
+            // Enhanced Feature Interactions
+            features.forEach((feature) => {
+                feature.setAttribute('tabindex', '0');
+                feature.setAttribute('role', 'button');
+                feature.setAttribute('aria-label', `${feature.querySelector('.feature-title')?.textContent} - ${feature.querySelector('.feature-description')?.textContent}`);
+
+                feature.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        feature.click();
+                    }
+                });
+            });
+
+            // Lazy Loading for Images
+            if ('loading' in HTMLImageElement.prototype) {
+                const images = document.querySelectorAll('img[loading="lazy"]');
+                images.forEach(img => {
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                });
+            }
+
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        // Update URL without jumping
+                        history.pushState(null, '', href);
+                    }
+                });
+            });
+
+            // Announce page changes to screen readers
+            function announceToScreenReader(message) {
+                const ariaLive = document.getElementById('ariaLive');
+                if (ariaLive) {
+                    ariaLive.textContent = message;
+                    setTimeout(() => {
+                        ariaLive.textContent = '';
+                    }, 1000);
+                }
+            }
+
+            // Loading state management
+            let isLoading = false;
+            function setLoadingState(loading) {
+                isLoading = loading;
+                if (loading) {
+                    document.body.classList.add('loading');
+                } else {
+                    document.body.classList.remove('loading');
+                }
+            }
+
+            // Mobile swipe gestures
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            document.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        // Swipe left - could trigger next section
+                        announceToScreenReader('Swiped left');
+                    } else {
+                        // Swipe right - could trigger previous section
+                        announceToScreenReader('Swiped right');
+                    }
+                }
+            }
+
+            // Performance: Preload critical resources
+            const criticalLinks = document.querySelectorAll('a[href^="/"], a[href^="contexts"], a[href^="stream"]');
+            criticalLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    const href = this.getAttribute('href');
+                    if (href && !document.querySelector(`link[rel="prefetch"][href="${href}"]`)) {
+                        const prefetch = document.createElement('link');
+                        prefetch.rel = 'prefetch';
+                        prefetch.href = href;
+                        document.head.appendChild(prefetch);
+                    }
+                }, { once: true });
+            });
+
+            // Enhanced error handling
+            window.addEventListener('error', (e) => {
+                console.error('Error:', e.error);
+                showToast('An error occurred. Please refresh the page.', 'error', 5000);
+            });
+
+            // Reduced motion support
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (prefersReducedMotion.matches) {
+                document.documentElement.style.setProperty('--animation-duration', '0.01ms');
+            }
+
+            // Initialize
+            announceToScreenReader('katanx landing page loaded');
         });
     </script>
 </body>
