@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#000000">
+    <title>The Problem - Why Social Media Is Broken - katanx</title>
+    <meta name="description" content="Understanding why modern social media fails us and how katanx offers a better path forward.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --yellow: #ffd700;
+            --blue: #00d4ff;
+            --black: #000000;
+            --gray-700: #374151;
+            --gray-600: #4b5563;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inconsolata', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #000000;
+            color-scheme: dark;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .nav {
+            background: #000000;
+            border-bottom: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .nav-content {
+                padding: 1rem 2rem;
+            }
+        }
+
+        .nav-brand {
+            font-weight: 600;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.125rem;
+            transition: color 0.2s ease, opacity 0.2s ease;
+            animation: glowPulseNav 3s ease-in-out infinite;
+        }
+
+        .nav-brand::before {
+            content: '/';
+            color: #ffd700;
+        }
+
+        @keyframes glowPulseNav {
+            0%, 100% {
+                text-shadow: 0 0 3px rgba(255, 255, 255, 0.2), 0 0 6px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                text-shadow: 0 0 6px rgba(255, 255, 255, 0.4), 0 0 12px rgba(255, 255, 255, 0.2), 0 0 18px rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-join {
+            color: #ffd700 !important;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 4rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .problem-section {
+            margin-bottom: 4rem;
+            padding: 2rem;
+            background: #000000;
+            border: 1px solid var(--gray-700);
+            border-radius: 0.5rem;
+        }
+
+        .problem-section h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .problem-section h2::before {
+            content: '×';
+            color: #ff4444;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .problem-section h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--yellow);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .problem-section h3::before {
+            content: '✓';
+            color: var(--yellow);
+        }
+
+        .problem-section p {
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        .problem-section ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .problem-section li {
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: #000000;
+            border: 1px solid var(--gray-700);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-700);
+        }
+
+        .comparison-table th {
+            background: #000000;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .comparison-table th:first-child {
+            width: 30%;
+        }
+
+        .comparison-table td:first-child {
+            font-weight: 500;
+            color: var(--yellow);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bad {
+            color: #ff4444;
+        }
+
+        .good {
+            color: #00ff00;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: #000000;
+            border: 1px solid var(--gray-700);
+            border-radius: 0.5rem;
+            margin: 4rem 0;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 0.75rem 2rem;
+            background: var(--yellow);
+            color: #000000;
+            border: none;
+            border-radius: 0.375rem;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            opacity: 0.9;
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            border: 1px solid var(--yellow);
+            color: var(--yellow);
+        }
+
+        .cta-button.secondary:hover {
+            background: var(--yellow);
+            color: #000000;
+        }
+
+        .footer {
+            background: #000000;
+            color: #ffffff;
+            padding: 2rem 0 1rem;
+            border-top: 1px solid var(--gray-700);
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-700);
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        .footer-bottom a {
+            color: var(--gray-600);
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--yellow);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .comparison-table {
+                font-size: 0.875rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="nav-brand">katanx</a>
+                <div class="nav-links">
+                    <a href="landing.html" class="nav-link">Home</a>
+                    <a href="auth.html" class="nav-link nav-join">Join</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Why Social Media Is Broken</h1>
+            <p>Modern social platforms are designed to extract your attention, not enrich your life. Here's what's wrong—and how we're building something different.</p>
+        </div>
+
+        <div class="problem-section">
+            <h2>The Attention Economy Trap</h2>
+            <p>Traditional social media platforms are built on an attention economy model. Every feature is designed to keep you scrolling, clicking, and consuming—regardless of whether it serves you.</p>
+            <ul>
+                <li><strong>Infinite scroll:</strong> No natural stopping points, designed to create endless consumption</li>
+                <li><strong>Dopamine loops:</strong> Notifications, likes, and algorithmic feeds trigger reward cycles that keep you coming back</li>
+                <li><strong>Algorithmic manipulation:</strong> Content is curated to maximize engagement, not value</li>
+                <li><strong>Time theft:</strong> Hours disappear into mindless scrolling with little to show for it</li>
+            </ul>
+            <h3>Katanx Solution</h3>
+            <p>Intentional consumption. No infinite scroll. Content organized by discipline and purpose. You decide when to engage, and the platform respects your time and attention.</p>
+        </div>
+
+        <div class="problem-section">
+            <h2>The Vanity Metrics Problem</h2>
+            <p>Likes, followers, and engagement metrics have become false validation systems. They create comparison, status anxiety, and a distorted sense of self-worth tied to external approval.</p>
+            <ul>
+                <li><strong>False validation:</strong> Metrics don't reflect quality, skill, or genuine connection</li>
+                <li><strong>Comparison trap:</strong> Constant comparison to others' highlight reels</li>
+                <li><strong>Status anxiety:</strong> Self-worth tied to follower counts and engagement rates</li>
+                <li><strong>Performance pressure:</strong> Content creation becomes about metrics, not expression</li>
+            </ul>
+            <h3>Katanx Solution</h3>
+            <p>Quality over quantity. Meaningful metrics: Friends (genuine connections), Fans (appreciation for your work), Resonating (content that matters). Your value isn't measured by likes—it's measured by the depth of your practice and the quality of your contributions.</p>
+        </div>
+
+        <div class="problem-section">
+            <h2>The Echo Chamber Effect</h2>
+            <p>Algorithmic filtering creates information bubbles. You see more of what you already like, reducing exposure to diverse perspectives and limiting growth.</p>
+            <ul>
+                <li><strong>Algorithmic filtering:</strong> Platforms show you what keeps you engaged, not what challenges you</li>
+                <li><strong>Reduced diversity:</strong> Less exposure to different perspectives, disciplines, and ideas</li>
+                <li><strong>Confirmation bias:</strong> Content reinforces existing beliefs rather than expanding understanding</li>
+                <li><strong>Limited discovery:</strong> Hard to find practitioners outside your immediate network</li>
+            </ul>
+            <h3>Katanx Solution</h3>
+            <p>Cross-disciplinary discovery. Forums organized by discipline, not algorithm. Intentional community building around shared practice. You can explore the full spectrum of human development arts, not just what an algorithm thinks you'll click.</p>
+        </div>
+
+        <div class="problem-section">
+            <h2>The Content Quality Crisis</h2>
+            <p>Viral trash, misinformation, and low-effort content dominate feeds. There are no standards, no curation, and no way to filter for quality.</p>
+            <ul>
+                <li><strong>Viral trash:</strong> Low-effort content optimized for engagement, not value</li>
+                <li><strong>Misinformation:</strong> False information spreads faster than truth</li>
+                <li><strong>No standards:</strong> Anyone can post anything, regardless of quality or accuracy</li>
+                <li><strong>No curation:</strong> Algorithms prioritize engagement, not quality</li>
+            </ul>
+            <h3>Katanx Solution</h3>
+            <p>AI quality scoring. Practitioner-focused content. Standards and guidelines. Content is evaluated for quality, not just engagement. The platform rewards depth, skill, and genuine contribution.</p>
+        </div>
+
+        <div class="problem-section">
+            <h2>The Identity Fragmentation</h2>
+            <p>Multiple platforms force you to fragment your identity. You're a different person on LinkedIn, Instagram, Twitter, and TikTok—with no unified expression of who you are.</p>
+            <ul>
+                <li><strong>Multiple platforms:</strong> Different personas for different platforms</li>
+                <li><strong>Fractured identity:</strong> No unified expression of your full self</li>
+                <li><strong>Platform limitations:</strong> Each platform forces you into a narrow format</li>
+                <li><strong>No holistic view:</strong> Can't see someone's full journey across disciplines</li>
+            </ul>
+            <h3>Katanx Solution</h3>
+            <p>Multi-disciplinary profiles. Unified portfolio showcasing your journey across the nine arts. One place to express your full identity as a practitioner, teacher, artist, or coach.</p>
+        </div>
+
+        <div class="problem-section">
+            <h2>The Data Exploitation</h2>
+            <p>Surveillance capitalism. Your data is harvested, sold, and used to manipulate you. Privacy is an afterthought, and you have little control over how your information is used.</p>
+            <ul>
+                <li><strong>Surveillance capitalism:</strong> Your data is the product, you are the resource</li>
+                <li><strong>Ad targeting:</strong> Every click, like, and scroll is tracked and monetized</li>
+                <li><strong>Privacy violations:</strong> Data shared with third parties without meaningful consent</li>
+                <li><strong>Little control:</strong> Complex privacy settings that most users don't understand</li>
+            </ul>
+            <h3>Katanx Solution</h3>
+            <p>Transparent privacy policy. User control over data. We're building a platform where your data serves you, not advertisers. Clear, understandable privacy practices that put you in control.</p>
+        </div>
+
+        <div class="problem-section">
+            <h2>The Community Void</h2>
+            <p>Shallow connections, no real community. Relationships are transactional, based on likes and follows rather than genuine shared practice and growth.</p>
+            <ul>
+                <li><strong>Shallow connections:</strong> Follows and likes don't create real relationships</li>
+                <li><strong>No real community:</strong> No shared purpose or meaningful interaction</li>
+                <li><strong>Transactional relationships:</strong> Connections based on mutual benefit, not genuine connection</li>
+                <li><strong>No support system:</strong> Hard to find mentors, teachers, or fellow practitioners</li>
+            </ul>
+            <h3>Katanx Solution</h3>
+            <p>Forums, circles, and meaningful connections around shared practice. Communities organized by discipline. Find teachers, mentors, and fellow practitioners. Build relationships based on genuine shared interest and growth.</p>
+        </div>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Traditional Social Media</th>
+                    <th>Katanx</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Content Quality</td>
+                    <td class="bad">Algorithm-driven, engagement-focused</td>
+                    <td class="good">AI-scored, practitioner-focused, standards-based</td>
+                </tr>
+                <tr>
+                    <td>Community Depth</td>
+                    <td class="bad">Shallow, transactional connections</td>
+                    <td class="good">Forums, circles, shared practice communities</td>
+                </tr>
+                <tr>
+                    <td>Metrics</td>
+                    <td class="bad">Vanity metrics (likes, followers)</td>
+                    <td class="good">Meaningful metrics (Friends, Fans, Resonating)</td>
+                </tr>
+                <tr>
+                    <td>Privacy</td>
+                    <td class="bad">Data harvesting, surveillance capitalism</td>
+                    <td class="good">Transparent, user-controlled, privacy-first</td>
+                </tr>
+                <tr>
+                    <td>Discovery</td>
+                    <td class="bad">Algorithmic echo chambers</td>
+                    <td class="good">Cross-disciplinary, intentional exploration</td>
+                </tr>
+                <tr>
+                    <td>Standards</td>
+                    <td class="bad">No quality standards, anything goes</td>
+                    <td class="good">Quality scoring, practitioner focus, guidelines</td>
+                </tr>
+                <tr>
+                    <td>Identity</td>
+                    <td class="bad">Fragmented across platforms</td>
+                    <td class="good">Unified, multi-disciplinary profiles</td>
+                </tr>
+                <tr>
+                    <td>Time & Attention</td>
+                    <td class="bad">Infinite scroll, attention extraction</td>
+                    <td class="good">Intentional consumption, respect for your time</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="cta-section">
+            <h2>Ready for Something Different?</h2>
+            <p>Join katanx and experience a social platform built for practitioners, not algorithms.</p>
+            <div class="cta-buttons">
+                <a href="auth.html" class="cta-button">Sign Up</a>
+                <a href="landing.html#platform" class="cta-button secondary">Learn More</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>katanx © 2025</p>
+            <div class="footer-bottom">
+                <a href="landing.html">Home</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="careers.html">Careers</a>
+                <a href="the-problem.html">The Problem</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="the-problem.js"></script>
+</body>
+</html>
+

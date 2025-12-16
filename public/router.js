@@ -15,7 +15,10 @@ class Router {
             '/application.html': 'application',
             '/archive.html': 'archive',
             '/metrics_dashboard.html': 'metrics',
-            '/thread.html': 'thread'
+            '/thread.html': 'thread',
+            '/privacy.html': 'privacy',
+            '/careers.html': 'careers',
+            '/the-problem.html': 'the-problem'
         };
         
         // Also handle thread.html as a base route

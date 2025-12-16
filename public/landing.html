@@ -107,6 +107,7 @@
 
         html, body {
             overflow-x: hidden;
+            height: auto;
         }
 
         body {
@@ -141,17 +142,27 @@
 
         /* Navigation */
         .nav {
-            background: var(--space-black);
-            border-bottom: none;
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 10;
-            transform: translateY(-100%);
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            left: 0;
+            right: 0;
+            z-index: 100;
+            width: 100%;
+            background: var(--space-black);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .nav.visible {
-            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-content-wrapper {
+            background: var(--space-black);
+            border-bottom: none;
+            width: 100%;
         }
 
         .nav-content {
@@ -503,6 +514,185 @@
         }
 
 
+        /* Manifesto Section */
+        .manifesto-section {
+            padding: 8rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manifesto-container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            position: relative;
+        }
+
+        .manifesto-decorative {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 3rem 0;
+            opacity: 0;
+            animation: fadeInUp 1.2s ease-out forwards;
+        }
+
+        .manifesto-decorative:nth-of-type(1) {
+            animation-delay: 0.3s;
+        }
+
+        .manifesto-decorative:nth-of-type(2) {
+            animation-delay: 1.8s;
+        }
+
+        .manifesto-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 255, 255, 0.2) 20%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0.2) 80%,
+                transparent 100%);
+            max-width: 120px;
+            opacity: 0;
+            animation: lineDraw 1.5s ease-out forwards;
+        }
+
+        .manifesto-line-1 {
+            animation-delay: 0.5s;
+        }
+
+        .manifesto-line-2 {
+            animation-delay: 0.7s;
+        }
+
+        .manifesto-line-3 {
+            animation-delay: 2s;
+        }
+
+        .manifesto-line-4 {
+            animation-delay: 2.2s;
+        }
+
+        @keyframes lineDraw {
+            0% {
+                width: 0;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                width: 100%;
+                opacity: 1;
+            }
+        }
+
+        .manifesto-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .manifesto-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            animation: dotFadeIn 0.6s ease-out forwards;
+        }
+
+        .manifesto-dot:nth-child(1) {
+            animation-delay: 0.6s;
+        }
+
+        .manifesto-dot:nth-child(2) {
+            animation-delay: 0.7s;
+        }
+
+        .manifesto-dot:nth-child(3) {
+            animation-delay: 0.8s;
+        }
+
+        .manifesto-decorative:nth-of-type(2) .manifesto-dot:nth-child(1) {
+            animation-delay: 2.1s;
+        }
+
+        .manifesto-decorative:nth-of-type(2) .manifesto-dot:nth-child(2) {
+            animation-delay: 2.2s;
+        }
+
+        .manifesto-decorative:nth-of-type(2) .manifesto-dot:nth-child(3) {
+            animation-delay: 2.3s;
+        }
+
+        @keyframes dotFadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .manifesto-content {
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease-out 0.9s forwards;
+        }
+
+        .manifesto-title {
+            font-family: 'Inconsolata', monospace;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--space-white);
+            margin-bottom: 2rem;
+            letter-spacing: 0.02em;
+            line-height: 1.3;
+        }
+
+
+        .manifesto-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-gray-lighter);
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .manifesto-cta {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--space-white);
+            margin-top: 2rem;
+            letter-spacing: 0.01em;
+        }
+
+        @media (max-width: 768px) {
+            .manifesto-section {
+                padding: 5rem 0;
+            }
+
+            .manifesto-title {
+                font-size: 1.5rem;
+            }
+
+            .manifesto-text {
+                font-size: 0.9375rem;
+            }
+
+            .manifesto-cta {
+                font-size: 1rem;
+            }
+        }
+
         /* Section */
         .section {
             padding: 2.5rem 0;
@@ -514,7 +704,28 @@
             text-align: center;
             margin-bottom: 0.75rem;
             color: var(--space-white);
+            background: linear-gradient(90deg, 
+                var(--space-white) 0%,
+                var(--tan) 25%,
+                var(--space-white) 50%,
+                var(--tan) 75%,
+                var(--space-white) 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmerText 3s ease-in-out infinite;
         }
+
+        @keyframes shimmerText {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
 
         .section-description {
             font-size: 0.875rem;
@@ -1228,12 +1439,14 @@
 
     <!-- Navigation -->
     <nav class="nav" role="navigation" aria-label="Main navigation">
-        <div class="container">
-            <div class="nav-content">
-                <a href="/" class="nav-brand" aria-label="katanx home">katanx</a>
-                <div class="nav-links">
-                    <a href="#philosophy" class="nav-link nav-philosophy" aria-label="View philosophy section">Philosophy</a>
-                    <a href="auth.html" class="nav-link nav-join" aria-label="Join katanx">Join</a>
+        <div class="nav-content-wrapper">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="/" class="nav-brand" aria-label="katanx home">katanx</a>
+                    <div class="nav-links">
+                        <a href="#philosophy" class="nav-link nav-philosophy" aria-label="View philosophy section">Philosophy</a>
+                        <a href="auth.html" class="nav-link nav-join" aria-label="Join katanx">Join</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1263,13 +1476,44 @@
         </div>
     </section>
 
+    <!-- Manifesto Section -->
+    <section class="manifesto-section" id="manifesto">
+        <div class="manifesto-container">
+            <div class="manifesto-decorative">
+                <div class="manifesto-line manifesto-line-1"></div>
+                <div class="manifesto-dots">
+                    <span class="manifesto-dot"></span>
+                    <span class="manifesto-dot"></span>
+                    <span class="manifesto-dot"></span>
+                </div>
+                <div class="manifesto-line manifesto-line-2"></div>
+            </div>
+            
+            <div class="manifesto-content">
+                <h2 class="manifesto-title" id="manifestoTitle">Ready to level up for real?</h2>
+                <p class="manifesto-text" id="manifestoText1">Most social platforms are designed to keep you scrolling, not growing. Katanx is built different.</p>
+                <p class="manifesto-text" id="manifestoText2">We're a community for people serious about mastery, whether that's martial arts, visual arts, engineering, leadership, or elite performance. Track real progress. Connect with others on the same path. Share wins that actually matter.</p>
+                <p class="manifesto-text" id="manifestoText3">Our AI allies Iceberg and Thesidia keep the signal-to-noise ratio high by filtering bots and low-effort content. What you get: genuine people, real growth, zero BS.</p>
+                <p class="manifesto-text manifesto-cta" id="manifestoCTA">Stop optimizing for likes. Start building something that lasts.</p>
+            </div>
+            
+            <div class="manifesto-decorative">
+                <div class="manifesto-line manifesto-line-3"></div>
+                <div class="manifesto-dots">
+                    <span class="manifesto-dot"></span>
+                    <span class="manifesto-dot"></span>
+                    <span class="manifesto-dot"></span>
+                </div>
+                <div class="manifesto-line manifesto-line-4"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Philosophy -->
     <section class="section" id="philosophy" aria-labelledby="philosophy-title">
         <div class="container">
             <h2 class="section-title" id="philosophy-title">The Nine Arts</h2>
-            <p class="section-description">
-                Human development is cultivated through nine interconnected arts—each a path to mastery, expression, and growth.
-            </p>
+            <p class="section-description" id="philosophy-description">Human development is cultivated through nine interconnected arts—each a path to mastery, expression, and growth.</p>
 
             <div class="cards">
                 <div class="card">
@@ -1853,6 +2097,8 @@
             // Initial scroll handler
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
+
+
 
             // V2 UX Enhancements
 
