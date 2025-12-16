@@ -336,17 +336,17 @@ def index():
 
 @app.route('/home')
 def home():
-    """Serve main application - index.html is the home page for katanx.com/home"""
+    """Serve main application - app.html is the home page for katanx.com/home"""
     try:
         # Check public/ directory first (for Vercel), then current directory
         static_dir = Path(__file__).parent.parent / 'public'
         if static_dir.exists():
-            index_path = static_dir / 'index.html'
-            if index_path.exists():
+            app_path = static_dir / 'app.html'
+            if app_path.exists():
                 try:
-                    return send_from_directory(str(static_dir), 'index.html')
+                    return send_from_directory(str(static_dir), 'app.html')
                 except Exception as file_error:
-                    print(f"Error sending index.html: {file_error}")
+                    print(f"Error sending app.html: {file_error}")
             contexts_path = static_dir / 'contexts.html'
             if contexts_path.exists():
                 try:
@@ -354,12 +354,12 @@ def home():
                 except Exception as file_error:
                     print(f"Error sending contexts.html: {file_error}")
         # Fallback to current directory
-        current_index = Path('index.html')
-        if current_index.exists():
+        current_app = Path('app.html')
+        if current_app.exists():
             try:
-                return send_from_directory('.', 'index.html')
+                return send_from_directory('.', 'app.html')
             except Exception as file_error:
-                print(f"Error sending current index.html: {file_error}")
+                print(f"Error sending current app.html: {file_error}")
         current_contexts = Path('contexts.html')
         if current_contexts.exists():
             try:
