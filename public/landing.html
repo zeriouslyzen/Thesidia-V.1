@@ -3,46 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#000000">
     <title>katanx</title>
     <meta name="description" content="See patterns others miss. A platform for practitioners of the arts of human development.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#000000">
     <style>
         :root {
             --yellow: #ffd700;
+            --yellow-dark: #ffb700;
             --black: #000000;
-            --white: #ffffff;
-            --light-blue-neon: #00d4ff;
-            --gray-700: #374151;
+            --gray-900: #111827;
             --gray-800: #1f2937;
+            --gray-700: #374151;
+            --gray-600: #4b5563;
+            --gray-500: #6b7280;
+            --gray-400: #9ca3af;
+            --gray-300: #d1d5db;
+            --gray-200: #e5e7eb;
+            --gray-100: #f3f4f6;
+            --gray-50: #f9fafb;
+            --white: #ffffff;
+        }
+
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
         }
 
         body {
             font-family: 'Inconsolata', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 16px;
             line-height: 1.5;
-            color: var(--white);
-            background: var(--black);
+            color: #ffffff;
+            background: #000000;
             color-scheme: dark;
-            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            margin: 0;
+            padding: 0;
         }
 
         html {
-            background: var(--black);
+            background: #000000;
             color-scheme: dark;
             scroll-behavior: smooth;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
@@ -51,32 +69,35 @@
             padding: 0 1rem;
         }
 
-        #initialScreen {
+        /* Initial black screen */
+        .initial-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: #000000;
-            z-index: 9999;
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .initial-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
             transition: opacity 0.5s ease-out;
         }
 
-        #initialScreen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
+        /* Navigation */
         .nav {
             background: #000000;
+            border-bottom: none;
             position: sticky;
             top: 0;
             z-index: 10;
             transform: translateY(-100%);
-            transition: transform 0.5s ease-out;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .nav.visible {
@@ -104,8 +125,21 @@
             color: #ffd700;
         }
 
+        @keyframes glowPulseNav {
+            0%, 100% {
+                text-shadow: 0 0 3px rgba(255, 255, 255, 0.2), 0 0 6px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                text-shadow: 0 0 6px rgba(255, 255, 255, 0.4), 0 0 12px rgba(255, 255, 255, 0.2), 0 0 18px rgba(255, 255, 255, 0.1);
+            }
+        }
+
         .nav-brand.nav-brand-x {
             color: #00d4ff;
+        }
+
+        .nav-brand.nav-brand-x::before {
+            color: #ffd700; /* Keep "/" yellow when "x" is blue */
         }
 
         .nav-links {
@@ -125,27 +159,21 @@
         }
 
         .nav-join {
-            color: var(--yellow) !important;
+            color: #ffd700 !important;
         }
 
         .nav-philosophy {
-            color: var(--light-blue-neon) !important;
+            color: #00d4ff !important;
         }
 
+        /* Hero */
         .hero {
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 0;
-            opacity: 0;
-            transition: opacity 0.5s ease-out;
-        }
-
-        .hero.visible {
-            opacity: 1;
         }
 
         .hero-title {
@@ -164,38 +192,75 @@
 
         .hero-title .cursor {
             display: inline-block;
-            width: 0.5em;
-            height: 1em;
-            background-color: #ffffff;
-            vertical-align: middle;
+            width: 2px;
+            height: 1.2em;
+            background: #ffd700;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: baseline;
+        }
+
+        .hero-title.typing .cursor {
             animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.3), 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+            50% {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.2);
+            }
         }
 
         .hero-subtitle {
             font-size: 1rem;
-            color: var(--yellow);
+            color: #ffcc99;
             margin-bottom: 1.5rem;
             max-width: 480px;
             margin-left: auto;
             margin-right: auto;
             opacity: 0;
-            transition: opacity 0.5s ease-out;
+            min-height: 1.5rem;
         }
 
         .hero-subtitle.visible {
             opacity: 1;
+            animation: subtitleGlow 3s ease-in-out infinite;
         }
 
+        @keyframes subtitleGlow {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(255, 204, 153, 0.6), 0 0 20px rgba(255, 204, 153, 0.4), 0 0 30px rgba(255, 204, 153, 0.2);
+            }
+            50% {
+                text-shadow: 0 0 15px rgba(255, 204, 153, 0.8), 0 0 30px rgba(255, 204, 153, 0.6), 0 0 45px rgba(255, 204, 153, 0.4), 0 0 60px rgba(255, 204, 153, 0.2);
+            }
+        }
+
+        .hero-subtitle .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: #ffcc99;
+            margin-left: 2px;
+            animation: blink 0.7s infinite;
+            vertical-align: baseline;
+        }
+
+        .hero-subtitle.typing .cursor {
+            animation: blink 0.7s infinite;
+        }
+
+
+        /* Section */
         .section {
             padding: 2.5rem 0;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .section.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         .section-title {
@@ -203,7 +268,7 @@
             font-weight: 600;
             text-align: center;
             margin-bottom: 0.75rem;
-            color: var(--white);
+            color: #ffffff;
         }
 
         .section-description {
@@ -216,6 +281,7 @@
             margin-right: auto;
         }
 
+        /* Cards */
         .cards {
             display: grid;
             grid-template-columns: 1fr;
@@ -224,18 +290,11 @@
         }
 
         .card {
-            background: var(--black);
+            background: #000000;
             border: 1px solid var(--gray-700);
             border-radius: 0.5rem;
             padding: 1rem;
-            transition: border-color 0.2s, transform 0.3s ease, opacity 0.3s ease;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .card.visible {
-            opacity: 1;
-            transform: translateY(0);
+            transition: border-color 0.2s;
         }
 
         .card:hover {
@@ -245,7 +304,7 @@
         .card-title {
             font-size: 0.875rem;
             font-weight: 600;
-            color: var(--white);
+            color: #ffffff;
             margin-bottom: 0.5rem;
         }
 
@@ -255,8 +314,36 @@
             line-height: 1.4;
         }
 
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 0.75rem;
+            background: #000000;
+            border-radius: 0.375rem;
+        }
+
+        .feature-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-description {
+            font-size: 0.625rem;
+            color: var(--white);
+        }
+
+        /* Demo */
         .demo {
-            background: var(--black);
+            background: #000000;
             padding: 2.5rem 0;
         }
 
@@ -268,24 +355,37 @@
         }
 
         .demo-visual {
-            height: 200px;
-            background: var(--black);
+            background: #000000;
             border: 1px solid var(--gray-700);
             border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            font-size: 0.875rem;
+            padding: 1.5rem;
             text-align: center;
-            padding: 1rem;
+        }
+
+        .demo-input {
+            margin-bottom: 1rem;
+        }
+
+        .demo-input input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--gray-600);
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .demo-input input:focus {
+            border-color: var(--yellow);
+            outline: none;
         }
 
         .demo-content h3 {
             font-size: 1.25rem;
             font-weight: 600;
-            color: var(--white);
             margin-bottom: 0.75rem;
+            color: var(--black);
         }
 
         .demo-content p {
@@ -294,33 +394,17 @@
             margin-bottom: 1rem;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            border: 1px solid var(--yellow);
-            color: var(--yellow);
-            text-decoration: none;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .btn:hover {
-            background: var(--yellow);
-            color: var(--black);
-        }
-
+        /* Footer */
         .footer {
-            background: var(--black);
-            padding: 2rem 0 1rem;
+            background: #000000;
+            color: #ffffff;
+            padding: 1.5rem 0 1rem;
             border-top: 1px solid var(--gray-800);
-            text-align: center;
         }
 
         .footer-content {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
             margin-bottom: 1.5rem;
         }
@@ -354,29 +438,80 @@
             color: var(--white);
         }
 
-        @keyframes glowPulse {
-            0%, 100% {
-                text-shadow: 0 0 5px rgba(255, 255, 255, 0.3), 0 0 10px rgba(255, 255, 255, 0.2);
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-            50% {
-                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.2);
-            }
-        }
-
-        @keyframes glowPulseNav {
-            0%, 100% {
-                text-shadow: 0 0 2px rgba(255, 255, 255, 0.2), 0 0 5px rgba(255, 255, 255, 0.1);
-            }
-            50% {
-                text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(255, 255, 255, 0.2);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
+        @keyframes cinematicEntrance {
+            from {
+                opacity: 0;
+                transform: scale(1.1) translateY(20px);
+                filter: blur(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        .hero {
+            animation: cinematicEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .section {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s;
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .feature.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Mobile First */
         @media (min-width: 640px) {
             .container {
                 max-width: 1024px;
@@ -388,7 +523,7 @@
             }
 
             .hero {
-                padding: 4rem 0 3rem;
+                min-height: 100vh;
             }
 
             .hero-title {
@@ -398,6 +533,7 @@
             .hero-subtitle {
                 font-size: 1.125rem;
             }
+
 
             .cards {
                 grid-template-columns: repeat(2, 1fr);
@@ -425,12 +561,11 @@
     </style>
 </head>
 <body>
-    <div id="initialScreen"></div>
-
+    <!-- Navigation -->
     <nav class="nav">
         <div class="container">
             <div class="nav-content">
-                <a href="/" class="nav-brand" id="navBrand">katanx</a>
+                <a href="/" class="nav-brand">katanx</a>
                 <div class="nav-links">
                     <a href="#philosophy" class="nav-link nav-philosophy">Philosophy</a>
                     <a href="auth.html" class="nav-link nav-join">Join</a>
@@ -439,87 +574,111 @@
         </div>
     </nav>
 
-    <section class="hero" id="heroSection">
+    <!-- Initial Black Screen -->
+    <div class="initial-screen" id="initialScreen"></div>
+
+    <!-- Hero -->
+    <section class="hero">
         <div class="container">
             <h1 class="hero-title" id="heroTitle"></h1>
             <p class="hero-subtitle" id="heroSubtitle"></p>
         </div>
     </section>
 
+    <!-- Philosophy -->
     <section class="section" id="philosophy">
         <div class="container">
-            <h2 class="section-title">The Nine Arts of Human Development</h2>
+            <h2 class="section-title">The Nine Arts</h2>
             <p class="section-description">
-                Human development is not accidental. It is cultivated through practice and mastery. We have identified nine fundamental arts that encompass the full spectrum of human potential.
+                Human development is cultivated through nine interconnected arts—each a path to mastery, expression, and growth.
             </p>
 
             <div class="cards">
                 <div class="card">
-                    <h3 class="card-title">Martial & Combative Arts</h3>
+                    <h3 class="card-title">Physical Arts</h3>
                     <p class="card-description">
-                        The foundation of discipline, awareness, and response. From traditional Kung Fu and Karate to modern expressions like Jeet Kune Do and Brazilian Jiu-Jitsu. These arts teach presence, power, and the integration of mind and body.
+                        Martial arts, movement, dance, and bodywork. The foundation of human expression through physical mastery.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h3 class="card-title">Movement Arts</h3>
+                    <h3 class="card-title">Creative Arts</h3>
                     <p class="card-description">
-                        The body as an instrument of expression, rhythm, and flow. Dance forms from ballet to contemporary, Parkour's urban exploration, acrobatics, and gymnastic precision. These arts develop kinesthetic intelligence and creative embodiment.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h3 class="card-title">Visual Arts</h3>
-                    <p class="card-description">
-                        Projecting inner vision into tangible form. Painting, sculpture, photography, design, and architecture. These arts develop spatial intelligence, aesthetic sensitivity, and the ability to communicate complex ideas through visual language.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h3 class="card-title">Internal/Spiritual Arts</h3>
-                    <p class="card-description">
-                        The inner work of consciousness and awareness. Meditation, breathwork, yoga, shamanic practices, and mystical traditions. These arts cultivate mindfulness, emotional intelligence, and connection to deeper meaning.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h3 class="card-title">Performance Arts</h3>
-                    <p class="card-description">
-                        The art of transmitting energy, feeling, and story. Theater, spoken word, music, ritual performance. These arts develop charisma, emotional expression, and the ability to move audiences through presence and narrative.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h3 class="card-title">Healing Arts</h3>
-                    <p class="card-description">
-                        Restoring harmony between body, mind, and spirit. Traditional medicine, acupuncture, herbalism, massage, and energetic healing. These arts develop therapeutic intelligence and the understanding of holistic health.
+                        Visual arts, music, performance, and invention. Bringing imagination into tangible reality.
                     </p>
                 </div>
 
                 <div class="card">
                     <h3 class="card-title">Intellectual Arts</h3>
                     <p class="card-description">
-                        The disciplined pursuit of wisdom and understanding. Philosophy, science, mathematics, logic, and critical thinking. These arts develop analytical intelligence and the ability to navigate complex systems of thought.
+                        Philosophy, science, mathematics, and strategy. Sharpening understanding and expanding awareness.
+                    </p>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <h4 class="feature-title">Martial Arts</h4>
+                    <p class="feature-description">Movement, discipline, awareness</p>
+                </div>
+                <div class="feature">
+                    <h4 class="feature-title">Meditation</h4>
+                    <p class="feature-description">Consciousness, mindfulness</p>
+                </div>
+                <div class="feature">
+                    <h4 class="feature-title">Engineering</h4>
+                    <p class="feature-description">Creation, innovation</p>
+                </div>
+                <div class="feature">
+                    <h4 class="feature-title">Leadership</h4>
+                    <p class="feature-description">Connection, influence</p>
+                </div>
+                <div class="feature">
+                    <h4 class="feature-title">Healing</h4>
+                    <p class="feature-description">Harmony, restoration</p>
+                </div>
+                <div class="feature">
+                    <h4 class="feature-title">Performance</h4>
+                    <p class="feature-description">Expression, storytelling</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform -->
+    <section class="section" id="platform">
+        <div class="container">
+            <h2 class="section-title">Platform</h2>
+            <p class="section-description">
+                Connect with practitioners, showcase your disciplines, and discover new paths of development.
+            </p>
+
+            <div class="cards">
+                <div class="card">
+                    <h3 class="card-title">Multi-Disciplinary Profiles</h3>
+                    <p class="card-description">
+                        Showcase your journey across multiple arts. Display credentials, portfolios, and achievements.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h3 class="card-title">Creative/Innovative Arts</h3>
+                    <h3 class="card-title">Intelligent Communities</h3>
                     <p class="card-description">
-                        Transforming imagination into functional reality. Engineering, programming, invention, and technological innovation. These arts develop practical intelligence and the ability to solve complex problems creatively.
+                        AI-powered forums organized by discipline. Connect with practitioners and share insights.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h3 class="card-title">Social/Leadership Arts</h3>
+                    <h3 class="card-title">Progress Analytics</h3>
                     <p class="card-description">
-                        Mastery of connection, influence, and collective intelligence. Rhetoric, diplomacy, teaching, community building. These arts develop interpersonal intelligence and the ability to lead and inspire groups effectively.
+                        Track your development across disciplines. Visualize growth and celebrate achievements.
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- AI -->
     <section class="demo" id="ai">
         <div class="container">
             <h2 class="section-title">Thesidia AI</h2>
@@ -554,13 +713,14 @@
                     </div>
 
                     <div style="margin-top: 2rem;">
-                        <a href="/home" class="btn btn-primary">Try Thesidia AI</a>
+                        <a href="index.html" class="btn btn-primary">Try Thesidia AI</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -574,7 +734,7 @@
                 <div class="footer-section">
                     <h4>Thesidia AI</h4>
                     <a href="#ai">Capabilities</a>
-                    <a href="/home">Try AI</a>
+                    <a href="index.html">Try AI</a>
                 </div>
 
                 <div class="footer-section">
@@ -606,12 +766,14 @@
             const hero = document.querySelector('.hero');
             const sections = document.querySelectorAll('.section');
             const cards = document.querySelectorAll('.card');
+            const features = document.querySelectorAll('.feature');
 
             if (!brand) return;
 
             const originalText = 'katanx';
             let compressed = false;
 
+            // Typewriter effect with colored text and cursor
             function typeWriterWithCursor(element, text, speed = 120, callback) {
                 element.innerHTML = '<span class="cursor"></span>';
                 element.classList.add('typing');
@@ -625,8 +787,9 @@
                         
                         if (char === '/') {
                             charHtml = '<span style="color: #ffd700;">/</span>';
-                        } else if (char === 'x' || char === 'X') {
-                            charHtml = '<span style="color: #00d4ff;">' + char + '</span>';
+                        } else if (text === '/katanx' && char.toLowerCase() === 'x') {
+                            // Make "x" in "/katanx" light blue
+                            charHtml = '<span style="color: #00d4ff;">x</span>';
                         } else {
                             charHtml = char;
                         }
@@ -636,6 +799,7 @@
                     } else {
                         clearInterval(timer);
                         element.classList.remove('typing');
+                        // Remove cursor after typing
                         setTimeout(() => {
                             const finalText = text;
                             let finalHtml = '';
@@ -643,8 +807,9 @@
                                 const char = finalText.charAt(j);
                                 if (char === '/') {
                                     finalHtml += '<span style="color: #ffd700;">/</span>';
-                                } else if (char === 'x' || char === 'X') {
-                                    finalHtml += '<span style="color: #00d4ff;">' + char + '</span>';
+                                } else if (finalText === '/katanx' && char.toLowerCase() === 'x') {
+                                    // Make "x" in "/katanx" light blue
+                                    finalHtml += '<span style="color: #00d4ff;">x</span>';
                                 } else {
                                     finalHtml += char;
                                 }
@@ -656,20 +821,7 @@
                 }, speed);
             }
 
-            function typeWriter(element, text, speed = 60, callback) {
-                let i = 0;
-                element.textContent = '';
-                const timer = setInterval(() => {
-                    if (i < text.length) {
-                        element.textContent += text.charAt(i);
-                        i++;
-                    } else {
-                        clearInterval(timer);
-                        if (callback) callback();
-                    }
-                }, speed);
-            }
-
+            // Blink cursor 3 times
             function blinkCursor(element, times = 3, callback) {
                 let count = 0;
                 const cursor = document.createElement('span');
@@ -687,13 +839,66 @@
                 }, 500);
             }
 
+            // Initial sequence
+            setTimeout(() => {
+                // Hide black screen
+                initialScreen.classList.add('hidden');
+                
+                // Blink cursor 3 times, then type "/katanx"
+                setTimeout(() => {
+                    heroTitle.style.opacity = '1';
+                    blinkCursor(heroTitle, 3, () => {
+                        typeWriterWithCursor(heroTitle, '/katanx', 120, () => {
+                            heroTitle.classList.add('visible');
+                            
+                            // Type first subtitle
+                            setTimeout(() => {
+                                typeWriterWithCursor(heroSubtitle, 'No Influencers. Only Practicioners', 30, () => {
+                                    heroSubtitle.classList.add('visible');
+                                    
+                                    // Transition to second subtitle
+                                    setTimeout(() => {
+                                        heroSubtitle.style.opacity = '0';
+                                        heroSubtitle.innerHTML = '';
+                                        setTimeout(() => {
+                                            typeWriterWithCursor(heroSubtitle, 'Social Media, But With Standards.', 30, () => {
+                                                heroSubtitle.classList.add('visible');
+                                                
+                                                // Transition to third subtitle
+                                                setTimeout(() => {
+                                                    heroSubtitle.style.opacity = '0';
+                                                    heroSubtitle.innerHTML = '';
+                                                    setTimeout(() => {
+                                                        typeWriterWithCursor(heroSubtitle, 'A platform for practitioners of the arts of human development.', 30, () => {
+                                                            heroSubtitle.classList.add('visible');
+                                                            
+                                                            // Nav bar slides down
+                                                            setTimeout(() => {
+                                                                nav.classList.add('visible');
+                                                            }, 500);
+                                                        });
+                                                    }, 400);
+                                                }, 2000);
+                                            });
+                                        }, 400);
+                                    }, 2000);
+                                });
+                            }, 800);
+                        });
+                    });
+                }, 300);
+            }, 1000); // 1 second black screen
+
+            // Nav brand animation on scroll
             const setBrand = (text, makeBlue) => {
                 brand.style.opacity = '0';
                 setTimeout(() => {
-                    brand.textContent = text;
-                    if (makeBlue) {
+                    if (makeBlue && text === 'x') {
+                        // When showing "/x", the ::before adds "/", so just set "x" as text with light blue color
+                        brand.textContent = 'x';
                         brand.classList.add('nav-brand-x');
                     } else {
+                        brand.textContent = text;
                         brand.classList.remove('nav-brand-x');
                     }
                     brand.style.opacity = '1';
@@ -710,14 +915,24 @@
                 }
             };
 
+            // Click handler for cinematic scroll to hero
             brand.addEventListener('click', (e) => {
                 e.preventDefault();
+                
+                // Reset hero animation
+                hero.style.animation = 'none';
+                setTimeout(() => {
+                    hero.style.animation = 'cinematicEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                }, 10);
+
+                // Smooth scroll to top
                 window.scrollTo({
                     top: 0,
                     behavior: 'smooth'
                 });
             });
 
+            // Intersection Observer for scroll-triggered animations
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -50px 0px'
@@ -741,51 +956,22 @@
                 });
             }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
 
-            setTimeout(() => {
-                initialScreen.classList.add('hidden');
-                
-                setTimeout(() => {
-                    hero.classList.add('visible');
-                    heroTitle.style.opacity = '1';
-                    blinkCursor(heroTitle, 3, () => {
-                        typeWriterWithCursor(heroTitle, '/katanx', 120, () => {
-                            heroTitle.classList.add('visible');
-                            
-                            setTimeout(() => {
-                                typeWriter(heroSubtitle, 'No Influencers. Only Practicioners', 60, () => {
-                                    heroSubtitle.classList.add('visible');
-                                    
-                                    setTimeout(() => {
-                                        heroSubtitle.style.opacity = '0';
-                                        setTimeout(() => {
-                                            typeWriter(heroSubtitle, 'Social Media, But With Standards.', 60, () => {
-                                                heroSubtitle.classList.add('visible');
-                                                
-                                                setTimeout(() => {
-                                                    heroSubtitle.style.opacity = '0';
-                                                    setTimeout(() => {
-                                                        typeWriter(heroSubtitle, 'A platform for practitioners of the arts of human development.', 50, () => {
-                                                            heroSubtitle.classList.add('visible');
-                                                            
-                                                            setTimeout(() => {
-                                                                nav.classList.add('visible');
-                                                            }, 500);
-                                                        });
-                                                    }, 400);
-                                                }, 2000);
-                                            });
-                                        }, 400);
-                                    }, 2000);
-                                });
-                            }, 800);
-                        });
-                    });
-                }, 300);
-            }, 1000);
+            const featureObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 50);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
 
+            // Observe elements
             sections.forEach(section => sectionObserver.observe(section));
             cards.forEach(card => cardObserver.observe(card));
+            features.forEach(feature => featureObserver.observe(feature));
 
+            // Initial scroll handler
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
         });
