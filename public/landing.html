@@ -253,48 +253,45 @@
             pointer-events: none;
             z-index: 9998;
             opacity: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .x-slice.active {
+        .x-slice.visible {
             opacity: 1;
-            animation: xSliceExpand 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .x-slice-line {
-            position: absolute;
-            background: #00d4ff;
-            box-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 60px #00d4ff;
+            position: fixed;
+            background: #ffffff;
+            box-shadow: 0 0 14px rgba(255, 255, 255, 0.9),
+                        0 0 32px rgba(255, 255, 255, 0.6),
+                        0 0 60px rgba(255, 255, 255, 0.4);
+            height: 2px;
         }
 
+        /* First slice: from top-left corner across screen */
         .x-slice-line-1 {
+            top: 0;
+            left: 0;
             width: 0;
-            height: 4px;
+            transform-origin: left top;
             transform: rotate(45deg);
-            transform-origin: center;
-            animation: xSliceLine1 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
+        /* Second slice: from bottom-left corner across screen */
         .x-slice-line-2 {
+            bottom: 0;
+            left: 0;
             width: 0;
-            height: 4px;
+            transform-origin: left bottom;
             transform: rotate(-45deg);
-            transform-origin: center;
-            animation: xSliceLine2 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        @keyframes xSliceExpand {
-            0% {
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-            }
+        .x-slice-line-1.active {
+            animation: xSliceLine1 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .x-slice-line-2.active {
+            animation: xSliceLine2 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         @keyframes xSliceLine1 {
@@ -302,7 +299,7 @@
                 width: 0;
             }
             100% {
-                width: 200vw;
+                width: 260vw;
             }
         }
 
@@ -311,7 +308,7 @@
                 width: 0;
             }
             100% {
-                width: 200vw;
+                width: 260vw;
             }
         }
 
@@ -973,30 +970,47 @@
                                                         typeWriterWithCursor(heroSubtitle, 'A platform for practitioners of the arts of human development.', 30, () => {
                                                             heroSubtitle.classList.add('visible');
                                                             
-                                                            // X slice effect with screen shake
+                                                            // X slice effect with two slices and shake after each
                                                             setTimeout(() => {
                                                                 const xSlice = document.getElementById('xSlice');
+                                                                const line1 = xSlice.querySelector('.x-slice-line-1');
+                                                                const line2 = xSlice.querySelector('.x-slice-line-2');
                                                                 const body = document.body;
                                                                 const html = document.documentElement;
                                                                 
-                                                                // Trigger screen shake on both body and html
-                                                                body.classList.add('screen-shake');
-                                                                html.classList.add('screen-shake');
+                                                                // Make overlay visible
+                                                                xSlice.classList.add('visible');
                                                                 
-                                                                // Trigger X slice
-                                                                xSlice.classList.add('active');
+                                                                const triggerShake = () => {
+                                                                    body.classList.add('screen-shake');
+                                                                    html.classList.add('screen-shake');
+                                                                    setTimeout(() => {
+                                                                        body.classList.remove('screen-shake');
+                                                                        html.classList.remove('screen-shake');
+                                                                    }, 800);
+                                                                };
                                                                 
-                                                                // Remove shake after animation
+                                                                // First slice from top-left
+                                                                line1.classList.add('active');
+                                                                triggerShake();
+                                                                
+                                                                // Second slice from bottom-left after first completes
                                                                 setTimeout(() => {
-                                                                    body.classList.remove('screen-shake');
-                                                                    html.classList.remove('screen-shake');
-                                                                    xSlice.classList.remove('active');
-                                                                }, 1200);
+                                                                    line1.classList.remove('active');
+                                                                    line2.classList.add('active');
+                                                                    triggerShake();
+                                                                }, 650);
                                                                 
-                                                                // Nav bar slides down after slice
+                                                                // Clean up lines and overlay after both slices
+                                                                setTimeout(() => {
+                                                                    line2.classList.remove('active');
+                                                                    xSlice.classList.remove('visible');
+                                                                }, 1400);
+                                                                
+                                                                // Nav bar slides down shortly after second slice
                                                                 setTimeout(() => {
                                                                     nav.classList.add('visible');
-                                                                }, 800);
+                                                                }, 1100);
                                                             }, 500);
                                                         });
                                                     }, 400);
