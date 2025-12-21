@@ -10,6 +10,7 @@ import secrets
 import json
 import random
 import re
+import time
 from pathlib import Path
 
 # Ensure os is available for environment variables
@@ -22,41 +23,40 @@ sys.path.insert(0, str(project_root / 'src'))
 from flask import Flask, request, jsonify, send_from_directory, Response, stream_with_context, redirect, session
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
-# Force fresh import - clear any cached modules
-import sys
-if 'thesidia_hybrid_adaptive' in sys.modules:
-    del sys.modules['thesidia_hybrid_adaptive']
-if 'knowledge_base' in sys.modules:
-    del sys.modules['knowledge_base']
 
-# Lazy imports - only import when needed to avoid Vercel deployment issues
-# These will be imported inside functions that need them
+# New Centralized Initializer and Middleware
+from src.core.thesidia_initializer import ThesidiaInitializer
+from webapp.middleware.user_auth import require_user, require_user_data
+
+# Initialize System
+system_init = ThesidiaInitializer(project_root)
+
+# Lazy import placeholders (preserved for legacy compatibility during transition)
 ThesidiaHybridAdaptive = None
 KnowledgeBase = None
 UserMemoryManager = None
 UserInterestTracker = None
 AstronomicalPatternEngine = None
 
-def _lazy_import_modules():
-    """Lazy import modules - only when actually needed"""
-    global ThesidiaHybridAdaptive, KnowledgeBase, UserMemoryManager, UserInterestTracker, AstronomicalPatternEngine
-    
-    if ThesidiaHybridAdaptive is None:
-        try:
-            # Try absolute imports first
-            from src.thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
-            from src.knowledge_base import KnowledgeBase
-            from src.memory.user_memory_manager import UserMemoryManager
-            from src.user_interest_tracker import UserInterestTracker
-            from src.astronomical_patterns import AstronomicalPatternEngine
-        except ImportError as e:
-            # For Vercel: modules that require ollama will fail to import
-            print(f"Warning: Could not import Thesidia modules: {e}")
-            print("This is expected on Vercel - Ollama is not available")
-            return False
-    return True
 from datetime import datetime, timedelta
 import importlib
+
+# Response cleanup helpers
+def _strip_general_framework_block(text: str) -> str:
+    """Remove leaked coaching 'General Framework' template blocks from model output."""
+    if not text:
+        return text
+    # Strip from the first occurrence of (optional markdown) 'General Framework:' to the end.
+    # This is intentionally aggressive because the block is placeholder/template noise.
+    text = re.sub(r'\*{0,2}\s*General Framework:\s*\*{0,2}[\s\S]*\Z', '', text, flags=re.IGNORECASE)
+    return text.strip()
+
+# Conversation persistence (SQLite default)
+try:
+    from webapp.conversations.storage import build_store, ConversationMessage
+except Exception:
+    build_store = None
+    ConversationMessage = None
 
 # Ollama import - optional for Vercel deployment
 try:
@@ -68,11 +68,9 @@ except ImportError:
 
 # For Vercel: serve from public/ if it exists, otherwise current directory
 try:
-    static_dir = Path(__file__).parent.parent / 'public'
-    if static_dir.exists():
-        app = Flask(__name__, static_folder=str(static_dir), static_url_path='')
-    else:
-        app = Flask(__name__, static_folder='.', static_url_path='')
+    # During development, we handle static files via a custom route to manage
+    # cache-busting and path resolution across webapp and public directories.
+    app = Flask(__name__, static_folder=None)
     CORS(app)  # Enable CORS for security
 except Exception as e:
     # Fallback if Flask initialization fails
@@ -87,6 +85,14 @@ except Exception as e:
 
 # Session configuration for OAuth
 app.secret_key = os.getenv('FLASK_SECRET_KEY', secrets.token_urlsafe(32))
+
+# Initialize conversation store (SQLite) - safe no-op if imports unavailable
+conversation_store = None
+if build_store is not None:
+    try:
+        conversation_store = build_store(project_root)
+    except Exception as e:
+        print(f"Warning: Conversation store unavailable: {e}")
 
 # Security headers middleware - wrapped in try/except for Vercel
 try:
@@ -192,64 +198,31 @@ def check_ollama():
         return False
 
 def init_thesidia():
-    """Initialize Thesidia - FORCE FRESH INSTANCE"""
+    """Initialize Thesidia using centralized initializer"""
     global thesidia, thesidia_ready, ollama_status, knowledge_base, user_memory_manager, interest_tracker, astronomical_engine
+    success = system_init.init(force_fresh=True)
     
-    # Try to import modules first
-    if not _lazy_import_modules():
-        ollama_status = False
-        thesidia_ready = False
-        return False
+    # Sync global variables for legacy code compatibility
+    thesidia = system_init.thesidia
+    thesidia_ready = system_init.thesidia_ready
+    ollama_status = system_init.ollama_status
+    knowledge_base = system_init.knowledge_base
+    user_memory_manager = system_init.user_memory_manager
+    interest_tracker = system_init.interest_tracker
+    astronomical_engine = system_init.astronomical_engine
     
-    # Check if Ollama is available first
-    if not OLLAMA_AVAILABLE:
-        ollama_status = False
-        return False
-    
-    # Initialize knowledge base and other managers
-    if knowledge_base is None:
-        knowledge_base = KnowledgeBase(base_dir=project_root)
-    if user_memory_manager is None:
-        user_memory_manager = UserMemoryManager(base_dir=project_root)
-    if interest_tracker is None:
-        interest_tracker = UserInterestTracker(base_dir=project_root)
-    if astronomical_engine is None:
-        astronomical_engine = AstronomicalPatternEngine(data_dir=project_root / 'data')
-    
-    # Force reload module to ensure latest code
-    import thesidia_hybrid_adaptive
-    importlib.reload(thesidia_hybrid_adaptive)
-    ThesidiaHybridAdaptive = thesidia_hybrid_adaptive.ThesidiaHybridAdaptive
-    
-    ollama_status = check_ollama()
-    if not ollama_status:
-        return False
-    
-    try:
-        # Create fresh instance with reloaded class
-        thesidia = ThesidiaHybridAdaptive(model="clean-mistral:latest")  # Changed from oracle-agent (has hardcoded Oracle identity)
-        
-        # Set user memory manager if available
-        if user_memory_manager:
-            thesidia.user_memory_manager = user_memory_manager
-        
-        thesidia.load_state()
-        thesidia_ready = True
-        
-        # Verify the instance has the updated method
-        if hasattr(thesidia, '_handle_deep_research'):
-            import inspect
-            method_source = ''.join(inspect.getsourcelines(thesidia._handle_deep_research)[0])
-            has_nuclear = 'NUCLEAR OPTION' in method_source
-            print(f"🔪 SERVER INIT: Thesidia instance created. Has NUCLEAR stripping: {has_nuclear}")
-        
-        return True
-    except Exception as e:
-        print(f"Error initializing Thesidia: {e}")
-        import traceback
-        traceback.print_exc()
-        thesidia_ready = False
-        return False
+    return success
+
+# Helper for middleware to access managers
+def get_user_memory_manager():
+    return system_init.user_memory_manager
+
+# Ease of use middleware wrappers
+def require_thesidia_user(f):
+    return require_user(f)
+
+def require_thesidia_user_data(f):
+    return require_user_data(get_user_memory_manager)(f)
 
 # Try to initialize (will fail gracefully on Vercel)
 try:
@@ -257,8 +230,6 @@ try:
 except Exception as e:
     print(f"Warning: Could not initialize Thesidia: {e}")
     print("This is expected on Vercel - Ollama is not available")
-    thesidia_ready = False
-    ollama_status = False
 
 # Security: Rate limiting (simple in-memory)
 request_counts = {}
@@ -285,6 +256,11 @@ def check_rate_limit(ip):
     
     request_counts[ip].append(now)
     return True
+
+@app.route('/index.html')
+def index_direct():
+    print("DEBUG: index_direct reached")
+    return send_from_directory('.', 'index.html')
 
 @app.route('/')
 def index():
@@ -456,23 +432,117 @@ def status():
             'timestamp': datetime.now().isoformat()
         }), 200  # Return 200 instead of 500 so frontend can handle gracefully
 
-@app.route('/api/thesidia', methods=['POST'])
-def thesidia_api():
-    """Main API endpoint for Thesidia interactions - with streaming support"""
-    global thesidia_ready, ollama_status
-    
-    # Check status
-    ollama_status = check_ollama()
-    if not ollama_status:
-        return jsonify({
-            'error': 'Ollama is not running',
-            'ollama_status': False
-        }), 503
-    
+
+@app.route('/api/conversations', methods=['GET'])
+def list_conversations():
+    """List recent conversations for the current user/session."""
+    if conversation_store is None:
+        return jsonify({"conversations": [], "storage": "disabled"}), 200
+    user_id = request.args.get("user_id") or None
+    session_id = request.args.get("session_id") or None
+    limit = request.args.get("limit", "50")
+    try:
+        conversations = conversation_store.list_conversations(user_id=user_id, session_id=session_id, limit=int(limit))
+        return jsonify({"conversations": conversations, "storage": "sqlite"}), 200
+    except Exception as e:
+        return jsonify({"conversations": [], "storage": "error", "error": str(e)}), 200
+
+
+@app.route('/api/conversations/<conversation_id>', methods=['GET'])
+def get_conversation(conversation_id: str):
+    """Load one conversation with messages."""
+    if conversation_store is None:
+        return jsonify({"error": "Conversation storage disabled"}), 404
+    user_id = request.args.get("user_id") or None
+    session_id = request.args.get("session_id") or None
+    try:
+        conv = conversation_store.get_conversation(conversation_id=conversation_id, user_id=user_id, session_id=session_id)
+        if not conv:
+            return jsonify({"error": "Not found"}), 404
+        return jsonify(conv), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/conversations/<conversation_id>', methods=['POST'])
+def upsert_conversation(conversation_id: str):
+    """Upsert a conversation (client-side cache -> server persistence)."""
+    if conversation_store is None:
+        return jsonify({"ok": False, "error": "Conversation storage disabled"}), 503
+    if not request.is_json:
+        return jsonify({"ok": False, "error": "Invalid content type"}), 400
+    payload = request.get_json() or {}
+    user_id = payload.get("user_id") or None
+    session_id = payload.get("session_id") or None
+    title = (payload.get("title") or "")[:200]
+    preview = (payload.get("preview") or "")[:500]
+    messages = payload.get("messages") or []
+    try:
+        normalized = []
+        for m in messages:
+            role = (m.get("type") or m.get("role") or "").strip()
+            content = (m.get("content") or "").strip()
+            ts = m.get("timestamp")
+            if not role or not content:
+                continue
+            try:
+                ts_ms = int(ts) if ts is not None else int(time.time() * 1000)
+            except Exception:
+                ts_ms = int(time.time() * 1000)
+            normalized.append(ConversationMessage(role=role, content=content, ts_ms=ts_ms))
+        conversation_store.upsert_conversation(
+            conversation_id=conversation_id,
+            user_id=user_id,
+            session_id=session_id,
+            title=title or (normalized[0].content[:50] if normalized else conversation_id),
+            preview=preview or (normalized[-1].content[:100] if normalized else ""),
+            messages=normalized,
+        )
+        return jsonify({"ok": True}), 200
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route('/api/eval/run', methods=['POST'])
+def eval_run():
+    """Run the conversational + gnostic eval suite and persist artifacts under data/evals/."""
+    global thesidia_ready
     if not thesidia_ready:
         if not init_thesidia():
+            return jsonify({"error": "Thesidia is not ready"}), 503
+    try:
+        from webapp.eval.runner import EvalRunner
+        runner = EvalRunner(base_dir=project_root, thesidia=thesidia)
+        report = runner.run()
+        return jsonify(report), 200
+    except Exception as e:
+        import traceback
+        print(f"Error in /api/eval/run: {e}")
+        print(traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/eval/latest', methods=['GET'])
+def eval_latest():
+    """Return latest eval report, if any."""
+    try:
+        path = project_root / "data" / "evals" / "latest.json"
+        if not path.exists():
+            return jsonify({"error": "No evals yet"}), 404
+        return jsonify(json.loads(path.read_text(encoding="utf-8"))), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/thesidia', methods=['POST'])
+@require_user
+def thesidia_api(user_id=None, session_id=None):
+    """Main API endpoint for Thesidia interactions - with streaming support"""
+    # Check status and auto-init if needed
+    if not thesidia_ready or not thesidia:
+        if not init_thesidia():
             return jsonify({
-                'error': 'Thesidia is not ready',
+                'error': 'Thesidia is not ready. Is Ollama running?',
+                'ollama_status': ollama_status,
                 'thesidia_ready': False
             }), 503
     
@@ -499,14 +569,13 @@ def thesidia_api():
     print(f"🔍 RAW USER INPUT: '{raw_message}'", flush=True)
     
     show_thinking = data.get('show_thinking', False)
+    include_metadata = data.get('include_metadata', False)
     stream = data.get('stream', True)  # Default to streaming
     format_mode = data.get('format', 'natural')  # 'natural' or 'structured' - from UI selection
     fast_mode = data.get('fast_mode', True)  # true = fast (regular search), false = deep research
     research_depth = data.get('research_depth', 1 if fast_mode else 3)  # 1=Quick (fast), 3=Forensic (deep)
     
-    # Get user session info
-    user_id = data.get('user_id')
-    session_id = data.get('session_id')
+    # user_id and session_id are now provided by the @require_user decorator
     
     # Security: Validate input
     if not raw_message:
@@ -586,8 +655,18 @@ def thesidia_api():
         # CRITICAL: Pass the ORIGINAL message (not normalized) to process()
         # The process() method will do its own normalization and routing
         # Pass format_mode and research_depth from UI selection (not auto-detection)
-        response = thesidia.process(input_text=message, user_id=user_id, session_id=session_id, 
-                                   format_mode=format_mode, research_depth=research_depth)
+        result = thesidia.process(
+            input_data=message,
+            context={
+                "user_id": user_id,
+                "session_id": session_id,
+                "format_mode": format_mode,
+                "research_depth": research_depth,
+                "fast_mode": fast_mode
+            }
+        )
+        response = result.get("output", "") if isinstance(result, dict) else str(result)
+        response = _strip_general_framework_block(response)
         print(f"🔪 SERVER: Response length: {len(response)}, has transmission: {'::TRANSMISSION:' in response}", flush=True)
         
         # Store interaction in user memory
@@ -615,11 +694,14 @@ def thesidia_api():
         # Save state
         thesidia.save_state()
         
-        return jsonify({
+        payload = {
             'response': response,
             'thinking_steps': thinking_steps if show_thinking else [],
             'timestamp': datetime.now().isoformat()
-        })
+        }
+        if include_metadata and isinstance(result, dict):
+            payload["metadata"] = result.get("metadata", {})
+        return jsonify(payload)
         
     except Exception as e:
         print(f"Error processing request: {e}")
@@ -730,8 +812,18 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
         # Phase 3: Call process() - this handles ALL routing, research, and generation
         # NOTE: We don't check _needs_research() here because process() will handle it
         # This prevents duplicate work and ensures consistency
-        response = thesidia.process(input_text=message, user_id=user_id, session_id=session_id,
-                                   format_mode=format_mode, research_depth=research_depth, fast_mode=fast_mode)
+        result = thesidia.process(
+            input_data=message,
+            context={
+                "user_id": user_id,
+                "session_id": session_id,
+                "format_mode": format_mode,
+                "research_depth": research_depth,
+                "fast_mode": fast_mode
+            }
+        )
+        response = result.get("output", "") if isinstance(result, dict) else str(result)
+        response = _strip_general_framework_block(response)
         
         # Phase 4: Stream the response token-by-token for optimal UX
         # Response is already generated by process(), now we stream it
@@ -889,54 +981,13 @@ def metrics_historical():
     return jsonify({'error': 'Metrics not available'}), 503
 
 @app.route('/api/user/session', methods=['GET', 'POST'])
-def user_session():
+@require_thesidia_user_data
+def user_session(user_id=None, session_id=None, user_data=None):
     """Get or create user session"""
-    try:
-        if not user_memory_manager:
-            # Fallback: create basic session without memory manager
-            import secrets
-            user_id = f"user_{secrets.token_hex(8)}"
-            session_id = f"session_{secrets.token_hex(16)}"
-            return jsonify({
-                'user_id': user_id,
-                'session_id': session_id,
-                'created_at': datetime.now().isoformat()
-            })
-        
-        if request.method == 'POST':
-            # Create or get user session
-            data = request.get_json() or {}
-            user_id = data.get('user_id')
-            session_id = data.get('session_id')
-            
-            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-            # Convert Path objects to strings for JSON serialization
-            if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
-                user_data['user_dir'] = str(user_data['user_dir'])
-            return jsonify(user_data)
-        else:
-            # Get session from query params
-            user_id = request.args.get('user_id')
-            session_id = request.args.get('session_id')
-            
-            user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-            # Convert Path objects to strings for JSON serialization
-            if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
-                user_data['user_dir'] = str(user_data['user_dir'])
-            return jsonify(user_data)
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        # Fallback: create basic session on error
-        import secrets
-        user_id = f"user_{secrets.token_hex(8)}"
-        session_id = f"session_{secrets.token_hex(16)}"
-        return jsonify({
-            'user_id': user_id,
-            'session_id': session_id,
-            'created_at': datetime.now().isoformat(),
-            'error': str(e)
-        })
+    # Convert Path objects to strings for JSON serialization
+    if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
+        user_data['user_dir'] = str(user_data['user_dir'])
+    return jsonify(user_data)
 
 @app.route('/api/stream/feed', methods=['GET'])
 def stream_feed():
@@ -1015,26 +1066,15 @@ def favicon():
     return '', 204
 
 @app.route('/api/settings/account', methods=['POST'])
-def update_account_settings():
+@require_thesidia_user_data
+def update_account_settings(user_id=None, session_id=None, user_data=None):
     """Update account settings"""
     if not settings_manager:
         return jsonify({'error': 'Settings manager not available'}), 503
     
     data = request.get_json() or {}
-    user_id = data.get('user_id') or request.args.get('user_id')
-    session_id = data.get('session_id') or request.args.get('session_id')
-    
-    if not user_id and not session_id:
-        return jsonify({'error': 'user_id or session_id required'}), 400
     
     try:
-        # Get user data
-        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-        user_id = user_data.get('user_id')
-        
-        if not user_id:
-            return jsonify({'error': 'User not found'}), 404
-        
         # Update account section
         account_data = {
             'username': data.get('username', ''),
@@ -1133,23 +1173,12 @@ def update_security_settings():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/settings/privacy', methods=['POST'])
-def update_privacy_settings():
+@require_thesidia_user_data
+def update_privacy_settings(user_id=None, session_id=None, user_data=None):
     """Update privacy settings"""
     data = request.get_json() or {}
-    user_id = data.get('user_id') or request.args.get('user_id')
-    session_id = data.get('session_id') or request.args.get('session_id')
-    
-    if not user_id and not session_id:
-        return jsonify({'error': 'user_id or session_id required'}), 400
     
     try:
-        # Get user data
-        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-        user_id = user_data.get('user_id')
-        
-        if not user_id:
-            return jsonify({'error': 'User not found'}), 404
-        
         # Update privacy section
         privacy_data = {
             'profile_visibility': data.get('profile_visibility', 'public'),
@@ -1170,23 +1199,12 @@ def update_privacy_settings():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/settings/notifications', methods=['POST'])
-def update_notification_settings():
+@require_thesidia_user_data
+def update_notification_settings(user_id=None, session_id=None, user_data=None):
     """Update notification settings"""
     data = request.get_json() or {}
-    user_id = data.get('user_id') or request.args.get('user_id')
-    session_id = data.get('session_id') or request.args.get('session_id')
-    
-    if not user_id and not session_id:
-        return jsonify({'error': 'user_id or session_id required'}), 400
     
     try:
-        # Get user data
-        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-        user_id = user_data.get('user_id')
-        
-        if not user_id:
-            return jsonify({'error': 'User not found'}), 404
-        
         # Update notifications section
         notifications_data = {
             'email_enabled': data.get('email_enabled', False),
@@ -1208,23 +1226,12 @@ def update_notification_settings():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/settings/content', methods=['POST'])
-def update_content_settings():
+@require_thesidia_user_data
+def update_content_settings(user_id=None, session_id=None, user_data=None):
     """Update content settings"""
     data = request.get_json() or {}
-    user_id = data.get('user_id') or request.args.get('user_id')
-    session_id = data.get('session_id') or request.args.get('session_id')
-    
-    if not user_id and not session_id:
-        return jsonify({'error': 'user_id or session_id required'}), 400
     
     try:
-        # Get user data
-        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-        user_id = user_data.get('user_id')
-        
-        if not user_id:
-            return jsonify({'error': 'User not found'}), 404
-        
         # Update content section
         content_data = {
             'auto_play_videos': data.get('auto_play_videos', False),
@@ -1584,23 +1591,13 @@ def get_post(post_id):
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/posts/<post_id>', methods=['DELETE'])
-def delete_post(post_id):
+@require_thesidia_user_data
+def delete_post(post_id, user_id=None, session_id=None, user_data=None):
     """Delete a post"""
-    data = request.get_json() or {}
-    user_id = data.get('user_id') or request.args.get('user_id')
-    session_id = data.get('session_id') or request.args.get('session_id')
-    
-    if not user_id and not session_id:
-        return jsonify({'error': 'user_id or session_id required'}), 400
-    
+    if not post_manager or not interaction_manager:
+        return jsonify({'error': 'Social features not available'}), 503
+        
     try:
-        # Get user data
-        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-        user_id = user_data.get('user_id')
-        
-        if not user_id:
-            return jsonify({'error': 'User not found'}), 404
-        
         success = post_manager.delete_post(post_id, user_id)
         if not success:
             return jsonify({'error': 'Post not found'}), 404
@@ -1615,10 +1612,9 @@ def delete_post(post_id):
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/feed', methods=['GET'])
-def get_feed():
+@require_thesidia_user_data
+def get_feed(user_id=None, session_id=None, user_data=None):
     """Get user feed with filter and vibe support"""
-    user_id = request.args.get('user_id')
-    session_id = request.args.get('session_id')
     filter_type = request.args.get('filter', 'for-you')  # for-you, discover
     vibe = request.args.get('vibe')  # relaxing, exciting, inspiring, focused, creative, analytical
     limit = int(request.args.get('limit', 20))
@@ -1635,17 +1631,7 @@ def get_feed():
         
         return jsonify({'items': posts, 'has_more': False})
     
-    if not user_id and not session_id:
-        return jsonify({'error': 'user_id or session_id required'}), 400
-    
     try:
-        # Get user data
-        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
-        user_id = user_data.get('user_id')
-        
-        if not user_id:
-            return jsonify({'error': 'User not found'}), 404
-        
         # Determine feed type based on filter
         if filter_type == 'for-you':
             feed_type = 'personalized'  # Personalized feed for user
@@ -3783,6 +3769,50 @@ def oauth_callback(provider):
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
+
+# Catch-all route for static files - MUST be registered last so API routes match first
+# Skip this route on Vercel (Vercel handles static files)
+if not os.getenv('VERCEL'):
+    @app.route('/<path:path>')
+    def serve_static(path):
+        """Serve static files with no-cache headers"""
+        try:
+            # Serve from webapp directory (where server.py lives) - PREFER THIS
+            webapp_dir = Path(__file__).parent.resolve()
+            file_path = (webapp_dir / path).resolve()
+            
+            if file_path.exists() and file_path.is_file() and str(file_path).startswith(str(webapp_dir)):
+                from flask import send_file
+                # Determine mimetype
+                mimetype = None
+                if path.endswith('.js'): mimetype = 'application/javascript'
+                elif path.endswith('.css'): mimetype = 'text/css'
+                elif path.endswith('.html'): mimetype = 'text/html'
+                
+                response = send_file(str(file_path), mimetype=mimetype)
+                
+                # Add cache-busting headers for HTML, CSS, and JS files
+                if path.endswith(('.html', '.css', '.js')):
+                    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                    response.headers['Pragma'] = 'no-cache'
+                    response.headers['Expires'] = '0'
+                return response
+
+            # Fallback to public/ directory (mostly for Vercel/legacy compatibility)
+            static_dir = (Path(__file__).parent.parent / 'public').resolve()
+            if static_dir.exists() and (static_dir / path).exists():
+                from flask import send_file
+                return send_file(str(static_dir / path))
+            
+            # If not found, raise 404 to be caught by Flask's default or our handler
+            from werkzeug.exceptions import NotFound
+            raise NotFound()
+        except Exception as e:
+            if isinstance(e, NotFound):
+                print(f"DEBUG: File not found: {path}")
+                return jsonify({'error': 'File not found', 'path': path}), 404
+            raise e
+
 if __name__ == '__main__':
     import socket
     
@@ -3853,25 +3883,4 @@ if __name__ == '__main__':
             debug=False  # Disable debug in production
         )
 
-# Catch-all route for static files - MUST be registered last so API routes match first
-# Skip this route on Vercel (Vercel handles static files)
-if not os.getenv('VERCEL'):
-    @app.route('/<path:path>')
-    def serve_static(path):
-        """Serve static files with no-cache headers"""
-        try:
-            # Check public/ directory first (for Vercel), then current directory
-            static_dir = Path(__file__).parent.parent / 'public'
-            if static_dir.exists() and (static_dir / path).exists():
-                response = send_from_directory(str(static_dir), path)
-            else:
-                response = send_from_directory('.', path)
-            # Add cache-busting headers for HTML, CSS, and JS files
-            if path.endswith(('.html', '.css', '.js')):
-                response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-                response.headers['Pragma'] = 'no-cache'
-                response.headers['Expires'] = '0'
-            return response
-        except Exception as e:
-            return jsonify({'error': 'File not found', 'path': path}), 404
 

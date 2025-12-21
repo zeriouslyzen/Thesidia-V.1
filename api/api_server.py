@@ -27,12 +27,9 @@ from flask_cors import CORS
 import json
 from datetime import datetime
 
-# Import Thesidia components
-from thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
-from knowledge_base import KnowledgeBase
-from memory.user_memory_manager import UserMemoryManager
-from user_interest_tracker import UserInterestTracker
-from astronomical_patterns import AstronomicalPatternEngine
+# New Centralized Initializer and Middleware
+from src.core.thesidia_initializer import ThesidiaInitializer
+from webapp.middleware.user_auth import require_user
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -41,45 +38,24 @@ app = Flask(__name__)
 cors_origins = os.getenv('CORS_ORIGINS', '*').split(',')
 CORS(app, origins=cors_origins, supports_credentials=True)
 
-# Initialize Thesidia
-thesidia = None
-thesidia_ready = False
-knowledge_base = None
-user_memory_manager = None
-interest_tracker = None
-astronomical_engine = None
+# Initialize System
+system_init = ThesidiaInitializer(project_root)
 
 def init_thesidia():
     """Initialize Thesidia system"""
     global thesidia, thesidia_ready, knowledge_base, user_memory_manager, interest_tracker, astronomical_engine
     
-    try:
-        # Check Ollama
-        import ollama
-        try:
-            ollama.list()
-        except:
-            print("Warning: Ollama not running. API will not function properly.")
-            return False
-        
-        # Initialize components
-        knowledge_base = KnowledgeBase(base_dir=project_root)
-        user_memory_manager = UserMemoryManager(base_dir=project_root)
-        interest_tracker = UserInterestTracker(base_dir=project_root)
-        astronomical_engine = AstronomicalPatternEngine(data_dir=project_root / 'data')
-        
-        # Initialize Thesidia
-        thesidia = ThesidiaHybridAdaptive(model="clean-mistral:latest")
-        thesidia.load_state()
-        thesidia_ready = True
-        
-        print("✅ Thesidia API initialized successfully")
-        return True
-    except Exception as e:
-        print(f"❌ Error initializing Thesidia: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
+    success = system_init.init(force_fresh=True)
+    
+    # Sync global variables
+    thesidia = system_init.thesidia_instance
+    thesidia_ready = system_init.thesidia_ready
+    knowledge_base = system_init.knowledge_base
+    user_memory_manager = system_init.user_memory_manager
+    interest_tracker = system_init.interest_tracker
+    astronomical_engine = system_init.astronomical_engine
+    
+    return success
 
 # Initialize on startup
 init_thesidia()
@@ -105,37 +81,42 @@ def health():
     })
 
 @app.route('/api/thesidia', methods=['POST'])
-def thesidia_api():
+@require_user
+def thesidia_api(user_id=None, session_id=None):
     """Main Thesidia API endpoint"""
     if not check_auth():
         return jsonify({'error': 'Unauthorized'}), 401
     
-    if not thesidia_ready:
-        return jsonify({
-            'error': 'Thesidia not ready',
-            'message': 'Ollama is not running or Thesidia failed to initialize'
-        }), 503
+    if not thesidia_ready or not thesidia:
+        # Try to re-init
+        if not init_thesidia():
+            return jsonify({
+                'error': 'Thesidia not ready',
+                'message': 'Ollama is not running or Thesidia failed to initialize'
+            }), 503
     
     try:
         data = request.get_json() or {}
         # Support both 'query' and 'message' for compatibility
         query = data.get('query') or data.get('message', '')
-        user_id = data.get('user_id')
-        session_id = data.get('session_id')
+        # user_id and session_id are provided by @require_user
         format_type = data.get('format', 'natural')
         research_depth = data.get('research_depth', 2)
         
         if not query:
             return jsonify({'error': 'query or message is required'}), 400
         
-        # Process with Thesidia (using the same method as webapp/server.py)
-        response = thesidia.process(
-            input_text=query,
-            user_id=user_id,
-            session_id=session_id,
-            format_mode=format_type,
-            research_depth=research_depth
+        # Process with Thesidia
+        result = thesidia.process(
+            input_data=query,
+            context={
+                "user_id": user_id,
+                "session_id": session_id,
+                "format_mode": format_type,
+                "research_depth": research_depth
+            }
         )
+        response = result.get("output", "") if isinstance(result, dict) else str(result)
         
         return jsonify({
             'response': response,
@@ -175,13 +156,16 @@ def thesidia_stream():
             try:
                 # Use streaming from Thesidia (if available)
                 # For now, process and stream chunks manually
-                response = thesidia.process(
-                    input_text=query,
-                    user_id=user_id,
-                    session_id=session_id,
-                    format_mode=format_type,
-                    research_depth=research_depth
+                result = thesidia.process(
+                    input_data=query,
+                    context={
+                        "user_id": user_id,
+                        "session_id": session_id,
+                        "format_mode": format_type,
+                        "research_depth": research_depth
+                    }
                 )
+                response = result.get("output", "") if isinstance(result, dict) else str(result)
                 # Stream response in chunks
                 chunk_size = 50
                 for i in range(0, len(response), chunk_size):

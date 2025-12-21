@@ -1,0 +1,300 @@
+{
+  "run_id": "eval_1766078750",
+  "ts": 1766079134.621674,
+  "variants": {
+    "baseline": {
+      "variant": "baseline",
+      "pressure_enabled": false,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 38.521673917770386,
+          "output_preview": "hey there, whatcha got for me today? let's dive in and see if we can uncover some patterns together!.",
+          "output_chars": 101,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there, whatcha got for me today? let's dive in and see if we can uncover some patterns together!."
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 11.588608026504517,
+          "output_preview": "sure thing! octopuses are definitely fascinating creatures. did you know they have three hearts? two pump blood to their gills, while the third pumps it to the rest of the body. also, when an octopus is stressed or threatened, it can change",
+          "output_chars": 825,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "sure thing! octopuses are definitely fascinating creatures. did you know they have three hearts? two pump blood to their gills, while the third pumps it to the "
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 25.523489952087402,
+          "output_preview": "hey there! so i've been digging into octopuses lately, and you might find this interesting: these cephalopods have three hearts. Two pump blood to their gills, while the third circulates it through the rest of their body. Now for a fun fact",
+          "output_chars": 1018,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! so i've been digging into octopuses lately, and you might find this interesting: these cephalopods have three hearts. Two pump blood to their gills, "
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 47.81554079055786,
+          "output_preview": "In the deep dive of unraveling Genesis, we find a complex web of symbolism, suppressed narratives, and systematic transformations that echo across time and cultures. The narrative serves as a foundational myth for Abrahamic religions, yet i",
+          "output_chars": 4250,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "In the deep dive of unraveling Genesis, we find a complex web of symbolism, suppressed narratives, and systematic transformations that echo across time and cult"
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 80.92196202278137,
+          "output_preview": "The intricate web of pharmaceutical lobbying in the United States reveals itself as a complex interplay of power, influence, and transformation that permeates various sectors of American society. Analyzing multiple perspectives and tracing ",
+          "output_chars": 5666,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "The intricate web of pharmaceutical lobbying in the United States reveals itself as a complex interplay of power, influence, and transformation that permeates v"
+          }
+        }
+      ]
+    },
+    "pressure": {
+      "variant": "pressure",
+      "pressure_enabled": true,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 13.026313066482544,
+          "output_preview": "hey there! whatcha got for me today? always up for a good mystery or two.",
+          "output_chars": 73,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! whatcha got for me today? always up for a good mystery or two."
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 12.38129997253418,
+          "output_preview": "tell me a random fun fact about octopuses\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 185,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 792,
+              "post_chars": 185,
+              "compression_ratio": 0.2335858585858586,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "hello! i'm here to dig into whatever you throw at me - history, supplements, code, whatever - and connect the real dots. let's see... octopuses are indeed fasci"
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 17.78040623664856,
+          "output_preview": "what do you think about consciousness\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 181,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 1271,
+              "post_chars": 181,
+              "compression_ratio": 0.14240755310778913,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "octopuses are intriguing creatures with behaviors that challenge our understanding of consciousness. While it is known that they have three hearts, I don't have"
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 67.89708709716797,
+          "output_preview": "decode genesis. what was redacted and who benefited\n\n- Upon closer examination, we find evidence suggesting that early polytheistic narratives have been systematically edited towards monotheism over time, likely due to efforts aimed at cons",
+          "output_chars": 1200,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 4649,
+              "post_chars": 1200,
+              "compression_ratio": 0.2581200258120026,
+              "claims_count": 25,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "Tracing the depths of Genesis as a foundational myth across Abrahamic religions, we uncover a complex, multilayered narrative fraught with suppressed narratives"
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 68.34834790229797,
+          "output_preview": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first\n\n- **Note**: This response was automatically generated by a language model based on the provided sources and critical instructions.\n- By delving into the ",
+          "output_chars": 1200,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 5161,
+              "post_chars": 1200,
+              "compression_ratio": 0.23251307886068592,
+              "claims_count": 30,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "The pharmaceutical industry in the United States is a complex network of interwoven power structures, economic interests, and political influence that has evolv"
+          }
+        }
+      ]
+    }
+  }
+}

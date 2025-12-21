@@ -16,6 +16,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from queue import Queue, Empty
 from typing import Any, Dict, List, Optional, Union
+from abc import ABC, abstractmethod
+from src.core.storage_base import StorageBackend, FileSystemBackend
 
 try:  # Optional typing import to avoid circular dependency
     from typing import TYPE_CHECKING
@@ -33,16 +35,19 @@ JsonDict = Dict[str, Any]
 class StorageTask:
     """Represents a queued storage operation."""
 
-    path: Path
+    path: str
     payload: JsonDict
+
+
 
 
 class SophiaStorageManager:
     """Handles persistence for Sophia's multi-layer memory system."""
 
-    def __init__(self, base_dir: Union[str, Path], async_mode: bool = True) -> None:
+    def __init__(self, base_dir: Union[str, Path], backend: Optional[StorageBackend] = None, async_mode: bool = True) -> None:
         self.base_dir = Path(base_dir)
-        self.root = self.base_dir / "data" / "thesidia_sophia_memory"
+        self.root_path = "data/thesidia_sophia_memory"
+        self.backend = backend or FileSystemBackend(self.base_dir / self.root_path)
         self.async_mode = async_mode
         self.indexer: Optional["SophiaIndexer"] = None
 
@@ -58,28 +63,28 @@ class SophiaStorageManager:
     # Public API - Persistence
     # ------------------------------------------------------------------ #
     def save_gnostic_map(self, payload: JsonDict, async_mode: Optional[bool] = None) -> None:
-        self._dispatch(self.paths["gnostic_map"] / "current.json", payload, async_mode)
+        self._dispatch("gnostic_map/current.json", payload, async_mode)
 
     def load_gnostic_map(self) -> Optional[JsonDict]:
-        return self._read_json(self.paths["gnostic_map"] / "current.json")
+        return self.backend.read_json("gnostic_map/current.json")
 
     def save_emergence_data(self, payload: JsonDict, async_mode: Optional[bool] = None) -> None:
-        self._dispatch(self.paths["emergence"] / "latest.json", payload, async_mode)
+        self._dispatch("emergence/latest.json", payload, async_mode)
 
     def load_emergence_data(self) -> Optional[JsonDict]:
-        return self._read_json(self.paths["emergence"] / "latest.json")
+        return self.backend.read_json("emergence/latest.json")
 
     def save_discernment_data(self, payload: JsonDict, async_mode: Optional[bool] = None) -> None:
-        self._dispatch(self.paths["discernment"] / "latest.json", payload, async_mode)
+        self._dispatch("discernment/latest.json", payload, async_mode)
 
     def load_discernment_data(self) -> Optional[JsonDict]:
-        return self._read_json(self.paths["discernment"] / "latest.json")
+        return self.backend.read_json("discernment/latest.json")
 
     def save_co_evolution(self, payload: JsonDict, async_mode: Optional[bool] = None) -> None:
-        self._dispatch(self.paths["co_evolution"] / "history.json", payload, async_mode)
+        self._dispatch("co_evolution/history.json", payload, async_mode)
 
     def load_co_evolution(self) -> Optional[JsonDict]:
-        return self._read_json(self.paths["co_evolution"] / "history.json")
+        return self.backend.read_json("co_evolution/history.json")
 
     def save_conversation(
         self,
@@ -87,12 +92,12 @@ class SophiaStorageManager:
         conversation_data: JsonDict,
         async_mode: Optional[bool] = None,
     ) -> None:
-        filename = f"{session_id}.json"
-        self._dispatch(self.paths["conversations"] / "sessions" / filename, conversation_data, async_mode)
+        path = f"conversations/sessions/{session_id}.json"
+        self._dispatch(path, conversation_data, async_mode)
 
     def load_conversation(self, session_id: str) -> Optional[JsonDict]:
-        filename = f"{session_id}.json"
-        return self._read_json(self.paths["conversations"] / "sessions" / filename)
+        path = f"conversations/sessions/{session_id}.json"
+        return self.backend.read_json(path)
 
     def index_conversation(self, session_id: str, indexes: JsonDict) -> None:
         if not self.indexer:
@@ -111,8 +116,8 @@ class SophiaStorageManager:
         payload: JsonDict,
         async_mode: Optional[bool] = None,
     ) -> None:
-        filename = f"{summary_type}_{period}.json"
-        self._dispatch(self.paths["conversations"] / "summaries" / summary_type / filename, payload, async_mode)
+        path = f"conversations/summaries/{summary_type}/{summary_type}_{period}.json"
+        self._dispatch(path, payload, async_mode)
 
     # ------------------------------------------------------------------ #
     # Queue Management
@@ -128,13 +133,13 @@ class SophiaStorageManager:
     # ------------------------------------------------------------------ #
     def _dispatch(
         self,
-        path: Path,
+        path: str,
         payload: JsonDict,
         async_override: Optional[bool],
     ) -> None:
         use_async = self.async_mode if async_override is None else async_override
         if not use_async:
-            self._write_json(path, payload)
+            self.backend.write_json(path, payload)
             return
         self._queue.put(StorageTask(path=path, payload=payload))
 
@@ -147,35 +152,24 @@ class SophiaStorageManager:
             if task is None:
                 break
             try:
-                self._write_json(task.path, task.payload)
+                self.backend.write_json(task.path, task.payload)
             finally:
                 self._queue.task_done()
 
-    def _write_json(self, path: Path, payload: JsonDict) -> None:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
-
-    def _read_json(self, path: Path) -> Optional[JsonDict]:
-        if not path.exists():
-            return None
-        return json.loads(path.read_text(encoding="utf-8"))
-
     def _ensure_directories(self) -> None:
-        self.paths = {
-            "gnostic_map": self.root / "gnostic_map",
-            "emergence": self.root / "emergence",
-            "discernment": self.root / "discernment",
-            "conversations": self.root / "conversations",
-            "knowledge_base": self.root / "knowledge_base",
-            "co_evolution": self.root / "co_evolution",
-        }
-        for _, directory in self.paths.items():
-            directory.mkdir(parents=True, exist_ok=True)
-        # Ensure nested conversation directories exist
-        (self.paths["conversations"] / "sessions").mkdir(parents=True, exist_ok=True)
-        (self.paths["conversations"] / "summaries" / "daily").mkdir(parents=True, exist_ok=True)
-        (self.paths["conversations"] / "summaries" / "weekly").mkdir(parents=True, exist_ok=True)
-        (self.paths["conversations"] / "summaries" / "monthly").mkdir(parents=True, exist_ok=True)
+        subdirs = [
+            "gnostic_map",
+            "emergence",
+            "discernment",
+            "conversations/sessions",
+            "conversations/summaries/daily",
+            "conversations/summaries/weekly",
+            "conversations/summaries/monthly",
+            "knowledge_base",
+            "co_evolution",
+        ]
+        for subdir in subdirs:
+            self.backend.ensure_path(subdir)
 
 
 __all__ = ["SophiaStorageManager"]

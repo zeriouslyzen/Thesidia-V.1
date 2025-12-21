@@ -18,29 +18,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from webapp.social.schema import PostSchema
 from webapp.middleware.security import security_middleware
 
+from src.core.storage_base import StorageBackend, FileSystemBackend
 
 class PostManager:
-    """
-    Post Manager
-    Manages posts with content sanitization and media handling
-    """
-    
-    def __init__(self, base_dir: Path = None):
-        """
-        Initialize post manager
-        
-        Args:
-            base_dir: Base directory for data storage
-        """
+    def __init__(self, base_dir: Path = None, backend: Optional[StorageBackend] = None):
         self.base_dir = base_dir or Path(".")
-        self.posts_dir = self.base_dir / "data" / "social" / "posts"
-        # Try to create directory, but handle read-only filesystem (e.g., Vercel)
-        try:
-            self.posts_dir.mkdir(parents=True, exist_ok=True)
-        except (OSError, PermissionError) as e:
-            # On read-only filesystem (Vercel), use in-memory storage
-            print(f"Warning: Cannot create posts directory (read-only filesystem): {e}")
-            print("Using in-memory post storage (not persistent)")
+        self.backend = backend or FileSystemBackend(root=str(self.base_dir / "data" / "social"))
+        self.backend.ensure_path("posts")
+        self.backend.ensure_path("indexes")
         self.schema = PostSchema()
     
     def create_post(
@@ -76,9 +61,7 @@ class PostManager:
         post = self.schema.create_post(author_id, content, media, tags, visibility)
         
         # Save post
-        post_file = self.posts_dir / f"{post['id']}.json"
-        with open(post_file, 'w', encoding='utf-8') as f:
-            json.dump(post, f, indent=2, ensure_ascii=False)
+        self.backend.write_json(f"posts/{post['id']}.json", post)
         
         # Update indexes
         self._update_indexes(post)
@@ -95,16 +78,17 @@ class PostManager:
         Returns:
             Post data dictionary or None
         """
-        post_file = self.posts_dir / f"{post_id}.json"
+    def get_post(self, post_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Get post by ID
         
-        if not post_file.exists():
-            return None
-        
-        try:
-            with open(post_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except Exception:
-            return None
+        Args:
+            post_id: Post ID
+            
+        Returns:
+            Post data dictionary or None
+        """
+        return self.backend.read_json(f"posts/{post_id}.json")
     
     def update_post(self, post_id: str, author_id: str, updates: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
@@ -284,52 +268,27 @@ class PostManager:
         """Update all indexes with post"""
         post_id = post['id']
         author_id = post['author_id']
-        created_at = post['created_at']
         ai_score = post.get('ai_score', 0.0)
         
         # Update posts_by_user index
-        user_index_file = self.base_dir / "data" / "social" / "indexes" / "posts_by_user.json"
-        if user_index_file.exists():
-            with open(user_index_file, 'r', encoding='utf-8') as f:
-                user_index = json.load(f)
-        else:
-            user_index = {"index": {}}
-        
+        user_index = self.backend.read_json("indexes/posts_by_user.json") or {"index": {}}
         if author_id not in user_index['index']:
             user_index['index'][author_id] = []
         if post_id not in user_index['index'][author_id]:
             user_index['index'][author_id].insert(0, post_id)
-        
-        with open(user_index_file, 'w', encoding='utf-8') as f:
-            json.dump(user_index, f, indent=2, ensure_ascii=False)
+        self.backend.write_json("indexes/posts_by_user.json", user_index)
         
         # Update posts_by_date index
-        date_index_file = self.base_dir / "data" / "social" / "indexes" / "posts_by_date.json"
-        if date_index_file.exists():
-            with open(date_index_file, 'r', encoding='utf-8') as f:
-                date_index = json.load(f)
-        else:
-            date_index = {"index": []}
-        
+        date_index = self.backend.read_json("indexes/posts_by_date.json") or {"index": []}
         if post_id not in date_index['index']:
             date_index['index'].insert(0, post_id)
+        self.backend.write_json("indexes/posts_by_date.json", date_index)
         
-        with open(date_index_file, 'w', encoding='utf-8') as f:
-            json.dump(date_index, f, indent=2, ensure_ascii=False)
-        
-        # Update posts_by_score index (sorted by score)
-        score_index_file = self.base_dir / "data" / "social" / "indexes" / "posts_by_score.json"
-        if score_index_file.exists():
-            with open(score_index_file, 'r', encoding='utf-8') as f:
-                score_index = json.load(f)
-        else:
-            score_index = {"index": []}
-        
-        # Remove if exists, then insert in sorted position
+        # Update posts_by_score index
+        score_index = self.backend.read_json("indexes/posts_by_score.json") or {"index": []}
         if post_id in score_index['index']:
             score_index['index'].remove(post_id)
         
-        # Insert in sorted position (highest score first)
         inserted = False
         for i, existing_id in enumerate(score_index['index']):
             existing_post = self.get_post(existing_id)
@@ -337,43 +296,29 @@ class PostManager:
                 score_index['index'].insert(i, post_id)
                 inserted = True
                 break
-        
         if not inserted:
             score_index['index'].append(post_id)
-        
-        with open(score_index_file, 'w', encoding='utf-8') as f:
-            json.dump(score_index, f, indent=2, ensure_ascii=False)
+        self.backend.write_json("indexes/posts_by_score.json", score_index)
     
     def _remove_from_indexes(self, post_id: str, author_id: Optional[str] = None):
         """Remove post from all indexes"""
         # Remove from posts_by_user
-        user_index_file = self.base_dir / "data" / "social" / "indexes" / "posts_by_user.json"
-        if user_index_file.exists() and author_id:
-            with open(user_index_file, 'r', encoding='utf-8') as f:
-                user_index = json.load(f)
-            if author_id in user_index.get('index', {}):
+        if author_id:
+            user_index = self.backend.read_json("indexes/posts_by_user.json")
+            if user_index and author_id in user_index.get('index', {}):
                 if post_id in user_index['index'][author_id]:
                     user_index['index'][author_id].remove(post_id)
-            with open(user_index_file, 'w', encoding='utf-8') as f:
-                json.dump(user_index, f, indent=2, ensure_ascii=False)
+                    self.backend.write_json("indexes/posts_by_user.json", user_index)
         
         # Remove from posts_by_date
-        date_index_file = self.base_dir / "data" / "social" / "indexes" / "posts_by_date.json"
-        if date_index_file.exists():
-            with open(date_index_file, 'r', encoding='utf-8') as f:
-                date_index = json.load(f)
-            if post_id in date_index.get('index', []):
-                date_index['index'].remove(post_id)
-            with open(date_index_file, 'w', encoding='utf-8') as f:
-                json.dump(date_index, f, indent=2, ensure_ascii=False)
+        date_index = self.backend.read_json("indexes/posts_by_date.json")
+        if date_index and post_id in date_index.get('index', []):
+            date_index['index'].remove(post_id)
+            self.backend.write_json("indexes/posts_by_date.json", date_index)
         
         # Remove from posts_by_score
-        score_index_file = self.base_dir / "data" / "social" / "indexes" / "posts_by_score.json"
-        if score_index_file.exists():
-            with open(score_index_file, 'r', encoding='utf-8') as f:
-                score_index = json.load(f)
-            if post_id in score_index.get('index', []):
-                score_index['index'].remove(post_id)
-            with open(score_index_file, 'w', encoding='utf-8') as f:
-                json.dump(score_index, f, indent=2, ensure_ascii=False)
+        score_index = self.backend.read_json("indexes/posts_by_score.json")
+        if score_index and post_id in score_index.get('index', []):
+            score_index['index'].remove(post_id)
+            self.backend.write_json("indexes/posts_by_score.json", score_index)
 

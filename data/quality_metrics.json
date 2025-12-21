@@ -1,512 +1,6 @@
 {
   "interactions": [
     {
-      "query": "How does chi gong relate to meditation and mindfulness?",
-      "response_length": 962,
-      "scores": {
-        "depth": 0.0,
-        "pattern_recognition": 0.4,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-11-22T22:32:48.425948"
-    },
-    {
-      "query": "How do practices like yoga, tai chi, and chi gong integrate mind and body?",
-      "response_length": 2047,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.5333333333333333,
-        "overall": 0.2733333333333333
-      },
-      "timestamp": "2025-11-22T22:35:05.292529"
-    },
-    {
-      "query": "How can I balance my energy and improve my bioelectric health?",
-      "response_length": 671,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-11-22T22:37:35.480489"
-    },
-    {
-      "query": "What is photosynthesis?",
-      "response_length": 1110,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-11-22T23:04:24.555558"
-    },
-    {
-      "query": "Who wrote the book \"1984\"?",
-      "response_length": 423,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.5333333333333333,
-        "overall": 0.2733333333333333
-      },
-      "timestamp": "2025-11-22T23:05:04.119755"
-    },
-    {
-      "query": "What is the capital of France?",
-      "response_length": 420,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-22T23:05:28.927976"
-    },
-    {
-      "query": "Explain the theory of relativity in simple terms",
-      "response_length": 1277,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-11-22T23:06:21.097660"
-    },
-    {
-      "query": "What is meditation and how does it work?",
-      "response_length": 998,
-      "scores": {
-        "depth": 0.0,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-22T23:07:06.217848"
-    },
-    {
-      "query": "Explain different types of meditation: mindfulness, transcendental, vipassana, and zen.",
-      "response_length": 1049,
-      "scores": {
-        "depth": 0.0,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.08000000000000002
-      },
-      "timestamp": "2025-11-22T23:07:54.229540"
-    },
-    {
-      "query": "How does meditation work? Explain the mechanisms.",
-      "response_length": 822,
-      "scores": {
-        "depth": 0.0,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.08000000000000002
-      },
-      "timestamp": "2025-11-22T23:09:34.972732"
-    },
-    {
-      "query": "How does meditation work? Explain the mechanisms.",
-      "response_length": 822,
-      "scores": {
-        "depth": 0.0,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.08000000000000002
-      },
-      "timestamp": "2025-11-22T23:09:34.980489"
-    },
-    {
-      "query": "What are the hidden connections between ancient Egyptian, Sumerian, and Vedic knowledge systems?",
-      "response_length": 3800,
-      "scores": {
-        "depth": 1.0,
-        "pattern_recognition": 0.8,
-        "truth_seeking": 0.5333333333333333,
-        "overall": 0.7533333333333334
-      },
-      "timestamp": "2025-11-22T23:10:18.912028"
-    },
-    {
-      "query": "How does meditation work? Explain the mechanisms.",
-      "response_length": 2744,
-      "scores": {
-        "depth": 1.0,
-        "pattern_recognition": 0.6,
-        "truth_seeking": 0.2,
-        "overall": 0.56
-      },
-      "timestamp": "2025-11-22T23:13:29.350690"
-    },
-    {
-      "query": "What are the hidden connections between ancient Egyptian, Sumerian, and Vedic knowledge systems?",
-      "response_length": 3072,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 1.0,
-        "truth_seeking": 1.0,
-        "overall": 0.91
-      },
-      "timestamp": "2025-11-22T23:14:05.791367"
-    },
-    {
-      "query": "How does meditation work? Explain the mechanisms.",
-      "response_length": 2486,
-      "scores": {
-        "depth": 1.0,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.38
-      },
-      "timestamp": "2025-11-22T23:14:41.245944"
-    },
-    {
-      "query": "What are the hidden connections between ancient Egyptian, Sumerian, and Vedic knowledge systems?",
-      "response_length": 3247,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.8,
-        "truth_seeking": 1.0,
-        "overall": 0.85
-      },
-      "timestamp": "2025-11-22T23:15:16.670092"
-    },
-    {
-      "query": "Hey!",
-      "response_length": 47,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-24T01:47:18.943249"
-    },
-    {
-      "query": "hi howre you",
-      "response_length": 47,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-24T01:50:39.289969"
-    },
-    {
-      "query": "hi howre you",
-      "response_length": 47,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-24T01:57:05.868486"
-    },
-    {
-      "query": "hi howre you",
-      "response_length": 47,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-24T01:57:48.716584"
-    },
-    {
-      "query": "who are you?",
-      "response_length": 47,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-24T02:26:52.132409"
-    },
-    {
-      "query": "what can you do?",
-      "response_length": 47,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-24T02:27:15.574296"
-    },
-    {
-      "query": "who are you?",
-      "response_length": 652,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-11-24T02:38:47.255149"
-    },
-    {
-      "query": "Test the elite rebrand interface",
-      "response_length": 554,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-24T22:49:37.172832"
-    },
-    {
-      "query": "so what is the dollar made from",
-      "response_length": 675,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-11-25T00:30:59.592370"
-    },
-    {
-      "query": "oh nice",
-      "response_length": 791,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.4,
-        "truth_seeking": 0.2,
-        "overall": 0.32
-      },
-      "timestamp": "2025-11-25T19:14:11.245954"
-    },
-    {
-      "query": "who designed you?",
-      "response_length": 591,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-25T19:15:16.561042"
-    },
-    {
-      "query": "hello thesidia",
-      "response_length": 596,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-11-26T02:50:24.576086"
-    },
-    {
-      "query": "what do you do?",
-      "response_length": 230,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-11-26T02:51:13.063591"
-    },
-    {
-      "query": "thesidia what do you do?",
-      "response_length": 810,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-11-26T02:52:13.477246"
-    },
-    {
-      "query": "hmm what about the corperate america",
-      "response_length": 741,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-11-26T02:53:42.484523"
-    },
-    {
-      "query": "hi thesidia",
-      "response_length": 674,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.5333333333333333,
-        "overall": 0.3933333333333333
-      },
-      "timestamp": "2025-11-26T09:10:26.731062"
-    },
-    {
-      "query": "Hello thesidia!",
-      "response_length": 1314,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-11-26T10:11:36.382833"
-    },
-    {
-      "query": "how are you thesidia? do you rememeber our last conversations?",
-      "response_length": 348,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-13T16:39:06.858194"
-    },
-    {
-      "query": "so are you able to fact check things basically?",
-      "response_length": 290,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-13T16:40:55.720389"
-    },
-    {
-      "query": "do you remember our last conversation?",
-      "response_length": 774,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-12-13T16:52:24.472471"
-    },
-    {
-      "query": "sdfas",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-13T23:36:30.243187"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-13T23:51:59.317209"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-13T23:52:52.805626"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-13T23:53:22.104944"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-13T23:54:04.080456"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-13T23:55:21.766291"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-13T23:56:09.305438"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T00:01:01.655811"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T00:01:53.294378"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T00:02:20.304191"
-    },
-    {
       "query": "whats your favorite movie",
       "response_length": 49,
       "scores": {
@@ -1099,56 +593,516 @@
         "overall": 0.35000000000000003
       },
       "timestamp": "2025-12-14T21:30:22.615102"
+    },
+    {
+      "query": "really",
+      "response_length": 832,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T00:24:38.783401"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2197,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.41
+      },
+      "timestamp": "2025-12-17T13:46:08.686127"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1723,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.35000000000000003
+      },
+      "timestamp": "2025-12-17T13:47:23.817730"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1697,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-17T13:52:57.860127"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2354,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.0,
+        "overall": 0.32999999999999996
+      },
+      "timestamp": "2025-12-17T13:55:07.696155"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1449,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.35000000000000003
+      },
+      "timestamp": "2025-12-17T13:56:03.546249"
+    },
+    {
+      "query": "how does photosynthesis work?",
+      "response_length": 1817,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.41
+      },
+      "timestamp": "2025-12-17T13:56:44.470796"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2432,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.6,
+        "truth_seeking": 0.2,
+        "overall": 0.47000000000000003
+      },
+      "timestamp": "2025-12-17T14:01:44.712225"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2071,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-17T14:03:15.719376"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 3313,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.6,
+        "truth_seeking": 0.2,
+        "overall": 0.47000000000000003
+      },
+      "timestamp": "2025-12-17T14:05:04.858311"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1939,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.4833333333333334
+      },
+      "timestamp": "2025-12-17T14:07:15.780801"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1049,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T14:09:12.854122"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1761,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.8666666666666667,
+        "overall": 0.5566666666666666
+      },
+      "timestamp": "2025-12-17T14:10:40.947578"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2555,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-17T14:12:41.375694"
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1254,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-12-17T14:14:18.430619"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 778,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T15:39:09.329707"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1201,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.6,
+        "truth_seeking": 0.2,
+        "overall": 0.38
+      },
+      "timestamp": "2025-12-17T15:39:47.927981"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 951,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:13:05.879289"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1074,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:13:31.044751"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 658,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:15:45.199186"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1140,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:16:02.681337"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 942,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:20:03.636179"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 958,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-12-17T16:21:52.453320"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 981,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:22:15.124570"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 667,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:25:02.074370"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 917,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-12-17T16:25:43.172091"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 1151,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:25:52.237553"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1130,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.0,
+        "overall": 0.12
+      },
+      "timestamp": "2025-12-17T16:27:31.047714"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 965,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:32:07.129360"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 964,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.32
+      },
+      "timestamp": "2025-12-17T16:32:33.378727"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 894,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:36:08.595442"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1337,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-12-17T16:36:35.864531"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 878,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:39:10.860852"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1655,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.0,
+        "overall": 0.27
+      },
+      "timestamp": "2025-12-17T16:39:32.950193"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 1423,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-17T16:40:26.606793"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1175,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T16:42:13.527719"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 1301,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-17T16:46:05.925241"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1680,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-17T16:46:43.824440"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 932,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T18:39:43.093438"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1341,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T18:40:11.378466"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 720,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-17T18:43:16.788254"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1608,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.35000000000000003
+      },
+      "timestamp": "2025-12-17T18:43:48.229830"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 825,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-18T09:26:40.916058"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1018,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-18T09:27:06.442498"
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 793,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-18T09:29:40.581553"
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1272,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.8,
+        "truth_seeking": 0.2,
+        "overall": 0.44
+      },
+      "timestamp": "2025-12-18T09:29:58.372670"
     }
   ],
   "quality_trends": {
     "depth_scores": [
-      0.0,
-      0.2,
-      0.4,
-      0.4,
-      0.2,
-      0.2,
-      0.4,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      1.0,
-      1.0,
-      0.7,
-      1.0,
-      0.7,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.4,
-      0.2,
-      0.4,
-      0.4,
-      0.2,
-      0.4,
-      0.2,
-      0.4,
-      0.4,
-      0.4,
-      0.7,
-      0.2,
-      0.2,
-      0.4,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1202,55 +1156,55 @@
       0.2,
       0.4,
       0.7,
-      0.7
+      0.7,
+      0.4,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.4,
+      0.7,
+      0.7,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.7,
+      0.7,
+      0.4,
+      0.7,
+      0.7,
+      0.4,
+      0.4,
+      0.4,
+      0.7,
+      0.4,
+      0.4,
+      0.4,
+      0.4
     ],
     "pattern_scores": [
-      0.4,
-      0.0,
-      0.0,
-      0.2,
-      0.0,
-      0.0,
-      0.0,
-      0.2,
-      0.0,
-      0.0,
-      0.0,
-      0.8,
-      0.6,
-      1.0,
-      0.0,
-      0.8,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.4,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.2,
-      0.2,
-      0.0,
-      0.0,
-      0.0,
-      0.2,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -1304,55 +1258,55 @@
       0.2,
       0.2,
       0.2,
-      0.2
+      0.2,
+      0.0,
+      0.4,
+      0.2,
+      0.0,
+      0.4,
+      0.2,
+      0.4,
+      0.6,
+      0.0,
+      0.6,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.4,
+      0.0,
+      0.2,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.8
     ],
     "truth_seeking_scores": [
-      0.2,
-      0.5333333333333333,
-      0.2,
-      0.2,
-      0.5333333333333333,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.5333333333333333,
-      0.2,
-      1.0,
-      0.2,
-      1.0,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.5333333333333333,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1406,55 +1360,55 @@
       0.2,
       0.2,
       0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.0,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.2,
+      0.8666666666666667,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.0,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.0,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
       0.2
     ],
     "overall_scores": [
-      0.2,
-      0.2733333333333333,
-      0.2,
-      0.26,
-      0.2733333333333333,
-      0.14,
-      0.2,
-      0.14,
-      0.08000000000000002,
-      0.08000000000000002,
-      0.08000000000000002,
-      0.7533333333333334,
-      0.56,
-      0.91,
-      0.38,
-      0.85,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.2,
-      0.14,
-      0.2,
-      0.32,
-      0.14,
-      0.2,
-      0.14,
-      0.2,
-      0.26,
-      0.3933333333333333,
-      0.29000000000000004,
-      0.14,
-      0.14,
-      0.26,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
       0.14,
       0.14,
       0.14,
@@ -1508,8 +1462,54 @@
       0.2,
       0.26,
       0.35000000000000003,
-      0.35000000000000003
+      0.35000000000000003,
+      0.2,
+      0.41,
+      0.35000000000000003,
+      0.29000000000000004,
+      0.32999999999999996,
+      0.35000000000000003,
+      0.41,
+      0.47000000000000003,
+      0.29000000000000004,
+      0.47000000000000003,
+      0.4833333333333334,
+      0.2,
+      0.5566666666666666,
+      0.29000000000000004,
+      0.26,
+      0.2,
+      0.38,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.26,
+      0.2,
+      0.2,
+      0.26,
+      0.2,
+      0.12,
+      0.2,
+      0.32,
+      0.2,
+      0.26,
+      0.2,
+      0.27,
+      0.29000000000000004,
+      0.2,
+      0.29000000000000004,
+      0.29000000000000004,
+      0.2,
+      0.2,
+      0.2,
+      0.35000000000000003,
+      0.2,
+      0.2,
+      0.2,
+      0.44
     ]
   },
-  "last_updated": "2025-12-14T21:30:22.615113"
+  "last_updated": "2025-12-18T09:29:58.372677"
 }

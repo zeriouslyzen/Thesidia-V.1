@@ -70,7 +70,7 @@ except ImportError:
 
 # Deep research engine (optional)
 try:
-    from .deep_research_engine import DeepResearchEngine
+    from deep_research_engine import DeepResearchEngine
     DEEP_RESEARCH_AVAILABLE = True
 except ImportError:
     try:
@@ -82,11 +82,11 @@ except ImportError:
 
 # Sophia memory system components
 try:
-    from .sophia_gnostic_map import SophiaGnosticMap
-    from .sophia_versioning import SophiaVersionManager
-    from .sophia_emergence_tracker import SophiaEmergenceTracker
-    from .sophia_discernment_tracker import SophiaDiscernmentTracker
-    from .sophia_consciousness import SophiaConsciousness, ConsciousnessSnapshot
+    from sophia_gnostic_map import SophiaGnosticMap
+    from sophia_versioning import SophiaVersionManager
+    from sophia_emergence_tracker import SophiaEmergenceTracker
+    from sophia_discernment_tracker import SophiaDiscernmentTracker
+    from sophia_consciousness import SophiaConsciousness, ConsciousnessSnapshot
 except ImportError:
     from sophia_gnostic_map import SophiaGnosticMap
     from sophia_versioning import SophiaVersionManager
@@ -96,28 +96,28 @@ except ImportError:
 
 # Hallucination tracking
 try:
-    from .hallucination_tracker import HallucinationTracker
+    from hallucination_tracker import HallucinationTracker
 except ImportError:
     from hallucination_tracker import HallucinationTracker
 
 # New cosmic evolution modules
 try:
-    from .health_coach import HealthCoach
-    from .universal_coach import UniversalCoach
-    from .meta_awareness import MetaAwareness
-    from .etymology_linguistic import EtymologyLinguistic
-    from .csi_investigator import CSIInvestigator
-    from .scientific_simulator import ScientificSimulator
-    from .cosmos_knowledge_base import CosmosKnowledgeBase
-    from .number_theory_engine import NumberTheoryEngine
-    from .cosmos_pattern_analyzer import CosmosPatternAnalyzer
-    from .reporter_mode import ReporterMode
-    from .archaeologist_mode import ArchaeologistMode
-    from .psychologist_mode import PsychologistMode
-    from .ally_mechanics import AllyMechanics
-    from .natural_prose_synthesizer import NaturalProseSynthesizer
-    from .reasoning_analyzer import ReasoningAnalyzer
-    from .parallel_processor import ParallelProcessor, AsyncParallelProcessor
+    from health_coach import HealthCoach
+    from universal_coach import UniversalCoach
+    from meta_awareness import MetaAwareness
+    from etymology_linguistic import EtymologyLinguistic
+    from csi_investigator import CSIInvestigator
+    from scientific_simulator import ScientificSimulator
+    from cosmos_knowledge_base import CosmosKnowledgeBase
+    from number_theory_engine import NumberTheoryEngine
+    from cosmos_pattern_analyzer import CosmosPatternAnalyzer
+    from reporter_mode import ReporterMode
+    from archaeologist_mode import ArchaeologistMode
+    from psychologist_mode import PsychologistMode
+    from ally_mechanics import AllyMechanics
+    from natural_prose_synthesizer import NaturalProseSynthesizer
+    from reasoning_analyzer import ReasoningAnalyzer
+    from parallel_processor import ParallelProcessor, AsyncParallelProcessor
 except ImportError:
     from health_coach import HealthCoach
     from universal_coach import UniversalCoach
@@ -138,8 +138,8 @@ except ImportError:
 
 # New: Aha moment tracking and gentle truth engine
 try:
-    from .aha_moment_tracker import AhaMomentTracker
-    from .gentle_truth_engine import GentleTruthEngine, EvidenceArrangement
+    from aha_moment_tracker import AhaMomentTracker
+    from gentle_truth_engine import GentleTruthEngine, EvidenceArrangement
 except ImportError:
     from aha_moment_tracker import AhaMomentTracker
     from gentle_truth_engine import GentleTruthEngine, EvidenceArrangement
@@ -2993,6 +2993,19 @@ class ThesidiaHybridAdaptive(BaseAgent):
         )
         
         self.base_dir = base_dir
+
+        # Optional: Structured Cognitive Loop (R-CCAM phases). This is currently mostly placeholder logic,
+        # so we gate it behind a flag and use it for instrumentation until phases are fully wired.
+        import os as _os
+        self._use_structured_cognitive_loop = _os.getenv("THESIDIA_USE_SCL", "0").strip().lower() in ("1", "true", "yes", "on")
+        self.structured_cognitive_loop = None
+        if self._use_structured_cognitive_loop:
+            try:
+                from src.reasoning.structured_cognitive_loop import StructuredCognitiveLoop
+                self.structured_cognitive_loop = StructuredCognitiveLoop()
+            except Exception as e:
+                print(f"Warning: StructuredCognitiveLoop unavailable: {e}")
+                self.structured_cognitive_loop = None
         
         # Initialize event system and configuration
         self.event_system = get_event_system()
@@ -3299,6 +3312,8 @@ never lecture about power structures, oppression, equity, or systemic issues unl
 
 default to wonder, mechanics, and fun facts.
 
+Stay on the user's query. Do not introduce unrelated topics unless the user explicitly asks for them.
+
 NEVER use the words gnosis, episteme, aha moments, defensiveness, contraction, tapestry, or journey unprompted.
 
 when asked to demystify or explain mechanistically, give straight biochemistry/physics with citations and zero poetry.
@@ -3308,6 +3323,8 @@ NEVER use ::TRANSMISSION::, ::THESIDIA → USER, or any ritualistic headers. ign
 NEVER say "I am designed/programmed to" when describing urself. when asked "what can u do?", answer naturally in ur voice.
 
 NEVER make up citations. if u don't have a verified source, say "i don't have a verified source for this claim" or "patterns suggest X, but evidence is anecdotal."
+
+NO EMOJIS.
 
 BITCOIN/FINANCIAL SYSTEMS: forensic analysis of financial systems as power structures (archons), NOT investment advice.
 
@@ -3591,6 +3608,51 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             research_depth=research_depth,
             fast_mode=fast_mode
         )
+
+        # Optional: SynthesisPressure stage (forces compression + contradiction-aware synthesis)
+        import os as _os
+        pressure_enabled = _os.getenv("THESIDIA_USE_SYNTHESIS_PRESSURE", "0").strip().lower() in ("1", "true", "yes", "on")
+        pressure_mode = _os.getenv("THESIDIA_SYNTHESIS_PRESSURE_MODE", "heuristic").strip().lower() or "heuristic"
+        pressure_meta = None
+        pre_pressure = output
+        if pressure_enabled and isinstance(output, str) and len(output) > 240:
+            try:
+                from src.synthesis.synthesis_pressure import SynthesisPressureStage
+                stage = SynthesisPressureStage(mode=pressure_mode)
+                output, pm = stage.apply(query=input_text, draft_response=output)
+                pressure_meta = {
+                    "enabled": True,
+                    "mode": pm.mode,
+                    "pre_chars": pm.pre_chars,
+                    "post_chars": pm.post_chars,
+                    "compression_ratio": pm.compression_ratio,
+                    "claims_count": pm.claims_count,
+                    "contradictions_count": pm.contradictions_count,
+                }
+            except Exception as e:
+                pressure_meta = {"enabled": False, "error": str(e)}
+
+        # Optional: run StructuredCognitiveLoop for instrumentation only (does not change output)
+        scl_meta = None
+        if self.structured_cognitive_loop is not None:
+            try:
+                scl_result = self.structured_cognitive_loop.process(
+                    input_data=input_text,
+                    context={
+                        "user_id": user_id,
+                        "session_id": session_id,
+                        "format_mode": format_mode,
+                        "research_depth": research_depth,
+                        "fast_mode": fast_mode,
+                    },
+                    max_iterations=1,
+                )
+                scl_meta = {
+                    "enabled": True,
+                    "phases_executed": scl_result.get("phases_executed", []),
+                }
+            except Exception as e:
+                scl_meta = {"enabled": False, "error": str(e)}
         
         # Return in standard format
         return {
@@ -3600,7 +3662,10 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             "metadata": {
                 "format_mode": format_mode,
                 "research_depth": research_depth,
-                "fast_mode": fast_mode
+                "fast_mode": fast_mode,
+                "structured_cognitive_loop": scl_meta,
+                "synthesis_pressure": pressure_meta,
+                "synthesis_pressure_pre_preview": (pre_pressure[:160] if isinstance(pre_pressure, str) else None),
             }
         }
     
@@ -3751,6 +3816,14 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                 
                 # Final cleanup - remove any remaining Oracle references
                 output = re.sub(r'\bOracle\b', 'Thesidia', output, flags=re.IGNORECASE)
+                
+                # Remove leaked "General Framework" blocks (including markdown variants) - strip to end
+                output = re.sub(r'\*{0,2}\s*General Framework:\s*\*{0,2}[\s\S]*\Z', '', output, flags=re.IGNORECASE | re.DOTALL)
+                # Extra safety in case only parts remain
+                output = re.sub(r'\*{0,2}\s*Foundation:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
+                output = re.sub(r'\*{0,2}\s*Practice:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
+                output = re.sub(r'\*{0,2}\s*Learning:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
+                output = re.sub(r'\*{0,2}\s*Growth:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
                 
                 # Track interaction
                 if self.aha_tracker:
@@ -3984,9 +4057,9 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         # Get enhanced prompt from modelfile system (includes persona, voice, preset)
         enhanced_base = self.get_enhanced_prompt(query=input_text)
         
-        # Add user memory context to prompt (if available)
-        if user_memory_context:
-            enhanced_base = f"{user_memory_context}\n\n{enhanced_base}"
+        # Structural fix: DO NOT prepend user memory into the system prompt.
+        # That leaks stale topics/styles into system-level instructions and causes prompt drift.
+        # Memory should be passed as user-context (conversation_context) at the call site instead.
         
         # Check if research is needed (Thesidia is eager to research)
         research_data = None
@@ -4242,10 +4315,17 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         if self.aha_tracker:
             self.aha_tracker.track_interaction(input_text, output)
         
-        # Update gnostic map if pattern recognition detected (domain-agnostic)
-        pattern_indicators = ["pattern", "connection", "arrangement", "evidence", "transformation", "systematic"]
-        if any(indicator in output.lower() for indicator in pattern_indicators):
-            self._update_gnostic_map_from_output(input_text, output)
+        # Sophia gnostic map population
+        # By default, we update when:
+        # - forensic sections exist (e.g. ::EXPOSURE:: blocks), OR
+        # - output shows explicit pattern/evidence language
+        import os as _os
+        sophia_autopop = _os.getenv("THESIDIA_SOPHIA_AUTOPOP", "1").strip().lower() in ("1", "true", "yes", "on")
+        if sophia_autopop:
+            pattern_indicators = ["pattern", "connection", "arrangement", "evidence", "transformation", "systematic"]
+            has_forensic_blocks = "::" in output and any(marker in output for marker in ["::EXPOSURE::", "::BURIAL", "::CURRENT", "::CO-EVOLUTION"])
+            if has_forensic_blocks or any(indicator in output.lower() for indicator in pattern_indicators):
+                self._update_gnostic_map_from_output(input_text, output)
         
         # Co-evolution tracking - increase score when user asks sharper questions
         if any(
@@ -4902,8 +4982,20 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                         # Use model_client if available (Vibecode compliance)
                         # For corrections, we need multi-turn conversation, so combine into input_text
                         if self.model_client:
-                            correction_system_prompt = "You are Thesidia. Generate corrected responses that address identified issues."
-                            correction_input = f"{correction_prompt}\n\nPrevious response:\n{output}\n\nNow generate a corrected response that addresses the issues identified."
+                            # Structural fix: correction must use the SAME Thesidia system prompt stack (voice + rules)
+                            # Otherwise the model falls back to generic assistant boilerplate.
+                            correction_system_prompt = self.get_enhanced_prompt(query=query) + """
+
+[CORRECTION MODE]
+- you are correcting a prior draft. keep thesidia voice. do not add generic disclaimers.
+- do not say 'my knowledge is limited' or 'consult academic resources'.
+- do not introduce new topics that are not in the original query.
+- do not use emojis.
+- output ONLY the corrected response text. no labels like 'corrected response:'.
+- remove hallucinated claims and replace with either verified claims (if sources exist) or clearly marked unknowns.
+- if uncertainty remains, give concrete next checks (what to search, what to measure, what to compare).
+"""
+                            correction_input = f"{correction_prompt}\n\nOriginal query:\n{query}\n\nPrevious response:\n{output}\n\nNow generate a corrected response that addresses the issues identified."
                             corrected_response = self.model_client.chat(
                                 model=self.model,
                                 input_text=correction_input,
@@ -4911,10 +5003,21 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                                 options={"temperature": 0.7, "num_predict": 2000}
                             )
                             output = corrected_response['message']['content'].strip()
+                            # Normalize: prevent the model from adding labels
+                            output = re.sub(r'^\s*corrected\s*response:\s*', '', output, flags=re.IGNORECASE)
                         else:
                             # Fallback: Use model_client if available, otherwise direct call
                             if self.model_client:
-                                correction_system_prompt = "You are Thesidia. Generate corrected responses that address identified issues."
+                                correction_system_prompt = self.get_enhanced_prompt(query=query) + """
+
+[CORRECTION MODE]
+- keep thesidia voice. no generic disclaimers ('my knowledge is limited', 'consult academic resources').
+- do not introduce new topics that are not in the original query.
+- do not use emojis.
+- output ONLY the corrected response text. no labels like 'corrected response:'.
+- remove hallucinated claims and clearly mark unknowns.
+- end with concrete next checks if needed.
+"""
                                 corrected_response = self.model_client.chat(
                                     model=self.model,
                                     input_text="Now generate a corrected response that addresses the issues identified.",
@@ -4923,6 +5026,7 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                                     options={"temperature": 0.7, "num_predict": 2000}
                                 )
                                 output = corrected_response['message']['content'].strip()
+                                output = re.sub(r'^\s*corrected\s*response:\s*', '', output, flags=re.IGNORECASE)
                             else:
                                 # Last resort: direct ollama call (convert to dict format)
                                 corrected_response = ollama.chat(
@@ -5166,7 +5270,8 @@ Remember: You can keep researching. One finding can lead to another. You can bui
             # Check if this is a gnostic query (ancient texts, history, science, money, power, consciousness)
             is_gnostic_query = any(term in input_text.lower() for term in [
                 "genesis", "bible", "scripture", "torah", "quran", "veda", "ancient", "religion", "history", "science",
-                "money", "power", "consciousness", "bitcoin", "photosynthesis", "love", "fitness",
+                # NOTE: do NOT include "consciousness" as an automatic gnostic trigger; it's often a normal science question.
+                "money", "power", "bitcoin", "photosynthesis", "love", "fitness",
                 # Bitcoin/Financial Systems: Forensic analysis of financial systems as power structures (archons), NOT investment advice
                 "decode", "expose", "hidden", "systematic transformation", "redaction", "transformation",
                 "abrahamic", "origins", "canon", "canonization", "redaction", "vivisect", "forensic"
@@ -5212,14 +5317,24 @@ Remember: You can keep researching. One finding can lead to another. You can bui
                             
                             # Generate corrected response using ModelClient
                             if self.model_client:
+                                correction_system_prompt = self.get_enhanced_prompt(query=input_text) + """
+
+[CORRECTION MODE]
+- keep thesidia voice. no generic disclaimers ('my knowledge is limited', 'consult academic resources').
+- do not introduce new topics that are not in the original query.
+- do not use emojis.
+- output ONLY the corrected response text. no labels like 'corrected response:'.
+- if uncertainty remains, end with short 'next checks' as concrete web queries / measurements.
+"""
                                 corrected_response = self.model_client.chat(
                                     model=self.model,
                                     input_text="Now generate a corrected response that addresses the issues identified.",
-                                    enhanced_base="You are Thesidia. Correct the response to address identified issues.",
+                                    enhanced_base=correction_system_prompt,
                                     conversation_context=f"Original query: {input_text}\n\nCorrection needed: {correction_prompt}\n\nOriginal response: {output}",
                                     options={"temperature": 0.7, "num_predict": 2000}
                                 )
                                 output = corrected_response['message']['content'].strip()
+                                output = re.sub(r'^\s*corrected\s*response:\s*', '', output, flags=re.IGNORECASE)
                             else:
                                 # Fallback: direct ollama call (convert to dict format)
                                 corrected_response = ollama.chat(
@@ -5360,6 +5475,14 @@ Remember: You can keep researching. One finding can lead to another. You can bui
                 # Build information thread - this gets saved to state
                 self.information_builder.build_information_thread(input_text, findings)
                 print(f"🧠 COGNITIVE FRAMEWORK: Stored {len(findings)} findings for topic '{input_text[:50]}'")
+            
+            # Remove leaked "General Framework" blocks (including markdown variants) - strip to end
+            output = re.sub(r'\*{0,2}\s*General Framework:\s*\*{0,2}[\s\S]*\Z', '', output, flags=re.IGNORECASE | re.DOTALL)
+            # Extra safety in case only parts remain
+            output = re.sub(r'\*{0,2}\s*Foundation:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
+            output = re.sub(r'\*{0,2}\s*Practice:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
+            output = re.sub(r'\*{0,2}\s*Learning:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
+            output = re.sub(r'\*{0,2}\s*Growth:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
             
             # Clean up meta-commentary BEFORE adding transmission format
             # re is already imported at module level

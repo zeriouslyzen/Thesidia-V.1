@@ -1,0 +1,300 @@
+{
+  "run_id": "eval_1766017282",
+  "ts": 1766017896.619054,
+  "variants": {
+    "baseline": {
+      "variant": "baseline",
+      "pressure_enabled": false,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 13.73093581199646,
+          "output_preview": "hey there! what's on your mind? always happy to geek out about science, history, biology, physics, and the cosmos.",
+          "output_chars": 114,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! what's on your mind? always happy to geek out about science, history, biology, physics, and the cosmos."
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 15.779888153076172,
+          "output_preview": "hey there! you asked for a fun fact about octopuses, so here it is: they have three hearts. two pump blood to the gills while a third pumps it to the rest of the body. and if one heart stops beating, the other two can keep the octopus alive",
+          "output_chars": 958,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! you asked for a fun fact about octopuses, so here it is: they have three hearts. two pump blood to the gills while a third pumps it to the rest of th"
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 22.671766996383667,
+          "output_preview": "hey there! octopuses, huh? these eight-armed cephalopods are some fascinating critters. did you know that an octopus has three hearts? two pump blood to the gills while the third pumps it to the rest of their body. now that's a hearty syste",
+          "output_chars": 981,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! octopuses, huh? these eight-armed cephalopods are some fascinating critters. did you know that an octopus has three hearts? two pump blood to the gil"
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 50.146479845047,
+          "output_preview": "In the quest to decode Genesis and uncover what was redacted or manipulated, we delve into the intricate narrative that has shaped Western civilization's understanding of its origins. Tracing the etymology of key terms reveals a fascinating",
+          "output_chars": 4596,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "In the quest to decode Genesis and uncover what was redacted or manipulated, we delve into the intricate narrative that has shaped Western civilization's unders"
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 98.27941083908081,
+          "output_preview": "In delving into the intricate narrative that has shaped Western civilization's understanding of its origins, we find ourselves at the crossroads of power, religion, and industry—specifically, pharmaceutical lobbying in the United States. Tr",
+          "output_chars": 5606,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "In delving into the intricate narrative that has shaped Western civilization's understanding of its origins, we find ourselves at the crossroads of power, relig"
+          }
+        }
+      ]
+    },
+    "pressure": {
+      "variant": "pressure",
+      "pressure_enabled": true,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 20.497292041778564,
+          "output_preview": "hey there! what's up? i'm thesidia, a curious pattern-spotting engineer who loves diving into science, history, biology, physics, and all things cosmos.",
+          "output_chars": 152,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! what's up? i'm thesidia, a curious pattern-spotting engineer who loves diving into science, history, biology, physics, and all things cosmos."
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 48.18535089492798,
+          "output_preview": "tell me a random fun fact about octopuses\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 185,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 1150,
+              "post_chars": 185,
+              "compression_ratio": 0.1608695652173913,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "sure thing! octopuses are quite extraordinary creatures. one interesting fact about them is that each of their arms has its own nervous system, which allows the"
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 98.81635904312134,
+          "output_preview": "what do you think about consciousness\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 181,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 1129,
+              "post_chars": 181,
+              "compression_ratio": 0.16031886625332153,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "well, consciousness is indeed a tricky topic to tackle. if we're talking about the mind and thoughts, that's more in my wheelhouse. but when it comes to conscio"
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 155.71403002738953,
+          "output_preview": "decode genesis. what was redacted and who benefited\n\n- A struggle between opposing forces: In the Babylonian Enuma Elish, Tiamat, the sea goddess, represents the primordial chaos, while Marduk, the god of storms and winds, eventually emerge",
+          "output_chars": 1173,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 6393,
+              "post_chars": 1173,
+              "compression_ratio": 0.18348193336461754,
+              "claims_count": 6,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "In the pursuit of decoding Genesis and understanding what was redacted or manipulated, we delve into a captivating exploration that reveals layers hidden beneat"
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 89.84708976745605,
+          "output_preview": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first\n\n- The ghostwriting scandal that surfaced in 2008 exposed how pharmaceutical companies collaborated with doctors and researchers to write favorable articl",
+          "output_chars": 1200,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 4209,
+              "post_chars": 1200,
+              "compression_ratio": 0.2851033499643621,
+              "claims_count": 25,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "In the intricate web of pharmaceutical lobbying in the United States, it's crucial to delve into historical patterns and current power structures that shape thi"
+          }
+        }
+      ]
+    }
+  }
+}

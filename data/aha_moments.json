@@ -2438,6 +2438,600 @@
       "defensiveness_detected": false,
       "expansion_detected": false,
       "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 172,
+      "timestamp": "2025-12-17T00:23:50.609581",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 98,
+      "timestamp": "2025-12-17T00:24:06.290497",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "really",
+      "response_length": 832,
+      "timestamp": "2025-12-17T00:24:39.700931",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 110,
+      "timestamp": "2025-12-17T13:44:54.861323",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2197,
+      "timestamp": "2025-12-17T13:46:08.691890",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1723,
+      "timestamp": "2025-12-17T13:47:23.819601",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1697,
+      "timestamp": "2025-12-17T13:52:57.864249",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2354,
+      "timestamp": "2025-12-17T13:55:07.701142",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1449,
+      "timestamp": "2025-12-17T13:56:34.393708",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how does photosynthesis work?",
+      "response_length": 1817,
+      "timestamp": "2025-12-17T13:56:44.472810",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2432,
+      "timestamp": "2025-12-17T14:01:44.716436",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2071,
+      "timestamp": "2025-12-17T14:03:15.723301",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 3313,
+      "timestamp": "2025-12-17T14:05:04.862515",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1939,
+      "timestamp": "2025-12-17T14:07:15.784625",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1049,
+      "timestamp": "2025-12-17T14:09:12.857584",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1761,
+      "timestamp": "2025-12-17T14:10:40.951273",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 2555,
+      "timestamp": "2025-12-17T14:12:41.379538",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me about consciousness",
+      "response_length": 1254,
+      "timestamp": "2025-12-17T14:14:18.434133",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 45,
+      "timestamp": "2025-12-17T14:34:13.003656",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 49,
+      "timestamp": "2025-12-17T14:35:03.385890",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 129,
+      "timestamp": "2025-12-17T15:38:35.681260",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 778,
+      "timestamp": "2025-12-17T15:39:09.333585",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1201,
+      "timestamp": "2025-12-17T15:39:47.929665",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 100,
+      "timestamp": "2025-12-17T16:12:52.113051",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 951,
+      "timestamp": "2025-12-17T16:13:05.883948",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1074,
+      "timestamp": "2025-12-17T16:13:31.047230",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 152,
+      "timestamp": "2025-12-17T16:15:33.394382",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 658,
+      "timestamp": "2025-12-17T16:15:45.201352",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1140,
+      "timestamp": "2025-12-17T16:16:02.684276",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 942,
+      "timestamp": "2025-12-17T16:20:03.642751",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 114,
+      "timestamp": "2025-12-17T16:21:36.678284",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 958,
+      "timestamp": "2025-12-17T16:21:52.458567",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 981,
+      "timestamp": "2025-12-17T16:22:15.128643",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 113,
+      "timestamp": "2025-12-17T16:23:18.857649",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 667,
+      "timestamp": "2025-12-17T16:25:02.076973",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 152,
+      "timestamp": "2025-12-17T16:25:04.053654",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 917,
+      "timestamp": "2025-12-17T16:25:43.175472",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 1151,
+      "timestamp": "2025-12-17T16:25:52.239251",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1130,
+      "timestamp": "2025-12-17T16:27:31.050639",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 41,
+      "timestamp": "2025-12-17T16:30:20.502455",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 965,
+      "timestamp": "2025-12-17T16:32:07.131323",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 964,
+      "timestamp": "2025-12-17T16:32:33.382984",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 175,
+      "timestamp": "2025-12-17T16:35:51.671430",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 894,
+      "timestamp": "2025-12-17T16:36:08.600160",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1337,
+      "timestamp": "2025-12-17T16:36:35.866376",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 198,
+      "timestamp": "2025-12-17T16:39:00.072097",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 878,
+      "timestamp": "2025-12-17T16:39:10.862540",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1655,
+      "timestamp": "2025-12-17T16:39:32.951996",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 191,
+      "timestamp": "2025-12-17T16:39:37.337518",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 1423,
+      "timestamp": "2025-12-17T16:40:26.608720",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1175,
+      "timestamp": "2025-12-17T16:42:13.530496",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 134,
+      "timestamp": "2025-12-17T16:45:39.522779",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 1301,
+      "timestamp": "2025-12-17T16:46:05.929292",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1680,
+      "timestamp": "2025-12-17T16:46:43.828309",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 29,
+      "timestamp": "2025-12-17T18:39:28.137806",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 932,
+      "timestamp": "2025-12-17T18:39:43.097952",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1341,
+      "timestamp": "2025-12-17T18:40:11.381000",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 83,
+      "timestamp": "2025-12-17T18:43:05.192724",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 720,
+      "timestamp": "2025-12-17T18:43:16.790168",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1608,
+      "timestamp": "2025-12-17T18:43:48.231914",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 101,
+      "timestamp": "2025-12-18T09:26:29.332196",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 825,
+      "timestamp": "2025-12-18T09:26:40.923488",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1018,
+      "timestamp": "2025-12-18T09:27:06.446074",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 73,
+      "timestamp": "2025-12-18T09:29:28.212145",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "tell me a random fun fact about octopuses",
+      "response_length": 793,
+      "timestamp": "2025-12-18T09:29:40.584676",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what do you think about consciousness",
+      "response_length": 1272,
+      "timestamp": "2025-12-18T09:29:58.374254",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
     }
   ],
   "expansion_metrics": [],

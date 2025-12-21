@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
     
     <!-- Primary Meta Tags -->
-    <title>THESIDIA // Signal Stream - Social Media Feed</title>
-    <meta name="title" content="THESIDIA // Signal Stream - Social Media Feed">
-    <meta name="description" content="THESIDIA Signal Stream - AI-curated social media feed with quality scoring and bot detection. Created by Jack Danger.">
-    <meta name="keywords" content="social media, AI feed, signal stream, thesidia, Jack Danger, AI curation">
+    <title>Katanx // Signal Stream - Social Media Feed</title>
+    <meta name="title" content="Katanx // Signal Stream - Social Media Feed">
+    <meta name="description" content="Katanx Signal Stream - AI-curated social media feed with quality scoring and bot detection. Created by Jack Danger.">
+    <meta name="keywords" content="social media, AI feed, signal stream, katanx, Jack Danger, AI curation">
     <meta name="author" content="Jack Danger">
     <meta name="robots" content="index, follow">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://www.thesidia.com/stream.html">
+    <link rel="canonical" href="https://www.katanx.com/stream.html">
     
     <!-- Cross-Domain Connections -->
     <link rel="author" href="https://www.jackdanger.dev">
@@ -23,23 +23,192 @@
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.thesidia.com/stream.html">
-    <meta property="og:title" content="THESIDIA // Signal Stream">
+    <meta property="og:url" content="https://www.katanx.com/stream.html">
+    <meta property="og:title" content="Katanx // Signal Stream">
     <meta property="og:description" content="AI-curated social media feed with quality scoring. Created by Jack Danger.">
-    <meta property="og:image" content="https://www.thesidia.com/og-image.jpg">
+    <meta property="og:image" content="https://www.katanx.com/og-image.jpg">
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="THESIDIA // Signal Stream">
+    <meta name="twitter:title" content="Katanx // Signal Stream">
     <meta name="twitter:description" content="AI-curated social media feed with quality scoring.">
-    <meta name="twitter:image" content="https://www.thesidia.com/twitter-image.jpg">
+    <meta name="twitter:image" content="https://www.katanx.com/twitter-image.jpg">
     
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Loading Screen with /X Logo */
+        .katanx-loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .katanx-loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .katanx-loading-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .katanx-logo-x {
+            font-family: 'Inconsolata', monospace;
+            font-size: 64px;
+            font-weight: 700;
+            color: #67d0ff;
+            letter-spacing: -2px;
+            position: relative;
+            animation: katanx-logo-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes katanx-logo-pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(0.98);
+            }
+        }
+        
+        .katanx-logo-x::before {
+            content: '/';
+            color: #ffd700;
+            margin-right: 4px;
+        }
+        
+        .katanx-loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(103, 208, 255, 0.2);
+            border-top-color: #67d0ff;
+            border-radius: 50%;
+            animation: katanx-spin 1s linear infinite;
+        }
+        
+        @keyframes katanx-spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Progressive Fade-In for Home Dashboard */
+        .home-dashboard {
+            opacity: 0;
+            animation: fade-in-dashboard 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes fade-in-dashboard {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Widget Cards - Staggered Fade-In */
+        .widget-card {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .widget-card.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Staggered animation delays for widgets */
+        .widget-card[data-widget="welcome"] {
+            transition-delay: 0.1s;
+        }
+        
+        .widget-card[data-widget="news"] {
+            transition-delay: 0.2s;
+        }
+        
+        .widget-card[data-widget="following"] {
+            transition-delay: 0.3s;
+        }
+        
+        .widget-card[data-widget="activity"] {
+            transition-delay: 0.4s;
+        }
+        
+        .widget-card[data-widget="mindful-tips"] {
+            transition-delay: 0.5s;
+        }
+        
+        /* Content fade-in for loaded content */
+        .widget-content-loaded {
+            animation: fade-in-content 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes fade-in-content {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Skeleton loading states */
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.05) 100%
+            );
+            background-size: 200% 100%;
+            animation: skeleton-shimmer 1.5s ease-in-out infinite;
+            border-radius: 4px;
+        }
+        
+        @keyframes skeleton-shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        /* Prevent flash of unstyled content */
+        .stream-page-container {
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+        
+        .stream-page-container.loaded {
+            opacity: 1;
+        }
+        
+        /* Smooth transitions for all interactive elements */
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
         .stream-container {
             flex: 1;
             overflow-y: auto;
@@ -109,7 +278,7 @@
         
         .stream-item-content {
             color: var(--text-secondary);
-            font-size: var(--font-size-sm);
+            font-size: 12px; /* Match circles sub preview */
             line-height: var(--line-height-normal);
             margin-bottom: var(--spacing-md);
         }
@@ -144,53 +313,423 @@
             color: var(--text-secondary);
         }
         
+        .comments-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: var(--spacing-lg);
+        }
+        
+        .comments-modal-content {
+            background: var(--bg-primary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .comments-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+        }
+        
+        .comments-modal-header h3 {
+            margin: 0;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .comments-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+        
+        .comments-close:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+        
+        .comment-item {
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-md);
+            border: var(--border-width-thin) solid var(--border-color);
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-sm);
+        }
+        
+        .comment-content {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xs);
+            line-height: var(--line-height-normal);
+        }
+        
+        .comment-time {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+        
+        .comment-form {
+            padding: var(--spacing-lg);
+            border-top: var(--border-width-thin) solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        
+        .comment-input {
+            width: 100%;
+            min-height: 80px;
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: var(--font-size-sm);
+            resize: vertical;
+        }
+        
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+        }
+        
+        .comment-submit {
+            align-self: flex-end;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .comment-submit:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+        
         .stream-loading {
             text-align: center;
             padding: var(--spacing-xl);
             color: var(--text-secondary);
         }
+        
+        .pull-refresh-indicator {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xs);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .refresh-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--text-primary);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        
+        .refresh-spinner.spinning {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .refresh-text {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+        
+        .skeleton-loader {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .skeleton-line {
+            height: 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .skeleton-line.short {
+            width: 60%;
+        }
+        
+        .skeleton-line.medium {
+            width: 80%;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .feed-filter {
+            display: flex;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            border-bottom: var(--border-width-thin) solid var(--border-color);
+            background: var(--bg-primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .feed-filter-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .feed-filter-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--text-secondary);
+        }
+        
+        .feed-filter-btn.active {
+            background: var(--bg-tertiary);
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .ai-quality-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            background: var(--bg-tertiary);
+            border: var(--border-width-thin) solid var(--border-color);
+        }
+        
+        .ai-quality-badge.high-quality {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: rgba(0, 255, 0, 0.3);
+            color: #00ff00;
+        }
+        
+        .ai-quality-badge.medium-quality {
+            background: rgba(255, 255, 0, 0.1);
+            border-color: rgba(255, 255, 0, 0.3);
+            color: #ffff00;
+        }
+        
+        .ai-quality-badge.low-quality {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: rgba(255, 0, 0, 0.3);
+            color: #ff4444;
+        }
+        
+        .ai-quality-badge svg {
+            width: 12px;
+            height: 12px;
+        }
+        
+        .ai-summary {
+            margin-top: 0;
+            margin-bottom: 0;
+            padding: var(--spacing-sm);
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--text-secondary);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .ai-sentiment {
+            display: inline-block;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding: 2px 8px;
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+        }
+        
+        .ai-sentiment.sentiment-positive {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+        }
+        
+        .ai-sentiment.sentiment-negative {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff4444;
+        }
+        
+        .ai-suggestions-panel {
+            background: var(--bg-secondary);
+            border: var(--border-width-thin) solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .ai-suggestions-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .ai-suggestions-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        
+        .ai-suggestion-item {
+            padding: var(--spacing-sm);
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            border: var(--border-width-thin) solid transparent;
+        }
+        
+        .ai-suggestion-item:hover {
+            background: var(--bg-primary);
+            border-color: var(--text-secondary);
+        }
+        
+        .stream-post {
+            position: relative;
+        }
     </style>
 </head>
 <body>
+    <!-- Katanx Loading Screen with /X Logo -->
+    <div class="katanx-loading-screen" id="katanxLoadingScreen">
+        <div class="katanx-loading-logo">
+            <div class="katanx-logo-x">X</div>
+            <div class="katanx-loading-spinner"></div>
+        </div>
+    </div>
+    
     <div id="app">
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <!-- Profile Picture - Left Corner -->
-                <div class="header-profile">
-                    <div class="header-profile-picture" id="headerProfilePicture">
-                        <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
-                    </div>
+                <!-- Katanx Branding - Left (replaced profile) -->
+                <div class="header-branding">
+                    <span class="thesidia-text"><span class="katanx-slash">/</span>katanx</span>
                 </div>
                 
-                <!-- THESIDIA Title - Center with Nano Dust -->
-                <div class="header-title">
-                    <h1 class="thesidia-title" id="thesidiaTitle">
-                        <span class="thesidia-text">THESIDIA</span>
-                        <canvas class="nano-dust-canvas" id="nanoDustCanvas"></canvas>
-                    </h1>
-                </div>
-                
-                <!-- Menu Button - Right -->
-                <button class="menu-btn" id="menuBtn" aria-label="Menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <!-- Menu Orb - Right -->
+                <button class="menu-orb" id="menuBtn" aria-label="Menu">
+                    <div class="orb-glow"></div>
                 </button>
             </div>
             
             <!-- Sub Menu -->
             <div class="header-submenu">
-                <!-- Astrological Time Indicator - Far Left -->
-                <div class="astro-time-indicator" id="astroTimeIndicator">
-                    <span class="astro-time-text" id="astroTimeText">00:00</span>
-                    <span class="astro-time-dot"></span>
+                <!-- User Status Indicator - Far Left -->
+                <div class="user-status-indicator" id="userStatusIndicator">
+                    <span class="user-name-text" id="userNameText">Katanx Explore</span>
+                    <span class="status-orb status-online" id="statusOrb" title="Status: Online"></span>
                 </div>
                 
-                <a href="#" class="submenu-item" data-filter="friends">Friends</a>
-                <a href="#" class="submenu-item" data-filter="fans">Fans</a>
-                <a href="#" class="submenu-item" data-filter="communities">Communities</a>
-                <a href="#" class="submenu-item" data-filter="labs">Labs</a>
+                <!-- Status Selector Dropdown -->
+                <div class="status-selector-dropdown" id="statusSelectorDropdown">
+                    <div class="status-option" data-status="online">
+                        <span class="status-orb status-online"></span>
+                        <span>Online</span>
+                    </div>
+                    <div class="status-option" data-status="offline">
+                        <span class="status-orb status-offline"></span>
+                        <span>Offline</span>
+                    </div>
+                    <div class="status-option" data-status="away">
+                        <span class="status-orb status-away"></span>
+                        <span>Away</span>
+                    </div>
+                    <div class="status-option" data-status="focused">
+                        <span class="status-orb status-focused"></span>
+                        <span>Focused</span>
+                    </div>
+                </div>
+                
+                <nav class="advanced-nav">
+                    <button class="nav-item" data-section="home">home</button>
+                    <button class="nav-item" data-section="stream">stream</button>
+                    <button class="nav-item" data-section="kx-cuts">kx cuts</button>
+                    <button class="nav-item" data-section="circles">forums</button>
+                    <button class="nav-item" data-section="studio">studio</button>
+                </nav>
                 
                 <!-- Star Notepad Button - Far Right -->
                 <button class="star-notepad-btn" id="starNotepadBtn" aria-label="Notes">
@@ -212,48 +751,201 @@
 
         <!-- Main Content -->
         <main class="stream-page-container">
-            <div class="stream-feed-container">
-                <!-- Stream Compose Area -->
-                <div class="stream-compose">
-                    <div class="compose-profile">
-                        <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
-                    </div>
-                    <div class="compose-input-area">
-                        <textarea class="compose-textarea" id="composeTextarea" placeholder="What's happening?"></textarea>
-                        <div class="compose-actions">
-                            <div class="compose-media-buttons">
-                                <button class="compose-media-btn" id="addImageBtn" aria-label="Add image">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                                        <path d="M21 15l-5-5L5 21"/>
-                                    </svg>
-                                </button>
-                                <button class="compose-media-btn" id="addVideoBtn" aria-label="Add video">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polygon points="23 7 16 12 23 17 23 7"/>
-                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                                    </svg>
-                                </button>
-                                <button class="compose-media-btn" id="goLiveBtn" aria-label="Go live">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <circle cx="12" cy="12" r="3"/>
-                                    </svg>
-                                </button>
+            <div class="content-carousel">
+                <div class="carousel-track">
+                    <!-- Home Section - Gamified Dashboard -->
+                    <section class="carousel-section" data-section="home">
+                        <div class="home-dashboard">
+                            <div class="home-hero widget-card" data-widget="welcome">
+                                <div class="hero-greeting">
+                                    <div class="hero-eyebrow">welcome back</div>
+                                </div>
                             </div>
-                            <button class="compose-post-btn" id="postBtn" disabled>Post</button>
+
+                            <div class="widget-card news-widget" data-widget="news">
+                                <div class="widget-header">
+                                    <div class="widget-title">Signal picks</div>
+                                    <div class="widget-meta">curated for you</div>
+                                </div>
+                                <div class="news-tiles" id="homeNewsTiles">
+                                    <div class="news-tile skeleton"></div>
+                                </div>
+                            </div>
+
+                            <!-- What You're Following -->
+                            <div class="widget-card following-widget" data-widget="following">
+                                <div class="widget-header">
+                                    <div class="widget-title">What you're following</div>
+                                    <div class="widget-meta" id="followingMeta">view all</div>
+                                </div>
+                                <div class="following-carousel-container" id="followingCarouselContainer">
+                                    <div class="following-carousel-track" id="followingCarouselTrack">
+                                        <!-- Post previews will be inserted here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activity Feed -->
+                            <div class="widget-card activity-widget" data-widget="activity">
+                                <div class="widget-header">
+                                    <div class="widget-title">Resonates & refines</div>
+                                    <div class="widget-meta" id="activityMeta">recent activity</div>
+                                </div>
+                                <div class="activity-list" id="activityList">
+                                    <div class="activity-item skeleton">
+                                        <div class="activity-content">Loading activity...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mindful Tips -->
+                            <div class="widget-card mindful-tips-widget" data-widget="mindful-tips">
+                                <div class="widget-header">
+                                    <div class="widget-title">Mindful tips</div>
+                                    <div class="widget-meta" id="tipsMeta">daily & weekly</div>
+                                </div>
+                                <div class="tips-container" id="tipsContainer">
+                                    <div class="tips-daily" id="dailyTips">
+                                        <div class="tips-section-header">Today</div>
+                                        <div class="tips-list" id="dailyTipsList">
+                                            <div class="tip-item skeleton">Loading daily tips...</div>
+                                        </div>
+                                    </div>
+                                    <div class="tips-weekly" id="weeklyTips">
+                                        <div class="tips-section-header">This week</div>
+                                        <div class="tips-list" id="weeklyTipsList">
+                                            <div class="tip-item skeleton">Loading weekly goals...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Stream Feed -->
-                <div class="stream-feed" id="streamFeed">
-                    <div class="stream-loading">Loading stream...</div>
+                    </section>
+                    
+                    <!-- Stream Section - Curated Algorithmic Feed -->
+                    <section class="carousel-section" data-section="stream">
+                        <!-- Stream Filter Bar -->
+                        <div class="stream-filter-bar">
+                            <div class="stream-filter-left">
+                                <div class="stream-filter-search">
+                                    <input type="text" id="streamSearchInput" class="stream-search-input" placeholder="Search stream..." />
+                                    <svg class="stream-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.35-4.35"></path>
+                                    </svg>
+                                    <div class="stream-search-suggestions" id="streamSearchSuggestions">
+                                        <!-- Tags will appear here as suggestions -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stream-filter-right">
+                                <button class="stream-filter-btn" id="streamForYouBtn" data-filter="for-you">For you</button>
+                                <button class="stream-filter-btn" id="streamDiscoverBtn" data-filter="discover">Discover</button>
+                                <div class="stream-vibe-selector">
+                                    <button class="stream-filter-btn stream-vibe-btn" id="streamVibeBtn">
+                                        <span id="streamVibeLabel">Vibe</span>
+                                        <svg class="vibe-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </button>
+                                    <div class="stream-vibe-dropdown" id="streamVibeDropdown">
+                                        <button class="vibe-option" data-vibe="relaxing">Relaxing</button>
+                                        <button class="vibe-option" data-vibe="exciting">Exciting</button>
+                                        <button class="vibe-option" data-vibe="inspiring">Inspiring</button>
+                                        <button class="vibe-option" data-vibe="focused">Focused</button>
+                                        <button class="vibe-option" data-vibe="creative">Creative</button>
+                                        <button class="vibe-option" data-vibe="analytical">Analytical</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stream-feed-container">
+                            <!-- Stream Feed -->
+                            <div class="stream-feed" id="streamFeed">
+                                <div class="stream-loading">Loading stream...</div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- KX Cuts Section - Short Form Content -->
+                    <section class="carousel-section" data-section="kx-cuts">
+                        <div class="kx-cuts-container">
+                            <div class="cuts-feed" id="cutsFeed">
+                                <div class="cuts-loading">Loading cuts...</div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Forums Section - Advanced Reddit-Style Forum -->
+                    <section class="carousel-section" data-section="circles">
+                        <div class="circles-container">
+                            <div class="circles-header">
+                                <h2>Forums</h2>
+                                <div class="circles-filters">
+                                    <button class="filter-btn active" data-filter="all">All</button>
+                                    <button class="filter-btn" data-filter="trending">Trending</button>
+                                    <button class="filter-btn" data-filter="recent">Recent</button>
+                                </div>
+                            </div>
+                            <div class="circles-categories-container" id="circlesCategories">
+                                <div class="circles-categories-scroll" id="circlesCategoriesScroll">
+                                    <div class="circles-categories-loading">Loading categories...</div>
+                                </div>
+                            </div>
+                            <div class="circles-content">
+                                <div class="circles-threads" id="circlesThreads">
+                                    <div class="threads-loading">Loading threads...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Studio Section - Mentor Program Streams -->
+                    <section class="carousel-section" data-section="studio">
+                        <div class="studio-container">
+                            <div class="studio-header">
+                                <h2>Studio</h2>
+                                <div class="studio-filters">
+                                    <button class="filter-btn active" data-filter="all">All</button>
+                                    <button class="filter-btn" data-filter="active">Active</button>
+                                    <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+                                </div>
+                            </div>
+                            <div class="studio-programs" id="studioPrograms">
+                                <div class="programs-loading">Loading programs...</div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </main>
         
+        <!-- Scuba Depth Indicator - Fixed to right side of screen -->
+        <div class="scuba-depth-indicator" id="scubaDepthIndicator">
+            <div class="depth-line"></div>
+            <div class="depth-marker" data-depth="0"></div>
+            <div class="depth-marker" data-depth="10"></div>
+            <div class="depth-marker" data-depth="20"></div>
+            <div class="depth-marker" data-depth="30"></div>
+            <div class="depth-marker" data-depth="40"></div>
+            <div class="depth-marker" data-depth="50"></div>
+            <div class="depth-marker" data-depth="60"></div>
+            <div class="depth-marker" data-depth="70"></div>
+            <div class="depth-marker" data-depth="80"></div>
+            <div class="depth-marker" data-depth="90"></div>
+            <div class="depth-marker" data-depth="100"></div>
+            <div class="depth-marker" data-depth="110"></div>
+            <div class="depth-marker" data-depth="120"></div>
+            <div class="depth-marker" data-depth="130"></div>
+            <div class="depth-marker" data-depth="140"></div>
+            <div class="depth-marker" data-depth="150"></div>
+            <div class="depth-marker" data-depth="160"></div>
+            <div class="depth-marker" data-depth="170"></div>
+            <div class="depth-marker" data-depth="180"></div>
+            <div class="depth-marker" data-depth="190"></div>
+            <div class="depth-marker" data-depth="200"></div>
+        </div>
+
         <!-- Left Sidebar -->
         <div class="left-sidebar" id="leftSidebar">
             <div class="sidebar-content">
@@ -262,7 +954,7 @@
                     <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
                     <div class="profile-picture-container" id="profilePictureContainer">
                         <div class="profile-picture" id="profilePicture">
-                            <img src="/profile-image.jpg" alt="Profile" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\'%3E%3Ccircle cx=\'24\' cy=\'24\' r=\'24\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'24\' cy=\'18\' r=\'7\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M12 46 Q24 38 36 46\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='24' cy='18' r='7' fill='%23ffffff' fill-opacity='0.3'/%3E%3Cpath d='M12 46 Q24 38 36 46' stroke='%23ffffff' stroke-width='2' fill='none' stroke-opacity='0.3'/%3E%3C/svg%3E" alt="Profile">
                             <div class="profile-picture-overlay">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
@@ -271,15 +963,17 @@
                         </div>
                     </div>
                     <div class="profile-info">
-                        <div class="profile-name">Jack Danger</div>
-                        <div class="profile-tag">@jacksonadanger</div>
-                        <div class="profile-stats">
-                            <span class="stat-number">33</span>
-                            <span class="stat-label">Friends</span>
-                            <span class="stat-number">100</span>
-                            <span class="stat-label">Fans</span>
+                        <div class="profile-name" id="sidebarProfileName">Loading...</div>
+                        <div class="profile-tag" id="sidebarProfileTag">@loading</div>
+                        <div class="profile-insight" id="sidebarProfileInsight">
+                            Where practice meets presence, and discipline becomes discovery.
                         </div>
                     </div>
+                </div>
+                
+                <div class="sidebar-follow" id="peopleToFollow">
+                    <div class="sidebar-follow-title">People to follow</div>
+                    <div class="sidebar-follow-list" id="peopleToFollowList"></div>
                 </div>
                 
                 <!-- Main Navigation -->
@@ -303,7 +997,7 @@
                         </div>
                         <span class="nav-title">Stream</span>
                     </a>
-                    <a href="/" class="nav-menu-item">
+                    <a href="/app.html" class="nav-menu-item">
                         <div class="nav-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -333,6 +1027,7 @@
     </div>
     
     <script src="app.js"></script>
+    <script src="navigation.js"></script>
     <script>
         // Stream Page Specific Script
         class StreamPage {
@@ -343,6 +1038,11 @@
                 this.userId = null;
                 this.sessionId = null;
                 this.loading = false;
+                this.pendingMedia = [];
+                this.currentAutocomplete = null;
+                this.tagRotationInterval = null;
+                this.currentFilter = 'for-you';
+                this.currentVibe = null;
                 this.init();
             }
             
@@ -352,6 +1052,330 @@
                 await this.loadPosts();
                 this.setupEventListeners();
                 this.setupInfiniteScroll();
+                this.setupStreamFilter();
+                this.setupScubaDepthIndicator();
+            }
+            
+            setupScubaDepthIndicator() {
+                const feedContainer = document.querySelector('.stream-feed-container');
+                const depthIndicator = document.getElementById('scubaDepthIndicator');
+                
+                if (!feedContainer || !depthIndicator) return;
+                
+                // Always show the indicator on stream page
+                depthIndicator.style.display = 'flex';
+                
+                let rafId = null;
+                
+                const updateDepth = () => {
+                    const scrollTop = feedContainer.scrollTop;
+                    const scrollHeight = feedContainer.scrollHeight;
+                    const clientHeight = feedContainer.clientHeight;
+                    const maxScroll = scrollHeight - clientHeight;
+                    
+                    if (maxScroll <= 0 || scrollHeight <= clientHeight) return;
+                    
+                    // Calculate depth percentage (0-100%)
+                    const scrollPercent = Math.min(100, Math.max(0, (scrollTop / maxScroll) * 100));
+                    
+                    // Map to depth in meters (0-200m)
+                    const depth = Math.min(200, Math.round((scrollPercent / 100) * 200));
+                    
+                    // Highlight current depth marker with smooth animation
+                    const markers = depthIndicator.querySelectorAll('.depth-marker');
+                    markers.forEach(marker => {
+                        const markerDepth = parseInt(marker.dataset.depth);
+                        if (Math.abs(depth - markerDepth) < 5) {
+                            marker.classList.add('active');
+                        } else {
+                            marker.classList.remove('active');
+                        }
+                    });
+                };
+                
+                const smoothUpdate = () => {
+                    updateDepth();
+                    rafId = null;
+                };
+                
+                feedContainer.addEventListener('scroll', () => {
+                    if (!rafId) {
+                        rafId = requestAnimationFrame(smoothUpdate);
+                    }
+                }, { passive: true });
+                
+                updateDepth(); // Initial update
+                
+                // Update on resize
+                window.addEventListener('resize', updateDepth);
+            }
+            
+            setupStreamFilter() {
+                // Setup search input with animated tag suggestions
+                const searchInput = document.getElementById('streamSearchInput');
+                const suggestionsContainer = document.getElementById('streamSearchSuggestions');
+                
+                if (searchInput && suggestionsContainer) {
+                    let searchTimeout;
+                    let tagRotationInterval = null;
+                    let currentTagIndex = 0;
+                    let allTags = [];
+                    
+                    // Load available tags
+                    this.loadAvailableTags().then(tags => {
+                        allTags = tags;
+                    });
+                    
+                    searchInput.addEventListener('input', (e) => {
+                        const query = e.target.value.trim();
+                        clearTimeout(searchTimeout);
+                        
+                        if (query.length > 0) {
+                            // Show suggestions with animated tag rotation
+                            this.showSearchSuggestions(query, allTags, suggestionsContainer);
+                            this.startTagRotation(allTags, suggestionsContainer, query);
+                        } else {
+                            // Hide suggestions when empty
+                            suggestionsContainer.innerHTML = '';
+                            suggestionsContainer.style.display = 'none';
+                            if (this.tagRotationInterval) {
+                                clearInterval(this.tagRotationInterval);
+                                this.tagRotationInterval = null;
+                            }
+                        }
+                        
+                        searchTimeout = setTimeout(() => {
+                            this.filterPosts(query);
+                        }, 300);
+                    });
+                    
+                    searchInput.addEventListener('blur', () => {
+                        // Keep suggestions visible briefly on blur
+                        setTimeout(() => {
+                            if (document.activeElement !== searchInput) {
+                                suggestionsContainer.style.display = 'none';
+                                if (this.tagRotationInterval) {
+                                    clearInterval(this.tagRotationInterval);
+                                    this.tagRotationInterval = null;
+                                }
+                            }
+                        }, 200);
+                    });
+                    
+                    searchInput.addEventListener('focus', () => {
+                        if (searchInput.value.trim().length > 0) {
+                            suggestionsContainer.style.display = 'block';
+                            this.startTagRotation(allTags, suggestionsContainer, searchInput.value.trim());
+                        }
+                    });
+                }
+                
+                // Setup filter buttons
+                const forYouBtn = document.getElementById('streamForYouBtn');
+                const discoverBtn = document.getElementById('streamDiscoverBtn');
+                const vibeBtn = document.getElementById('streamVibeBtn');
+                const vibeDropdown = document.getElementById('streamVibeDropdown');
+                const vibeSelector = vibeBtn?.closest('.stream-vibe-selector');
+                
+                this.currentFilter = localStorage.getItem('stream_filter') || 'for-you';
+                this.currentVibe = localStorage.getItem('stream_vibe');
+                
+                // Set active state
+                if (forYouBtn && discoverBtn) {
+                    if (this.currentFilter === 'for-you') {
+                        forYouBtn.classList.add('active');
+                    } else if (this.currentFilter === 'discover') {
+                        discoverBtn.classList.add('active');
+                    }
+                }
+                
+                // For you button
+                if (forYouBtn) {
+                    forYouBtn.addEventListener('click', () => {
+                        forYouBtn.classList.add('active');
+                        if (discoverBtn) discoverBtn.classList.remove('active');
+                        this.currentFilter = 'for-you';
+                        localStorage.setItem('stream_filter', 'for-you');
+                        this.loadPosts(0, 20);
+                    });
+                }
+                
+                // Discover button
+                if (discoverBtn) {
+                    discoverBtn.addEventListener('click', () => {
+                        discoverBtn.classList.add('active');
+                        if (forYouBtn) forYouBtn.classList.remove('active');
+                        this.currentFilter = 'discover';
+                        localStorage.setItem('stream_filter', 'discover');
+                        this.loadPosts(0, 20);
+                    });
+                }
+                
+                // Vibe selector
+                if (vibeBtn && vibeDropdown && vibeSelector) {
+                    // Update vibe label if one is selected
+                    if (this.currentVibe) {
+                        const vibeLabel = document.getElementById('streamVibeLabel');
+                        if (vibeLabel) {
+                            vibeLabel.textContent = this.currentVibe.charAt(0).toUpperCase() + this.currentVibe.slice(1);
+                        }
+                        const activeOption = vibeDropdown.querySelector(`[data-vibe="${this.currentVibe}"]`);
+                        if (activeOption) activeOption.classList.add('active');
+                    }
+                    
+                    vibeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        vibeSelector.classList.toggle('open');
+                    });
+                    
+                    // Close dropdown when clicking outside
+                    document.addEventListener('click', (e) => {
+                        if (!vibeSelector.contains(e.target)) {
+                            vibeSelector.classList.remove('open');
+                        }
+                    });
+                    
+                    // Vibe option clicks
+                    vibeDropdown.querySelectorAll('.vibe-option').forEach(option => {
+                        option.addEventListener('click', () => {
+                            const vibe = option.dataset.vibe;
+                            
+                            // Toggle: if same vibe clicked, clear it
+                            if (this.currentVibe === vibe) {
+                                this.currentVibe = null;
+                                localStorage.removeItem('stream_vibe');
+                                
+                                // Reset label
+                                const vibeLabel = document.getElementById('streamVibeLabel');
+                                if (vibeLabel) {
+                                    vibeLabel.textContent = 'Vibe';
+                                }
+                                
+                                // Remove active state
+                                vibeDropdown.querySelectorAll('.vibe-option').forEach(opt => opt.classList.remove('active'));
+                            } else {
+                                this.currentVibe = vibe;
+                                localStorage.setItem('stream_vibe', vibe);
+                                
+                                // Update label
+                                const vibeLabel = document.getElementById('streamVibeLabel');
+                                if (vibeLabel) {
+                                    vibeLabel.textContent = vibe.charAt(0).toUpperCase() + vibe.slice(1);
+                                }
+                                
+                                // Update active state
+                                vibeDropdown.querySelectorAll('.vibe-option').forEach(opt => opt.classList.remove('active'));
+                                option.classList.add('active');
+                            }
+                            
+                            // Close dropdown
+                            vibeSelector.classList.remove('open');
+                            
+                            // Reload posts with vibe filter
+                            this.loadPosts(0, 20);
+                        });
+                    });
+                }
+            }
+            
+            async loadAvailableTags() {
+                try {
+                    // Get discipline/category tags from README structure
+                    const disciplineTags = [
+                        'martial-combative', 'movement', 'visual', 'internal-spiritual',
+                        'healing', 'intellectual-science', 'performance', 'social-leadership',
+                        'creative-inventive', 'research-evidence', 'meta-guidelines'
+                    ];
+                    
+                    // Fetch tags from API/database
+                    let dbTags = [];
+                    try {
+                        const response = await fetch('/api/posts/tags');
+                        if (response.ok) {
+                            const data = await response.json();
+                            dbTags = data.tags || [];
+                        }
+                    } catch (e) {
+                        console.warn('Could not fetch tags from API, using post tags:', e);
+                        // Fallback: extract unique tags from current posts
+                        const allTags = new Set();
+                        this.posts.forEach(post => {
+                            if (post.tags && Array.isArray(post.tags)) {
+                                post.tags.forEach(tag => allTags.add(tag));
+                            }
+                        });
+                        dbTags = Array.from(allTags);
+                    }
+                    
+                    // Combine and return all tags
+                    return [...new Set([...disciplineTags, ...dbTags])];
+                } catch (error) {
+                    console.error('Error loading available tags:', error);
+                    return [];
+                }
+            }
+            
+            showSearchSuggestions(query, tags, container) {
+                // Filter tags that match query
+                const matchingTags = tags.filter(tag => 
+                    tag.toLowerCase().includes(query.toLowerCase())
+                ).slice(0, 5); // Show max 5 suggestions
+                
+                if (matchingTags.length > 0) {
+                    container.style.display = 'block';
+                } else {
+                    container.style.display = 'none';
+                }
+            }
+            
+            startTagRotation(tags, container, query) {
+                if (this.tagRotationInterval) {
+                    clearInterval(this.tagRotationInterval);
+                }
+                
+                const matchingTags = tags.filter(tag => 
+                    tag.toLowerCase().includes(query.toLowerCase())
+                );
+                
+                if (matchingTags.length === 0) return;
+                
+                let currentTagIndex = 0;
+                
+                const rotateTag = () => {
+                    if (matchingTags.length > 0) {
+                        const tag = matchingTags[currentTagIndex % matchingTags.length];
+                        container.innerHTML = `
+                            <div class="stream-search-tag-suggestion">
+                                //${this.escapeHtml(tag)}
+                            </div>
+                        `;
+                        currentTagIndex++;
+                    }
+                };
+                
+                rotateTag(); // Show immediately
+                this.tagRotationInterval = setInterval(rotateTag, 2000); // Rotate every 2 seconds
+            }
+            
+            filterPosts(searchQuery = '') {
+                let filtered = this.posts;
+                
+                // Filter by search query
+                if (searchQuery.trim()) {
+                    const query = searchQuery.toLowerCase();
+                    filtered = filtered.filter(post => {
+                        const content = (post.content || '').toLowerCase();
+                        const authorName = (post.author?.display_name || post.author?.username || '').toLowerCase();
+                        const postTags = (post.tags || []).map(t => t.toLowerCase()).join(' ');
+                        return content.includes(query) || authorName.includes(query) || postTags.includes(query);
+                    });
+                }
+                
+                // Re-render filtered posts
+                const originalPosts = this.posts;
+                this.posts = filtered;
+                this.renderPosts();
+                this.posts = originalPosts; // Restore for future filtering
             }
             
             async loadUserSession() {
@@ -397,6 +1421,68 @@
                 observer.observe(sentinel);
             }
             
+            setupPullToRefresh() {
+                const feedContainer = document.querySelector('.stream-feed-container');
+                if (!feedContainer) return;
+                
+                let startY = 0;
+                let currentY = 0;
+                let isDragging = false;
+                let pullDistance = 0;
+                
+                const refreshIndicator = document.createElement('div');
+                refreshIndicator.className = 'pull-refresh-indicator';
+                refreshIndicator.innerHTML = '<div class="refresh-spinner"></div><div class="refresh-text">Pull to refresh</div>';
+                feedContainer.insertBefore(refreshIndicator, feedContainer.firstChild);
+                
+                feedContainer.addEventListener('touchstart', (e) => {
+                    if (window.scrollY === 0) {
+                        startY = e.touches[0].clientY;
+                        isDragging = true;
+                    }
+                });
+                
+                feedContainer.addEventListener('touchmove', (e) => {
+                    if (!isDragging || window.scrollY > 0) return;
+                    
+                    currentY = e.touches[0].clientY;
+                    pullDistance = currentY - startY;
+                    
+                    if (pullDistance > 0 && pullDistance < 100) {
+                        refreshIndicator.style.transform = `translateY(${pullDistance}px)`;
+                        refreshIndicator.style.opacity = Math.min(pullDistance / 100, 1);
+                        
+                        if (pullDistance > 60) {
+                            refreshIndicator.querySelector('.refresh-text').textContent = 'Release to refresh';
+                        } else {
+                            refreshIndicator.querySelector('.refresh-text').textContent = 'Pull to refresh';
+                        }
+                    }
+                });
+                
+                feedContainer.addEventListener('touchend', async () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    
+                    if (pullDistance > 60) {
+                        refreshIndicator.querySelector('.refresh-text').textContent = 'Refreshing...';
+                        refreshIndicator.querySelector('.refresh-spinner').classList.add('spinning');
+                        
+                        await this.loadPosts(0, 20);
+                        
+                        refreshIndicator.style.transform = 'translateY(0)';
+                        refreshIndicator.style.opacity = '0';
+                        refreshIndicator.querySelector('.refresh-spinner').classList.remove('spinning');
+                        refreshIndicator.querySelector('.refresh-text').textContent = 'Pull to refresh';
+                    } else {
+                        refreshIndicator.style.transform = 'translateY(0)';
+                        refreshIndicator.style.opacity = '0';
+                    }
+                    
+                    pullDistance = 0;
+                });
+            }
+            
             async loadMorePosts() {
                 if (this.loading || !this.hasMore) return;
                 this.loading = true;
@@ -411,22 +1497,54 @@
                     // Get user session
                     const userId = localStorage.getItem('thesidia_user_id');
                     const sessionId = localStorage.getItem('thesidia_session_id');
-                    const feedType = localStorage.getItem('feed_type') || 'chronological';
                     
-                    const response = await fetch(`/api/feed?user_id=${userId}&session_id=${sessionId}&type=${feedType}&limit=${limit}&offset=${page * limit}`);
+                    // Get filter and vibe
+                    const filter = this.currentFilter || localStorage.getItem('stream_filter') || 'for-you';
+                    const vibe = this.currentVibe || localStorage.getItem('stream_vibe') || null;
+                    
+                    // Build query params
+                    const params = new URLSearchParams({
+                        user_id: userId || '',
+                        session_id: sessionId || '',
+                        filter: filter,
+                        limit: limit.toString(),
+                        offset: (page * limit).toString()
+                    });
+                    
+                    if (vibe) {
+                        params.append('vibe', vibe);
+                    }
+                    
+                    const response = await fetch(`/api/feed?${params.toString()}`);
                     const data = await response.json();
                     console.log('Stream data received:', data);
                     
                     if (data.items) {
                         console.log('Items count:', data.items.length);
                         if (page === 0) {
-                            this.posts = data.items;
+                            this.posts = data.items || [];
                         } else {
-                            this.posts = [...this.posts, ...data.items];
+                            this.posts = [...this.posts, ...(data.items || [])];
                         }
                         this.hasMore = data.has_more || false;
                         this.currentPage = page;
                         console.log('Posts loaded:', this.posts.length);
+                        
+                        // Add AI insights to posts if not present
+                        // (content_insights would be a global variable if available)
+                        if (typeof content_insights !== 'undefined' && content_insights) {
+                            for (const post of this.posts) {
+                                if (!post.ai_summary) {
+                                    try {
+                                        // This would be done server-side, but we can add client-side fallback
+                                        post.ai_summary = post.content.length > 150 ? post.content.substring(0, 150) + '...' : post.content;
+                                    } catch (e) {
+                                        // Ignore
+                                    }
+                                }
+                            }
+                        }
+                        
                         this.renderPosts();
                     }
                 } catch (error) {
@@ -451,6 +1569,22 @@
                 
                 feed.innerHTML = this.posts.map(post => this.renderPost(post)).join('');
                 console.log('Posts rendered successfully');
+                
+                // Setup cyberpunk action button clicks
+                this.setupCyberpunkActions();
+            }
+            
+            setupCyberpunkActions() {
+                const feed = document.getElementById('streamFeed');
+                if (!feed) return;
+                
+                feed.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.cyberpunk-action-btn');
+                    if (!btn) return;
+                    
+                    // Toggle clicked state to reveal number
+                    btn.classList.toggle('clicked');
+                });
             }
             
             renderPost(post) {
@@ -463,63 +1597,119 @@
                 const liked = interactions.liked_by && interactions.liked_by.includes(this.userId);
                 const reposted = interactions.reposted_by && interactions.reposted_by.includes(this.userId);
                 
+                // Mastery / utility layer interactions
+                const validations = interactions.validations || 0;
+                const references = interactions.references || 0;
+                const contributions = interactions.contributions || 0;
+                
+                // AI insights
+                const aiScore = post.ai_score || 0;
+                const aiSummary = post.ai_summary || '';
+                const aiSentiment = post.ai_sentiment || { sentiment: 'neutral', confidence: 0.5 };
+                const qualityBadge = aiScore > 0.7 ? 'high-quality' : aiScore > 0.4 ? 'medium-quality' : 'low-quality';
+                
+                // Author info
+                const authorName = post.author?.display_name || post.author?.username || 'User';
+                const authorUsername = post.author?.username || '';
+                const authorAvatar = post.author?.avatar_url || '';
+                
+                // Tags - only show if post has tags
+                const tags = post.tags || [];
+                const tagsHtml = tags.length > 0 ? `
+                    <div class="post-tags">
+                        ${tags.map(tag => `<span class="post-tag">//${this.escapeHtml(tag)}</span>`).join('')}
+                    </div>
+                ` : '';
+                
                 return `
                     <div class="stream-post" data-post-id="${post.id}">
+                        <div class="post-avatar-square">
+                            ${authorAvatar ? `
+                                <img src="${this.escapeHtml(authorAvatar)}" alt="${this.escapeHtml(authorName)}" onerror="this.onerror=null; this.classList.add('post-avatar-placeholder'); this.style.backgroundColor='${this.getAvatarColor(post.author_id || 'user_0')}'; this.style.display='block';">
+                            ` : `
+                                <div class="post-avatar-placeholder" data-user-id="${post.author_id || 'user_0'}" style="background-color: ${this.getAvatarColor(post.author_id || 'user_0')};"></div>
+                            `}
+                        </div>
                         <div class="post-header">
-                            <div class="post-author">
-                                <img src="${post.author?.avatar_url || '/profile-image.jpg'}" alt="${post.author?.display_name || 'User'}" class="post-avatar" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'20\' fill=\'%23ffffff\' fill-opacity=\'0.1\'/%3E%3Ccircle cx=\'20\' cy=\'14\' r=\'6\' fill=\'%23ffffff\' fill-opacity=\'0.3\'/%3E%3Cpath d=\'M10 38 Q20 32 30 38\' stroke=\'%23ffffff\' stroke-width=\'2\' fill=\'none\' stroke-opacity=\'0.3\'/%3E%3C/svg%3E'">
-                                <div class="post-author-info">
-                                    <div class="post-author-name">${this.escapeHtml(post.author?.display_name || 'User')}</div>
-                                    <div class="post-author-handle">${this.escapeHtml(post.author?.username || '@user')}</div>
+                            <div class="post-author-info">
+                                <span class="post-author-name">
+                                    ${this.escapeHtml(authorName)}
+                                    ${authorUsername ? `<span class="post-author-username"> //${this.escapeHtml(authorUsername)}</span>` : ''}
+                                </span>
+                                <span class="post-time">${timeAgo}</span>
+                            </div>
+                            <div class="post-content">${this.escapeHtml(post.content || '')}</div>
+                            ${tagsHtml}
+                            ${post.media && post.media.length > 0 ? `
+                                <div class="post-media">
+                                    ${post.media.length > 1 ? `
+                                        <div class="post-media-carousel" style="grid-template-columns: repeat(${Math.min(post.media.length, 2)}, 1fr);">
+                                            ${post.media.map(mediaItem => {
+                                                if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
+                                                    return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                                } else if (mediaItem.type === 'image') {
+                                                    return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                                } else if (mediaItem.type === 'video') {
+                                                    return `<video src="${mediaItem.url}" controls class="post-media-item"></video>`;
+                                                }
+                                                return '';
+                                            }).join('')}
+                                        </div>
+                                    ` : `
+                                        ${post.media.map(mediaItem => {
+                                            if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
+                                                return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                            } else if (mediaItem.type === 'image') {
+                                                return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" loading="lazy">`;
+                                            } else if (mediaItem.type === 'video') {
+                                                return `<video src="${mediaItem.url}" controls class="post-media-item"></video>`;
+                                            }
+                                            return '';
+                                        }).join('')}
+                                    `}
+                                </div>
+                            ` : ''}
+                            ${aiSummary ? `<div class="ai-summary">AI Summary: ${this.escapeHtml(aiSummary)}</div>` : ''}
+                            ${aiSentiment.sentiment !== 'neutral' ? `<div class="ai-sentiment sentiment-${aiSentiment.sentiment}">${aiSentiment.sentiment} sentiment</div>` : ''}
+                            <div class="post-actions">
+                                <div class="post-actions-cyberpunk">
+                                    <button class="cyberpunk-action-btn" data-action="resonate" data-post-id="${post.id}" data-count="${likes || 0}">
+                                        <span class="cyberpunk-label">resonate</span>
+                                        <span class="cyberpunk-count" style="display: none;">${likes || 0}</span>
+                                    </button>
+                                    <button class="cyberpunk-action-btn" data-action="respect" data-post-id="${post.id}" data-count="${validations || 0}">
+                                        <span class="cyberpunk-label">respect</span>
+                                        <span class="cyberpunk-count" style="display: none;">${validations || 0}</span>
+                                    </button>
+                                    <button class="cyberpunk-action-btn" data-action="refine" data-post-id="${post.id}" data-count="${references || 0}">
+                                        <span class="cyberpunk-label">refine</span>
+                                        <span class="cyberpunk-count" style="display: none;">${references || 0}</span>
+                                    </button>
+                                    <button class="cyberpunk-action-btn" data-action="repost" data-post-id="${post.id}" data-count="${reposts || 0}">
+                                        <span class="cyberpunk-label">repost</span>
+                                        <span class="cyberpunk-count" style="display: none;">${reposts || 0}</span>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="post-time">${timeAgo}</div>
-                        </div>
-                        <div class="post-content">${this.escapeHtml(post.content || '')}</div>
-                        ${post.media && post.media.length > 0 ? `
-                            <div class="post-media">
-                                ${post.media.map(mediaItem => {
-                                    if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
-                                        return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" style="max-width: 100%; border-radius: 12px; margin-top: 12px;">`;
-                                    } else if (mediaItem.type === 'image') {
-                                        return `<img src="${mediaItem.url}" alt="Post media" class="post-media-item" style="max-width: 100%; border-radius: 12px; margin-top: 12px;" loading="lazy">`;
-                                    } else if (mediaItem.type === 'video') {
-                                        return `<video src="${mediaItem.url}" controls class="post-media-item" style="max-width: 100%; border-radius: 12px; margin-top: 12px;"></video>`;
-                                    }
-                                    return '';
-                                }).join('')}
-                            </div>
-                        ` : ''}
-                        <div class="post-actions">
-                            <button class="post-action-btn ${liked ? 'active' : ''}" data-action="like" data-post-id="${post.id}">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                                </svg>
-                                <span class="like-count">${likes}</span>
-                            </button>
-                            <button class="post-action-btn" data-action="comment" data-post-id="${post.id}">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                                </svg>
-                                <span class="comment-count">${comments}</span>
-                            </button>
-                            <button class="post-action-btn ${reposted ? 'active' : ''}" data-action="repost" data-post-id="${post.id}">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M17 1l4 4-4 4M21 5H11a4 4 0 0 0-4 4v6"/>
-                                    <path d="M7 23l-4-4 4-4M3 19h10a4 4 0 0 0 4-4V9"/>
-                                </svg>
-                                <span class="repost-count">${reposts}</span>
-                            </button>
-                            <button class="post-action-btn" data-action="views" data-post-id="${post.id}">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                    <circle cx="12" cy="12" r="3"/>
-                                </svg>
-                                <span class="view-count">${views}</span>
-                            </button>
                         </div>
                     </div>
                 `;
+            }
+            
+            getAvatarColor(userId) {
+                // Generate consistent color based on user ID
+                const colors = [
+                    '#6B7280', '#9CA3AF', '#D1D5DB', '#E5E7EB',
+                    '#78716C', '#A8A29E', '#D6D3D1', '#E7E5E4',
+                    '#737373', '#A3A3A3', '#D4D4D4', '#E5E5E5',
+                    '#6B7280', '#9CA3AF', '#D1D5DB', '#E5E7EB'
+                ];
+                // Simple hash function to get consistent color
+                let hash = 0;
+                for (let i = 0; i < userId.length; i++) {
+                    hash = userId.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                return colors[Math.abs(hash) % colors.length];
             }
             
             getTimeAgo(timestamp) {
@@ -555,10 +1745,34 @@
                 if (composeTextarea && postBtn) {
                     composeTextarea.addEventListener('input', () => {
                         postBtn.disabled = !composeTextarea.value.trim();
+                        this.updateCharacterCount(composeTextarea.value.length);
+                    });
+                    
+                    // Auto-resize textarea
+                    composeTextarea.addEventListener('input', () => {
+                        composeTextarea.style.height = 'auto';
+                        composeTextarea.style.height = composeTextarea.scrollHeight + 'px';
+                    });
+                    
+                    // Handle mentions and hashtags
+                    composeTextarea.addEventListener('input', (e) => {
+                        this.handleMentionsAndHashtags(e.target);
                     });
                     
                     postBtn.addEventListener('click', () => this.createPost());
                 }
+                
+                // Feed filter buttons
+                const filterButtons = document.querySelectorAll('.feed-filter-btn');
+                filterButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const feedType = btn.dataset.type;
+                        filterButtons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        localStorage.setItem('feed_type', feedType);
+                        this.loadPosts(0, 20);
+                    });
+                });
                 
                 // Submenu filter items (Friends, Fans, Communities, Labs)
                 const submenuFilters = document.querySelectorAll('.submenu-item[data-filter]');
@@ -588,34 +1802,365 @@
                     }
                 }
                 
-                // Delegate event listeners for post actions
+                // Media upload buttons
+                const addImageBtn = document.getElementById('addImageBtn');
+                const addVideoBtn = document.getElementById('addVideoBtn');
+                
+                if (addImageBtn) {
+                    addImageBtn.addEventListener('click', () => this.handleMediaUpload('image'));
+                }
+                if (addVideoBtn) {
+                    addVideoBtn.addEventListener('click', () => this.handleMediaUpload('video'));
+                }
+                
+                // Delegate event listeners for post actions (mastery HUD)
                 const feed = document.getElementById('streamFeed');
                 if (feed) {
                     feed.addEventListener('click', (e) => {
-                        const btn = e.target.closest('.post-action-btn');
-                        if (!btn) return;
+                        const chip = e.target.closest('.post-action-chip, .post-action-modular');
+                        if (!chip) return;
                         
-                        const action = btn.dataset.action;
-                        const postId = btn.dataset.postId;
+                        const target = chip;
+                        const action = target.dataset.action;
+                        const postId = target.dataset.postId;
                         
-                        if (action === 'like') {
-                            this.toggleLike(postId, btn);
-                        } else if (action === 'comment') {
-                            this.showComments(postId);
-                        } else if (action === 'repost') {
-                            this.toggleRepost(postId, btn);
+                        if (!action || !postId) return;
+                        
+                        if (action === 'validate') {
+                            this.toggleValidate(postId, target);
+                        } else if (action === 'reference') {
+                            this.createReference(postId, target);
+                        } else if (action === 'contribute') {
+                            this.openContributionDialog(postId);
+                        } else if (action === 'fork') {
+                            this.handleFork(postId);
+                        } else if (action === 'flow') {
+                            // Handle flow action
+                            console.log('Flow action for post:', postId);
                         }
                     });
                 }
             }
             
+            updateCharacterCount(length) {
+                let counter = document.getElementById('charCount');
+                if (!counter) {
+                    counter = document.createElement('div');
+                    counter.id = 'charCount';
+                    counter.className = 'char-count';
+                    const composeActions = document.querySelector('.compose-actions');
+                    if (composeActions) {
+                        composeActions.appendChild(counter);
+                    }
+                }
+                
+                const maxLength = 10000;
+                counter.textContent = `${length}/${maxLength}`;
+                counter.style.color = length > maxLength * 0.9 ? 'var(--error-color, #ff4444)' : 'var(--text-tertiary)';
+            }
+            
+            handleMentionsAndHashtags(textarea) {
+                const text = textarea.value;
+                const cursorPos = textarea.selectionStart;
+                
+                // Check for @ mentions
+                const mentionMatch = text.substring(0, cursorPos).match(/@(\w*)$/);
+                if (mentionMatch) {
+                    // Could show autocomplete dropdown here
+                    console.log('Mention detected:', mentionMatch[1]);
+                }
+                
+                // Check for # hashtags
+                const hashtagMatch = text.substring(0, cursorPos).match(/#(\w*)$/);
+                if (hashtagMatch) {
+                    // Could show hashtag suggestions here
+                    console.log('Hashtag detected:', hashtagMatch[1]);
+                }
+            }
+            
+            async handleMediaUpload(type) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = type === 'image' ? 'image/*' : 'video/*';
+                input.multiple = false;
+                
+                input.addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    // Validate file size (max 10MB for images, 50MB for videos)
+                    const maxSize = type === 'image' ? 10 * 1024 * 1024 : 50 * 1024 * 1024;
+                    if (file.size > maxSize) {
+                        alert(`File too large. Maximum size: ${type === 'image' ? '10MB' : '50MB'}`);
+                        return;
+                    }
+                    
+                    // Show loading state
+                    const composeArea = document.querySelector('.compose-input-area');
+                    if (!composeArea) return;
+                    
+                    const loadingPreview = document.createElement('div');
+                    loadingPreview.className = 'media-preview loading';
+                    loadingPreview.innerHTML = `
+                        <div style="padding: 20px; text-align: center; color: var(--text-secondary);">
+                            Uploading...
+                        </div>
+                    `;
+                    composeArea.insertBefore(loadingPreview, composeArea.firstChild);
+                    
+                    try {
+                        // Upload file
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('user_id', this.userId || '');
+                        formData.append('session_id', this.sessionId || '');
+                        
+                        const response = await fetch('/api/media/upload', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (!response.ok) {
+                            const error = await response.json();
+                            throw new Error(error.error || 'Upload failed');
+                        }
+                        
+                        const data = await response.json();
+                        
+                        // Replace loading with preview
+                        loadingPreview.className = 'media-preview';
+                        loadingPreview.innerHTML = `
+                            <${type === 'image' ? 'img' : 'video'} 
+                                src="${data.url}" 
+                                alt="Preview" 
+                                style="max-width: 200px; max-height: 200px; border-radius: 8px; object-fit: cover;"
+                                ${type === 'video' ? 'controls' : ''}
+                            >
+                            <button class="remove-media" onclick="this.parentElement.remove()">×</button>
+                            <input type="hidden" class="media-url" value="${data.url}">
+                            <input type="hidden" class="media-type" value="${data.type}">
+                        `;
+                        
+                        // Store media data for post creation
+                        if (!this.pendingMedia) {
+                            this.pendingMedia = [];
+                        }
+                        this.pendingMedia.push({
+                            url: data.url,
+                            type: data.type,
+                            filename: data.filename
+                        });
+                        
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                        loadingPreview.innerHTML = `
+                            <div style="padding: 20px; text-align: center; color: var(--text-error);">
+                                Upload failed: ${error.message}
+                                <button onclick="this.parentElement.parentElement.remove()" style="margin-top: 10px;">Close</button>
+                            </div>
+                        `;
+                    }
+                });
+                
+                input.click();
+            }
+            
+            // ------------------------------------------------------------------
+            // Mastery / utility interactions
+            // ------------------------------------------------------------------
+            
+            async toggleValidate(postId, target) {
+                try {
+                    const response = await fetch(`/api/posts/${postId}/validate`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_id: this.userId,
+                            session_id: this.sessionId
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to validate post', await response.text());
+                        return;
+                    }
+                    
+                    const data = await response.json();
+                    const interactions = data.interactions || {};
+                    
+                    // Update local post
+                    const postIndex = this.posts.findIndex(p => p.id === postId);
+                    if (postIndex !== -1) {
+                        this.posts[postIndex].interactions = {
+                            ...(this.posts[postIndex].interactions || {}),
+                            ...interactions
+                        };
+                    }
+                    
+                    // Toggle active state
+                    target.classList.toggle('active');
+                    
+                    // Update UI count
+                    const countSpan = target.querySelector('.chip-count, .action-count');
+                    if (countSpan) {
+                        countSpan.textContent = interactions.validations || 0;
+                    }
+                } catch (error) {
+                    console.error('Error validating post:', error);
+                }
+            }
+            
+            async createReference(postId, target) {
+                try {
+                    // For now, simple reference without explicit context.
+                    // Later this can open a modal to choose collection / blueprint.
+                    const response = await fetch(`/api/posts/${postId}/reference`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_id: this.userId,
+                            session_id: this.sessionId,
+                            context: ''
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to reference post', await response.text());
+                        return;
+                    }
+                    
+                    const data = await response.json();
+                    const interactions = data.interactions || {};
+                    
+                    const postIndex = this.posts.findIndex(p => p.id === postId);
+                    if (postIndex !== -1) {
+                        this.posts[postIndex].interactions = {
+                            ...(this.posts[postIndex].interactions || {}),
+                            ...interactions
+                        };
+                    }
+                    
+                    // Toggle active state
+                    target.classList.toggle('active');
+                    
+                    // Update count
+                    const countSpan = target.querySelector('.chip-count, .action-count');
+                    if (countSpan) {
+                        countSpan.textContent = interactions.references || 0;
+                    }
+                } catch (error) {
+                    console.error('Error referencing post:', error);
+                }
+            }
+            
+            openContributionDialog(postId) {
+                const content = prompt('Contribute a small improvement or correction to this Blueprint:');
+                if (!content || !content.trim()) return;
+                this.submitContribution(postId, content.trim());
+            }
+            
+            async submitContribution(postId, content) {
+                try {
+                    const response = await fetch(`/api/posts/${postId}/contribute`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_id: this.userId,
+                            session_id: this.sessionId,
+                            content
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to submit contribution', await response.text());
+                        return;
+                    }
+                    
+                    const data = await response.json();
+                    const interactions = data.interactions || {};
+                    
+                    const postIndex = this.posts.findIndex(p => p.id === postId);
+                    if (postIndex !== -1) {
+                        this.posts[postIndex].interactions = {
+                            ...(this.posts[postIndex].interactions || {}),
+                            ...interactions
+                        };
+                    }
+                    
+                    // Update contribution chip count
+                    const feed = document.getElementById('streamFeed');
+                    if (feed) {
+                        const chip = feed.querySelector(`.post-action-chip[data-action="contribute"][data-post-id="${postId}"] .chip-count, .post-action-modular[data-action="contribute"][data-post-id="${postId}"] .action-count`);
+                        if (chip) {
+                            chip.textContent = interactions.contributions || 0;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error submitting contribution:', error);
+                }
+            }
+            
+            handleFork(postId) {
+                // For now, Fork is conceptual: we can later wire this to a dedicated
+                // blueprint creation flow. Here we simply acknowledge the intent.
+                alert('FORK Blueprint: In a later build, this will create your own applied version of this post as a Blueprint with a Data Panel.');
+            }
+            
+            renderSkeletonLoaders(count = 3) {
+                const feed = document.getElementById('streamFeed');
+                if (!feed) return;
+                
+                feed.innerHTML = Array(count).fill(0).map(() => `
+                    <div class="skeleton-loader">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                `).join('');
+            }
+            
             async createPost() {
                 const composeTextarea = document.getElementById('composeTextarea');
-                if (!composeTextarea || !composeTextarea.value.trim()) return;
+                if (!composeTextarea || !composeTextarea.value.trim()) {
+                    // Allow posts with just media
+                    if (!this.pendingMedia || this.pendingMedia.length === 0) {
+                        return;
+                    }
+                }
                 
                 const content = composeTextarea.value.trim();
                 composeTextarea.value = '';
                 document.getElementById('postBtn').disabled = true;
+                
+                // Collect media from previews
+                const media = [];
+                if (this.pendingMedia && this.pendingMedia.length > 0) {
+                    media.push(...this.pendingMedia);
+                } else {
+                    // Fallback: collect from DOM
+                    const mediaPreviews = document.querySelectorAll('.media-preview');
+                    mediaPreviews.forEach(preview => {
+                        const urlInput = preview.querySelector('.media-url');
+                        const typeInput = preview.querySelector('.media-type');
+                        if (urlInput && typeInput) {
+                            media.push({
+                                url: urlInput.value,
+                                type: typeInput.value
+                            });
+                        }
+                    });
+                }
+                
+                // Clear media previews
+                document.querySelectorAll('.media-preview').forEach(preview => preview.remove());
+                this.pendingMedia = [];
                 
                 try {
                     const response = await fetch('/api/posts', {
@@ -623,6 +2168,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             content: content,
+                            media: media,
                             user_id: this.userId,
                             session_id: this.sessionId
                         })
@@ -667,13 +2213,111 @@
             }
             
             async toggleRepost(postId, btn) {
-                // TODO: Implement repost functionality
-                console.log('Repost not yet implemented');
+                try {
+                    const response = await fetch(`/api/posts/${postId}/repost`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user_id: this.userId,
+                            session_id: this.sessionId
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const repostCount = btn.querySelector('.repost-count');
+                        if (repostCount) {
+                            repostCount.textContent = data.interactions.reposts;
+                        }
+                        btn.classList.toggle('active', data.reposted);
+                    }
+                } catch (error) {
+                    console.error('Error toggling repost:', error);
+                }
             }
             
-            showComments(postId) {
-                // TODO: Implement comment thread display
-                console.log('Comments not yet implemented');
+            async showComments(postId) {
+                try {
+                    const response = await fetch(`/api/posts/${postId}/comments`);
+                    const data = await response.json();
+                    
+                    // Create comment modal/panel
+                    const modal = document.createElement('div');
+                    modal.className = 'comments-modal';
+                    modal.innerHTML = `
+                        <div class="comments-modal-content">
+                            <div class="comments-modal-header">
+                                <h3>Comments</h3>
+                                <button class="comments-close" onclick="this.closest('.comments-modal').remove()">×</button>
+                            </div>
+                            <div class="comments-list" id="commentsList${postId}">
+                                ${data.comments.map(comment => `
+                                    <div class="comment-item">
+                                        <div class="comment-author">${this.escapeHtml(comment.author_name || 'User')}</div>
+                                        <div class="comment-content">${this.escapeHtml(comment.content)}</div>
+                                        <div class="comment-time">${this.getTimeAgo(comment.timestamp)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="comment-form">
+                                <textarea id="commentInput${postId}" placeholder="Write a comment..." class="comment-input"></textarea>
+                                <button onclick="window.streamPage.addComment('${postId}')" class="comment-submit">Post</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                    
+                    // Close on backdrop click
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.remove();
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading comments:', error);
+                    alert('Error loading comments');
+                }
+            }
+            
+            async addComment(postId) {
+                const input = document.getElementById(`commentInput${postId}`);
+                if (!input || !input.value.trim()) return;
+                
+                const content = input.value.trim();
+                input.value = '';
+                
+                try {
+                    const response = await fetch(`/api/posts/${postId}/comment`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            content: content,
+                            user_id: this.userId,
+                            session_id: this.sessionId
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Reload comments
+                        await this.showComments(postId);
+                        // Update comment count in post
+                        const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+                        if (postElement) {
+                            const commentBtn = postElement.querySelector('[data-action="comment"]');
+                            const commentCount = commentBtn?.querySelector('.comment-count');
+                            if (commentCount) {
+                                commentCount.textContent = data.interactions.comments;
+                            }
+                        }
+                    } else {
+                        const error = await response.json();
+                        alert('Error posting comment: ' + (error.error || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error adding comment:', error);
+                    alert('Error posting comment');
+                }
             }
         }
         
@@ -684,6 +2328,336 @@
             });
         } else {
             window.streamPage = new StreamPage();
+        }
+    </script>
+
+    <!-- Floating Action Button - Glowing Orb (Replicated from menu-orb) -->
+    <button class="fab-orb" id="fabOrb" aria-label="Create Post">
+        <div class="fab-orb-glow"></div>
+    </button>
+
+    <!-- Post Creation Modal - Bottom Sheet -->
+    <div class="post-modal" id="postModal">
+        <div class="post-modal-backdrop" id="postModalBackdrop"></div>
+        <div class="post-modal-content">
+            <div class="post-modal-header">
+                <h3>Create Post</h3>
+                <button class="post-modal-close" id="postModalClose" aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="post-modal-body">
+                <!-- Post Type Selector -->
+                <div class="post-type-selector">
+                    <label class="post-type-label">Post Type</label>
+                    <div class="post-type-options">
+                        <button class="post-type-btn active" data-type="stream">Stream</button>
+                        <button class="post-type-btn" data-type="kx-cuts">KX Cuts</button>
+                        <button class="post-type-btn" data-type="circles">Forums</button>
+                        <button class="post-type-btn" data-type="studio">Studio</button>
+                    </div>
+                </div>
+
+                <!-- Content Input -->
+                <div class="post-content-input">
+                    <textarea 
+                        class="post-textarea" 
+                        id="postTextarea" 
+                        placeholder="What would you like to share?"
+                        rows="6"
+                    ></textarea>
+                </div>
+
+                <!-- Media Options -->
+                <div class="post-media-options">
+                    <label class="post-media-label">Add Media</label>
+                    <div class="post-media-grid">
+                        <button class="post-media-btn" data-action="image" id="postModalAddImageBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <path d="M21 15l-5-5L5 21"/>
+                            </svg>
+                            <span>Image</span>
+                        </button>
+                        <button class="post-media-btn" data-action="video" id="postModalAddVideoBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="23 7 16 12 23 17 23 7"/>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                            </svg>
+                            <span>Video</span>
+                        </button>
+                        <button class="post-media-btn" data-action="selfie" id="postModalTakeSelfieBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            <span>Selfie</span>
+                        </button>
+                        <button class="post-media-btn" data-action="camera" id="postModalTakeVideoBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            <span>Record</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Media Preview -->
+                <div class="post-media-preview" id="postMediaPreview"></div>
+            </div>
+
+            <div class="post-modal-footer">
+                <button class="post-submit-btn" id="postSubmitBtn" disabled>Post</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Post Creation Modal Handler
+        class PostCreationModal {
+            constructor() {
+                this.fabOrb = document.getElementById('fabOrb');
+                this.modal = document.getElementById('postModal');
+                this.backdrop = document.getElementById('postModalBackdrop');
+                this.closeBtn = document.getElementById('postModalClose');
+                this.textarea = document.getElementById('postTextarea');
+                this.submitBtn = document.getElementById('postSubmitBtn');
+                this.postType = 'stream';
+                this.selectedMedia = [];
+                
+                this.init();
+            }
+
+            init() {
+                // FAB click handler
+                this.fabOrb?.addEventListener('click', () => this.openModal());
+                
+                // Close handlers
+                this.closeBtn?.addEventListener('click', () => this.closeModal());
+                this.backdrop?.addEventListener('click', () => this.closeModal());
+                
+                // Post type selection
+                document.querySelectorAll('.post-type-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.post-type-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.postType = e.target.dataset.type;
+                    });
+                });
+
+                // Media buttons
+                document.querySelectorAll('.post-media-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const action = e.currentTarget.dataset.action;
+                        this.handleMediaAction(action);
+                    });
+                });
+
+                // Textarea input handler
+                this.textarea?.addEventListener('input', () => {
+                    this.updateSubmitButton();
+                });
+
+                // Submit handler
+                this.submitBtn?.addEventListener('click', () => this.submitPost());
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.modal?.classList.contains('active')) {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            openModal() {
+                this.modal?.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeModal() {
+                this.modal?.classList.remove('active');
+                document.body.style.overflow = '';
+                this.resetForm();
+            }
+
+            resetForm() {
+                if (this.textarea) this.textarea.value = '';
+                this.selectedMedia = [];
+                this.updateMediaPreview();
+                this.updateSubmitButton();
+                this.postType = 'stream';
+                document.querySelectorAll('.post-type-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.type === 'stream');
+                });
+            }
+
+            handleMediaAction(action) {
+                const input = document.createElement('input');
+                
+                switch(action) {
+                    case 'image':
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.multiple = true;
+                        break;
+                    case 'video':
+                        input.type = 'file';
+                        input.accept = 'video/*';
+                        input.multiple = true;
+                        break;
+                    case 'selfie':
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.capture = 'user';
+                        break;
+                    case 'camera':
+                        input.type = 'file';
+                        input.accept = 'video/*';
+                        input.capture = 'environment';
+                        break;
+                }
+
+                input.onchange = (e) => {
+                    const files = Array.from(e.target.files);
+                    files.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            this.selectedMedia.push({
+                                file: file,
+                                url: event.target.result,
+                                type: file.type.startsWith('image/') ? 'image' : 'video'
+                            });
+                            this.updateMediaPreview();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                };
+
+                input.click();
+            }
+
+            updateMediaPreview() {
+                const preview = document.getElementById('postMediaPreview');
+                if (!preview) return;
+
+                if (this.selectedMedia.length === 0) {
+                    preview.innerHTML = '';
+                    preview.style.display = 'none';
+                    return;
+                }
+
+                preview.style.display = 'block';
+                preview.innerHTML = this.selectedMedia.map((media, index) => `
+                    <div class="media-preview-item">
+                        ${media.type === 'image' 
+                            ? `<img src="${media.url}" alt="Preview ${index + 1}">`
+                            : `<video src="${media.url}" controls></video>`
+                        }
+                        <button class="media-remove-btn" data-index="${index}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                `).join('');
+
+                // Remove button handlers
+                preview.querySelectorAll('.media-remove-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.currentTarget.dataset.index);
+                        this.selectedMedia.splice(index, 1);
+                        this.updateMediaPreview();
+                    });
+                });
+            }
+
+            updateSubmitButton() {
+                const hasContent = this.textarea?.value.trim().length > 0;
+                const hasMedia = this.selectedMedia.length > 0;
+                
+                if (this.submitBtn) {
+                    this.submitBtn.disabled = !(hasContent || hasMedia);
+                }
+            }
+
+            async submitPost() {
+                const content = this.textarea?.value.trim() || '';
+                
+                if (!content && this.selectedMedia.length === 0) {
+                    return;
+                }
+
+                if (this.submitBtn) {
+                    this.submitBtn.disabled = true;
+                    this.submitBtn.textContent = 'Posting...';
+                }
+
+                try {
+                    // Get user session
+                    const userId = localStorage.getItem('thesidia_user_id');
+                    const sessionId = localStorage.getItem('thesidia_session_id');
+
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('content', content);
+                    formData.append('post_type', this.postType);
+                    formData.append('user_id', userId || '');
+                    formData.append('session_id', sessionId || '');
+
+                    // Add media files
+                    this.selectedMedia.forEach((media, index) => {
+                        formData.append(`media_${index}`, media.file);
+                    });
+
+                    // Submit to API
+                    const response = await fetch('/api/posts/create', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        this.closeModal();
+                        // Reload current section
+                        if (window.navigationSystem) {
+                            const currentSection = window.navigationSystem.currentSection;
+                            if (currentSection === 'stream' && window.streamPage) {
+                                window.streamPage.loadPosts(0, 20);
+                            } else if (currentSection === 'kx-cuts' && window.navigationSystem) {
+                                window.navigationSystem.loadKXCutsContent();
+                            } else if (currentSection === 'circles' && window.navigationSystem) {
+                                window.navigationSystem.loadCirclesContent();
+                            }
+                        }
+                    } else {
+                        const error = await response.json();
+                        alert('Error creating post: ' + (error.error || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error submitting post:', error);
+                    alert('Error creating post. Please try again.');
+                } finally {
+                    if (this.submitBtn) {
+                        this.submitBtn.disabled = false;
+                        this.submitBtn.textContent = 'Post';
+                    }
+                }
+            }
+        }
+
+        // Initialize post creation modal
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.postCreationModal = new PostCreationModal();
+            });
+        } else {
+            window.postCreationModal = new PostCreationModal();
         }
     </script>
         

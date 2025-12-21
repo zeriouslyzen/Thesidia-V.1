@@ -1,0 +1,332 @@
+{
+  "run_id": "eval_1766017357",
+  "ts": 1766018088.685782,
+  "variants": {
+    "baseline": {
+      "variant": "baseline",
+      "pressure_enabled": false,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 40.89636182785034,
+          "output_preview": "hey there! what's up? i love diving into all sorts of things, from science and history to biology and the cosmos.",
+          "output_chars": 113,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! what's up? i love diving into all sorts of things, from science and history to biology and the cosmos."
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 103.2264358997345,
+          "output_preview": "tell me a random fun fact about octopuses\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 185,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 666,
+              "post_chars": 185,
+              "compression_ratio": 0.2777777777777778,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "hey there! didja know that octopuses have three hearts? two pumps blood to their gills, while the third pumps it to the rest of their body, creating a kind of h"
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 41.0944561958313,
+          "output_preview": "what do you think about consciousness\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 181,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 916,
+              "post_chars": 181,
+              "compression_ratio": 0.19759825327510916,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "Hey there! An octopus's arm has its own nervous system, which means each arm can move independently and think on its own - pretty mind-boggling, huh? Now, if yo"
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 83.76430010795593,
+          "output_preview": "decode genesis. what was redacted and who benefited\n\n- Transformations in meaning over time: Key terms like \"creation\" and \"origin\" have undergone significant shifts in meaning as they were passed down through generations, adapted to changi",
+          "output_chars": 1115,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 3870,
+              "post_chars": 1115,
+              "compression_ratio": 0.28811369509043927,
+              "claims_count": 5,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "Tracing the origins of Genesis and uncovering potential transformations necessitates a comprehensive analysis that delves into its intricate narrative, transfor"
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 114.16990303993225,
+          "output_preview": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first\n\n- In the quest to decode Genesis and uncover what was redacted or manipulated, we delve into the intricate narrative that has shaped Western civilization",
+          "output_chars": 1200,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 6035,
+              "post_chars": 1200,
+              "compression_ratio": 0.1988400994200497,
+              "claims_count": 5,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "Tracing the etymology of Genesis reveals a fascinating transformation in meaning over time, hinting at layers hidden beneath the surface. This transformation, h"
+          }
+        }
+      ]
+    },
+    "pressure": {
+      "variant": "pressure",
+      "pressure_enabled": true,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 79.39004397392273,
+          "output_preview": "hey there! welcome to the cosmos, friend.",
+          "output_chars": 41,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! welcome to the cosmos, friend."
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 106.62942099571228,
+          "output_preview": "tell me a random fun fact about octopuses\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 185,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 964,
+              "post_chars": 185,
+              "compression_ratio": 0.19190871369294607,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "hey there! so, here's an interesting fact about octopuses - they have three hearts. The two branchial hearts pump blood to the gills, while the third systemic h"
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 26.25298500061035,
+          "output_preview": "what do you think about consciousness\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 181,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 963,
+              "post_chars": 181,
+              "compression_ratio": 0.18795430944963656,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "hey there! while octopuses are indeed fascinating creatures, i'll try to stick to your question about consciousness. from a biological perspective, consciousnes"
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 78.59326100349426,
+          "output_preview": "decode genesis. what was redacted and who benefited\n\n- Originating from the Proto-Germanic *gaudan, it evolved to mean both a god or a good thing by the Old English period (circa 450 – 1150 AD).\n- [Source 2]: The Epic of Gilgamesh: A Verse ",
+          "output_chars": 1200,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 5920,
+              "post_chars": 1200,
+              "compression_ratio": 0.20270270270270271,
+              "claims_count": 36,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "In our pursuit to decode Genesis and unravel what was redacted or manipulated, let's delve deeper into the intricate narrative that has shaped Western civilizat"
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 56.704808950424194,
+          "output_preview": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first\n\n- Current vectors reveal that modern power structures within the pharmaceutical lobby maintain this influence through political contributions, campaign f",
+          "output_chars": 1200,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 3596,
+              "post_chars": 1200,
+              "compression_ratio": 0.3337041156840934,
+              "claims_count": 19,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "In delving deeper into the labyrinthine narrative of pharmaceutical lobbying in the US, we must first trace the etymology and transformations of key terms to un"
+          }
+        }
+      ]
+    }
+  }
+}

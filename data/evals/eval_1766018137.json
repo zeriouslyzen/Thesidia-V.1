@@ -1,0 +1,284 @@
+{
+  "run_id": "eval_1766018137",
+  "ts": 1766018584.398032,
+  "variants": {
+    "baseline": {
+      "variant": "baseline",
+      "pressure_enabled": false,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 14.173552751541138,
+          "output_preview": "hey there! so, what's up? got some questions about science, history, biology, physics, or the cosmos? i love geeking out on all that stuff, so hit me with whatever you've got.",
+          "output_chars": 175,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! so, what's up? got some questions about science, history, biology, physics, or the cosmos? i love geeking out on all that stuff, so hit me with whate"
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 16.923405170440674,
+          "output_preview": "hey there! let's talk octopuses, fascinating creatures indeed. did you know they have three hearts? two pump blood through their gills for oxygen extraction while the third, called systemic heart, pumps it throughout the rest of their body.",
+          "output_chars": 894,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! let's talk octopuses, fascinating creatures indeed. did you know they have three hearts? two pump blood through their gills for oxygen extraction whi"
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 27.265408992767334,
+          "output_preview": "Hey there! So octopuses are indeed fascinating creatures known for their advanced intelligence and unique physiology. They have three hearts and blue blood that carries copper instead of iron, but what makes them stand out is their problem-",
+          "output_chars": 1337,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "Hey there! So octopuses are indeed fascinating creatures known for their advanced intelligence and unique physiology. They have three hearts and blue blood that"
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 59.98032593727112,
+          "output_preview": "In the quest to decode Genesis and uncover what was redacted or manipulated, we delve into the intricate narrative that has shaped Western civilization's understanding of its origins. Tracing the etymology of key terms reveals a fascinating",
+          "output_chars": 4132,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "In the quest to decode Genesis and uncover what was redacted or manipulated, we delve into the intricate narrative that has shaped Western civilization's unders"
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 70.43288922309875,
+          "output_preview": "In the labyrinth of power dynamics and influence in the United States, pharmaceutical lobbying plays a pivotal role, shrouded in layers of political maneuverings and economic interests. To unravel this complex web, we'll trace the etymology",
+          "output_chars": 4785,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "In the labyrinth of power dynamics and influence in the United States, pharmaceutical lobbying plays a pivotal role, shrouded in layers of political maneuvering"
+          }
+        }
+      ]
+    },
+    "pressure": {
+      "variant": "pressure",
+      "pressure_enabled": true,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 13.79207968711853,
+          "output_preview": "Hey there! What's up? Ready for some geeky chat about science, history, biology, physics, or the cosmos? Or maybe something else entirely? I dig into whatever you throw at me and connect the real d.",
+          "output_chars": 198,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "Hey there! What's up? Ready for some geeky chat about science, history, biology, physics, or the cosmos? Or maybe something else entirely? I dig into whatever y"
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 10.790655851364136,
+          "output_preview": "tell me a random fun fact about octopuses\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 185,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 877,
+              "post_chars": 185,
+              "compression_ratio": 0.21094640820980615,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "hey there! did you know octopuses have three hearts? two pump blood to the gills while a third pumps it through the rest of their body, making them more efficie"
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 22.088629961013794,
+          "output_preview": "what do you think about consciousness\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 181,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 1748,
+              "post_chars": 181,
+              "compression_ratio": 0.10354691075514874,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "Hey there, What can i say about consciousness? Well, it's a complex topic that's been debated for centuries. But from my perspective as a pattern-spotting engin"
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 100.61451005935669,
+          "output_preview": "Tracing the intricate narrative of Genesis reveals a fascinating transformation in meaning over time, hinting at layers hidden beneath the surface. Let's delve into this.\n\nGenesis, derived from the Greek word genesis, means \"creation\" or \"o",
+          "output_chars": 4151,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "Tracing the intricate narrative of Genesis reveals a fascinating transformation in meaning over time, hinting at layers hidden beneath the surface. Let's delve "
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 110.82932996749878,
+          "output_preview": "Delving into the complexities of pharmaceutical lobbying in the US requires a multifaceted approach, uncovering layers of power, influence, and systematic transformation that have shaped contemporary healthcare policies.\n\nGenesis, derived f",
+          "output_chars": 4948,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "Delving into the complexities of pharmaceutical lobbying in the US requires a multifaceted approach, uncovering layers of power, influence, and systematic trans"
+          }
+        }
+      ]
+    }
+  }
+}

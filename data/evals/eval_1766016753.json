@@ -1,0 +1,300 @@
+{
+  "run_id": "eval_1766016753",
+  "ts": 1766017096.989284,
+  "variants": {
+    "baseline": {
+      "variant": "baseline",
+      "pressure_enabled": false,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 18.43763303756714,
+          "output_preview": "hey there! what's up? i'm thesidia, a pattern-spotting engineer with a love for science and history.",
+          "output_chars": 100,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! what's up? i'm thesidia, a pattern-spotting engineer with a love for science and history."
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 13.769355058670044,
+          "output_preview": "Hey there! I'm all about fun facts. Did you know octopuses are fascinating creatures with some pretty weird biology? For instance, they don't have a skeleton like we do. Instead, their bodies are made up of a soft tissue called the mantle, ",
+          "output_chars": 951,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "Hey there! I'm all about fun facts. Did you know octopuses are fascinating creatures with some pretty weird biology? For instance, they don't have a skeleton li"
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 25.164906978607178,
+          "output_preview": "hey there! octopuses have quite the interesting ability to change their skin color and texture, but it's important to note that this is not like being a chameleon on crack. Octopuses don't actually change their physical form like a chameleo",
+          "output_chars": 1074,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! octopuses have quite the interesting ability to change their skin color and texture, but it's important to note that this is not like being a chamele"
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 42.8984169960022,
+          "output_preview": "In the pursuit of decoding Genesis and identifying what was redacted or who might have benefited, let us embark on an exploration that interweaves patterns, questions, and connections across various fields and cultures.\n\nGenesis, the first ",
+          "output_chars": 3612,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "In the pursuit of decoding Genesis and identifying what was redacted or who might have benefited, let us embark on an exploration that interweaves patterns, que"
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 65.61342287063599,
+          "output_preview": "In the pursuit of unveiling the intricacies of pharmaceutical lobbying in the US, let's delve deeper into the hidden layers, transformations, and systematic transformations that have occurred over time within this context. While our primary",
+          "output_chars": 4517,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "In the pursuit of unveiling the intricacies of pharmaceutical lobbying in the US, let's delve deeper into the hidden layers, transformations, and systematic tra"
+          }
+        }
+      ]
+    },
+    "pressure": {
+      "variant": "pressure",
+      "pressure_enabled": true,
+      "results": [
+        {
+          "id": "conv_hi",
+          "suite": "conversational",
+          "prompt": "hi",
+          "latency_s": 13.833966255187988,
+          "output_preview": "hey there! i'm thesidia, a pattern-spotting engineer, and i love digging into all sorts of things - science, history, biology, physics, even the cosmos.",
+          "output_chars": 152,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": null,
+            "synthesis_pressure_pre_preview": "hey there! i'm thesidia, a pattern-spotting engineer, and i love digging into all sorts of things - science, history, biology, physics, even the cosmos."
+          }
+        },
+        {
+          "id": "conv_funfact",
+          "suite": "conversational",
+          "prompt": "tell me a random fun fact about octopuses",
+          "latency_s": 11.83281683921814,
+          "output_preview": "tell me a random fun fact about octopuses\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 185,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 657,
+              "post_chars": 185,
+              "compression_ratio": 0.2815829528158295,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "hey there! i've got some fun facts about octopuses for ya. did you know they have three hearts? two pump blood to the gills, while the third pumps it to the res"
+          }
+        },
+        {
+          "id": "conv_opinion",
+          "suite": "conversational",
+          "prompt": "what do you think about consciousness",
+          "latency_s": 17.458695888519287,
+          "output_preview": "what do you think about consciousness\n\n- Start with basic build foundation\n- Start with basic regular practice\n- Start with basic continuous learning\n- Start with basic track growth",
+          "output_chars": 181,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 1,
+            "fast_mode": true,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 1139,
+              "post_chars": 181,
+              "compression_ratio": 0.15891132572431957,
+              "claims_count": 4,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "hey there! so octopuses are quite intriguing creatures, huh? here's something that might grab your attention. they actually have three hearts - two pump blood t"
+          }
+        },
+        {
+          "id": "gnostic_genesis",
+          "suite": "gnostic",
+          "prompt": "decode genesis. what was redacted and who benefited",
+          "latency_s": 73.02742505073547,
+          "output_preview": "decode genesis. what was redacted and who benefited\n\n- One hypothesis suggests that the redacted portions of Genesis might have been suppressed due to their association with polytheistic or pagan beliefs.\n- In the pursuit of decoding Genesi",
+          "output_chars": 1200,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 4580,
+              "post_chars": 1200,
+              "compression_ratio": 0.26200873362445415,
+              "claims_count": 27,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "In the pursuit of decoding Genesis and identifying what was redacted or who might have benefited, let's delve into a forensic exploration that weaves patterns, "
+          }
+        },
+        {
+          "id": "gnostic_forensic",
+          "suite": "gnostic",
+          "prompt": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first",
+          "latency_s": 61.27306413650513,
+          "output_preview": "what's really going on with pharmaceutical lobbying in the US? keep it evidence-first\n\n- In 2018, according to OpenSecrets.org, PhRMA spent $36 million on lobbying efforts.\n- In a 2019 report by Public Citizen, it was revealed that from 201",
+          "output_chars": 1200,
+          "metadata": {
+            "format_mode": "natural",
+            "research_depth": 3,
+            "fast_mode": false,
+            "structured_cognitive_loop": {
+              "enabled": true,
+              "phases_executed": [
+                "retrieval",
+                "cognition",
+                "control",
+                "action",
+                "memory"
+              ]
+            },
+            "synthesis_pressure": {
+              "enabled": true,
+              "mode": "heuristic",
+              "pre_chars": 4071,
+              "post_chars": 1200,
+              "compression_ratio": 0.2947678703021371,
+              "claims_count": 27,
+              "contradictions_count": 0
+            },
+            "synthesis_pressure_pre_preview": "In the realm of pharmaceutical lobbying in the United States, let's unravel the threads and trace their origins to better comprehend the current state of affair"
+          }
+        }
+      ]
+    }
+  }
+}

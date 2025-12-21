@@ -249,22 +249,17 @@
             </div>
         </div>
 
-        <!-- Patterns -->
+        <!-- Eval Runner -->
         <div class="chart-container">
-            <h3>Patterns Detected</h3>
-            <div class="pattern-list" id="patternsList"></div>
-        </div>
-
-        <!-- Linguistic Features -->
-        <div class="chart-container">
-            <h3>Linguistic Features</h3>
-            <div class="pattern-list" id="linguisticList"></div>
-        </div>
-
-        <!-- Pattern Trends -->
-        <div class="chart-container">
-            <h3>Pattern Trends</h3>
-            <div class="pattern-list" id="trendsList"></div>
+            <h3>Eval Runner (SynthesisPressure)</h3>
+            <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+                <button id="runEvalBtn" class="btn btn-primary">Run Eval Suite</button>
+                <button id="loadLatestBtn" class="btn">Load Latest</button>
+                <span class="refresh-info" id="evalStatus">idle</span>
+            </div>
+            <div class="pattern-list" id="evalProcess"></div>
+            <div class="pattern-list" id="evalSummary"></div>
+            <div class="pattern-list" id="evalResults"></div>
         </div>
     </div>
 
@@ -307,68 +302,165 @@
                 document.getElementById('sessionStart').textContent = 
                     new Date(metrics.start_time).toLocaleTimeString();
 
-                // Patterns
-                const patternsList = document.getElementById('patternsList');
-                patternsList.innerHTML = '';
-                if (metrics.patterns_detected) {
-                    for (const [pattern, count] of Object.entries(metrics.patterns_detected).sort((a, b) => b[1] - a[1])) {
-                        const item = document.createElement('div');
-                        item.className = 'pattern-item';
-                        item.innerHTML = `
-                            <span>${pattern.replace(/_/g, ' ')}</span>
-                            <strong>${count}</strong>
-                        `;
-                        patternsList.appendChild(item);
-                    }
-                }
-
-                // Linguistic
-                const linguisticList = document.getElementById('linguisticList');
-                linguisticList.innerHTML = '';
-                if (metrics.linguistic_features) {
-                    for (const [feature, value] of Object.entries(metrics.linguistic_features).sort((a, b) => {
-                        const aVal = typeof a[1] === 'number' ? a[1] : 0;
-                        const bVal = typeof b[1] === 'number' ? b[1] : 0;
-                        return bVal - aVal;
-                    })) {
-                        const item = document.createElement('div');
-                        item.className = 'pattern-item';
-                        const displayValue = typeof value === 'number' ? 
-                            (value % 1 === 0 ? value : value.toFixed(2)) : value;
-                        item.innerHTML = `
-                            <span>${feature.replace(/_/g, ' ')}</span>
-                            <strong>${displayValue}</strong>
-                        `;
-                        linguisticList.appendChild(item);
-                    }
-                }
-
-                // Trends
-                const trendsResponse = await fetch('/api/metrics/patterns');
-                const trends = await trendsResponse.json();
-                const trendsList = document.getElementById('trendsList');
-                trendsList.innerHTML = '';
-                if (trends) {
-                    for (const [pattern, stats] of Object.entries(trends).sort((a, b) => b[1].total - a[1].total)) {
-                        const item = document.createElement('div');
-                        item.className = 'pattern-item';
-                        const trendClass = stats.trend === 'increasing' ? 'trend-up' : 
-                                         stats.trend === 'decreasing' ? 'trend-down' : 'trend-stable';
-                        item.innerHTML = `
-                            <span>${pattern.replace(/_/g, ' ')}</span>
-                            <span class="${trendClass}">
-                                avg: ${stats.avg.toFixed(1)} | 
-                                freq: ${(stats.frequency * 100).toFixed(1)}% | 
-                                ${stats.trend}
-                            </span>
-                        `;
-                        trendsList.appendChild(item);
-                    }
-                }
+                // Keep legacy sections if present, but dashboard now focuses on eval runner.
 
                 document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
             } catch (error) {
                 console.error('Error loading metrics:', error);
+            }
+        }
+
+        function setEvalStatus(text) {
+            const el = document.getElementById('evalStatus');
+            if (el) el.textContent = text;
+        }
+
+        function computeLinguistics(text) {
+            const t = String(text || '');
+            const chars = t.length;
+            const words = (t.match(/[A-Za-z0-9']+/g) || []);
+            const wordCount = words.length;
+            const uniqueWords = new Set(words.map(w => w.toLowerCase())).size;
+            const sentences = (t.match(/[.!?]+/g) || []).length;
+            const avgWordLen = wordCount ? (words.reduce((a, w) => a + w.length, 0) / wordCount) : 0;
+            return { chars, wordCount, uniqueWords, sentences, avgWordLen };
+        }
+
+        function escapeHtml(text) {
+            return String(text ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderProcessDiagram() {
+            const el = document.getElementById('evalProcess');
+            if (!el) return;
+            el.innerHTML = `
+                <div class="pattern-item">
+                    <span>what you are seeing</span>
+                    <strong>the same prompt, run twice</strong>
+                </div>
+                <div class="pattern-item">
+                    <span>run #1</span>
+                    <strong>baseline = normal reply</strong>
+                </div>
+                <div class="pattern-item">
+                    <span>run #2</span>
+                    <strong>pressure = “squeezed” reply (more compact)</strong>
+                </div>
+            `;
+        }
+
+        function renderEval(report) {
+            renderProcessDiagram();
+            const summary = document.getElementById('evalSummary');
+            const results = document.getElementById('evalResults');
+            if (!summary || !results) return;
+            summary.innerHTML = '';
+            results.innerHTML = '';
+
+            if (!report || !report.variants) {
+                summary.innerHTML = '<div class="pattern-item"><span>No eval report found</span></div>';
+                return;
+            }
+
+            const runId = report.run_id || 'unknown';
+            const ts = report.ts ? new Date(report.ts * 1000).toLocaleString() : '--';
+            summary.innerHTML = `
+                <div class="pattern-item"><span>run_id</span><strong>${runId}</strong></div>
+                <div class="pattern-item"><span>timestamp</span><strong>${ts}</strong></div>
+            `;
+
+            const baseline = report.variants.baseline?.results || [];
+            const pressure = report.variants.pressure?.results || [];
+            const byId = new Map();
+            baseline.forEach(r => byId.set(r.id, { baseline: r }));
+            pressure.forEach(r => {
+                const cur = byId.get(r.id) || {};
+                cur.pressure = r;
+                byId.set(r.id, cur);
+            });
+
+            for (const [id, pair] of byId.entries()) {
+                const b = pair.baseline;
+                const p = pair.pressure;
+                const pre = b?.output_chars || 0;
+                const post = p?.output_chars || 0;
+                const ratio = pre > 0 ? (post / pre) : 0;
+                const prompt = b?.prompt || p?.prompt || '';
+                const suite = b?.suite || p?.suite || '';
+                const bPreview = b?.output_preview || '';
+                const pPreview = p?.output_preview || '';
+                const pressureMeta = p?.metadata?.synthesis_pressure || null;
+
+                const bLing = computeLinguistics(bPreview);
+                const pLing = computeLinguistics(pPreview);
+
+                const item = document.createElement('details');
+                item.style.padding = '10px';
+                item.style.border = '1px solid var(--border-color)';
+                item.style.borderRadius = '8px';
+                item.style.margin = '8px 0';
+                item.style.background = 'var(--bg-tertiary)';
+                item.innerHTML = `
+                    <summary style="cursor:pointer; display:flex; justify-content:space-between; gap:12px;">
+                        <span>${escapeHtml(id)} <span style="opacity:.7;">(${escapeHtml(suite)})</span></span>
+                        <strong>chars: ${pre} → ${post} | ratio: ${ratio.toFixed(2)}</strong>
+                    </summary>
+                    <div style="margin-top:10px; display:grid; gap:10px;">
+                        <div class="pattern-item"><span>prompt</span><strong style="white-space:pre-wrap; text-align:right; max-width:70%;">${escapeHtml(prompt)}</strong></div>
+
+                        <div style="padding:10px; border:1px solid var(--border-color); border-radius:8px; background: var(--bg-secondary);">
+                            <div style="opacity:.8; margin-bottom:6px;">baseline reply</div>
+                            <pre style="white-space:pre-wrap; margin:0; font-family: var(--font-family-mono);">${escapeHtml(bPreview)}</pre>
+                        </div>
+
+                        <div style="padding:10px; border:1px solid var(--border-color); border-radius:8px; background: var(--bg-secondary);">
+                            <div style="opacity:.8; margin-bottom:6px;">pressure reply (squeezed)</div>
+                            <pre style="white-space:pre-wrap; margin:0; font-family: var(--font-family-mono);">${escapeHtml(pPreview)}</pre>
+                        </div>
+
+                        <div class="pattern-item"><span>pressure status</span><strong>${pressureMeta ? 'enabled' : 'not applied (too short)'}</strong></div>
+                        <div class="pattern-item"><span>linguistics</span><strong>words ${bLing.wordCount}→${pLing.wordCount} | uniq ${bLing.uniqueWords}→${pLing.uniqueWords} | sents ${bLing.sentences}→${pLing.sentences}</strong></div>
+                    </div>
+                `;
+                results.appendChild(item);
+            }
+
+            // UX: bring results into view and auto-expand the first case so users immediately see prompts + replies.
+            try {
+                const first = results.querySelector('details');
+                if (first) first.open = true;
+                results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (_) {}
+        }
+
+        async function runEval() {
+            setEvalStatus('running...');
+            try {
+                const resp = await fetch('/api/eval/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+                const data = await resp.json();
+                renderEval(data);
+                setEvalStatus('done');
+            } catch (e) {
+                console.error(e);
+                setEvalStatus('error');
+            }
+        }
+
+        async function loadLatestEval() {
+            setEvalStatus('loading latest...');
+            try {
+                const resp = await fetch('/api/eval/latest');
+                const data = await resp.json();
+                renderEval(data);
+                setEvalStatus('loaded');
+            } catch (e) {
+                console.error(e);
+                setEvalStatus('error');
             }
         }
 
@@ -390,6 +482,12 @@
         // Initial load
         loadMetrics();
         startAutoRefresh();
+        loadLatestEval();
+
+        const runBtn = document.getElementById('runEvalBtn');
+        if (runBtn) runBtn.addEventListener('click', runEval);
+        const latestBtn = document.getElementById('loadLatestBtn');
+        if (latestBtn) latestBtn.addEventListener('click', loadLatestEval);
     </script>
     <script src="nav.js"></script>
     </div>

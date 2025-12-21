@@ -95,7 +95,9 @@ def detect_forensic_routing(text: str, comprehensive: bool = False) -> bool:
             "legislation", "constitution", "rights",
             "justice", "legal system", "jurisdiction", "precedent",
             # Power/truth-seeking
-            "power", "consciousness", "systematic transformation", "redaction", 
+            # NOTE: Do NOT include "consciousness" here. Users often ask about consciousness casually,
+            # and routing every consciousness query into forensic/deep mode causes irrelevant tangents.
+            "power", "systematic transformation", "redaction", 
             "transformation",
             "deeper", "darker", "secrets", "uncover", "reveal", "full deep dive", 
             "deep dive",

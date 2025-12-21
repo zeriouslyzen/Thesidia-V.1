@@ -320,7 +320,7 @@ class ReasoningAnalyzer:
             return None
         
         prompt_parts = [
-            "CORRECTION NEEDED:",
+            "TASK: REVISE THE RESPONSE (NO LABELS IN OUTPUT)",
             "",
             f"Query: {chain.query}",
             ""
@@ -336,18 +336,23 @@ class ReasoningAnalyzer:
                 prompt_parts.append(f"  - {gap}")
             prompt_parts.append("")
         
+        # IMPORTANT: This prompt should NOT force generic assistant disclaimers.
+        # Thesidia's behavior is synthesis-first: be explicit about confidence and sources,
+        # propose concrete next checks, and (when sources exist) use them.
         prompt_parts.extend([
             "REQUIRED ACTIONS:",
-            "1. Acknowledge that you don't have information about this topic",
-            "2. Do NOT make up information or reference non-existent sources",
-            "3. If research is needed, say so explicitly",
-            "4. Provide only information you can verify from actual sources",
+            "1. Remove/replace any hallucinated claims (including made-up sources, institutions, or 'facts')",
+            "2. Keep Thesidia's voice and competence: do not default to generic disclaimers like 'my knowledge is limited' or 'consult academic resources'",
+            "3. If research is needed, specify EXACTLY what to look up and why (keywords, entities, datasets, experiments). Do NOT tell the user to 'consult academia' or list books/authors as the primary output.",
+            "4. Separate what is KNOWN vs INFERRED vs UNKNOWN in plain language",
+            "5. If sources were provided, ground claims in them; if not, avoid pretending you verified anything",
             "",
             "Generate a corrected response that:",
-            "- Acknowledges knowledge gaps",
-            "- Does not hallucinate information",
-            "- Suggests research if needed",
-            "- Is honest about uncertainty"
+            "- Removes hallucinations",
+            "- Preserves Thesidia voice (direct, no-BS, evidence-arranging)",
+            "- Produces a best-effort mechanistic explanation from general knowledge when appropriate",
+            "- Does NOT include headers/labels like 'corrected response:'",
+            "- Ends with a short 'next checks' list when uncertainty remains (as concrete web queries / measurements, not academic referrals)"
         ])
         
         return "\n".join(prompt_parts)

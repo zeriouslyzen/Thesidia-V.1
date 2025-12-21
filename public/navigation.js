@@ -77,7 +77,99 @@ class NavigationSystem {
         this.setupNavigationButtons();
         this.setupSwipeGestures();
         this.setupKeyboardNavigation();
+        this.initLoadingScreen();
         this.loadInitialSection();
+    }
+    
+    /**
+     * Initialize loading screen and handle graceful entry
+     */
+    initLoadingScreen() {
+        const loadingScreen = document.getElementById('katanxLoadingScreen');
+        const pageContainer = document.querySelector('.stream-page-container');
+        
+        if (!loadingScreen) return;
+        
+        // Hide loading screen after initial load
+        // Wait for DOM to be ready and initial content to start loading
+        window.addEventListener('load', () => {
+            // Small delay to ensure smooth transition
+            setTimeout(() => {
+                this.hideLoadingScreen();
+            }, 800); // Minimum display time for branding
+        });
+        
+        // Also hide if page container is ready
+        if (pageContainer) {
+            pageContainer.classList.add('loaded');
+        }
+    }
+    
+    /**
+     * Hide loading screen with fade-out animation
+     */
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('katanxLoadingScreen');
+        if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+            loadingScreen.classList.add('hidden');
+            // Remove from DOM after animation completes
+            setTimeout(() => {
+                if (loadingScreen.parentNode) {
+                    loadingScreen.parentNode.removeChild(loadingScreen);
+                }
+            }, 600);
+        }
+    }
+    
+    /**
+     * Trigger fade-in animations for widgets
+     */
+    triggerWidgetFadeIns() {
+        // Get all widget cards
+        const widgets = document.querySelectorAll('.widget-card');
+        
+        // Use Intersection Observer for progressive reveal
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all widgets
+        widgets.forEach(widget => {
+            observer.observe(widget);
+        });
+        
+        // Also trigger immediate fade-in for visible widgets (fallback)
+        setTimeout(() => {
+            widgets.forEach((widget, index) => {
+                const rect = widget.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+                if (isVisible) {
+                    setTimeout(() => {
+                        widget.classList.add('fade-in');
+                    }, index * 100); // Stagger by 100ms
+                }
+            });
+        }, 100);
+    }
+    
+    /**
+     * Fade in content within a widget after it's loaded
+     */
+    fadeInWidgetContent(containerId) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.classList.add('widget-content-loaded');
+        }
     }
     
     setupCarousel() {
@@ -490,24 +582,8 @@ class NavigationSystem {
             const data = await response.json();
             console.log('Home data loaded:', data);
             
-            // Welcome hero
-            const displayName = data.user_name || localStorage.getItem('thesidia_display_name') || 'friend';
-            const welcomeName = document.getElementById('homeWelcomeName');
-            const welcomeSubtitle = document.getElementById('homeWelcomeSubtitle');
-            const goalProgressEl = document.getElementById('homeGoalProgress');
-            const streakEl = document.getElementById('homeStreak');
-            const engagementEl = document.getElementById('homeEngagement');
-            
-            const stats = data.stats || {};
-            const streak = data.streak || stats.streak || 0;
-            const engagement = stats.engagement || stats.interactions || 0;
-            const goalProgress = Math.min(100, Math.round(stats.goal_progress || stats.progress || 0));
-            
-            if (welcomeName) welcomeName.textContent = `hey ${displayName}`;
-            if (welcomeSubtitle) welcomeSubtitle.textContent = stats.summary || 'You’re on track to hit today’s goal.';
-            if (goalProgressEl) goalProgressEl.textContent = `${goalProgress}%`;
-            if (streakEl) streakEl.textContent = streak;
-            if (engagementEl) engagementEl.textContent = engagement;
+            // Welcome hero - only keeping "welcome back" eyebrow text
+            // Removed: "hey friend" and "You're on track" messages
 
             // People to follow rail (mock profiles)
             await this.renderFollowSuggestions();
@@ -563,20 +639,47 @@ class NavigationSystem {
                 { title: 'New engagement patterns favor short-form synthesis', source: 'Pulse', image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60' }
             ];
             if (newsTiles) {
-                newsTiles.innerHTML = news.map(item => `
-                    <div class="news-tile">
-                        ${item.image ? `<img src="${item.image}" alt="${item.title || 'news'}" />` : ''}
+                // Clear skeleton
+                newsTiles.innerHTML = '';
+                // Add news tiles with fade-in
+                news.forEach((item, index) => {
+                    const tile = document.createElement('div');
+                    tile.className = 'news-tile';
+                    tile.style.opacity = '0';
+                    tile.style.transition = `opacity 0.4s ease ${index * 0.1}s`;
+                    tile.innerHTML = `
+                        ${item.image ? `<img src="${item.image}" alt="${item.title || 'news'}" loading="lazy" />` : ''}
                         <div class="news-overlay">
                             <div class="news-title">${item.title || 'Untitled'}</div>
                             <div class="news-source">${item.source || 'Signal'}</div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                    newsTiles.appendChild(tile);
+                    // Trigger fade-in
+                    requestAnimationFrame(() => {
+                        tile.style.opacity = '1';
+                    });
+                });
             }
+            
+            // Trigger widget fade-ins after content is loaded
+            setTimeout(() => {
+                this.triggerWidgetFadeIns();
+                // Fade in specific widget contents
+                this.fadeInWidgetContent('homeNewsTiles');
+                this.fadeInWidgetContent('followingGrid');
+                this.fadeInWidgetContent('activityList');
+                this.fadeInWidgetContent('tipsContainer');
+            }, 200);
+            
+            // Hide loading screen once home content is ready
+            this.hideLoadingScreen();
             
             // Legacy quick actions removed - widgets replaced
         } catch (error) {
             console.error('Error loading home content:', error);
+            // Hide loading screen even on error
+            this.hideLoadingScreen();
         }
     }
     
@@ -1508,46 +1611,258 @@ class NavigationSystem {
     }
     
     async loadFollowingWidget() {
-        const followingGrid = document.getElementById('followingGrid');
-        if (!followingGrid) {
-            console.warn('followingGrid not found');
+        const carouselContainer = document.getElementById('followingCarouselContainer');
+        const carouselTrack = document.getElementById('followingCarouselTrack');
+        
+        if (!carouselContainer || !carouselTrack) {
+            console.warn('Following carousel elements not found');
             return;
         }
         
         try {
-            console.log('Loading following widget...');
-            // Mock data for what user is following
-            const followingItems = [
-                { type: 'projects', label: 'Projects', icon: '📁', count: 3 },
-                { type: 'streams', label: 'Streams', icon: '📡', count: 12 },
-                { type: 'posts', label: 'Posts', icon: '📝', count: 28 },
-                { type: 'classes', label: 'Classes', icon: '🎓', count: 5 }
+            console.log('Loading following widget with post previews...');
+            
+            // Generate mock post previews showing different content types
+            const mockPosts = [
+                {
+                    authorName: 'Alex Chen',
+                    authorHandle: 'alexchen',
+                    authorInitials: 'AC',
+                    timeAgo: '2h',
+                    content: 'Just finished a deep dive into quantum consciousness. The implications for AI development are fascinating—especially how measurement affects reality.',
+                    tags: ['quantum', 'consciousness', 'ai'],
+                    hasMedia: true,
+                    mediaUrl: 'https://images.unsplash.com/photo-1635070041078-e3dcc6b3b8e0?w=400&h=300&fit=crop',
+                    stats: { likes: 42, comments: 8, validates: 12 }
+                },
+                {
+                    authorName: 'Maya Patel',
+                    authorHandle: 'mayapatel',
+                    authorInitials: 'MP',
+                    timeAgo: '5h',
+                    content: 'New insights on pattern recognition across different domains. The same structures appear in nature, code, and consciousness.',
+                    tags: ['patterns', 'systems'],
+                    hasMedia: false,
+                    stats: { likes: 28, comments: 5, validates: 7 }
+                },
+                {
+                    authorName: 'Jordan Kim',
+                    authorHandle: 'jordankim',
+                    authorInitials: 'JK',
+                    timeAgo: '1d',
+                    content: 'Exploring the intersection of movement arts and cognitive science. How does physical practice reshape neural pathways?',
+                    tags: ['movement', 'neuroscience', 'practice'],
+                    hasMedia: true,
+                    mediaUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop',
+                    stats: { likes: 67, comments: 14, validates: 19 }
+                },
+                {
+                    authorName: 'Sam Rivera',
+                    authorHandle: 'samrivera',
+                    authorInitials: 'SR',
+                    timeAgo: '3h',
+                    content: 'The relationship between creativity and constraint is more complex than we think. Limitations often unlock new possibilities.',
+                    tags: ['creativity', 'philosophy'],
+                    hasMedia: false,
+                    stats: { likes: 35, comments: 9, validates: 11 }
+                }
             ];
             
-            followingGrid.innerHTML = followingItems.map(item => `
-                <div class="following-item" data-type="${item.type}">
-                    <div class="following-icon">${item.icon}</div>
-                    <div class="following-label">${item.label}</div>
-                    <div class="following-count">${item.count}</div>
-                </div>
-            `).join('');
+            // Clear existing content
+            carouselTrack.innerHTML = '';
             
-            console.log('Following widget loaded:', followingItems.length, 'items');
+            // Create carousel items with post previews
+            mockPosts.forEach((post, index) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'following-item';
+                
+                const tagsHtml = post.tags && post.tags.length > 0 ? `
+                    <div class="following-post-tags">
+                        ${post.tags.map(tag => `<span class="following-post-tag">//${this.escapeHtml(tag)}</span>`).join('')}
+                    </div>
+                ` : '';
+                
+                const mediaHtml = post.hasMedia && post.mediaUrl ? `
+                    <img src="${post.mediaUrl}" alt="Post preview" class="following-post-media" loading="lazy" onerror="this.style.display='none'">
+                ` : '';
+                
+                itemEl.innerHTML = `
+                    <div class="following-post-preview">
+                        <div class="following-post-header">
+                            <div class="following-post-avatar">${post.authorInitials}</div>
+                            <div class="following-post-author">
+                                <div class="following-post-author-name">${this.escapeHtml(post.authorName)}</div>
+                                <div class="following-post-author-handle">//${this.escapeHtml(post.authorHandle)}</div>
+                            </div>
+                            <div class="following-post-time">${post.timeAgo}</div>
+                        </div>
+                        <div class="following-post-content">${this.escapeHtml(post.content)}</div>
+                        ${tagsHtml}
+                        ${mediaHtml}
+                        <div class="following-post-stats">
+                            <div class="following-post-stat">
+                                <span>${post.stats.likes}</span>
+                                <span>likes</span>
+                            </div>
+                            <div class="following-post-stat">
+                                <span>${post.stats.comments}</span>
+                                <span>comments</span>
+                            </div>
+                            <div class="following-post-stat">
+                                <span>${post.stats.validates}</span>
+                                <span>validates</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                carouselTrack.appendChild(itemEl);
+            });
             
-            // Add click handlers
-            followingGrid.querySelectorAll('.following-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const type = item.dataset.type;
-                    // Navigate to filtered view based on type
-                    console.log('Navigate to:', type);
-                    // Future: Navigate to filtered view
+            // Initialize carousel state
+            this.followingCurrentIndex = 0;
+            this.followingTotalItems = mockPosts.length;
+            this.followingAutoSlideInterval = null;
+            
+            // Setup swipe gestures
+            this.setupFollowingSwipe(carouselContainer);
+            
+            // Start auto-slide
+            this.startFollowingAutoSlide();
+            
+            // Add click handlers to navigate to stream
+            carouselTrack.querySelectorAll('.following-post-preview').forEach(preview => {
+                preview.addEventListener('click', () => {
+                    // Navigate to stream section
+                    this.navigateToSection('stream');
                 });
             });
+            
+            console.log('Following widget loaded with', mockPosts.length, 'post previews');
         } catch (error) {
             console.error('Error loading following widget:', error);
-            if (followingGrid) {
-                followingGrid.innerHTML = '<div style="padding: 12px; color: var(--text-tertiary); font-size: 12px;">Unable to load</div>';
+            if (carouselTrack) {
+                carouselTrack.innerHTML = '<div style="padding: 12px; color: var(--text-tertiary); font-size: 12px;">Unable to load</div>';
             }
+        }
+    }
+    
+    setupFollowingSwipe(container) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isDragging = false;
+        
+        container.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            isDragging = true;
+            this.pauseFollowingAutoSlide();
+        }, { passive: true });
+        
+        container.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                touchEndX = e.touches[0].clientX;
+            }
+        }, { passive: true });
+        
+        container.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            
+            const swipeDistance = touchStartX - touchEndX;
+            const swipeThreshold = 50;
+            
+            if (Math.abs(swipeDistance) > swipeThreshold) {
+                if (swipeDistance > 0) {
+                    // Swipe left - next slide
+                    this.nextFollowingSlide();
+                } else {
+                    // Swipe right - previous slide
+                    this.prevFollowingSlide();
+                }
+            }
+            
+            isDragging = false;
+            this.startFollowingAutoSlide();
+        }, { passive: true });
+        
+        // Mouse drag support
+        let mouseStartX = 0;
+        let mouseIsDown = false;
+        
+        container.addEventListener('mousedown', (e) => {
+            mouseStartX = e.clientX;
+            mouseIsDown = true;
+            this.pauseFollowingAutoSlide();
+            container.style.cursor = 'grabbing';
+        });
+        
+        container.addEventListener('mousemove', (e) => {
+            if (!mouseIsDown) return;
+            e.preventDefault();
+        });
+        
+        container.addEventListener('mouseup', (e) => {
+            if (!mouseIsDown) return;
+            
+            const dragDistance = mouseStartX - e.clientX;
+            const dragThreshold = 50;
+            
+            if (Math.abs(dragDistance) > dragThreshold) {
+                if (dragDistance > 0) {
+                    this.nextFollowingSlide();
+                } else {
+                    this.prevFollowingSlide();
+                }
+            }
+            
+            mouseIsDown = false;
+            container.style.cursor = 'grab';
+            this.startFollowingAutoSlide();
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            if (mouseIsDown) {
+                mouseIsDown = false;
+                container.style.cursor = 'grab';
+                this.startFollowingAutoSlide();
+            }
+        });
+    }
+    
+    goToFollowingSlide(index) {
+        if (index < 0 || index >= this.followingTotalItems) return;
+        
+        this.followingCurrentIndex = index;
+        const carouselTrack = document.getElementById('followingCarouselTrack');
+        
+        if (carouselTrack) {
+            carouselTrack.style.transform = `translateX(-${index * 100}%)`;
+        }
+        
+        // Reset auto-slide
+        this.pauseFollowingAutoSlide();
+        this.startFollowingAutoSlide();
+    }
+    
+    nextFollowingSlide() {
+        const nextIndex = (this.followingCurrentIndex + 1) % this.followingTotalItems;
+        this.goToFollowingSlide(nextIndex);
+    }
+    
+    prevFollowingSlide() {
+        const prevIndex = (this.followingCurrentIndex - 1 + this.followingTotalItems) % this.followingTotalItems;
+        this.goToFollowingSlide(prevIndex);
+    }
+    
+    startFollowingAutoSlide() {
+        this.pauseFollowingAutoSlide();
+        this.followingAutoSlideInterval = setInterval(() => {
+            this.nextFollowingSlide();
+        }, 3000); // Auto-advance every 3 seconds
+    }
+    
+    pauseFollowingAutoSlide() {
+        if (this.followingAutoSlideInterval) {
+            clearInterval(this.followingAutoSlideInterval);
+            this.followingAutoSlideInterval = null;
         }
     }
     

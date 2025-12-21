@@ -13,7 +13,7 @@ from datetime import datetime
 import time
 import math
 
-from ..support.embeddings import EmbeddingGenerator
+from support.embeddings import EmbeddingGenerator
 
 
 class VectorMemory:

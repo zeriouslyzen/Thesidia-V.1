@@ -78,7 +78,9 @@ class ThesidiaApp {
         // Only setup context-specific features if on contexts page
         if (this.currentPage === 'contexts') {
             this.setupEventListeners();
+            // Load local cache immediately, then upgrade to server list if available
             this.loadConversations();
+            this.loadConversationsFromServer();
             this.setupAutoResize();
             this.setupKeyboardShortcuts();
         } else if (this.currentPage === 'settings') {
@@ -1232,7 +1234,12 @@ class ThesidiaApp {
             
             // Use fetch - handle both streaming and non-streaming
             console.log('Making fetch request to:', this.apiEndpoint, { message: sanitizedMessage });
-            fetch(this.apiEndpoint, {
+            // Abort + timeout protection (prevents hanging UI on stalled streams)
+            const controller = new AbortController();
+            const timeoutMs = 120000; // 2 minutes
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            const doFetch = (attempt = 0) => fetch(this.apiEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1246,7 +1253,8 @@ class ThesidiaApp {
                     session_id: this.sessionId,
                     fast_mode: this.fastMode,  // true = fast (regular search), false = deep research
                     research_depth: this.fastMode ? 1 : 3  // 1 = quick, 3 = forensic
-                })
+                }),
+                signal: controller.signal
             }).then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -1281,6 +1289,7 @@ class ThesidiaApp {
                                 }
                                 
                                 resolve(fullResponse);
+                                clearTimeout(timeoutId);
                                 return;
                             }
                             
@@ -1417,7 +1426,14 @@ class ThesidiaApp {
                             if (progressDiv.parentNode) {
                                 progressDiv.style.display = 'none';
                             }
+                            // Retry once on transient network failures
+                            if (attempt < 1 && (err.name === 'AbortError' || /network|fetch/i.test(String(err)))) {
+                                const backoff = 500 * (attempt + 1);
+                                setTimeout(() => doFetch(attempt + 1).then(() => {}).catch(reject), backoff);
+                                return;
+                            }
                             reject(err);
+                            clearTimeout(timeoutId);
                         });
                     };
                     
@@ -1439,6 +1455,7 @@ class ThesidiaApp {
                         this.scrollToBottom();
                         this.saveConversation(sanitizedMessage, responseText);
                         resolve(responseText);
+                        clearTimeout(timeoutId);
                     });
                 }
             }).catch(err => {
@@ -1448,8 +1465,17 @@ class ThesidiaApp {
                     progressDiv.style.display = 'none';
                 }
                 textElement.textContent = `Error: ${err.message}`;
+                // Retry once on transient failures
+                if (attempt < 1 && (err.name === 'AbortError' || /network|fetch/i.test(String(err)))) {
+                    const backoff = 500 * (attempt + 1);
+                    setTimeout(() => doFetch(attempt + 1).then(() => {}).catch(reject), backoff);
+                    return;
+                }
                 reject(err);
+                clearTimeout(timeoutId);
             });
+            // Kick off attempt 0
+            doFetch(0).catch(reject);
         });
     }
     
@@ -1613,6 +1639,17 @@ class ThesidiaApp {
         const formattedContent = this.formatMessage(content);
         contentDiv.innerHTML = formattedContent;
         
+        // Set up event delegation for action suggestion buttons
+        const actionButtons = contentDiv.querySelectorAll('.action-suggestion-btn');
+        actionButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = btn.getAttribute('data-action');
+                if (action) {
+                    this.handleActionSuggestion(action);
+                }
+            });
+        });
+        
         messageDiv.appendChild(contentDiv);
         
         // Add action buttons for Thesidia messages
@@ -1655,14 +1692,6 @@ class ThesidiaApp {
         
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'message-actions';
-        
-        // Save button
-        const saveBtn = document.createElement('button');
-        saveBtn.className = 'message-action';
-        saveBtn.textContent = 'save';
-        saveBtn.setAttribute('aria-label', 'Save message');
-        saveBtn.onclick = (e) => this.saveMessage(messageId, content, e);
-        actionsDiv.appendChild(saveBtn);
         
         // Regenerate button (only if we have query data)
         if (queryData) {
@@ -1858,6 +1887,51 @@ class ThesidiaApp {
     }
     
     formatMessage(content) {
+        // Remove leaked "General Framework" blocks (including markdown variants) - strip to end of message
+        content = content.replace(/\*{0,2}\s*General Framework:\s*\*{0,2}[\s\S]*$/gi, '');
+        // Extra safety: remove any remaining lines if they survive partial formatting
+        content = content.replace(/\*{0,2}\s*Foundation:\s*\*{0,2}.*?\n/gi, '');
+        content = content.replace(/\*{0,2}\s*Practice:\s*\*{0,2}.*?\n/gi, '');
+        content = content.replace(/\*{0,2}\s*Learning:\s*\*{0,2}.*?\n/gi, '');
+        content = content.replace(/\*{0,2}\s*Growth:\s*\*{0,2}.*?\n/gi, '');
+        
+        // Convert "I can also" section to clickable action buttons
+        const iCanAlsoMatch = content.match(/\*\*I can also:\*\*([\s\S]*?)(?=\n\n|$)/i);
+        if (iCanAlsoMatch) {
+            const actionsText = iCanAlsoMatch[1];
+            
+            // Support both formats:
+            // - multiline: "1. foo\n2. bar"
+            // - single line: "1. foo 2. bar"
+            let actions = [];
+            const numberedMatches = [...actionsText.matchAll(/(\d+\.\s*[^\d\n][^\n]*?)(?=\s+\d+\.|$)/g)];
+            if (numberedMatches.length > 0) {
+                actions = numberedMatches
+                    .map(m => m[1].replace(/^\d+\.\s*/, '').trim())
+                    .filter(Boolean);
+            } else {
+                const actionLines = actionsText.split('\n').filter(line => line.trim());
+                actions = actionLines.map(line => {
+                    const actionText = line.replace(/^\d+\.\s*/, '').replace(/^[-•]\s*/, '').trim();
+                    return actionText || null;
+                }).filter(Boolean);
+            }
+            
+            if (actions.length > 0) {
+                // Replace the text section with clickable buttons
+                const actionsHtml = actions.map(action => {
+                    const escapedAction = this.escapeHtml(action);
+                    // Use data attribute and event delegation instead of inline onclick
+                    return `<button class="action-suggestion-btn" data-action="${escapedAction.replace(/"/g, '&quot;')}">${escapedAction}</button>`;
+                }).join('');
+                
+                content = content.replace(
+                    /\*\*I can also:\*\*[\s\S]*?(?=\n\n|$)/i,
+                    `<div class="action-suggestions"><strong>I can also:</strong><div class="action-suggestions-list">${actionsHtml}</div></div>`
+                );
+            }
+        }
+        
         // Simple formatting - convert code blocks, preserve line breaks
         return content
             .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
@@ -1865,6 +1939,19 @@ class ThesidiaApp {
             .replace(/\n/g, '<br>')
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    }
+    
+    handleActionSuggestion(actionText) {
+        // When user clicks an action suggestion, send it as a new message
+        const promptInput = document.getElementById('promptInput');
+        if (promptInput) {
+            promptInput.value = actionText;
+            // Trigger send
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn && !sendBtn.disabled) {
+                sendBtn.click();
+            }
+        }
     }
     
     showTypingIndicator() {
@@ -2123,6 +2210,35 @@ class ThesidiaApp {
         localStorage.setItem('thesidia_conversations', JSON.stringify(this.conversations));
         
         this.updateConversationsList();
+
+        // Best-effort server sync (non-blocking)
+        this.syncConversationToServer(conversation).catch(() => {});
+    }
+
+    async syncConversationToServer(conversation) {
+        // Server-side persistence (SQLite default). Safe fallback to local-only if server doesn't support it.
+        try {
+            const resp = await fetch(`/api/conversations/${encodeURIComponent(conversation.id)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: this.userId,
+                    session_id: this.sessionId,
+                    title: conversation.title,
+                    preview: conversation.preview,
+                    messages: (conversation.messages || []).map(m => ({
+                        type: m.type,
+                        content: m.content,
+                        timestamp: Date.now()
+                    }))
+                })
+            });
+            if (!resp.ok) return;
+            const data = await resp.json().catch(() => ({}));
+            if (!data.ok) return;
+        } catch (e) {
+            // Silent: localStorage remains the source of truth if server is unreachable
+        }
     }
     
     loadConversations() {
@@ -2134,6 +2250,33 @@ class ThesidiaApp {
             }
         } catch (error) {
             console.error('Error loading conversations:', error);
+        }
+    }
+
+    async loadConversationsFromServer() {
+        // Prefer server list when available; fall back to localStorage.
+        try {
+            const params = new URLSearchParams();
+            if (this.userId) params.set('user_id', this.userId);
+            if (this.sessionId) params.set('session_id', this.sessionId);
+            params.set('limit', '50');
+            const resp = await fetch(`/api/conversations?${params.toString()}`);
+            if (!resp.ok) return false;
+            const data = await resp.json().catch(() => null);
+            if (!data || !Array.isArray(data.conversations)) return false;
+            // Server list is lightweight; we keep it in-memory/local to drive the sidebar.
+            this.conversations = data.conversations.map(c => ({
+                id: c.id,
+                title: c.title,
+                preview: c.preview,
+                timestamp: c.timestamp,
+                messages: [] // loaded on demand
+            }));
+            localStorage.setItem('thesidia_conversations', JSON.stringify(this.conversations));
+            this.updateConversationsList();
+            return true;
+        } catch (e) {
+            return false;
         }
     }
     
@@ -2162,17 +2305,53 @@ class ThesidiaApp {
     loadConversation(conversationId) {
         const conversation = this.conversations.find(c => c.id === conversationId);
         if (!conversation) return;
-        
+
         this.currentConversationId = conversationId;
-        const messagesContainer = document.getElementById('messages');
-        messagesContainer.innerHTML = '';
-        
-        conversation.messages.forEach(msg => {
-            this.addMessage(msg.type, msg.content);
+
+        // If we have messages locally, render immediately; otherwise pull from server.
+        if (conversation.messages && conversation.messages.length > 0) {
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+            conversation.messages.forEach(msg => this.addMessage(msg.type, msg.content));
+            this.updateConversationsList();
+            this.closeLeftSidebar();
+            return;
+        }
+
+        this.loadConversationFromServer(conversationId).then(loaded => {
+            if (!loaded) {
+                // Fallback: render what we have (usually none)
+                const messagesContainer = document.getElementById('messages');
+                messagesContainer.innerHTML = '';
+                this.addMessage('thesidia', 'Could not load this conversation from server.');
+            }
+            this.updateConversationsList();
+            this.closeLeftSidebar();
         });
-        
-        this.updateConversationsList();
-        this.closeLeftSidebar();
+    }
+
+    async loadConversationFromServer(conversationId) {
+        try {
+            const params = new URLSearchParams();
+            if (this.userId) params.set('user_id', this.userId);
+            if (this.sessionId) params.set('session_id', this.sessionId);
+            const resp = await fetch(`/api/conversations/${encodeURIComponent(conversationId)}?${params.toString()}`);
+            if (!resp.ok) return false;
+            const data = await resp.json().catch(() => null);
+            if (!data || !Array.isArray(data.messages)) return false;
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+            data.messages.forEach(msg => this.addMessage(msg.type, msg.content));
+            // Cache messages in local list
+            const idx = this.conversations.findIndex(c => c.id === conversationId);
+            if (idx >= 0) {
+                this.conversations[idx].messages = data.messages.map(m => ({ type: m.type, content: m.content }));
+                localStorage.setItem('thesidia_conversations', JSON.stringify(this.conversations));
+            }
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
     
     escapeHtml(text) {

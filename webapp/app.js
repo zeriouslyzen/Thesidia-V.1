@@ -1,4 +1,4 @@
-// Thesidia Web App - Security-First, High-End Mobile Interface
+// Katanx Web App - Security-First, High-End Mobile Interface
 
 class ThesidiaApp {
     constructor() {
@@ -15,20 +15,49 @@ class ThesidiaApp {
         
         this.apiEndpoint = apiConfig.API_ENDPOINT || '/api/thesidia'; // Backend API endpoint
         this.statusEndpoint = apiConfig.STATUS_ENDPOINT || '/api/status'; // Status endpoint
-        this.apiKey = apiConfig.API_KEY || null; // Optional API key
         this.conversations = [];
         this.currentConversationId = null;
         this.isProcessing = false;
         this.showThinking = false;
-        this.currentFormat = 'natural'; // 'natural' or 'structured'
-        this.researchDepth = 2; // 1=Quick, 2=Deep, 3=Forensic
         this.attachedFiles = []; // Store attached files
         
         // User session management
         this.userId = null;
         this.sessionId = null;
         
+        // Message tracking for regeneration
+        this.messageStore = new Map(); // messageId -> {query, params, timestamp, type}
+        
+        // TTS (Text-to-Speech) system - streaming voice
+        this.ttsEnabled = false; // Global toggle
+        this.ttsVoice = null; // Selected voice
+        this.ttsUtterance = null; // Current utterance
+        this.ttsQueue = []; // Queue for streaming chunks
+        this.ttsSpeaking = false;
+        this.currentTTSMessageId = null;
+        this.thinkingSteps = {}; // Store thinking steps per message
+        
+        // Research mode: true = fast (regular search), false = deep research
+        this.fastMode = true; // Default to fast mode
+        
         this.init();
+        
+        // Initialize TTS voices when available
+        if ('speechSynthesis' in window) {
+            // Store reference to this for voice loading callback
+            const self = this;
+            // Use arrow function to preserve 'this' context
+            const initTTS = () => {
+                if (self && typeof self.initializeTTS === 'function') {
+                    self.initializeTTS();
+                }
+            };
+            if (speechSynthesis.getVoices().length > 0) {
+                initTTS();
+            } else {
+                speechSynthesis.onvoiceschanged = initTTS;
+            }
+        }
     }
     
     init() {
@@ -43,10 +72,15 @@ class ThesidiaApp {
         // Universal sidebar infrastructure - setup for ALL pages
         this.setupSidebarInfrastructure();
         
+        // Universal scroll behaviors - setup for ALL pages
+        this.setupScrollBehaviors();
+        
         // Only setup context-specific features if on contexts page
         if (this.currentPage === 'contexts') {
             this.setupEventListeners();
+            // Load local cache immediately, then upgrade to server list if available
             this.loadConversations();
+            this.loadConversationsFromServer();
             this.setupAutoResize();
             this.setupKeyboardShortcuts();
         } else if (this.currentPage === 'settings') {
@@ -60,6 +94,7 @@ class ThesidiaApp {
         this.checkStatus();
         this.startStatusPolling();
     }
+    
     
     detectPage() {
         const path = window.location.pathname;
@@ -75,17 +110,16 @@ class ThesidiaApp {
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('leftSidebar');
         const app = document.getElementById('app');
-        const thesidiaTitle = document.getElementById('thesidiaTitle');
-        
         if (!menuBtn || !sidebar || !app) return;
         
         // Menu toggle
         menuBtn.addEventListener('click', () => this.toggleLeftSidebar());
         
-        // Click THESIDIA title to go to stream page
-        if (thesidiaTitle) {
-            thesidiaTitle.style.cursor = 'pointer';
-            thesidiaTitle.addEventListener('click', () => {
+        // Click katanx branding to go to stream page
+        const headerBranding = document.querySelector('.header-branding');
+        if (headerBranding) {
+            headerBranding.style.cursor = 'pointer';
+            headerBranding.addEventListener('click', () => {
                 window.location.href = '/stream.html';
             });
         }
@@ -120,6 +154,17 @@ class ThesidiaApp {
         let touchEndX = 0;
         let touchEndY = 0;
         
+        // Helper to check if we're on home page
+        const isOnHomePage = () => {
+            // Only allow sidebar swipe when explicitly on the home section
+            if (window.navigationSystem && window.navigationSystem.currentSection === 'home') {
+                return true;
+            }
+            // Fallback: only the root home pages count as home
+            const path = window.location.pathname;
+            return path === '/home' || path === '/index.html';
+        };
+        
         // Touch start
         document.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].clientX;
@@ -141,11 +186,25 @@ class ThesidiaApp {
             if (absDeltaX > 50 && absDeltaX > deltaY) {
                 const isOpen = sidebar.classList.contains('open');
                 
+                // Check if we're on home section (for carousel navigation)
+                // Check multiple ways to be sure
+                let isOnHome = false;
+                if (window.navigationSystem) {
+                    isOnHome = window.navigationSystem.currentSection === 'home';
+                }
+                // Also check if we're on a page that should allow sidebar swipe
+                if (!isOnHome) {
+                    isOnHome = isOnHomePage();
+                }
+                
                 if (deltaX > 0 && !isOpen) {
-                    // Swipe right to open
-                    this.toggleLeftSidebar();
+                    // Swipe right to open - ONLY on home page
+                    if (isOnHome) {
+                        this.toggleLeftSidebar();
+                    }
+                    // If not on home, do nothing - let navigation.js handle it
                 } else if (deltaX < 0 && isOpen) {
-                    // Swipe left to close
+                    // Swipe left to close - always allowed
                     this.closeLeftSidebar();
                 }
             }
@@ -153,6 +212,166 @@ class ThesidiaApp {
             // Reset
             touchStartX = 0;
         }, { passive: true });
+    }
+    
+    setupScrollBehaviors() {
+        // Scroll-based UI behaviors with high sensitivity and synchronized animations
+        // Works on ALL pages that have header-submenu and fab-orb
+        let ticking = false;
+        let lastScrollTop = 0;
+        
+        const headerSubmenu = document.querySelector('.header-submenu');
+        const fabOrb = document.getElementById('fabOrb');
+        const fabOrbGlow = fabOrb ? fabOrb.querySelector('.fab-orb-glow') : null;
+        const scrollContainers = document.querySelectorAll('.carousel-section');
+        const mainScrollContainer = document.querySelector('main') || document.querySelector('.chat-container') || window;
+        
+        // High sensitivity scroll threshold - reacts to small movements
+        const scrollThreshold = 20; // Very sensitive - reacts after 20px
+        const maxScrollForFullEffect = 100; // Full effect at 100px scroll
+        
+        function updateScrollState() {
+            let currentScrollTop = 0;
+            let activeContainer = null;
+            let scrollDirection = 'none';
+            
+            // Find the active scroll container (carousel sections first)
+            scrollContainers.forEach(container => {
+                if (container.classList.contains('active')) {
+                    activeContainer = container;
+                    currentScrollTop = container.scrollTop;
+                }
+            });
+            
+            // Fallback to main scroll container or window
+            if (!activeContainer) {
+                if (mainScrollContainer && mainScrollContainer !== window) {
+                    currentScrollTop = mainScrollContainer.scrollTop || 0;
+                } else {
+                    currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+                }
+            }
+            
+            // Calculate scroll progress (0 to 1) for smooth proportional animations
+            const scrollProgress = Math.min(currentScrollTop / maxScrollForFullEffect, 1);
+            const scrollDelta = currentScrollTop - lastScrollTop;
+            if (scrollDelta > 2) scrollDirection = 'down';
+            if (scrollDelta < -2) scrollDirection = 'up';
+            
+            // High sensitivity: Update on any scroll movement
+            if (Math.abs(scrollDelta) > 0) {
+                const header = document.querySelector('.header');
+                
+                // Update header - add scrolled class
+                if (header) {
+                    if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
+                        header.classList.add('scrolled-down');
+                    } else if (scrollDirection === 'up') {
+                        header.classList.remove('scrolled-down');
+                    }
+                }
+                
+                // Update header submenu - slide up proportionally
+                if (headerSubmenu) {
+                    // Use CSS custom property for smooth transitions
+                    headerSubmenu.style.setProperty('--scroll-progress', scrollProgress);
+                    
+                    // Apply proportional transforms for smooth synchronized movement
+                    const translateY = -scrollProgress * 100; // Slide up based on scroll progress
+                    const opacity = Math.max(0, 1 - scrollProgress); // Fade out as scrolling
+                    const maxHeight = Math.max(0, 60 * (1 - scrollProgress)); // Collapse height
+                    
+                    // Apply styles with smooth transitions
+                    headerSubmenu.style.transform = `translateY(${translateY}%)`;
+                    headerSubmenu.style.opacity = opacity;
+                    headerSubmenu.style.maxHeight = `${maxHeight}px`;
+                    
+                    // Add class for CSS transitions
+                    if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
+                        headerSubmenu.classList.add('scrolled-down');
+                    } else if (scrollDirection === 'up') {
+                        headerSubmenu.classList.remove('scrolled-down');
+                    }
+                }
+                
+                // Update FAB orb - dim proportionally (stay visible, just dim)
+                // Synchronized with header submenu animation
+                if (fabOrb && fabOrbGlow) {
+                    // Dim from 1.0 to 0.25 opacity based on scroll progress
+                    // Using same scroll progress for synchronization
+                    const orbOpacity = Math.max(0.25, 1 - (scrollProgress * 0.75)); // 1.0 to 0.25
+                    const glowOpacity = Math.max(0.25, 1 - (scrollProgress * 0.75)); // 1.0 to 0.25
+                    const glowIntensity = Math.max(0.3, 1 - (scrollProgress * 0.7)); // Reduce glow intensity
+                    
+                    // Apply opacity with smooth transitions (CSS handles the transition)
+                    fabOrb.style.opacity = orbOpacity;
+                    fabOrbGlow.style.opacity = glowOpacity;
+                    
+                    // Reduce glow shadow intensity proportionally
+                    const shadowBlur1 = 8 * glowIntensity;
+                    const shadowBlur2 = 16 * glowIntensity;
+                    const shadowBlur3 = 24 * glowIntensity;
+                    const shadowOpacity1 = 0.8 * glowIntensity;
+                    const shadowOpacity2 = 0.6 * glowIntensity;
+                    const shadowOpacity3 = 0.4 * glowIntensity;
+                    
+                    fabOrbGlow.style.boxShadow = `
+                        0 0 ${shadowBlur1}px rgba(255, 255, 255, ${shadowOpacity1}),
+                        0 0 ${shadowBlur2}px rgba(255, 255, 255, ${shadowOpacity2}),
+                        0 0 ${shadowBlur3}px rgba(255, 255, 255, ${shadowOpacity3})
+                    `;
+                    
+                    // Add class for state tracking and CSS transitions
+                    if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
+                        fabOrb.classList.remove('scrolled-up');
+                        fabOrb.classList.add('scrolled-down');
+                    } else if (scrollDirection === 'up') {
+                        fabOrb.classList.remove('scrolled-down');
+                        fabOrb.classList.add('scrolled-up');
+                    }
+                }
+            }
+            
+            lastScrollTop = currentScrollTop;
+            ticking = false;
+        }
+        
+        function onScroll() {
+            if (!ticking) {
+                window.requestAnimationFrame(updateScrollState);
+                ticking = true;
+            }
+        }
+        
+        // Attach scroll listeners with high sensitivity
+        scrollContainers.forEach(container => {
+            container.addEventListener('scroll', onScroll, { passive: true });
+        });
+        
+        // Main scroll container
+        if (mainScrollContainer && mainScrollContainer !== window) {
+            mainScrollContainer.addEventListener('scroll', onScroll, { passive: true });
+        }
+        
+        // Window scroll fallback
+        window.addEventListener('scroll', onScroll, { passive: true });
+        
+        // Touch events for mobile sensitivity
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', (e) => {
+            const touchY = e.touches[0].clientY;
+            const touchDelta = touchStartY - touchY;
+            if (Math.abs(touchDelta) > 5) { // High sensitivity for touch
+                onScroll();
+            }
+        }, { passive: true });
+        
+        // Initialize state
+        updateScrollState();
     }
     
     initColorTheme() {
@@ -166,17 +385,17 @@ class ThesidiaApp {
     
     setColorTheme(theme) {
         // Remove all theme classes
-        document.body.classList.remove('theme-yellow', 'theme-green', 'theme-purple', 'theme-pink');
-        document.documentElement.classList.remove('theme-yellow', 'theme-green', 'theme-purple', 'theme-pink');
+        document.body.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
+        document.documentElement.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
         
         // Apply new theme (default doesn't need a class)
-        if (theme !== 'default') {
+        if (theme && theme !== 'default') {
             document.body.classList.add(`theme-${theme}`);
             document.documentElement.classList.add(`theme-${theme}`);
         }
         
         // Save to localStorage
-        localStorage.setItem('thesidia_color_theme', theme);
+        localStorage.setItem('thesidia_color_theme', theme || 'default');
     }
     
     setupThemeSelector() {
@@ -191,46 +410,109 @@ class ThesidiaApp {
         const themeSelector = document.createElement('div');
         themeSelector.id = 'themeSelector';
         themeSelector.className = 'theme-selector';
+        const currentTheme = localStorage.getItem('thesidia_color_theme') || 'default';
+        const themeLabels = {
+            'default': 'Default',
+            'yellow': 'Yellow',
+            'tan': 'Tan',
+            'red': 'Red',
+            'orange': 'Orange',
+            'blue': 'Blue'
+        };
+        
         themeSelector.innerHTML = `
             <div class="settings-label" style="margin-top: 16px;">Color Theme</div>
-            <div class="theme-options">
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'default' ? 'active' : ''}" data-theme="default" title="Default White">
-                    <span class="theme-color" style="background: #ffffff; box-shadow: 0 0 8px rgba(255,255,255,0.6);"></span>
-                    <span>Default</span>
+            <div class="theme-dropdown-wrapper">
+                <button class="theme-dropdown-btn" id="themeDropdownBtn">
+                    <span class="theme-dropdown-label">
+                        <span class="theme-color-preview" style="background: ${currentTheme === 'default' ? '#ffffff' : currentTheme === 'yellow' ? '#d4d400' : currentTheme === 'tan' ? '#d2b48c' : currentTheme === 'red' ? '#ff4444' : currentTheme === 'orange' ? '#ff8800' : '#4488ff'};"></span>
+                        <span>${themeLabels[currentTheme]}</span>
+                    </span>
+                    <svg class="theme-dropdown-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
                 </button>
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'yellow' ? 'active' : ''}" data-theme="yellow" title="Yellow Neon">
-                    <span class="theme-color" style="background: #ffff00; box-shadow: 0 0 8px rgba(255,255,0,0.6);"></span>
-                    <span>Yellow</span>
-                </button>
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'green' ? 'active' : ''}" data-theme="green" title="Green Neon">
-                    <span class="theme-color" style="background: #00ff00; box-shadow: 0 0 8px rgba(0,255,0,0.6);"></span>
-                    <span>Green</span>
-                </button>
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'purple' ? 'active' : ''}" data-theme="purple" title="Purple Neon">
-                    <span class="theme-color" style="background: #ff00ff; box-shadow: 0 0 8px rgba(255,0,255,0.6);"></span>
-                    <span>Purple</span>
-                </button>
-                <button class="theme-option ${localStorage.getItem('thesidia_color_theme') === 'pink' ? 'active' : ''}" data-theme="pink" title="Pink Neon">
-                    <span class="theme-color" style="background: #ff00aa; box-shadow: 0 0 8px rgba(255,0,170,0.6);"></span>
-                    <span>Pink</span>
-                </button>
+                <div class="theme-dropdown-menu" id="themeDropdownMenu">
+                    <button class="theme-dropdown-option ${currentTheme === 'default' ? 'active' : ''}" data-theme="default">
+                        <span class="theme-color" style="background: #ffffff;"></span>
+                        <span>Default</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'yellow' ? 'active' : ''}" data-theme="yellow">
+                        <span class="theme-color" style="background: #d4d400;"></span>
+                        <span>Yellow</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'tan' ? 'active' : ''}" data-theme="tan">
+                        <span class="theme-color" style="background: #d2b48c;"></span>
+                        <span>Tan</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'red' ? 'active' : ''}" data-theme="red">
+                        <span class="theme-color" style="background: #ff4444;"></span>
+                        <span>Red</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'orange' ? 'active' : ''}" data-theme="orange">
+                        <span class="theme-color" style="background: #ff8800;"></span>
+                        <span>Orange</span>
+                    </button>
+                    <button class="theme-dropdown-option ${currentTheme === 'blue' ? 'active' : ''}" data-theme="blue">
+                        <span class="theme-color" style="background: #4488ff;"></span>
+                        <span>Blue</span>
+                    </button>
+                </div>
             </div>
         `;
         
         // Insert after settings nav
         settingsNav.parentElement.appendChild(themeSelector);
         
-        // Add click handlers
-        themeSelector.querySelectorAll('.theme-option').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const theme = btn.dataset.theme;
-                this.setColorTheme(theme);
-                
-                // Update active state
-                themeSelector.querySelectorAll('.theme-option').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        // Setup dropdown toggle
+        const dropdownBtn = document.getElementById('themeDropdownBtn');
+        const dropdownMenu = document.getElementById('themeDropdownMenu');
+        const dropdownWrapper = dropdownBtn?.closest('.theme-dropdown-wrapper');
+        
+        if (dropdownBtn && dropdownMenu && dropdownWrapper) {
+            dropdownBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownWrapper.classList.toggle('open');
             });
-        });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!dropdownWrapper.contains(e.target)) {
+                    dropdownWrapper.classList.remove('open');
+                }
+            });
+            
+            // Handle option clicks
+            dropdownMenu.querySelectorAll('.theme-dropdown-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const theme = option.dataset.theme;
+                    this.setColorTheme(theme);
+                    
+                    // Update button label
+                    const label = dropdownBtn.querySelector('.theme-dropdown-label span:last-child');
+                    const preview = dropdownBtn.querySelector('.theme-color-preview');
+                    if (label) label.textContent = themeLabels[theme];
+                    if (preview) {
+                        const colors = {
+                            'default': '#ffffff',
+                            'yellow': '#d4d400',
+                            'tan': '#d2b48c',
+                            'red': '#ff4444',
+                            'orange': '#ff8800',
+                            'blue': '#4488ff'
+                        };
+                        preview.style.background = colors[theme];
+                    }
+                    
+                    // Update active state
+                    dropdownMenu.querySelectorAll('.theme-dropdown-option').forEach(opt => opt.classList.remove('active'));
+                    option.classList.add('active');
+                    
+                    // Close dropdown
+                    dropdownWrapper.classList.remove('open');
+                });
+            });
+        }
     }
     
     setupMinimalListeners() {
@@ -302,12 +584,34 @@ class ThesidiaApp {
         } catch (error) {
             console.error('Error setting up minimal listeners:', error);
         }
+
+        // FAB orb haptics (best-effort; vibrate when supported)
+        try {
+            const fabOrb = document.getElementById('fabOrb');
+            if (fabOrb) {
+                // Avoid duplicate handlers
+                fabOrb.replaceWith(fabOrb.cloneNode(true));
+                const freshFabOrb = document.getElementById('fabOrb');
+                if (freshFabOrb) {
+                    freshFabOrb.addEventListener('click', () => {
+                        if (navigator.vibrate) {
+                            navigator.vibrate(15); // short haptic
+                        }
+                    });
+                }
+            }
+        } catch (err) {
+            console.warn('FAB haptic setup failed:', err);
+        }
     }
     
     async setupUserSession() {
         // Get user session from localStorage or create new one
         this.userId = localStorage.getItem('thesidia_user_id');
         this.sessionId = localStorage.getItem('thesidia_session_id');
+        
+        // AUTHENTICATION DISABLED: Auto-create session if none exists
+        // No redirect to auth page - allow anonymous access
         
         try {
             const response = await fetch('/api/user/session', {
@@ -321,17 +625,92 @@ class ThesidiaApp {
                 })
             });
             
-            const userData = await response.json();
-            this.userId = userData.user_id;
-            this.sessionId = userData.session_id;
+            if (!response.ok) {
+                // Session invalid - create new anonymous session instead of redirecting
+                console.log('Session invalid, creating new anonymous session');
+                this.userId = null;
+                this.sessionId = null;
+                // Try again with null values to create new session
+                const retryResponse = await fetch('/api/user/session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: null,
+                        session_id: null
+                    })
+                });
+                
+                if (retryResponse.ok) {
+                    const userData = await retryResponse.json();
+                    this.userId = userData.user_id;
+                    this.sessionId = userData.session_id;
+                    localStorage.setItem('thesidia_user_id', this.userId);
+                    localStorage.setItem('thesidia_session_id', this.sessionId);
+                    console.log('Created new anonymous session:', { user_id: this.userId, session_id: this.sessionId });
+                } else {
+                    // If session creation fails, continue without session (graceful degradation)
+                    console.warn('Could not create session, continuing without authentication');
+                    this.userId = 'anonymous_' + Date.now();
+                    this.sessionId = 'session_' + Date.now();
+                }
+            } else {
+                const userData = await response.json();
+                this.userId = userData.user_id;
+                this.sessionId = userData.session_id;
+                
+                // Store in localStorage
+                localStorage.setItem('thesidia_user_id', this.userId);
+                localStorage.setItem('thesidia_session_id', this.sessionId);
+            }
             
-            // Store in localStorage
-            localStorage.setItem('thesidia_user_id', this.userId);
-            localStorage.setItem('thesidia_session_id', this.sessionId);
+            // Load user profile (if available)
+            await this.loadUserProfile();
             
             console.log('User session initialized:', { user_id: this.userId, session_id: this.sessionId });
         } catch (error) {
             console.error('Error setting up user session:', error);
+            // AUTHENTICATION DISABLED: Continue without session instead of redirecting
+            // Create fallback anonymous session
+            if (!this.userId || !this.sessionId) {
+                this.userId = 'anonymous_' + Date.now();
+                this.sessionId = 'session_' + Date.now();
+                localStorage.setItem('thesidia_user_id', this.userId);
+                localStorage.setItem('thesidia_session_id', this.sessionId);
+                console.log('Created fallback anonymous session:', { user_id: this.userId, session_id: this.sessionId });
+            }
+        }
+    }
+    
+    async loadUserProfile() {
+        if (!this.userId) return;
+        
+        try {
+            // Try to get profile from settings
+            const response = await fetch(`/api/settings?user_id=${this.userId}&session_id=${this.sessionId}`);
+            if (response.ok) {
+                const settings = await response.json();
+                const account = settings.get?.('account', {}) || settings.account || {};
+                
+                // Update sidebar profile if elements exist
+                const profileName = document.getElementById('sidebarProfileName');
+                const profileTag = document.getElementById('sidebarProfileTag');
+                
+                if (profileName) {
+                    profileName.textContent = account.display_name || account.username || 'User';
+                }
+                if (profileTag) {
+                    profileTag.textContent = account.username ? `@${account.username}` : '@user';
+                }
+            }
+        } catch (error) {
+            console.error('Error loading user profile:', error);
+            // Set defaults
+            const profileName = document.getElementById('sidebarProfileName');
+            const profileTag = document.getElementById('sidebarProfileTag');
+            if (profileName) profileName.textContent = 'User';
+            if (profileTag) profileTag.textContent = '@user';
         }
     }
     
@@ -447,8 +826,18 @@ class ThesidiaApp {
                 }
             });
             
-            // Auto-resize textarea
-            promptInput.addEventListener('input', () => this.autoResizeTextarea(promptInput));
+            // Auto-resize textarea and update cursor placeholder
+            promptInput.addEventListener('input', () => {
+                this.autoResizeTextarea(promptInput);
+                this.updateCursorPlaceholder();
+            });
+            
+            // Update cursor placeholder on focus/blur
+            promptInput.addEventListener('focus', () => this.updateCursorPlaceholder());
+            promptInput.addEventListener('blur', () => this.updateCursorPlaceholder());
+            
+            // Initial cursor placeholder state
+            this.updateCursorPlaceholder();
             
             // Set active nav item based on current page
             this.setActiveNavItem();
@@ -624,57 +1013,12 @@ class ThesidiaApp {
                 this.handleFileUpload(e.target.files, attachedFiles);
             });
         }
+
+        // Control Panel
+        this.setupControlPanel();
         
         // Format selector (HUD controls)
-        const formatNatural = document.getElementById('formatNatural');
-        const formatStructured = document.getElementById('formatStructured');
-        const formatDisplay = document.getElementById('formatDisplay');
-        if (formatNatural && formatStructured) {
-            formatNatural.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.currentFormat = 'natural';
-                formatNatural.classList.add('active');
-                formatStructured.classList.remove('active');
-                if (formatDisplay) formatDisplay.textContent = 'NAT';
-            });
-            formatStructured.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.currentFormat = 'structured';
-                formatStructured.classList.add('active');
-                formatNatural.classList.remove('active');
-                if (formatDisplay) formatDisplay.textContent = 'STR';
-            });
-        }
-        
-        // Research depth controls (HUD buttons)
-        const depthButtons = document.querySelectorAll('.hud-control-btn[data-depth]');
-        const depthDisplay = document.getElementById('depthDisplay');
-        depthButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.researchDepth = parseInt(btn.dataset.depth);
-                depthButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                if (depthDisplay) depthDisplay.textContent = this.researchDepth.toString();
-            });
-        });
-        
-        // Initialize HUD displays
-        if (formatDisplay) formatDisplay.textContent = this.currentFormat === 'natural' ? 'NAT' : 'STR';
-        if (depthDisplay) depthDisplay.textContent = this.researchDepth.toString();
-        
-        // Character count tracking
-        const charDisplay = document.getElementById('charDisplay');
-        const promptInput = document.getElementById('promptInput');
-        if (promptInput && charDisplay) {
-            promptInput.addEventListener('input', () => {
-                const count = promptInput.value.length;
-                charDisplay.textContent = count > 999 ? '999+' : count.toString();
-            });
-        }
+        // Removed all format/depth controls - Thesidia determines these automatically
         
         // Status display updates
         const statusDisplay = document.getElementById('statusDisplay');
@@ -761,6 +1105,7 @@ class ThesidiaApp {
         // Clear input
         promptInput.value = '';
         promptInput.style.height = 'auto';
+        this.updateCursorPlaceholder();
         
         // Add user message
         this.addMessage('user', message);
@@ -774,6 +1119,7 @@ class ThesidiaApp {
         if (this.updateHUDStatus) this.updateHUDStatus('processing');
         
         try {
+            console.log('Calling Thesidia API with message:', message);
             // Send to backend (streaming handles UI updates)
             await this.callThesidiaAPI(message);
             
@@ -798,12 +1144,39 @@ class ThesidiaApp {
         
         // Format and depth are now controlled by UI, not auto-detection
         
+        // Preserve this context for nested callbacks
+        const self = this;
+        
         // Use streaming by default
         return new Promise((resolve, reject) => {
+            // Generate message ID for tracking
+            const messageId = this.generateMessageId();
+            
+            // Initialize thinking steps storage for this message
+            if (!self.thinkingSteps[messageId]) {
+                self.thinkingSteps[messageId] = [];
+            }
+            
+            // Use streaming by default
+            const useStreaming = true; // Enable streaming for better UX
+            
+            // Store query data for regeneration
+            const queryData = {
+                query: sanitizedMessage,
+                params: {
+                    conversation_id: this.currentConversationId,
+                    show_thinking: this.showThinking,
+                    stream: useStreaming,
+                    user_id: this.userId,
+                    session_id: this.sessionId
+                }
+            };
+            
             // Create message element for streaming
             const messagesContainer = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message thesidia';
+            messageDiv.setAttribute('data-message-id', messageId);
             
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
@@ -815,6 +1188,14 @@ class ThesidiaApp {
             messageDiv.appendChild(contentDiv);
             messagesContainer.appendChild(messageDiv);
             
+            // Store message data for regeneration
+            this.messageStore.set(messageId, {
+                query: sanitizedMessage,
+                params: queryData.params,
+                timestamp: new Date().toISOString(),
+                type: 'thesidia'
+            });
+            
             // Progress indicator - Better styling
             const progressDiv = document.createElement('div');
             progressDiv.className = 'progress-indicator';
@@ -822,7 +1203,26 @@ class ThesidiaApp {
             progressDiv.style.marginTop = '12px';
             messageDiv.appendChild(progressDiv);
             
-            // Thinking indicator (if enabled)
+            // Cool reasoning visualization (always show, but styled differently)
+            const reasoningDiv = document.createElement('div');
+            reasoningDiv.className = 'reasoning-visualization';
+            reasoningDiv.style.display = 'none';
+            reasoningDiv.innerHTML = `
+                <div class="reasoning-container">
+                    <div class="reasoning-thoughts">
+                        <div class="reasoning-thought active">Analyzing query...</div>
+                        <div class="reasoning-thought">Routing to best system...</div>
+                        <div class="reasoning-thought">Gathering context...</div>
+                        <div class="reasoning-thought">Synthesizing response...</div>
+                    </div>
+                    <div class="reasoning-progress">
+                        <div class="reasoning-bar"></div>
+                    </div>
+                </div>
+            `;
+            messageDiv.appendChild(reasoningDiv);
+            
+            // Thinking indicator (if enabled - for detailed steps)
             let thinkingDiv = null;
             if (this.showThinking) {
                 thinkingDiv = document.createElement('div');
@@ -833,19 +1233,14 @@ class ThesidiaApp {
             }
             
             // Use fetch - handle both streaming and non-streaming
-            const useStreaming = true; // Enable streaming for better UX
-            const headers = {
-                'Content-Type': 'application/json'
-            };
-            
-            // Add API key if configured
-            if (this.apiKey) {
-                headers['X-API-Key'] = this.apiKey;
-            }
-            
-            fetch(this.apiEndpoint, {
+            console.log('Making fetch request to:', this.apiEndpoint, { message: sanitizedMessage });
+            // Abort + timeout protection (prevents hanging UI on stalled streams)
+            const controller = new AbortController();
+            const timeoutMs = 120000; // 2 minutes
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            const doFetch = (attempt = 0) => fetch(this.apiEndpoint, {
                 method: 'POST',
-                headers: headers,
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -853,12 +1248,13 @@ class ThesidiaApp {
                     message: sanitizedMessage,
                     conversation_id: this.currentConversationId,
                     show_thinking: this.showThinking,
-                    format: this.currentFormat, // 'natural' or 'structured'
-                    research_depth: this.researchDepth, // 1=Quick, 2=Deep, 3=Forensic
                     stream: useStreaming,
                     user_id: this.userId,
-                    session_id: this.sessionId
-                })
+                    session_id: this.sessionId,
+                    fast_mode: this.fastMode,  // true = fast (regular search), false = deep research
+                    research_depth: this.fastMode ? 1 : 3  // 1 = quick, 3 = forensic
+                }),
+                signal: controller.signal
             }).then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -879,13 +1275,21 @@ class ThesidiaApp {
                         reader.read().then(({ done, value }) => {
                             if (done) {
                                 // Complete
-                                this.hideTypingIndicator();
+                                self.hideTypingIndicator();
                                 if (progressDiv.parentNode) {
                                     progressDiv.style.display = 'none';
                                 }
-                                this.scrollToBottom();
-                                this.saveConversation(sanitizedMessage, fullResponse);
+                                self.scrollToBottom();
+                                self.saveConversation(sanitizedMessage, fullResponse);
+                                
+                                // Add action buttons after streaming completes
+                                // Only add if message content exists
+                                if (fullResponse && fullResponse.trim().length > 0) {
+                                    self.addMessageActions(messageDiv, 'thesidia', fullResponse, messageId, queryData);
+                                }
+                                
                                 resolve(fullResponse);
+                                clearTimeout(timeoutId);
                                 return;
                             }
                             
@@ -906,6 +1310,19 @@ class ThesidiaApp {
                                         const data = JSON.parse(line.substring(6));
                                         
                                         if (data.phase === 'progress' || currentEvent === 'progress') {
+                                            // Show cool reasoning visualization
+                                            if (reasoningDiv) {
+                                                reasoningDiv.style.display = 'block';
+                                                const thoughts = reasoningDiv.querySelectorAll('.reasoning-thought');
+                                                const thoughtIndex = Math.min(Math.floor(data.progress / 25), thoughts.length - 1);
+                                                thoughts.forEach((thought, idx) => {
+                                                    thought.classList.toggle('active', idx === thoughtIndex);
+                                                });
+                                                const progressBar = reasoningDiv.querySelector('.reasoning-bar');
+                                                if (progressBar) {
+                                                    progressBar.style.width = `${data.progress}%`;
+                                                }
+                                            }
                                             // Update progress indicator with better visibility
                                             progressDiv.style.display = 'block';
                                             progressDiv.textContent = `${data.message} (${Math.round(data.progress)}%)`;
@@ -914,26 +1331,52 @@ class ThesidiaApp {
                                         } else if (data.text || currentEvent === 'chunk') {
                                             // Stream text chunk with typing animation
                                             const chunk = data.text || '';
+                                            
+                                            // Hide reasoning visualization when streaming starts
+                                            if (reasoningDiv && chunk.length > 0) {
+                                                reasoningDiv.style.display = 'none';
+                                            }
+                                            
                                             fullResponse += chunk;
                                             
                                             // Update status to streaming
-                                            if (this.updateHUDStatus && chunk.length > 0) {
-                                                this.updateHUDStatus('streaming');
+                                            if (self.updateHUDStatus && chunk.length > 0) {
+                                                self.updateHUDStatus('streaming');
                                             }
                                             
-                                            // Hide progress when streaming starts
-                                            if (chunk.length > 0 && progressDiv.style.display !== 'none') {
-                                                progressDiv.style.display = 'none';
+                                            // Hide progress and reasoning when streaming starts
+                                            if (chunk.length > 0) {
+                                                if (progressDiv.style.display !== 'none') {
+                                                    progressDiv.style.display = 'none';
+                                                }
+                                                if (reasoningDiv && reasoningDiv.style.display !== 'none') {
+                                                    reasoningDiv.style.display = 'none';
+                                                }
                                             }
                                             
                                             // Add chunk to typing queue for smooth character-by-character display
-                                            this.typeText(textElement, chunk, () => {
-                                                this.scrollToBottom();
+                                            self.typeText(textElement, chunk, () => {
+                                                self.scrollToBottom();
                                             });
+                                            
+                                            // Streaming TTS: Read chunk as it arrives (if enabled)
+                                            if (self.ttsEnabled && self.speakChunk) {
+                                                self.speakChunk(chunk, messageId);
+                                            }
                                         } else if (currentEvent === 'thinking' || data.thinking) {
-                                            // Show thinking steps
-                                            if (this.showThinking) {
-                                                this.displayThinkingStep(data.step || 'thinking', data.message || data.thinking);
+                                            // Store thinking step for sources panel (but don't display inline unless showThinking is ON)
+                                            if (!self.thinkingSteps[messageId]) {
+                                                self.thinkingSteps[messageId] = [];
+                                            }
+                                            self.thinkingSteps[messageId].push({
+                                                step: data.step || 'thinking',
+                                                message: data.message || data.thinking,
+                                                timestamp: new Date().toISOString()
+                                            });
+                                            
+                                            // Only show thinking steps if explicitly enabled
+                                            if (self.showThinking) {
+                                                self.displayThinkingStep(data.step || 'thinking', data.message || data.thinking);
                                                 
                                                 // Also show inline thinking indicator
                                                 if (thinkingDiv) {
@@ -941,14 +1384,33 @@ class ThesidiaApp {
                                                     thinkingDiv.textContent = `${data.message || data.thinking}`;
                                                 }
                                             }
+                                            // Otherwise, just update reasoning visualization
+                                            else if (reasoningDiv && data.message) {
+                                                const thoughts = reasoningDiv.querySelectorAll('.reasoning-thought');
+                                                if (thoughts.length > 0) {
+                                                    // Update active thought with actual message
+                                                    const activeThought = reasoningDiv.querySelector('.reasoning-thought.active');
+                                                    if (activeThought) {
+                                                        activeThought.textContent = data.message.substring(0, 50) + '...';
+                                                    }
+                                                }
+                                            }
                                         } else if (data.phase === 'complete' || currentEvent === 'complete') {
                                             // Complete
                                             progressDiv.style.display = 'none';
-                                            this.hideTypingIndicator();
-                                            if (this.updateHUDStatus) this.updateHUDStatus('ready');
+                                            self.hideTypingIndicator();
+                                            if (self.updateHUDStatus) self.updateHUDStatus('ready');
+                                            
+                                            // Add action buttons after completion
+                                            if (fullResponse && fullResponse.trim().length > 0) {
+                                                self.addMessageActions(messageDiv, 'thesidia', fullResponse, messageId, queryData);
+                                            }
                                         } else if (data.error || currentEvent === 'error') {
-                                            // Error
-                                            throw new Error(data.message || data.error || 'Unknown error');
+                                            // Error - sanitize error message to prevent code injection
+                                            const errorMsg = data.message || data.error || 'Unknown error';
+                                            // Remove any Python variable names that might leak through
+                                            const sanitizedError = String(errorMsg).replace(/user_memory_context|NameError|is not defined/g, 'Server error');
+                                            throw new Error(sanitizedError);
                                         }
                                     } catch (e) {
                                         console.error('Error parsing SSE data:', e, line);
@@ -960,11 +1422,18 @@ class ThesidiaApp {
                             readChunk();
                         }).catch(err => {
                             console.error('Streaming error:', err);
-                            this.hideTypingIndicator();
+                            self.hideTypingIndicator();
                             if (progressDiv.parentNode) {
                                 progressDiv.style.display = 'none';
                             }
+                            // Retry once on transient network failures
+                            if (attempt < 1 && (err.name === 'AbortError' || /network|fetch/i.test(String(err)))) {
+                                const backoff = 500 * (attempt + 1);
+                                setTimeout(() => doFetch(attempt + 1).then(() => {}).catch(reject), backoff);
+                                return;
+                            }
                             reject(err);
+                            clearTimeout(timeoutId);
                         });
                     };
                     
@@ -972,27 +1441,41 @@ class ThesidiaApp {
                 } else {
                     // Handle non-streaming JSON response
                     return response.json().then(data => {
-                        this.hideTypingIndicator();
+                        self.hideTypingIndicator();
                         if (progressDiv.parentNode) {
                             progressDiv.style.display = 'none';
                         }
                         
                         const responseText = data.response || data.message || 'No response';
                         textElement.textContent = responseText;
+                        
+                        // Add action buttons for non-streaming response
+                        this.addMessageActions(messageDiv, 'thesidia', responseText, messageId, queryData);
+                        
                         this.scrollToBottom();
                         this.saveConversation(sanitizedMessage, responseText);
                         resolve(responseText);
+                        clearTimeout(timeoutId);
                     });
                 }
             }).catch(err => {
                 console.error('Fetch error:', err);
-                this.hideTypingIndicator();
+                self.hideTypingIndicator();
                 if (progressDiv.parentNode) {
                     progressDiv.style.display = 'none';
                 }
                 textElement.textContent = `Error: ${err.message}`;
+                // Retry once on transient failures
+                if (attempt < 1 && (err.name === 'AbortError' || /network|fetch/i.test(String(err)))) {
+                    const backoff = 500 * (attempt + 1);
+                    setTimeout(() => doFetch(attempt + 1).then(() => {}).catch(reject), backoff);
+                    return;
+                }
                 reject(err);
+                clearTimeout(timeoutId);
             });
+            // Kick off attempt 0
+            doFetch(0).catch(reject);
         });
     }
     
@@ -1007,8 +1490,6 @@ class ThesidiaApp {
                 message: message,
                 conversation_id: this.currentConversationId,
                 show_thinking: this.showThinking,
-                format: this.currentFormat, // 'natural' or 'structured'
-                research_depth: this.researchDepth, // 1=Quick, 2=Deep, 3=Forensic
                 stream: false,
                 user_id: this.userId,
                 session_id: this.sessionId
@@ -1140,10 +1621,16 @@ class ThesidiaApp {
         }, speed);
     }
     
-    addMessage(type, content) {
+    addMessage(type, content, messageId = null, queryData = null) {
         const messagesContainer = document.getElementById('messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}`;
+        
+        // Generate message ID if not provided
+        if (!messageId) {
+            messageId = this.generateMessageId();
+        }
+        messageDiv.setAttribute('data-message-id', messageId);
         
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
@@ -1152,8 +1639,35 @@ class ThesidiaApp {
         const formattedContent = this.formatMessage(content);
         contentDiv.innerHTML = formattedContent;
         
+        // Set up event delegation for action suggestion buttons
+        const actionButtons = contentDiv.querySelectorAll('.action-suggestion-btn');
+        actionButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = btn.getAttribute('data-action');
+                if (action) {
+                    this.handleActionSuggestion(action);
+                }
+            });
+        });
+        
         messageDiv.appendChild(contentDiv);
+        
+        // Add action buttons for Thesidia messages
+        if (type === 'thesidia') {
+            this.addMessageActions(messageDiv, type, content, messageId, queryData);
+        }
+        
         messagesContainer.appendChild(messageDiv);
+        
+        // Store message data for regeneration (only for Thesidia responses)
+        if (type === 'thesidia' && queryData) {
+            this.messageStore.set(messageId, {
+                query: queryData.query,
+                params: queryData.params,
+                timestamp: new Date().toISOString(),
+                type: type
+            });
+        }
         
         // Scroll to bottom
         this.scrollToBottom();
@@ -1165,7 +1679,259 @@ class ThesidiaApp {
         }
     }
     
+    generateMessageId() {
+        return 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+    
+    addMessageActions(messageDiv, messageType, content, messageId, queryData) {
+        // Check if actions already exist to prevent duplication
+        const existingActions = messageDiv.querySelector('.message-actions');
+        if (existingActions) {
+            existingActions.remove(); // Remove old actions before adding new ones
+        }
+        
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'message-actions';
+        
+        // Regenerate button (only if we have query data)
+        if (queryData) {
+            const regenerateBtn = document.createElement('button');
+            regenerateBtn.className = 'message-action';
+            regenerateBtn.textContent = 'regenerate';
+            regenerateBtn.setAttribute('aria-label', 'Regenerate response');
+            regenerateBtn.onclick = () => this.regenerateMessage(messageId);
+            actionsDiv.appendChild(regenerateBtn);
+        }
+        
+        // Sources button (if sources exist)
+        const sourcesData = this.extractSourcesData(content, messageId);
+        if (sourcesData.hasSources) {
+            const sourcesBtn = document.createElement('button');
+            sourcesBtn.className = 'message-action sources-action';
+            sourcesBtn.textContent = `sources (${sourcesData.citations.length})`;
+            sourcesBtn.setAttribute('aria-label', 'View sources');
+            sourcesBtn.onclick = () => this.showSourcesPanel(messageId, sourcesData);
+            actionsDiv.appendChild(sourcesBtn);
+        }
+        
+        // Read button - play message with selected voice
+        const readBtn = document.createElement('button');
+        readBtn.className = 'message-action read-action';
+        readBtn.textContent = 'read';
+        readBtn.setAttribute('aria-label', 'Read message aloud');
+        const self = this; // Preserve context
+        readBtn.onclick = function() {
+            console.log('Read button clicked', { hasSelf: !!self, hasReadMessage: !!(self && self.readMessage) });
+            // Direct call - function should exist
+            if (self) {
+                try {
+                    self.readMessage(content, messageId, readBtn);
+                } catch (error) {
+                    console.error('Error calling readMessage:', error);
+                    alert(`Error: ${error.message}. Please check console for details.`);
+                }
+            } else {
+                console.error('self is not available');
+                alert('Read function not available. Please refresh the page.');
+            }
+        };
+        actionsDiv.appendChild(readBtn);
+        
+        // Copy button
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'message-action';
+        copyBtn.textContent = 'copy';
+        copyBtn.setAttribute('aria-label', 'Copy message');
+        copyBtn.onclick = () => this.copyMessage(content);
+        actionsDiv.appendChild(copyBtn);
+        
+        // Share button
+        const shareBtn = document.createElement('button');
+        shareBtn.className = 'message-action';
+        shareBtn.textContent = 'share';
+        shareBtn.setAttribute('aria-label', 'Share message');
+        shareBtn.onclick = (e) => this.shareMessage(content, e);
+        actionsDiv.appendChild(shareBtn);
+        
+        messageDiv.appendChild(actionsDiv);
+    }
+    
+    saveMessage(messageId, content, event = null) {
+        // Save is already handled by saveConversation, but we can show feedback
+        const btn = event?.target || document.querySelector(`[data-message-id="${messageId}"] .message-action`);
+        if (btn) {
+            const originalText = btn.textContent;
+            btn.textContent = 'saved';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+        // Note: Actual saving happens via saveConversation() which is called after message completion
+    }
+    
+    async regenerateMessage(messageId) {
+        const messageData = this.messageStore.get(messageId);
+        if (!messageData) {
+            console.error('Message data not found for regeneration');
+            return;
+        }
+        
+        const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
+        if (!messageDiv) {
+            console.error('Message element not found');
+            return;
+        }
+        
+        // Show loading state
+        const regenerateBtn = messageDiv.querySelector('.message-action:nth-of-type(2)');
+        if (regenerateBtn) {
+            regenerateBtn.textContent = 'regenerating...';
+            regenerateBtn.disabled = true;
+        }
+        
+        // Get original query and params
+        const originalQuery = messageData.query;
+        const originalParams = messageData.params || {};
+        
+        // Call API again with same parameters
+        try {
+            await this.callThesidiaAPI(originalQuery);
+            // The new message will be added by callThesidiaAPI
+        } catch (error) {
+            console.error('Regeneration error:', error);
+            if (regenerateBtn) {
+                regenerateBtn.textContent = 'regenerate';
+                regenerateBtn.disabled = false;
+            }
+        }
+    }
+    
+    async copyMessage(content, event = null) {
+        try {
+            // Strip HTML tags for plain text copy
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            const plainText = tempDiv.textContent || tempDiv.innerText || content;
+            
+            await navigator.clipboard.writeText(plainText);
+            
+            // Show feedback
+            const btn = event?.target || document.activeElement;
+            if (btn && btn.classList.contains('message-action')) {
+                const originalText = btn.textContent;
+                btn.textContent = 'copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }
+        } catch (err) {
+            console.error('Failed to copy:', err);
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = content.replace(/<[^>]*>/g, '');
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                const btn = event?.target;
+                if (btn) {
+                    const originalText = btn.textContent;
+                    btn.textContent = 'copied!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                }
+            } catch (e) {
+                console.error('Fallback copy failed:', e);
+            }
+            document.body.removeChild(textArea);
+        }
+    }
+    
+    async shareMessage(content, event = null) {
+        // Strip HTML for sharing
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        const plainText = tempDiv.textContent || tempDiv.innerText || content;
+        
+        const shareData = {
+            title: 'Thesidia Response',
+            text: plainText.substring(0, 1000), // Limit length
+            url: window.location.href
+        };
+        
+        try {
+            if (navigator.share && navigator.share.canShare && navigator.share.canShare(shareData)) {
+                await navigator.share(shareData);
+            } else {
+                // Fallback: copy shareable link or text
+                const shareUrl = `${window.location.origin}${window.location.pathname}?share=${encodeURIComponent(plainText.substring(0, 200))}`;
+                await navigator.clipboard.writeText(shareUrl);
+                
+                const btn = event?.target || document.activeElement;
+                if (btn && btn.classList.contains('message-action')) {
+                    const originalText = btn.textContent;
+                    btn.textContent = 'link copied!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                }
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error('Share failed:', err);
+                // Fallback to copy
+                this.copyMessage(content, null);
+            }
+        }
+    }
+    
     formatMessage(content) {
+        // Remove leaked "General Framework" blocks (including markdown variants) - strip to end of message
+        content = content.replace(/\*{0,2}\s*General Framework:\s*\*{0,2}[\s\S]*$/gi, '');
+        // Extra safety: remove any remaining lines if they survive partial formatting
+        content = content.replace(/\*{0,2}\s*Foundation:\s*\*{0,2}.*?\n/gi, '');
+        content = content.replace(/\*{0,2}\s*Practice:\s*\*{0,2}.*?\n/gi, '');
+        content = content.replace(/\*{0,2}\s*Learning:\s*\*{0,2}.*?\n/gi, '');
+        content = content.replace(/\*{0,2}\s*Growth:\s*\*{0,2}.*?\n/gi, '');
+        
+        // Convert "I can also" section to clickable action buttons
+        const iCanAlsoMatch = content.match(/\*\*I can also:\*\*([\s\S]*?)(?=\n\n|$)/i);
+        if (iCanAlsoMatch) {
+            const actionsText = iCanAlsoMatch[1];
+            
+            // Support both formats:
+            // - multiline: "1. foo\n2. bar"
+            // - single line: "1. foo 2. bar"
+            let actions = [];
+            const numberedMatches = [...actionsText.matchAll(/(\d+\.\s*[^\d\n][^\n]*?)(?=\s+\d+\.|$)/g)];
+            if (numberedMatches.length > 0) {
+                actions = numberedMatches
+                    .map(m => m[1].replace(/^\d+\.\s*/, '').trim())
+                    .filter(Boolean);
+            } else {
+                const actionLines = actionsText.split('\n').filter(line => line.trim());
+                actions = actionLines.map(line => {
+                    const actionText = line.replace(/^\d+\.\s*/, '').replace(/^[-•]\s*/, '').trim();
+                    return actionText || null;
+                }).filter(Boolean);
+            }
+            
+            if (actions.length > 0) {
+                // Replace the text section with clickable buttons
+                const actionsHtml = actions.map(action => {
+                    const escapedAction = this.escapeHtml(action);
+                    // Use data attribute and event delegation instead of inline onclick
+                    return `<button class="action-suggestion-btn" data-action="${escapedAction.replace(/"/g, '&quot;')}">${escapedAction}</button>`;
+                }).join('');
+                
+                content = content.replace(
+                    /\*\*I can also:\*\*[\s\S]*?(?=\n\n|$)/i,
+                    `<div class="action-suggestions"><strong>I can also:</strong><div class="action-suggestions-list">${actionsHtml}</div></div>`
+                );
+            }
+        }
+        
         // Simple formatting - convert code blocks, preserve line breaks
         return content
             .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
@@ -1173,6 +1939,19 @@ class ThesidiaApp {
             .replace(/\n/g, '<br>')
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    }
+    
+    handleActionSuggestion(actionText) {
+        // When user clicks an action suggestion, send it as a new message
+        const promptInput = document.getElementById('promptInput');
+        if (promptInput) {
+            promptInput.value = actionText;
+            // Trigger send
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn && !sendBtn.disabled) {
+                sendBtn.click();
+            }
+        }
     }
     
     showTypingIndicator() {
@@ -1431,6 +2210,35 @@ class ThesidiaApp {
         localStorage.setItem('thesidia_conversations', JSON.stringify(this.conversations));
         
         this.updateConversationsList();
+
+        // Best-effort server sync (non-blocking)
+        this.syncConversationToServer(conversation).catch(() => {});
+    }
+
+    async syncConversationToServer(conversation) {
+        // Server-side persistence (SQLite default). Safe fallback to local-only if server doesn't support it.
+        try {
+            const resp = await fetch(`/api/conversations/${encodeURIComponent(conversation.id)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: this.userId,
+                    session_id: this.sessionId,
+                    title: conversation.title,
+                    preview: conversation.preview,
+                    messages: (conversation.messages || []).map(m => ({
+                        type: m.type,
+                        content: m.content,
+                        timestamp: Date.now()
+                    }))
+                })
+            });
+            if (!resp.ok) return;
+            const data = await resp.json().catch(() => ({}));
+            if (!data.ok) return;
+        } catch (e) {
+            // Silent: localStorage remains the source of truth if server is unreachable
+        }
     }
     
     loadConversations() {
@@ -1442,6 +2250,33 @@ class ThesidiaApp {
             }
         } catch (error) {
             console.error('Error loading conversations:', error);
+        }
+    }
+
+    async loadConversationsFromServer() {
+        // Prefer server list when available; fall back to localStorage.
+        try {
+            const params = new URLSearchParams();
+            if (this.userId) params.set('user_id', this.userId);
+            if (this.sessionId) params.set('session_id', this.sessionId);
+            params.set('limit', '50');
+            const resp = await fetch(`/api/conversations?${params.toString()}`);
+            if (!resp.ok) return false;
+            const data = await resp.json().catch(() => null);
+            if (!data || !Array.isArray(data.conversations)) return false;
+            // Server list is lightweight; we keep it in-memory/local to drive the sidebar.
+            this.conversations = data.conversations.map(c => ({
+                id: c.id,
+                title: c.title,
+                preview: c.preview,
+                timestamp: c.timestamp,
+                messages: [] // loaded on demand
+            }));
+            localStorage.setItem('thesidia_conversations', JSON.stringify(this.conversations));
+            this.updateConversationsList();
+            return true;
+        } catch (e) {
+            return false;
         }
     }
     
@@ -1470,17 +2305,53 @@ class ThesidiaApp {
     loadConversation(conversationId) {
         const conversation = this.conversations.find(c => c.id === conversationId);
         if (!conversation) return;
-        
+
         this.currentConversationId = conversationId;
-        const messagesContainer = document.getElementById('messages');
-        messagesContainer.innerHTML = '';
-        
-        conversation.messages.forEach(msg => {
-            this.addMessage(msg.type, msg.content);
+
+        // If we have messages locally, render immediately; otherwise pull from server.
+        if (conversation.messages && conversation.messages.length > 0) {
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+            conversation.messages.forEach(msg => this.addMessage(msg.type, msg.content));
+            this.updateConversationsList();
+            this.closeLeftSidebar();
+            return;
+        }
+
+        this.loadConversationFromServer(conversationId).then(loaded => {
+            if (!loaded) {
+                // Fallback: render what we have (usually none)
+                const messagesContainer = document.getElementById('messages');
+                messagesContainer.innerHTML = '';
+                this.addMessage('thesidia', 'Could not load this conversation from server.');
+            }
+            this.updateConversationsList();
+            this.closeLeftSidebar();
         });
-        
-        this.updateConversationsList();
-        this.closeLeftSidebar();
+    }
+
+    async loadConversationFromServer(conversationId) {
+        try {
+            const params = new URLSearchParams();
+            if (this.userId) params.set('user_id', this.userId);
+            if (this.sessionId) params.set('session_id', this.sessionId);
+            const resp = await fetch(`/api/conversations/${encodeURIComponent(conversationId)}?${params.toString()}`);
+            if (!resp.ok) return false;
+            const data = await resp.json().catch(() => null);
+            if (!data || !Array.isArray(data.messages)) return false;
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+            data.messages.forEach(msg => this.addMessage(msg.type, msg.content));
+            // Cache messages in local list
+            const idx = this.conversations.findIndex(c => c.id === conversationId);
+            if (idx >= 0) {
+                this.conversations[idx].messages = data.messages.map(m => ({ type: m.type, content: m.content }));
+                localStorage.setItem('thesidia_conversations', JSON.stringify(this.conversations));
+            }
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
     
     escapeHtml(text) {
@@ -1489,9 +2360,857 @@ class ThesidiaApp {
         return div.innerHTML;
     }
     
+    // Sources Panel - Slide up from bottom
+    extractSourcesData(content, messageId = null) {
+        /**Extract sources, citations, and thinking steps from response*/
+        const sourcesData = {
+            hasSources: false,
+            citations: [],
+            thinkingSteps: []
+        };
+        
+        // Extract ::SOURCES:: section
+        const sourcesMatch = content.match(/::SOURCES::\s*\n([\s\S]*?)(?=\n\n|$)/);
+        if (sourcesMatch) {
+            const sourcesText = sourcesMatch[1].trim();
+            const citationLines = sourcesText.split('\n').filter(line => line.trim());
+            
+            sourcesData.citations = citationLines.map(line => {
+                const match = line.match(/\[(\d+)\]\s*(.+?)\s*-\s*(.+)/);
+                if (match) {
+                    return {
+                        number: match[1],
+                        title: match[2].trim(),
+                        url: match[3].trim()
+                    };
+                }
+                return {
+                    number: null,
+                    title: line.trim(),
+                    url: null
+                };
+            });
+            
+            sourcesData.hasSources = sourcesData.citations.length > 0;
+        }
+        
+        // Get thinking steps if stored
+        if (messageId && this.thinkingSteps && this.thinkingSteps[messageId]) {
+            sourcesData.thinkingSteps = this.thinkingSteps[messageId];
+            if (sourcesData.thinkingSteps.length > 0) {
+                sourcesData.hasSources = true;
+            }
+        }
+        
+        return sourcesData;
+    }
+    
+    showSourcesPanel(messageId, sourcesData) {
+        /**Show slide-up panel from bottom with sources, citations, thinking steps*/
+        // Remove existing panel
+        const existingPanel = document.getElementById('sources-panel');
+        if (existingPanel) {
+            existingPanel.remove();
+        }
+        
+        // Create panel
+        const panel = document.createElement('div');
+        panel.id = 'sources-panel';
+        panel.className = 'sources-panel';
+        
+        const panelContent = document.createElement('div');
+        panelContent.className = 'sources-panel-content';
+        
+        // Header
+        const header = document.createElement('div');
+        header.className = 'sources-panel-header';
+        header.innerHTML = `
+            <h3>Sources & Citations</h3>
+            <button class="sources-panel-close" aria-label="Close">×</button>
+        `;
+        panelContent.appendChild(header);
+        
+        // Body
+        const body = document.createElement('div');
+        body.className = 'sources-panel-body';
+        
+        // Citations
+        if (sourcesData.citations && sourcesData.citations.length > 0) {
+            const citationsSection = document.createElement('div');
+            citationsSection.className = 'sources-section';
+            citationsSection.innerHTML = '<h4>Citations</h4>';
+            
+            const citationsList = document.createElement('div');
+            citationsList.className = 'sources-list';
+            
+            sourcesData.citations.forEach((citation, index) => {
+                const item = document.createElement('div');
+                item.className = 'source-item';
+                
+                if (citation.url) {
+                    item.innerHTML = `
+                        <div class="source-number">${citation.number || index + 1}</div>
+                        <div class="source-content">
+                            <a href="${citation.url}" target="_blank" rel="noopener" class="source-link">${this.escapeHtml(citation.title)}</a>
+                            <div class="source-url">${this.escapeHtml(citation.url)}</div>
+                        </div>
+                    `;
+                } else {
+                    item.innerHTML = `
+                        <div class="source-number">${citation.number || index + 1}</div>
+                        <div class="source-content">
+                            <div class="source-title">${this.escapeHtml(citation.title)}</div>
+                        </div>
+                    `;
+                }
+                
+                citationsList.appendChild(item);
+            });
+            
+            citationsSection.appendChild(citationsList);
+            body.appendChild(citationsSection);
+        }
+        
+        // Thinking steps
+        if (sourcesData.thinkingSteps && sourcesData.thinkingSteps.length > 0) {
+            const thinkingSection = document.createElement('div');
+            thinkingSection.className = 'sources-section';
+            thinkingSection.innerHTML = '<h4>Thinking Steps</h4>';
+            
+            const thinkingList = document.createElement('div');
+            thinkingList.className = 'thinking-steps-list';
+            
+            sourcesData.thinkingSteps.forEach((step, index) => {
+                const stepItem = document.createElement('div');
+                stepItem.className = 'thinking-step-item';
+                stepItem.innerHTML = `
+                    <div class="thinking-step-number">${index + 1}</div>
+                    <div class="thinking-step-content">${this.escapeHtml(step.message || step)}</div>
+                `;
+                thinkingList.appendChild(stepItem);
+            });
+            
+            thinkingSection.appendChild(thinkingList);
+            body.appendChild(thinkingSection);
+        }
+        
+        panelContent.appendChild(body);
+        panel.appendChild(panelContent);
+        document.body.appendChild(panel);
+        
+        // Animate slide up
+        setTimeout(() => {
+            panel.classList.add('sources-panel-visible');
+        }, 10);
+        
+        // Close handlers
+        header.querySelector('.sources-panel-close').onclick = () => this.closeSourcesPanel();
+        panel.onclick = (e) => {
+            if (e.target === panel) this.closeSourcesPanel();
+        };
+        
+        const escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+                this.closeSourcesPanel();
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
+    }
+    
+    closeSourcesPanel() {
+        const panel = document.getElementById('sources-panel');
+        if (panel) {
+            panel.classList.remove('sources-panel-visible');
+            setTimeout(() => panel.remove(), 300);
+        }
+    }
+    
+    // TTS (Text-to-Speech) - Streaming voice for Thesidia's replies
+    speakChunk(chunk, messageId) {
+        /**Speak chunk as it streams - real-time TTS following best practices*/
+        if (!this.ttsEnabled || !chunk || !chunk.trim()) {
+            return;
+        }
+        
+        // Stop previous message if switching
+        if (this.currentTTSMessageId && this.currentTTSMessageId !== messageId) {
+            speechSynthesis.cancel();
+            this.ttsQueue = [];
+            this.ttsSpeaking = false;
+        }
+        
+        this.currentTTSMessageId = messageId;
+        
+        // Clean chunk
+        const cleanChunk = this.cleanTextForTTS(chunk);
+        if (!cleanChunk || cleanChunk.trim().length === 0) {
+            return;
+        }
+        
+        // Create utterance for chunk
+        const utterance = new SpeechSynthesisUtterance(cleanChunk);
+        
+        // Use selected voice
+        if (this.ttsVoice) {
+            utterance.voice = this.ttsVoice;
+        }
+        
+        // Optimized for most realistic, natural, expressive speech
+        // Rate: 0.9-0.95 is most natural (research shows slower = more human)
+        utterance.rate = 0.93; // Slightly slower = more natural, less robotic
+        // Pitch: 0.95-1.0 sounds more human (not synthetic)
+        utterance.pitch = 0.98; // Natural pitch for realistic sound
+        utterance.volume = 0.9; // Clear, audible volume
+        utterance.lang = 'en-US';
+        
+        // Queue chunk
+        this.ttsQueue.push(utterance);
+        
+        // Process queue
+        if (!this.ttsSpeaking) {
+            this.processTTSQueue();
+        }
+    }
+    
+    processTTSQueue() {
+        /**Process TTS queue for streaming chunks - best practices for real-time TTS*/
+        if (this.ttsQueue.length === 0) {
+            this.ttsSpeaking = false;
+            return;
+        }
+        
+        this.ttsSpeaking = true;
+        const utterance = this.ttsQueue.shift();
+        this.ttsUtterance = utterance;
+        
+        utterance.onend = () => {
+            this.processTTSQueue();
+        };
+        
+        utterance.onerror = (e) => {
+            console.warn('TTS error:', e);
+            this.processTTSQueue();
+        };
+        
+        speechSynthesis.speak(utterance);
+    }
+    
+    stopTTS() {
+        /**Stop all TTS playback"""
+        speechSynthesis.cancel();
+        this.ttsQueue = [];
+        this.ttsSpeaking = false;
+        this.ttsUtterance = null;
+        this.currentTTSMessageId = null;
+        
+        // Reset all read buttons
+        document.querySelectorAll('.message-action.read-action').forEach(btn => {
+            btn.textContent = 'read';
+            btn.classList.remove('reading');
+        });
+    }
+    
+    readMessage(content, messageId, buttonElement) {
+        /**Read a complete message aloud using selected voice"""
+        console.log('readMessage called', { content: content.substring(0, 50), messageId, hasVoice: !!this.ttsVoice });
+        
+        // Check if speech synthesis is available
+        if (!('speechSynthesis' in window)) {
+            alert('Text-to-speech is not supported in this browser.');
+            return;
+        }
+        
+        // Stop any currently playing TTS
+        if (this.ttsSpeaking || this.ttsQueue.length > 0) {
+            this.stopTTS();
+            // If clicking the same button that's playing, just stop
+            if (buttonElement && buttonElement.classList.contains('reading')) {
+                return;
+            }
+        }
+        
+        // Check if voice is available - try to get it from selector first
+        const voiceSelector = document.getElementById('voiceSelector');
+        if (voiceSelector && voiceSelector.value) {
+            const voices = speechSynthesis.getVoices();
+            const selectedIndex = parseInt(voiceSelector.value);
+            if (voices[selectedIndex]) {
+                this.ttsVoice = voices[selectedIndex];
+                console.log('Voice selected from dropdown:', this.ttsVoice.name);
+            }
+        }
+        
+        // If still no voice, try to initialize
+        if (!this.ttsVoice) {
+            console.log('No voice found, initializing...');
+            this.initializeTTS();
+            if (!this.ttsVoice) {
+                // Try getting any available voice as fallback
+                const voices = speechSynthesis.getVoices();
+                if (voices.length > 0) {
+                    this.ttsVoice = voices[0];
+                    console.log('Using fallback voice:', this.ttsVoice.name);
+                } else {
+                    alert('No voices available. Please select a voice in the Control Panel first.');
+                    return;
+                }
+            }
+        }
+        
+        console.log('Using voice:', this.ttsVoice ? this.ttsVoice.name : 'none');
+        
+        // Extract plain text from HTML content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        let plainText = tempDiv.textContent || tempDiv.innerText || content;
+        
+        // Clean text for TTS
+        plainText = this.cleanTextForTTS(plainText);
+        
+        if (!plainText || plainText.trim().length === 0) {
+            console.warn('No text to read after cleaning');
+            return;
+        }
+        
+        console.log('Text to read:', plainText.substring(0, 100));
+        
+        // Update button state
+        if (buttonElement) {
+            buttonElement.textContent = 'reading...';
+            buttonElement.classList.add('reading');
+        }
+        
+        // Set current message ID
+        this.currentTTSMessageId = messageId;
+        
+        // Create utterance for entire message
+        const utterance = new SpeechSynthesisUtterance(plainText);
+        
+        // Use selected voice
+        if (this.ttsVoice) {
+            utterance.voice = this.ttsVoice;
+        }
+        
+        // Optimized settings for realistic speech
+        utterance.rate = 0.93;
+        utterance.pitch = 0.98;
+        utterance.volume = 0.9;
+        utterance.lang = 'en-US';
+        
+        // Handle completion
+        utterance.onend = () => {
+            console.log('TTS finished');
+            this.ttsSpeaking = false;
+            this.currentTTSMessageId = null;
+            if (buttonElement) {
+                buttonElement.textContent = 'read';
+                buttonElement.classList.remove('reading');
+            }
+        };
+        
+        // Handle errors
+        utterance.onerror = (event) => {
+            console.error('TTS error:', event);
+            alert(`TTS Error: ${event.error}. Please check your system audio settings.`);
+            this.ttsSpeaking = false;
+            this.currentTTSMessageId = null;
+            if (buttonElement) {
+                buttonElement.textContent = 'read';
+                buttonElement.classList.remove('reading');
+            }
+        };
+        
+        // Handle start
+        utterance.onstart = () => {
+            console.log('TTS started');
+        };
+        
+        // Start speaking
+        try {
+            this.ttsSpeaking = true;
+            speechSynthesis.speak(utterance);
+            console.log('speechSynthesis.speak() called');
+        } catch (error) {
+            console.error('Error calling speechSynthesis.speak():', error);
+            alert(`Error: ${error.message}`);
+            this.ttsSpeaking = false;
+            if (buttonElement) {
+                buttonElement.textContent = 'read';
+                buttonElement.classList.remove('reading');
+            }
+        }
+    }
+    
+    initializeTTS() {
+        /**Initialize TTS with most realistic voices prioritized"""
+        if (!('speechSynthesis' in window)) {
+            return false;
+        }
+        
+        const voices = speechSynthesis.getVoices();
+        
+        // Try to load saved voice first
+        const savedVoiceIndex = localStorage.getItem('ttsVoiceIndex');
+        if (savedVoiceIndex !== null && voices[savedVoiceIndex]) {
+            this.ttsVoice = voices[savedVoiceIndex];
+            return true;
+        }
+        
+        // Most realistic voices prioritized (Premium > Neural > Wavenet > Standard)
+        // macOS Premium voices are the MOST realistic available
+        const voicePriority = [
+            // Tier 1: Premium voices (MOST REALISTIC)
+            { pattern: 'premium', exact: false },
+            // Tier 2: Neural voices (VERY REALISTIC)
+            { pattern: 'neural', exact: false },
+            { pattern: 'wavenet', exact: false },
+            // Tier 3: High-quality standard voices
+            { pattern: 'samantha', exact: false },
+            { pattern: 'alex', exact: false },
+            { pattern: 'victoria', exact: false },
+            { pattern: 'aria', exact: false },
+            { pattern: 'jenny', exact: false },
+            { pattern: 'karen', exact: false },
+        ];
+        
+        // Find voice by priority
+        for (const { pattern } of voicePriority) {
+            const voice = voices.find(v => 
+                v.name.toLowerCase().includes(pattern)
+            );
+            if (voice) {
+                this.ttsVoice = voice;
+                return true;
+            }
+        }
+        
+        // Fallback: Any neural/premium/wavenet
+        const fallbackVoice = voices.find(v => {
+            const name = v.name.toLowerCase();
+            return name.includes('neural') || name.includes('premium') || name.includes('wavenet');
+        });
+        if (fallbackVoice) {
+            this.ttsVoice = fallbackVoice;
+            return true;
+        }
+        
+        // Last resort: first available
+        if (voices.length > 0) {
+            this.ttsVoice = voices[0];
+        }
+        
+        return true;
+    }
+    
+    cleanTextForTTS(text) {
+        /**Remove markdown, citations, and formatting for clean TTS output - best practices for AI voice synthesis*/
+        let clean = text;
+        
+        // Remove markdown
+        clean = clean.replace(/\*\*(.*?)\*\*/g, '$1'); // Bold
+        clean = clean.replace(/\*(.*?)\*/g, '$1'); // Italic
+        clean = clean.replace(/`(.*?)`/g, '$1'); // Code
+        clean = clean.replace(/```[\s\S]*?```/g, ''); // Code blocks
+        
+        // Remove citations section
+        clean = clean.replace(/::SOURCES::[\s\S]*/g, '');
+        
+        // Remove URLs
+        clean = clean.replace(/https?:\/\/([^\s]+)/g, '');
+        
+        // Remove special markers
+        clean = clean.replace(/::[A-Z_]+::/g, '');
+        
+        // Clean up whitespace
+        clean = clean.replace(/\n{3,}/g, '\n\n');
+        clean = clean.trim();
+        
+        return clean;
+    }
+    
     autoResizeTextarea(textarea) {
         textarea.style.height = 'auto';
         textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+    }
+    
+    updateCursorPlaceholder() {
+        const promptInput = document.getElementById('promptInput');
+        const cursorPlaceholder = document.getElementById('cursorPlaceholder');
+        if (!promptInput || !cursorPlaceholder) return;
+        
+        const isEmpty = promptInput.value.trim().length === 0;
+        const isFocused = document.activeElement === promptInput;
+        
+        if (isEmpty && isFocused) {
+            cursorPlaceholder.style.opacity = '1';
+        } else {
+            cursorPlaceholder.style.opacity = '0';
+        }
+    }
+
+    setupControlPanel() {
+        const controlPanelTab = document.getElementById('controlPanelTab');
+        const controlPanelDashboard = document.getElementById('controlPanelDashboard');
+        const controlPanelClose = document.getElementById('controlPanelClose');
+
+        if (!controlPanelTab || !controlPanelDashboard) return;
+
+        // Toggle panel
+        controlPanelTab.addEventListener('click', () => {
+            const isOpen = controlPanelDashboard.classList.contains('open');
+            if (isOpen) {
+                controlPanelDashboard.classList.remove('open');
+                controlPanelTab.classList.remove('active');
+            } else {
+                controlPanelDashboard.classList.add('open');
+                controlPanelTab.classList.add('active');
+            }
+        });
+
+        // Close button
+        if (controlPanelClose) {
+            controlPanelClose.addEventListener('click', () => {
+                controlPanelDashboard.classList.remove('open');
+                controlPanelTab.classList.remove('active');
+            });
+        }
+
+        // Research mode toggle (Fast vs Deep Research)
+        const deepResearchToggle = document.getElementById('deepResearchToggle');
+        const modeLabel = document.getElementById('modeLabel');
+        if (deepResearchToggle) {
+            const savedMode = localStorage.getItem('fastMode');
+            this.fastMode = savedMode === null ? true : savedMode === 'true'; // Default to fast
+            deepResearchToggle.checked = !this.fastMode; // Toggle is "deep research", so inverted
+            
+            if (modeLabel) {
+                modeLabel.textContent = this.fastMode ? 'Fast' : 'Deep';
+            }
+            
+            deepResearchToggle.addEventListener('change', (e) => {
+                this.fastMode = !e.target.checked; // Toggle is "deep research", so invert
+                localStorage.setItem('fastMode', this.fastMode);
+                
+                if (modeLabel) {
+                    modeLabel.textContent = this.fastMode ? 'Fast' : 'Deep';
+                }
+            });
+        }
+        
+        // Thinking toggle
+        const thinkingToggle = document.getElementById('thinkingToggle');
+        if (thinkingToggle) {
+            // Load saved state
+            const savedThinking = localStorage.getItem('showThinking') === 'true';
+            thinkingToggle.checked = savedThinking;
+            this.showThinking = savedThinking;
+
+            thinkingToggle.addEventListener('change', (e) => {
+                this.showThinking = e.target.checked;
+                localStorage.setItem('showThinking', e.target.checked);
+            });
+        }
+
+        // Voice toggle
+        const voiceToggle = document.getElementById('voiceToggle');
+        const voiceSelectorItem = document.getElementById('voiceSelectorItem');
+        const voiceSelector = document.getElementById('voiceSelector');
+        
+        if (voiceToggle) {
+            const self = this; // Preserve this context
+            const savedVoice = localStorage.getItem('ttsEnabled') === 'true';
+            voiceToggle.checked = savedVoice;
+            self.ttsEnabled = savedVoice;
+            
+            voiceToggle.addEventListener('change', (e) => {
+                self.ttsEnabled = e.target.checked;
+                localStorage.setItem('ttsEnabled', e.target.checked);
+                
+                if (e.target.checked) {
+                    voiceSelectorItem.style.display = 'block';
+                    // Always reinitialize to get best voice
+                    if (self && typeof self.initializeTTS === 'function') {
+                        self.initializeTTS();
+                    }
+                    // Reload voice selector to show updated list
+                    if (voiceSelector) {
+                        const voices = speechSynthesis.getVoices();
+                        if (voices.length > 0) {
+                            const loadVoicesInner = () => {
+                                const voices = speechSynthesis.getVoices();
+                                if (!voices || voices.length === 0) {
+                                    voiceSelector.innerHTML = '<option value="">No voices available</option>';
+                                    return;
+                                }
+                                
+                                voiceSelector.innerHTML = '';
+                                
+                                const realisticVoices = [];
+                                const otherVoices = [];
+                                
+                                voices.forEach((voice, index) => {
+                                    const name = voice.name.toLowerCase();
+                                    const isRealistic = 
+                                        name.includes('premium') ||
+                                        name.includes('neural') ||
+                                        name.includes('wavenet') ||
+                                        name.includes('aria') ||
+                                        name.includes('jenny') ||
+                                        name.includes('samantha') ||
+                                        name.includes('alex') ||
+                                        name.includes('victoria') ||
+                                        name.includes('karen');
+                                    
+                                    const voiceData = { voice, index, name: voice.name, lang: voice.lang };
+                                    
+                                    if (isRealistic) {
+                                        realisticVoices.push(voiceData);
+                                    } else {
+                                        otherVoices.push(voiceData);
+                                    }
+                                });
+                                
+                                if (realisticVoices.length > 0) {
+                                    const optgroup = document.createElement('optgroup');
+                                    optgroup.label = 'Most Realistic';
+                                    realisticVoices.forEach(({ voice, index }) => {
+                                        const option = document.createElement('option');
+                                        option.value = index;
+                                        // Mark Premium/Neural voices as most realistic
+                                        const isPremium = voice.name.includes('Premium') || voice.name.includes('Neural');
+                                        const label = isPremium 
+                                            ? `${voice.name} ⭐ MOST REALISTIC (${voice.lang})` 
+                                            : `${voice.name} (${voice.lang})`;
+                                        option.textContent = label;
+                                        if (voice === self.ttsVoice) {
+                                            option.selected = true;
+                                        }
+                                        optgroup.appendChild(option);
+                                    });
+                                    voiceSelector.appendChild(optgroup);
+                                }
+                                
+                                if (otherVoices.length > 0) {
+                                    const optgroup = document.createElement('optgroup');
+                                    optgroup.label = 'Other Voices';
+                                    otherVoices.forEach(({ voice, index }) => {
+                                        const option = document.createElement('option');
+                                        option.value = index;
+                                        option.textContent = `${voice.name} (${voice.lang})`;
+                                        if (voice === self.ttsVoice) {
+                                            option.selected = true;
+                                        }
+                                        optgroup.appendChild(option);
+                                    });
+                                    voiceSelector.appendChild(optgroup);
+                                }
+                            };
+                            
+                            // Try to load voices immediately
+                            const voicesCheck = speechSynthesis.getVoices();
+                            if (voicesCheck && voicesCheck.length > 0) {
+                                loadVoicesInner();
+                            } else {
+                                speechSynthesis.onvoiceschanged = loadVoicesInner;
+                                // Fallback: Try again after delay
+                                setTimeout(() => {
+                                    const delayedVoices = speechSynthesis.getVoices();
+                                    if (delayedVoices && delayedVoices.length > 0) {
+                                        loadVoicesInner();
+                                    }
+                                }, 500);
+                            }
+                        }
+                    }
+                } else {
+                    voiceSelectorItem.style.display = 'none';
+                    if (self && typeof self.stopTTS === 'function') {
+                        self.stopTTS();
+                    }
+                }
+            });
+        }
+        
+        // Voice selector - prioritize realistic voices
+        if (voiceSelector) {
+            const self = this; // Preserve this context
+            // Load voices when available, prioritizing realistic ones
+            const loadVoices = () => {
+                const voices = speechSynthesis.getVoices();
+                if (!voices || voices.length === 0) {
+                    voiceSelector.innerHTML = '<option value="">No voices available</option>';
+                    return;
+                }
+                
+                voiceSelector.innerHTML = '';
+                
+                // Separate realistic voices from others
+                const realisticVoices = [];
+                const otherVoices = [];
+                
+                voices.forEach((voice, index) => {
+                    const name = voice.name.toLowerCase();
+                    // Prioritize Premium and Neural voices (MOST REALISTIC)
+                    // Premium voices are highest quality, then Neural, then high-quality standards
+                    const isRealistic = 
+                        name.includes('premium') ||   // macOS Premium (MOST REALISTIC)
+                        name.includes('neural') ||    // Windows/Chrome Neural (VERY REALISTIC)
+                        name.includes('wavenet') ||   // Google Wavenet (high quality)
+                        name.includes('aria') ||      // Windows Neural (realistic)
+                        name.includes('jenny') ||     // Windows Neural (realistic)
+                        name.includes('samantha') ||  // macOS (very realistic)
+                        name.includes('alex') ||      // macOS (very realistic)
+                        name.includes('victoria') ||  // macOS (very realistic)
+                        name.includes('karen');       // macOS (very realistic)
+                    
+                    const voiceData = { voice, index, name: voice.name, lang: voice.lang };
+                    
+                    if (isRealistic) {
+                        realisticVoices.push(voiceData);
+                    } else {
+                        otherVoices.push(voiceData);
+                    }
+                });
+                
+                // Add realistic voices first with label
+                if (realisticVoices.length > 0) {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = 'Most Realistic';
+                    realisticVoices.forEach(({ voice, index }) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        // Mark Premium/Neural as most realistic
+                        const isPremium = voice.name.includes('Premium') || voice.name.includes('Neural');
+                        const label = isPremium 
+                            ? `${voice.name} ⭐ MOST REALISTIC (${voice.lang})` 
+                            : `${voice.name} (${voice.lang})`;
+                        option.textContent = label;
+                        if (voice === self.ttsVoice) {
+                            option.selected = true;
+                        }
+                        optgroup.appendChild(option);
+                    });
+                    voiceSelector.appendChild(optgroup);
+                }
+                
+                // Add other voices
+                if (otherVoices.length > 0) {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = 'Other Voices';
+                    otherVoices.forEach(({ voice, index }) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = `${voice.name} (${voice.lang})`;
+                        if (voice === self.ttsVoice) {
+                            option.selected = true;
+                        }
+                        optgroup.appendChild(option);
+                    });
+                    voiceSelector.appendChild(optgroup);
+                }
+                
+                // Show selector if voice is enabled
+                if (self.ttsEnabled) {
+                    voiceSelectorItem.style.display = 'block';
+                }
+            };
+            
+            // Try to load voices immediately
+            const voices = speechSynthesis.getVoices();
+            if (voices && voices.length > 0) {
+                loadVoices();
+            } else {
+                // Wait for voices to load (some browsers require user interaction)
+                speechSynthesis.onvoiceschanged = loadVoices;
+                // Fallback: Try again after a short delay
+                setTimeout(() => {
+                    const delayedVoices = speechSynthesis.getVoices();
+                    if (delayedVoices && delayedVoices.length > 0) {
+                        loadVoices();
+                    } else {
+                        // Update message to indicate user needs to click
+                        voiceSelector.innerHTML = '<option value="">Click dropdown to load voices...</option>';
+                    }
+                }, 500);
+                
+                // Also try loading when user clicks the dropdown (required by some browsers)
+                voiceSelector.addEventListener('mousedown', function loadOnClick() {
+                    const clickedVoices = speechSynthesis.getVoices();
+                    if (clickedVoices && clickedVoices.length > 0 && voiceSelector.innerHTML.includes('Click')) {
+                        loadVoices();
+                    }
+                }, { once: true });
+            }
+            
+            // Always try to load voices when dropdown is opened
+            voiceSelector.addEventListener('mousedown', function loadOnOpen() {
+                const clickedVoices = speechSynthesis.getVoices();
+                if (clickedVoices && clickedVoices.length > 0 && voiceSelector.innerHTML.includes('Loading')) {
+                    loadVoices();
+                }
+            });
+            
+            voiceSelector.addEventListener('change', (e) => {
+                const voices = speechSynthesis.getVoices();
+                const selectedIndex = parseInt(e.target.value);
+                if (voices[selectedIndex]) {
+                    self.ttsVoice = voices[selectedIndex];
+                    localStorage.setItem('ttsVoiceIndex', selectedIndex);
+                    // Stop current speech and restart with new voice
+                    self.stopTTS();
+                }
+            });
+            
+            // Load saved voice or auto-select most realistic
+            const savedVoiceIndex = localStorage.getItem('ttsVoiceIndex');
+            if (savedVoiceIndex !== null) {
+                setTimeout(() => {
+                    const voices = speechSynthesis.getVoices();
+                    if (voices[savedVoiceIndex]) {
+                        self.ttsVoice = voices[savedVoiceIndex];
+                        voiceSelector.value = savedVoiceIndex;
+                    } else {
+                        // Saved voice not found, auto-select most realistic
+                        if (self && typeof self.initializeTTS === 'function') {
+                            self.initializeTTS();
+                            if (self.ttsVoice) {
+                                const index = voices.indexOf(self.ttsVoice);
+                                if (index >= 0) {
+                                    voiceSelector.value = index;
+                                }
+                            }
+                        }
+                    }
+                }, 500);
+            } else {
+                // No saved voice - auto-select most realistic
+                setTimeout(() => {
+                    if (self && typeof self.initializeTTS === 'function') {
+                        self.initializeTTS();
+                        if (self.ttsVoice) {
+                            const voices = speechSynthesis.getVoices();
+                            const index = voices.indexOf(self.ttsVoice);
+                            if (index >= 0) {
+                                voiceSelector.value = index;
+                                localStorage.setItem('ttsVoiceIndex', index);
+                            }
+                        }
+                    }
+                }, 500);
+            }
+        }
+        
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            if (controlPanelDashboard.classList.contains('open')) {
+                if (!controlPanelDashboard.contains(e.target) && 
+                    !controlPanelTab.contains(e.target)) {
+                    controlPanelDashboard.classList.remove('open');
+                    controlPanelTab.classList.remove('active');
+                }
+            }
+        });
     }
 }
 
@@ -1512,6 +3231,9 @@ try {
                 
                 // Initialize star notepad
                 initStarNotepad();
+                
+                // Initialize status selector
+                initStatusSelector();
             } catch (error) {
                 console.error('Error initializing Thesidia app:', error);
                 // Show error message to user
@@ -1541,6 +3263,9 @@ try {
             
             // Initialize star notepad
             initStarNotepad();
+            
+            // Initialize status selector
+            initStatusSelector();
         } catch (error) {
             console.error('Error initializing Thesidia app:', error);
             const app = document.getElementById('app');
@@ -1753,6 +3478,91 @@ function initStarNotepad() {
         }
     });
 }
+
+// Initialize Status Selector
+function initStatusSelector() {
+    const userNameText = document.getElementById('userNameText');
+    const statusOrb = document.getElementById('statusOrb');
+    const statusDropdown = document.getElementById('statusSelectorDropdown');
+    
+    if (!userNameText || !statusOrb || !statusDropdown) {
+        console.warn('Status selector elements not found, retrying...');
+        setTimeout(initStatusSelector, 100);
+        return;
+    }
+    
+    console.log('Initializing status selector...');
+    
+    // Load saved status from localStorage
+    const savedStatus = localStorage.getItem('userStatus') || 'online';
+    updateStatus(savedStatus);
+    
+    // Toggle dropdown on name click - use multiple event types for reliability
+    function handleClick(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        statusDropdown.classList.toggle('open');
+        console.log('Status selector clicked, dropdown open:', statusDropdown.classList.contains('open'));
+    }
+    
+    // Remove any existing handlers first
+    userNameText.onclick = null;
+    const newHandler = handleClick;
+    
+    // Set onclick handler
+    userNameText.onclick = newHandler;
+    
+    // Also add event listeners for mouse events
+    userNameText.addEventListener('click', newHandler, false);
+    userNameText.addEventListener('mousedown', function(e) {
+        e.stopPropagation();
+        statusDropdown.classList.toggle('open');
+    }, false);
+    
+    // Handle status option clicks
+    statusDropdown.querySelectorAll('.status-option').forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const status = option.dataset.status;
+            updateStatus(status);
+            localStorage.setItem('userStatus', status);
+            statusDropdown.classList.remove('open');
+        });
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (statusDropdown.classList.contains('open') && 
+            !statusDropdown.contains(e.target) && 
+            !userNameText.contains(e.target)) {
+            statusDropdown.classList.remove('open');
+        }
+    });
+    
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && statusDropdown.classList.contains('open')) {
+            statusDropdown.classList.remove('open');
+        }
+    });
+    
+    function updateStatus(status) {
+        // Remove all status classes
+        statusOrb.classList.remove('status-online', 'status-offline', 'status-away', 'status-focused');
+        // Add new status class
+        statusOrb.classList.add(`status-${status}`);
+        // Update title
+        const statusNames = {
+            'online': 'Online',
+            'offline': 'Offline',
+            'away': 'Away',
+            'focused': 'Focused'
+        };
+        statusOrb.title = `Status: ${statusNames[status]}`;
+    }
+}
+
+// Clean prompt bar - no controls needed, Thesidia handles everything automatically
 
 // Service Worker for PWA (optional)
 if ('serviceWorker' in navigator) {

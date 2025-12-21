@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing V3 - Test Page</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 2rem;
+            background: #0a0a0a;
+            color: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .test-card {
+            padding: 1rem;
+            margin: 1rem 0;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+        }
+        .status {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+        }
+        .status.success { background: #00ff88; color: #000; }
+        .status.error { background: #ff4444; color: #fff; }
+        .status.info { background: #00d4ff; color: #000; }
+        button {
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            background: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        button:hover {
+            background: #ffb700;
+        }
+    </style>
+</head>
+<body>
+    <h1>Landing V3 Test Page</h1>
+    <p>Isolated test environment for V3 features</p>
+
+    <div class="test-section">
+        <h2>Feature Detection</h2>
+        <div id="feature-status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Module Loading</h2>
+        <div id="module-status"></div>
+        <button onclick="testModules()">Test Module Loading</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Animation Tests</h2>
+        <div class="test-card" data-v3="card">Test Card 1</div>
+        <div class="test-card" data-v3="card">Test Card 2</div>
+        <div class="test-card" data-v3="card">Test Card 3</div>
+        <button onclick="testAnimations()">Test Animations</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Performance Tests</h2>
+        <div id="performance-status"></div>
+        <button onclick="testPerformance()">Run Performance Test</button>
+    </div>
+
+    <script>
+        // Load V3 configuration
+        window.LANDING_V3_CONFIG = {
+            features: {
+                gsap: true,
+                webgl: true,
+                viewTransitions: true,
+                serviceWorker: false,
+                webComponents: false
+            },
+            performance: {
+                reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+                lowEndDevice: navigator.hardwareConcurrency < 4
+            }
+        };
+
+        // Load utilities and core
+        const loadScript = (src) => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        };
+
+        async function init() {
+            try {
+                await loadScript('/landing/shared/utils.js');
+                await loadScript('/landing/v3/core.js');
+                checkFeatures();
+            } catch (error) {
+                console.error('Failed to load V3 modules', error);
+            }
+        }
+
+        function checkFeatures() {
+            const statusDiv = document.getElementById('feature-status');
+            const features = window.LandingV3?.features || {};
+            const utils = window.LandingV3Utils;
+
+            let html = '';
+            html += `<div class="status ${utils ? 'success' : 'error'}">Utils: ${utils ? 'Loaded' : 'Failed'}</div>`;
+            html += `<div class="status ${features.gsap ? 'success' : 'info'}">GSAP: ${features.gsap ? 'Available' : 'Not Available'}</div>`;
+            html += `<div class="status ${features.webgl ? 'success' : 'info'}">WebGL: ${features.webgl ? 'Available' : 'Not Available'}</div>`;
+            html += `<div class="status ${features.viewTransitions ? 'success' : 'info'}">View Transitions: ${features.viewTransitions ? 'Available' : 'Not Available'}</div>`;
+
+            statusDiv.innerHTML = html;
+        }
+
+        function testModules() {
+            const statusDiv = document.getElementById('module-status');
+            const modules = window.LandingV3?.modules || {};
+
+            let html = '<h3>Loaded Modules:</h3>';
+            if (Object.keys(modules).length === 0) {
+                html += '<div class="status error">No modules loaded</div>';
+            } else {
+                Object.keys(modules).forEach(name => {
+                    html += `<div class="status success">${name}: Loaded</div>`;
+                });
+            }
+
+            statusDiv.innerHTML = html;
+        }
+
+        function testAnimations() {
+            const cards = document.querySelectorAll('[data-v3="card"]');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.6s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+        }
+
+        function testPerformance() {
+            const statusDiv = document.getElementById('performance-status');
+            const perf = performance.timing;
+            const loadTime = perf.loadEventEnd - perf.navigationStart;
+            
+            let html = '<h3>Performance Metrics:</h3>';
+            html += `<div class="status info">Load Time: ${loadTime}ms</div>`;
+            html += `<div class="status info">DOM Ready: ${perf.domContentLoadedEventEnd - perf.navigationStart}ms</div>`;
+            html += `<div class="status info">Hardware Concurrency: ${navigator.hardwareConcurrency || 'Unknown'}</div>`;
+
+            statusDiv.innerHTML = html;
+        }
+
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
+
+
+
