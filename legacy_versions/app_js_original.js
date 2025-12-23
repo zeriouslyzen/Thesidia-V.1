@@ -271,12 +271,22 @@ class ThesidiaApp {
                     }
                 }
                 
-                // Update header submenu - FIXED: use CSS variable instead of direct manipulation
+                // Update header submenu - slide up proportionally
                 if (headerSubmenu) {
-                    // Set CSS variable - let CSS handle the animation
+                    // Use CSS custom property for smooth transitions
                     headerSubmenu.style.setProperty('--scroll-progress', scrollProgress);
                     
-                    // Add class for CSS transitions (no direct style manipulation)
+                    // Apply proportional transforms for smooth synchronized movement
+                    const translateY = -scrollProgress * 100; // Slide up based on scroll progress
+                    const opacity = Math.max(0, 1 - scrollProgress); // Fade out as scrolling
+                    const maxHeight = Math.max(0, 60 * (1 - scrollProgress)); // Collapse height
+                    
+                    // Apply styles with smooth transitions
+                    headerSubmenu.style.transform = `translateY(${translateY}%)`;
+                    headerSubmenu.style.opacity = opacity;
+                    headerSubmenu.style.maxHeight = `${maxHeight}px`;
+                    
+                    // Add class for CSS transitions
                     if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
                         headerSubmenu.classList.add('scrolled-down');
                     } else if (scrollDirection === 'up') {
@@ -284,10 +294,32 @@ class ThesidiaApp {
                     }
                 }
                 
-                // Update FAB orb - FIXED: use CSS variable, removed expensive box-shadow recalculations
-                if (fabOrb) {
-                    // Set CSS variable - let CSS handle opacity transitions
-                    fabOrb.style.setProperty('--scroll-progress', scrollProgress);
+                // Update FAB orb - dim proportionally (stay visible, just dim)
+                // Synchronized with header submenu animation
+                if (fabOrb && fabOrbGlow) {
+                    // Dim from 1.0 to 0.25 opacity based on scroll progress
+                    // Using same scroll progress for synchronization
+                    const orbOpacity = Math.max(0.25, 1 - (scrollProgress * 0.75)); // 1.0 to 0.25
+                    const glowOpacity = Math.max(0.25, 1 - (scrollProgress * 0.75)); // 1.0 to 0.25
+                    const glowIntensity = Math.max(0.3, 1 - (scrollProgress * 0.7)); // Reduce glow intensity
+                    
+                    // Apply opacity with smooth transitions (CSS handles the transition)
+                    fabOrb.style.opacity = orbOpacity;
+                    fabOrbGlow.style.opacity = glowOpacity;
+                    
+                    // Reduce glow shadow intensity proportionally
+                    const shadowBlur1 = 8 * glowIntensity;
+                    const shadowBlur2 = 16 * glowIntensity;
+                    const shadowBlur3 = 24 * glowIntensity;
+                    const shadowOpacity1 = 0.8 * glowIntensity;
+                    const shadowOpacity2 = 0.6 * glowIntensity;
+                    const shadowOpacity3 = 0.4 * glowIntensity;
+                    
+                    fabOrbGlow.style.boxShadow = `
+                        0 0 ${shadowBlur1}px rgba(255, 255, 255, ${shadowOpacity1}),
+                        0 0 ${shadowBlur2}px rgba(255, 255, 255, ${shadowOpacity2}),
+                        0 0 ${shadowBlur3}px rgba(255, 255, 255, ${shadowOpacity3})
+                    `;
                     
                     // Add class for state tracking and CSS transitions
                     if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {

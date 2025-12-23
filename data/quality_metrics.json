@@ -1,171 +1,6 @@
 {
   "interactions": [
     {
-      "query": "whats your favorite movie",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T00:34:44.896641"
-    },
-    {
-      "query": "who are you",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T00:54:59.461699"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T00:57:18.226517"
-    },
-    {
-      "query": "what is consciousness?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T00:57:46.033521"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T00:58:25.814484"
-    },
-    {
-      "query": "what is consciousness?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T00:59:21.149355"
-    },
-    {
-      "query": "tell me more about that",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:00:11.227164"
-    },
-    {
-      "query": "how are you doing?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:00:26.090416"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:00:55.566069"
-    },
-    {
-      "query": "what is consciousness?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:01:40.785854"
-    },
-    {
-      "query": "tell me more about that",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:02:05.085769"
-    },
-    {
-      "query": "how are you doing?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:02:43.282622"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:04:32.603792"
-    },
-    {
-      "query": "what is consciousness?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:05:31.394638"
-    },
-    {
-      "query": "tell me more about that",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:06:04.290253"
-    },
-    {
       "query": "how are you doing?",
       "response_length": 49,
       "scores": {
@@ -1099,6 +934,171 @@
         "overall": 0.44
       },
       "timestamp": "2025-12-18T09:29:58.372670"
+    },
+    {
+      "query": "Hi there!",
+      "response_length": 1200,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-23T04:58:09.693695"
+    },
+    {
+      "query": "Detect if this is a bot.",
+      "response_length": 1576,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.6,
+        "truth_seeking": 0.2,
+        "overall": 0.47000000000000003
+      },
+      "timestamp": "2025-12-23T04:58:44.303377"
+    },
+    {
+      "query": "Hi there!",
+      "response_length": 36,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-23T04:59:24.459736"
+    },
+    {
+      "query": "Detect if this is a bot.",
+      "response_length": 36,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-23T04:59:25.597815"
+    },
+    {
+      "query": "Analyze the gnostic patterns here.",
+      "response_length": 1293,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.8666666666666667,
+        "overall": 0.6766666666666666
+      },
+      "timestamp": "2025-12-23T04:59:55.854069"
+    },
+    {
+      "query": "What is 2+2?",
+      "response_length": 36,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-23T04:59:59.459607"
+    },
+    {
+      "query": "Hi there!",
+      "response_length": 76,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-23T05:00:50.316574"
+    },
+    {
+      "query": "Detect if this is a bot.",
+      "response_length": 76,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-23T05:00:51.925703"
+    },
+    {
+      "query": "Hi there!",
+      "response_length": 106,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-23T05:01:24.084751"
+    },
+    {
+      "query": "Detect if this is a bot.",
+      "response_length": 106,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-23T05:01:26.032217"
+    },
+    {
+      "query": "Analyze the gnostic patterns here.",
+      "response_length": 1820,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.5433333333333333
+      },
+      "timestamp": "2025-12-23T05:02:03.915802"
+    },
+    {
+      "query": "Hi there!",
+      "response_length": 1856,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.8666666666666667,
+        "overall": 0.6166666666666667
+      },
+      "timestamp": "2025-12-23T05:03:24.004034"
+    },
+    {
+      "query": "Detect if this is a bot.",
+      "response_length": 12300,
+      "scores": {
+        "depth": 1.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.38
+      },
+      "timestamp": "2025-12-23T05:03:57.409075"
+    },
+    {
+      "query": "Analyze the gnostic patterns here.",
+      "response_length": 1819,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.4833333333333334
+      },
+      "timestamp": "2025-12-23T05:05:07.562789"
+    },
+    {
+      "query": "What is 2+2?",
+      "response_length": 670,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-23T05:05:36.527404"
     }
   ],
   "quality_trends": {
@@ -1113,21 +1113,6 @@
       0.2,
       0.2,
       0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
       0.4,
       0.4,
       0.7,
@@ -1202,7 +1187,22 @@
       0.4,
       0.4,
       0.4,
-      0.4
+      0.4,
+      0.4,
+      0.7,
+      0.2,
+      0.2,
+      0.7,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.7,
+      0.7,
+      1.0,
+      0.7,
+      0.2
     ],
     "pattern_scores": [
       0.0,
@@ -1219,21 +1219,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
       0.4,
       0.4,
       0.0,
@@ -1304,24 +1289,24 @@
       0.0,
       0.0,
       0.0,
-      0.8
+      0.8,
+      0.0,
+      0.6,
+      0.0,
+      0.0,
+      0.4,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.4,
+      0.2,
+      0.0,
+      0.2,
+      0.0
     ],
     "truth_seeking_scores": [
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1406,24 +1391,24 @@
       0.2,
       0.2,
       0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.8666666666666667,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.8666666666666667,
+      0.2,
+      0.5333333333333333,
       0.2
     ],
     "overall_scores": [
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
-      0.14,
       0.14,
       0.14,
       0.14,
@@ -1508,8 +1493,23 @@
       0.2,
       0.2,
       0.2,
-      0.44
+      0.44,
+      0.2,
+      0.47000000000000003,
+      0.14,
+      0.14,
+      0.6766666666666666,
+      0.14,
+      0.14,
+      0.14,
+      0.14,
+      0.14,
+      0.5433333333333333,
+      0.6166666666666667,
+      0.38,
+      0.4833333333333334,
+      0.14
     ]
   },
-  "last_updated": "2025-12-18T09:29:58.372677"
+  "last_updated": "2025-12-23T05:05:36.527420"
 }

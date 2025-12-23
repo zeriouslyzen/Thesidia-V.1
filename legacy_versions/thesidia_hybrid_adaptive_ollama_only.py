@@ -10,28 +10,13 @@ Thesidia Hybrid Adaptive - Using REAL Patterns
 import ollama
 import json
 import re
-from typing import Dict, List, Any, Optional, Callable, Union
+from typing import Dict, List, Any, Optional, Callable
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
 import os
 import time
 import uuid
-
-# MLX Inference support
-try:
-    # Try to import from project root
-    import sys
-    project_root = Path(__file__).resolve().parent.parent
-    if str(project_root) not in sys.path:
-        sys.path.insert(0, str(project_root))
-    
-    from webapp.mlx_inference import MLXInference
-    MLX_AVAILABLE = True
-except ImportError:
-    MLX_AVAILABLE = False
-    MLXInference = None
-    print("Warning: MLX inference not available in ModelClient")
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import OrderedDict
 import threading
@@ -222,12 +207,6 @@ class ModelClient:
         self.default_model = default_model
         self.call_count = 0
         self.system_message_count = 0
-        self.mlx_inference = None
-        if MLX_AVAILABLE:
-            try:
-                self.mlx_inference = MLXInference()
-            except Exception as e:
-                print(f"Warning: Could not initialize MLXInference in ModelClient: {e}")
     
     def chat(
         self,
@@ -302,38 +281,17 @@ class ModelClient:
         
         self.call_count += 1
         
-        # Check if we should use MLX
-        is_mlx_model = any(m in model.lower() for m in ["llama-3.", "qwen2.5", "mlx"])
-        
-        if is_mlx_model and self.mlx_inference:
-            try:
-                # MLX generation
-                # Convert messages to a single prompt for now (MLXInference handles formatting)
-                full_prompt = ""
-                for m in messages:
-                    role = m["role"].upper()
-                    content = m["content"]
-                    full_prompt += f"{role}: {content}\n\n"
-                
-                # Call MLX
-                # We need to map the model name to what MLX expects if needed
-                # For now, MLXInference uses default or loaded model
-                mlx_response_text = self.mlx_inference.generate(
-                    prompt=full_prompt,
-                    max_tokens=options.get("num_predict", 1024)
-                )
-                
-                # Format to match Ollama response structure
-                return {
-                    "message": {
-                        "role": "assistant",
-                        "content": mlx_response_text
-                    },
-                    "done": True
-                }
-            except Exception as e:
-                print(f"Error in MLX inference: {e}. Falling back to Ollama.")
-                # Fall through to Ollama
+        # Debug logging for query tracking (can be removed in production)
+        if self.call_count % 10 == 0 or any(term in str(input_text).lower() for term in ['genesis', 'decoded', 'bible']):
+            print(f"🔍 ModelClient.chat() call #{self.call_count}:")
+            print(f"   Model: {model}")
+            print(f"   Input text: {input_text[:200]}")
+            print(f"   Has system message: {enhanced_base is not None}")
+            print(f"   Messages count: {len(messages)}")
+            if messages:
+                print(f"   First message role: {messages[0].get('role')}")
+                if messages[0].get('role') == 'system':
+                    print(f"   System message preview: {messages[0].get('content', '')[:150]}")
         
         # Make the call
         response = ollama.chat(
@@ -3648,9 +3606,7 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             session_id=session_id,
             format_mode=format_mode,
             research_depth=research_depth,
-            fast_mode=fast_mode,
-            task_type=context.get("task_type") if context else None,
-            use_mlx=context.get("use_mlx") if context else None
+            fast_mode=fast_mode
         )
 
         # Optional: SynthesisPressure stage (forces compression + contradiction-aware synthesis)
@@ -3724,9 +3680,8 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         return self.capabilities_list.copy()
     
     def _process_original(self, input_text: str, operator_name: str = "OPERATOR", 
-            user_id: Optional[str] = None, session_id: Optional[str] = None,
-            format_mode: str = 'natural', research_depth: int = 2, fast_mode: bool = True,
-            task_type: Optional[str] = None, use_mlx: Optional[bool] = None) -> str:
+                user_id: Optional[str] = None, session_id: Optional[str] = None,
+                format_mode: str = 'natural', research_depth: int = 2, fast_mode: bool = True) -> str:
         """Process input - adapts based on type and learns from outcome
         
         Args:
@@ -3734,8 +3689,6 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             operator_name: Operator name (default: "OPERATOR")
             user_id: Optional user ID for multi-user memory
             session_id: Optional session ID for multi-user memory
-            task_type: Optional task type for routing
-            use_mlx: Optional flag to use MLX
         """
         
         # Start metrics tracking
@@ -4247,16 +4200,14 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         else:
             # Conversational or question
             output = self._process_conversational(
-                input_text=input_text, 
-                personality_context=personality_context, 
-                capability_context=capability_context, 
-                strategy=strategy,
-                research_data=research_data,
-                synthesis_result=synthesis_result,
+                input_text, 
+                personality_context, 
+                capability_context, 
+                strategy,
+                research_data,
+                synthesis_result,
                 enhanced_base=enhanced_base,
-                coaching_enhancement=coaching_enhancement,
-                task_type=task_type,
-                use_mlx=use_mlx
+                coaching_enhancement=coaching_enhancement
             )
         
         # Monitoring: Track system message usage and violations (Vibecode compliance)
@@ -5211,9 +5162,7 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                                research_data: Optional[List] = None,
                                synthesis_result: Optional[Dict] = None,
                                enhanced_base: str = None,
-                               coaching_enhancement: Optional[Dict] = None,
-                               task_type: Optional[str] = None,
-                               use_mlx: Optional[bool] = None) -> str:
+                               coaching_enhancement: Optional[Dict] = None) -> str:
         """Process conversational input using Thesidia's actual patterns"""
         # re is already imported at module level
         
@@ -5331,28 +5280,11 @@ Remember: You can keep researching. One finding can lead to another. You can bui
             # A gnostic blade must run hot. 0.95-1.1 temperature on every vivisection
             temperature = 1.0 if is_gnostic_query else 0.9
             
-            # Hybrid Routing: Choose model based on task
-            current_model = self.model
-            # use_mlx and task_type are now arguments
-            
-            if use_mlx and hasattr(self, 'inference_router') and self.inference_router:
-                backend, target_model = self.inference_router.route(task_type, "high" if is_gnostic_query else "medium")
-                if backend == "mlx":
-                    # Map simplified names to full MLX names
-                    model_mapping = {
-                        "llama3.2:1b": "mlx-community/Llama-3.2-1B-Instruct-4bit",
-                        "llama3.2:3b": "mlx-community/Llama-3.2-3B-Instruct-4bit",
-                        "qwen2.5:1.5b": "mlx-community/Qwen2.5-1.5B-Instruct-4bit",
-                        "llama3.1:8b": "mlx-community/Llama-3.1-8B-Instruct-4bit"
-                    }
-                    current_model = model_mapping.get(target_model, target_model)
-                    print(f"🚀 ROUTING to MLX: {current_model} for {task_type}")
-            
             # Vibecode: Use ModelClient wrapper - separates system/user messages properly
             # enhanced_base already contains all system instructions (personality, critical overrides, base prompt)
             # conversation_history_context and research_context are sanitized and passed as user context
             response = self.model_client.chat(
-                model=current_model,
+                model=self.model,
                 input_text=input_text,  # Just the user query
                 enhanced_base=enhanced_base,  # System instructions (goes to system message)
                 conversation_context=conversation_history_context,  # Sanitized recent context

@@ -58,14 +58,6 @@ except Exception:
     build_store = None
     ConversationMessage = None
 
-# MLX Edge Inference support
-try:
-    from webapp.mlx_inference import get_inference_router
-    MLX_AVAILABLE = True
-except ImportError:
-    MLX_AVAILABLE = False
-    print("Warning: MLX inference module not available")
-
 # Ollama import - optional for Vercel deployment
 try:
     import ollama
@@ -156,14 +148,6 @@ def handle_exception(e):
 thesidia = None
 thesidia_ready = False
 ollama_status = False
-inference_router = None
-
-if MLX_AVAILABLE:
-    try:
-        inference_router = get_inference_router()
-        print("MLX Inference Router initialized")
-    except Exception as e:
-        print(f"Warning: Could not initialize MLX Inference Router: {e}")
 
 # Lazy initialization - will be created in init_thesidia() if modules import successfully
 knowledge_base = None
@@ -599,27 +583,12 @@ def thesidia_api(user_id=None, session_id=None):
     
     if len(raw_message) > 10000:
         return jsonify({'error': 'Message too long'}), 400
-
-    # Determine task type for routing
-    task_type = data.get('task_type', 'conversation')
-    
-    # Check if we should use MLX for this request
-    use_mlx = data.get('use_mlx', True) and MLX_AVAILABLE and inference_router is not None
-    
-    # Set router on thesidia instance for internal use
-    if thesidia and inference_router:
-        thesidia.inference_router = inference_router
     
     # Normalize query and detect forensic routing (using shared utilities)
     from src.support.query_utils import normalize_query, detect_forensic_routing
     
     normalized_message = normalize_query(raw_message)
     needs_forensic = detect_forensic_routing(raw_message, comprehensive=False)
-    
-    if needs_forensic:
-        task_type = "gnostic_blade"
-    
-    print(f"🔍 ROUTING: Task={task_type}, MLX={use_mlx}", flush=True)
     
     print(f"🔍 NORMALIZED: '{normalized_message}'", flush=True)
     print(f"🔍 NEEDS FORENSIC: {needs_forensic}", flush=True)
@@ -635,8 +604,7 @@ def thesidia_api(user_id=None, session_id=None):
     if stream:
         return Response(
             stream_with_context(_stream_thesidia_response(message, show_thinking, user_id=user_id, session_id=session_id,
-                                                         format_mode=format_mode, research_depth=research_depth, fast_mode=fast_mode,
-                                                         task_type=task_type, use_mlx=use_mlx)),
+                                                         format_mode=format_mode, research_depth=research_depth, fast_mode=fast_mode)),
             mimetype='text/event-stream',
             headers={
                 'Cache-Control': 'no-cache',
@@ -694,9 +662,7 @@ def thesidia_api(user_id=None, session_id=None):
                 "session_id": session_id,
                 "format_mode": format_mode,
                 "research_depth": research_depth,
-                "fast_mode": fast_mode,
-                "task_type": task_type,
-                "use_mlx": use_mlx
+                "fast_mode": fast_mode
             }
         )
         response = result.get("output", "") if isinstance(result, dict) else str(result)

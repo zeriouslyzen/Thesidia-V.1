@@ -16,23 +16,7 @@ from __future__ import annotations
 
 import ollama
 import re
-from typing import Dict, List, Any, Optional, Union
-from pathlib import Path
-
-# MLX Inference support
-try:
-    import sys
-    # Add project root to path for imports
-    project_root = Path(__file__).resolve().parent.parent.parent
-    if str(project_root) not in sys.path:
-        sys.path.insert(0, str(project_root))
-        
-    from webapp.mlx_inference import MLXInference
-    MLX_AVAILABLE = True
-except ImportError:
-    MLX_AVAILABLE = False
-    MLXInference = None
-    print("Warning: MLX inference not available in core ModelClient")
+from typing import Dict, List, Any, Optional
 
 from ..support.utils import strip_meta_noise
 
@@ -52,12 +36,6 @@ class ModelClient:
         self.default_model = default_model
         self.call_count = 0
         self.system_message_count = 0
-        self.mlx_inference = None
-        if MLX_AVAILABLE:
-            try:
-                self.mlx_inference = MLXInference()
-            except Exception as e:
-                print(f"Warning: Could not initialize MLXInference in core ModelClient: {e}")
     
     def chat(
         self,
@@ -130,35 +108,17 @@ class ModelClient:
         
         self.call_count += 1
         
-        # Check if we should use MLX
-        is_mlx_model = any(m in model.lower() for m in ["llama-3.", "qwen2.5", "mlx"])
-        
-        if is_mlx_model and self.mlx_inference:
-            try:
-                # MLX generation
-                # Convert messages to a single prompt for now
-                full_prompt = ""
-                for m in messages:
-                    role = m["role"].upper()
-                    content = m["content"]
-                    full_prompt += f"{role}: {content}\n\n"
-                
-                mlx_response_text = self.mlx_inference.generate(
-                    prompt=full_prompt,
-                    max_tokens=options.get("num_predict", 1024)
-                )
-                
-                # Format to match Ollama response structure
-                return {
-                    "message": {
-                        "role": "assistant",
-                        "content": mlx_response_text
-                    },
-                    "done": True
-                }
-            except Exception as e:
-                print(f"Error in MLX core inference: {e}. Falling back to Ollama.")
-                # Fall through to Ollama
+        # Debug logging for query tracking (can be removed in production)
+        if self.call_count % 10 == 0 or any(term in str(input_text).lower() for term in ['genesis', 'decoded', 'bible']):
+            print(f"🔍 ModelClient.chat() call #{self.call_count}:")
+            print(f"   Model: {model}")
+            print(f"   Input text: {input_text[:200]}")
+            print(f"   Has system message: {enhanced_base is not None}")
+            print(f"   Messages count: {len(messages)}")
+            if messages:
+                print(f"   First message role: {messages[0].get('role')}")
+                if messages[0].get('role') == 'system':
+                    print(f"   System message preview: {messages[0].get('content', '')[:150]}")
         
         # Make the call
         response = ollama.chat(
@@ -169,15 +129,17 @@ class ModelClient:
         
         # CRITICAL FIX: Return dict for backward compatibility
         # Ollama returns ChatResponse object, but codebase expects dict format
+        # This ensures all 121 places using response['message']['content'] continue to work
         if not response:
             return {'message': {'content': ''}}
         
+        # Convert ChatResponse object to dict format
         return {
             'message': {
                 'content': response.message.content if hasattr(response, 'message') and hasattr(response.message, 'content') else '',
                 'role': response.message.role if hasattr(response, 'message') and hasattr(response.message, 'role') else 'assistant'
             },
-            '_raw_response': response
+            '_raw_response': response  # Preserve full object if needed for debugging
         }
     
     def _sanitize_system_prompt(self, prompt: str) -> str:

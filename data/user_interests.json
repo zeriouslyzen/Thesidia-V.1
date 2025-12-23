@@ -1,9 +1,9 @@
 {
   "topics": {
     "chemistry": {
-      "count": 28,
+      "count": 30,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-12-18T09:27:06.440049",
+      "last_seen": "2025-12-23T05:05:36.522906",
       "related_topics": [
         "power_structures",
         "photosynthesis",
@@ -79,13 +79,20 @@
         "anything",
         "just",
         "while",
-        "next"
+        "next",
+        "sethian gnosticism",
+        "gnostic patterns",
+        "the secret book",
+        "analysis",
+        "central",
+        "analyze",
+        "well"
       ]
     },
     "power_structures": {
-      "count": 73,
+      "count": 78,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-12-18T09:29:58.370827",
+      "last_seen": "2025-12-23T05:05:07.559729",
       "related_topics": [
         "chemistry",
         "photosynthesis",
@@ -204,7 +211,23 @@
         "just",
         "next",
         "their",
-        "well"
+        "well",
+        "the nag hammadi",
+        "analyze",
+        "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.",
+        "gnostic",
+        "gospel of thomas",
+        "gospel",
+        "the hypostasis of the archons.",
+        "sethian gnosticism",
+        "gnostic patterns",
+        "the secret book",
+        "analysis",
+        "central",
+        "when",
+        "dualism",
+        "the da vinci code",
+        "moderate research depth"
       ]
     },
     "photosynthesis": {
@@ -241,9 +264,9 @@
       ]
     },
     "what": {
-      "count": 11,
+      "count": 14,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-12-17T16:39:32.948041",
+      "last_seen": "2025-12-23T05:05:36.522906",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -279,13 +302,15 @@
         "octopuses",
         "they",
         "anything",
-        "well"
+        "well",
+        "error",
+        "detect"
       ]
     },
     "consciousness": {
-      "count": 91,
+      "count": 92,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-12-18T09:29:58.370827",
+      "last_seen": "2025-12-23T04:58:44.296800",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -426,13 +451,14 @@
         "the mystery of consciousness",
         "that",
         "aight",
-        "human."
+        "human.",
+        "detect"
       ]
     },
     "physics": {
-      "count": 32,
+      "count": 33,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-12-17T16:16:02.679324",
+      "last_seen": "2025-12-23T05:05:36.522906",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -487,7 +513,8 @@
         "hello",
         "hard problem of consciousness",
         "orchestrated objective reduction",
-        "definition"
+        "definition",
+        "well"
       ]
     },
     "eric blair": {
@@ -506,9 +533,9 @@
       ]
     },
     "reengineering": {
-      "count": 64,
+      "count": 65,
       "first_seen": "2025-11-22T22:25:00.616408",
-      "last_seen": "2025-12-18T09:29:58.370827",
+      "last_seen": "2025-12-23T05:03:23.998929",
       "related_topics": [
         "eric blair",
         "chemistry",
@@ -615,7 +642,8 @@
         "just",
         "next",
         "their",
-        "well"
+        "well",
+        "when"
       ]
     },
     "1984": {
@@ -649,9 +677,9 @@
       ]
     },
     "code_cracking": {
-      "count": 49,
+      "count": 57,
       "first_seen": "2025-11-22T22:25:40.260946",
-      "last_seen": "2025-12-18T09:29:40.578544",
+      "last_seen": "2025-12-23T05:05:07.559729",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -739,7 +767,30 @@
         "anything",
         "well",
         "sure",
-        "that"
+        "that",
+        "detect",
+        "the nag hammadi",
+        "analyze",
+        "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.",
+        "gnostic",
+        "gospel of thomas",
+        "gospel",
+        "the hypostasis of the archons.",
+        "mlx-community/qwen2.5-1.5b-instruct-4bit",
+        "instruct",
+        "error",
+        "mlx-community/llama-3.2-1b-instruct-4bit",
+        "llama",
+        "sethian gnosticism",
+        "gnostic patterns",
+        "the secret book",
+        "analysis",
+        "central",
+        "alrighty",
+        "when",
+        "dualism",
+        "the da vinci code",
+        "moderate research depth"
       ]
     },
     "paris": {
@@ -779,9 +830,9 @@
       ]
     },
     "history": {
-      "count": 41,
+      "count": 45,
       "first_seen": "2025-11-22T22:25:40.260946",
-      "last_seen": "2025-12-18T09:29:40.578544",
+      "last_seen": "2025-12-23T05:05:36.522906",
       "related_topics": [
         "code_cracking",
         "chemistry",
@@ -861,13 +912,23 @@
         "j",
         "archon.",
         "jungian",
-        "from"
+        "from",
+        "detect",
+        "well",
+        "when",
+        "analysis",
+        "dualism",
+        "gnostic patterns",
+        "analyze",
+        "central",
+        "the da vinci code",
+        "moderate research depth"
       ]
     },
     "forensic": {
-      "count": 23,
+      "count": 27,
       "first_seen": "2025-11-22T22:25:40.260946",
-      "last_seen": "2025-12-18T09:26:40.910028",
+      "last_seen": "2025-12-23T05:05:07.559729",
       "related_topics": [
         "code_cracking",
         "chemistry",
@@ -912,7 +973,23 @@
         "foundation",
         "next",
         "the mystery of consciousness",
-        "that"
+        "that",
+        "detect",
+        "the nag hammadi",
+        "analyze",
+        "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.",
+        "gnostic",
+        "gospel of thomas",
+        "gospel",
+        "the hypostasis of the archons.",
+        "sethian gnosticism",
+        "gnostic patterns",
+        "the secret book",
+        "analysis",
+        "central",
+        "dualism",
+        "the da vinci code",
+        "moderate research depth"
       ]
     },
     "france": {
@@ -971,9 +1048,9 @@
       ]
     },
     "alrighty": {
-      "count": 1,
+      "count": 2,
       "first_seen": "2025-11-22T22:26:31.339432",
-      "last_seen": "2025-11-22T22:26:31.339432",
+      "last_seen": "2025-12-23T05:03:23.998929",
       "related_topics": [
         "relativity",
         "einstein",
@@ -985,7 +1062,11 @@
         "theory",
         "explain",
         "relativity: the special and the general theory",
-        "a brief history of time"
+        "a brief history of time",
+        "however",
+        "well",
+        "when",
+        "code_cracking"
       ]
     },
     "theory": {
@@ -1077,9 +1158,9 @@
       ]
     },
     "this": {
-      "count": 12,
+      "count": 13,
       "first_seen": "2025-11-22T22:27:16.700093",
-      "last_seen": "2025-12-18T09:27:06.440049",
+      "last_seen": "2025-12-23T05:05:36.522906",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -1120,7 +1201,8 @@
         "next",
         "their",
         "octopuses",
-        "they"
+        "they",
+        "well"
       ]
     },
     "flow.": {
@@ -1389,9 +1471,9 @@
       ]
     },
     "they": {
-      "count": 4,
+      "count": 5,
       "first_seen": "2025-11-22T22:37:35.475970",
-      "last_seen": "2025-12-17T18:40:11.373607",
+      "last_seen": "2025-12-23T04:58:09.687643",
       "related_topics": [
         "first",
         "bioelectric",
@@ -1407,7 +1489,8 @@
         "anything",
         "chemistry",
         "while",
-        "this"
+        "this",
+        "however"
       ]
     },
     "here": {
@@ -1679,11 +1762,18 @@
       ]
     },
     "error": {
-      "count": 41,
+      "count": 48,
       "first_seen": "2025-11-24T01:47:18.941089",
-      "last_seen": "2025-12-14T01:16:40.111703",
+      "last_seen": "2025-12-23T05:01:26.029421",
       "related_topics": [
-        "consciousness"
+        "consciousness",
+        "detect",
+        "what",
+        "code_cracking",
+        "mlx-community/qwen2.5-1.5b-instruct-4bit",
+        "instruct",
+        "mlx-community/llama-3.2-1b-instruct-4bit",
+        "llama"
       ]
     },
     "test": {
@@ -1981,9 +2071,9 @@
       ]
     },
     "however": {
-      "count": 24,
+      "count": 26,
       "first_seen": "2025-11-25T00:24:28.247156",
-      "last_seen": "2025-12-18T09:29:58.370827",
+      "last_seen": "2025-12-23T05:03:23.998929",
       "related_topics": [
         "forensic",
         "moneta,",
@@ -2035,7 +2125,11 @@
         "alright",
         "big pharma",
         "their",
-        "here"
+        "here",
+        "they",
+        "alrighty",
+        "well",
+        "when"
       ]
     },
     "e pluribus unum": {
@@ -2337,9 +2431,9 @@
       ]
     },
     "general framework": {
-      "count": 28,
+      "count": 29,
       "first_seen": "2025-12-14T04:47:44.873371",
-      "last_seen": "2025-12-18T09:29:40.578544",
+      "last_seen": "2025-12-23T04:58:44.296800",
       "related_topics": [
         "interstellar",
         "forensic",
@@ -2365,7 +2459,8 @@
         "p",
         "j",
         "this",
-        "archon."
+        "archon.",
+        "detect"
       ]
     },
     "interstellar": {
@@ -2487,9 +2582,9 @@
       ]
     },
     "start": {
-      "count": 26,
+      "count": 27,
       "first_seen": "2025-12-14T21:16:27.397917",
-      "last_seen": "2025-12-18T09:29:40.578544",
+      "last_seen": "2025-12-23T04:58:44.296800",
       "related_topics": [
         "general framework",
         "practice",
@@ -2513,13 +2608,14 @@
         "j",
         "this",
         "archon.",
-        "forensic"
+        "forensic",
+        "detect"
       ]
     },
     "practice": {
-      "count": 22,
+      "count": 23,
       "first_seen": "2025-12-14T21:16:27.397917",
-      "last_seen": "2025-12-18T09:29:40.578544",
+      "last_seen": "2025-12-23T04:58:44.296800",
       "related_topics": [
         "general framework",
         "start",
@@ -2536,7 +2632,8 @@
         "physics",
         "p",
         "j",
-        "forensic"
+        "forensic",
+        "detect"
       ]
     },
     "very": {
@@ -2557,9 +2654,9 @@
       ]
     },
     "build": {
-      "count": 24,
+      "count": 25,
       "first_seen": "2025-12-14T21:16:27.397917",
-      "last_seen": "2025-12-18T09:29:40.578544",
+      "last_seen": "2025-12-23T04:58:44.296800",
       "related_topics": [
         "general framework",
         "start",
@@ -2579,13 +2676,14 @@
         "j",
         "this",
         "archon.",
-        "forensic"
+        "forensic",
+        "detect"
       ]
     },
     "foundation": {
-      "count": 25,
+      "count": 26,
       "first_seen": "2025-12-14T21:16:27.397917",
-      "last_seen": "2025-12-18T09:29:40.578544",
+      "last_seen": "2025-12-23T04:58:44.296800",
       "related_topics": [
         "general framework",
         "start",
@@ -2607,7 +2705,8 @@
         "j",
         "this",
         "archon.",
-        "forensic"
+        "forensic",
+        "detect"
       ]
     },
     "what is consciousness?": {
@@ -3524,15 +3623,22 @@
       ]
     },
     "well": {
-      "count": 1,
+      "count": 3,
       "first_seen": "2025-12-17T16:39:32.948041",
-      "last_seen": "2025-12-17T16:39:32.948041",
+      "last_seen": "2025-12-23T05:05:36.522906",
       "related_topics": [
         "what",
         "power_structures",
         "code_cracking",
         "reengineering",
-        "consciousness"
+        "consciousness",
+        "history",
+        "alrighty",
+        "however",
+        "when",
+        "chemistry",
+        "physics",
+        "this"
       ]
     },
     "the mystery of consciousness": {
@@ -3581,22 +3687,368 @@
         "aight",
         "consciousness"
       ]
+    },
+    "detect": {
+      "count": 5,
+      "first_seen": "2025-12-23T04:58:44.296800",
+      "last_seen": "2025-12-23T05:03:57.404788",
+      "related_topics": [
+        "consciousness",
+        "general framework",
+        "forensic",
+        "build",
+        "start",
+        "practice",
+        "code_cracking",
+        "history",
+        "foundation",
+        "error",
+        "mlx-community/llama-3.2-1b-instruct-4bit",
+        "instruct",
+        "llama",
+        "what"
+      ]
+    },
+    "the nag hammadi": {
+      "count": 1,
+      "first_seen": "2025-12-23T04:59:55.851021",
+      "last_seen": "2025-12-23T04:59:55.851021",
+      "related_topics": [
+        "analyze",
+        "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.",
+        "gnostic",
+        "power_structures",
+        "gospel of thomas",
+        "code_cracking",
+        "gospel",
+        "the hypostasis of the archons.",
+        "forensic"
+      ]
+    },
+    "analyze": {
+      "count": 3,
+      "first_seen": "2025-12-23T04:59:55.851021",
+      "last_seen": "2025-12-23T05:05:07.559729",
+      "related_topics": [
+        "the nag hammadi",
+        "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.",
+        "gnostic",
+        "power_structures",
+        "gospel of thomas",
+        "code_cracking",
+        "gospel",
+        "the hypostasis of the archons.",
+        "forensic",
+        "sethian gnosticism",
+        "gnostic patterns",
+        "the secret book",
+        "analysis",
+        "central",
+        "chemistry",
+        "history",
+        "dualism",
+        "the da vinci code",
+        "moderate research depth"
+      ]
+    },
+    "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.": {
+      "count": 1,
+      "first_seen": "2025-12-23T04:59:55.851021",
+      "last_seen": "2025-12-23T04:59:55.851021",
+      "related_topics": [
+        "the nag hammadi",
+        "analyze",
+        "gnostic",
+        "power_structures",
+        "gospel of thomas",
+        "code_cracking",
+        "gospel",
+        "the hypostasis of the archons.",
+        "forensic"
+      ]
+    },
+    "gnostic": {
+      "count": 1,
+      "first_seen": "2025-12-23T04:59:55.851021",
+      "last_seen": "2025-12-23T04:59:55.851021",
+      "related_topics": [
+        "the nag hammadi",
+        "analyze",
+        "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.",
+        "power_structures",
+        "gospel of thomas",
+        "code_cracking",
+        "gospel",
+        "the hypostasis of the archons.",
+        "forensic"
+      ]
+    },
+    "gospel of thomas": {
+      "count": 1,
+      "first_seen": "2025-12-23T04:59:55.851021",
+      "last_seen": "2025-12-23T04:59:55.851021",
+      "related_topics": [
+        "the nag hammadi",
+        "analyze",
+        "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.",
+        "gnostic",
+        "power_structures",
+        "code_cracking",
+        "gospel",
+        "the hypostasis of the archons.",
+        "forensic"
+      ]
+    },
+    "gospel": {
+      "count": 1,
+      "first_seen": "2025-12-23T04:59:55.851021",
+      "last_seen": "2025-12-23T04:59:55.851021",
+      "related_topics": [
+        "the nag hammadi",
+        "analyze",
+        "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.",
+        "gnostic",
+        "power_structures",
+        "gospel of thomas",
+        "code_cracking",
+        "the hypostasis of the archons.",
+        "forensic"
+      ]
+    },
+    "the hypostasis of the archons.": {
+      "count": 1,
+      "first_seen": "2025-12-23T04:59:55.851021",
+      "last_seen": "2025-12-23T04:59:55.851021",
+      "related_topics": [
+        "the nag hammadi",
+        "analyze",
+        "i am the light that is over all things. i am all: from me all came forth, and to me all attained. split a piece of wood; i am there. lift up the stone, and you will find me there.",
+        "gnostic",
+        "power_structures",
+        "gospel of thomas",
+        "code_cracking",
+        "gospel",
+        "forensic"
+      ]
+    },
+    "mlx-community/qwen2.5-1.5b-instruct-4bit": {
+      "count": 1,
+      "first_seen": "2025-12-23T05:01:24.081982",
+      "last_seen": "2025-12-23T05:01:24.081982",
+      "related_topics": [
+        "code_cracking",
+        "instruct",
+        "error"
+      ]
+    },
+    "instruct": {
+      "count": 2,
+      "first_seen": "2025-12-23T05:01:24.081982",
+      "last_seen": "2025-12-23T05:01:26.029421",
+      "related_topics": [
+        "code_cracking",
+        "mlx-community/qwen2.5-1.5b-instruct-4bit",
+        "error",
+        "mlx-community/llama-3.2-1b-instruct-4bit",
+        "detect",
+        "llama"
+      ]
+    },
+    "mlx-community/llama-3.2-1b-instruct-4bit": {
+      "count": 1,
+      "first_seen": "2025-12-23T05:01:26.029421",
+      "last_seen": "2025-12-23T05:01:26.029421",
+      "related_topics": [
+        "code_cracking",
+        "error",
+        "detect",
+        "instruct",
+        "llama"
+      ]
+    },
+    "llama": {
+      "count": 1,
+      "first_seen": "2025-12-23T05:01:26.029421",
+      "last_seen": "2025-12-23T05:01:26.029421",
+      "related_topics": [
+        "code_cracking",
+        "mlx-community/llama-3.2-1b-instruct-4bit",
+        "error",
+        "detect",
+        "instruct"
+      ]
+    },
+    "sethian gnosticism": {
+      "count": 1,
+      "first_seen": "2025-12-23T05:02:03.903667",
+      "last_seen": "2025-12-23T05:02:03.903667",
+      "related_topics": [
+        "code_cracking",
+        "gnostic patterns",
+        "the secret book",
+        "analysis",
+        "central",
+        "chemistry",
+        "analyze",
+        "forensic",
+        "power_structures"
+      ]
+    },
+    "gnostic patterns": {
+      "count": 2,
+      "first_seen": "2025-12-23T05:02:03.903667",
+      "last_seen": "2025-12-23T05:05:07.559729",
+      "related_topics": [
+        "code_cracking",
+        "sethian gnosticism",
+        "the secret book",
+        "analysis",
+        "central",
+        "chemistry",
+        "analyze",
+        "forensic",
+        "power_structures",
+        "history",
+        "dualism",
+        "the da vinci code",
+        "moderate research depth"
+      ]
+    },
+    "the secret book": {
+      "count": 1,
+      "first_seen": "2025-12-23T05:02:03.903667",
+      "last_seen": "2025-12-23T05:02:03.903667",
+      "related_topics": [
+        "code_cracking",
+        "sethian gnosticism",
+        "gnostic patterns",
+        "analysis",
+        "central",
+        "chemistry",
+        "analyze",
+        "forensic",
+        "power_structures"
+      ]
+    },
+    "analysis": {
+      "count": 2,
+      "first_seen": "2025-12-23T05:02:03.903667",
+      "last_seen": "2025-12-23T05:05:07.559729",
+      "related_topics": [
+        "code_cracking",
+        "sethian gnosticism",
+        "gnostic patterns",
+        "the secret book",
+        "central",
+        "chemistry",
+        "analyze",
+        "forensic",
+        "power_structures",
+        "history",
+        "dualism",
+        "the da vinci code",
+        "moderate research depth"
+      ]
+    },
+    "central": {
+      "count": 2,
+      "first_seen": "2025-12-23T05:02:03.903667",
+      "last_seen": "2025-12-23T05:05:07.559729",
+      "related_topics": [
+        "code_cracking",
+        "sethian gnosticism",
+        "gnostic patterns",
+        "the secret book",
+        "analysis",
+        "chemistry",
+        "analyze",
+        "forensic",
+        "power_structures",
+        "history",
+        "dualism",
+        "the da vinci code",
+        "moderate research depth"
+      ]
+    },
+    "when": {
+      "count": 1,
+      "first_seen": "2025-12-23T05:03:23.998929",
+      "last_seen": "2025-12-23T05:03:23.998929",
+      "related_topics": [
+        "reengineering",
+        "history",
+        "alrighty",
+        "however",
+        "well",
+        "code_cracking",
+        "power_structures"
+      ]
+    },
+    "dualism": {
+      "count": 1,
+      "first_seen": "2025-12-23T05:05:07.559729",
+      "last_seen": "2025-12-23T05:05:07.559729",
+      "related_topics": [
+        "analysis",
+        "history",
+        "forensic",
+        "gnostic patterns",
+        "analyze",
+        "code_cracking",
+        "power_structures",
+        "central",
+        "the da vinci code",
+        "moderate research depth"
+      ]
+    },
+    "the da vinci code": {
+      "count": 1,
+      "first_seen": "2025-12-23T05:05:07.559729",
+      "last_seen": "2025-12-23T05:05:07.559729",
+      "related_topics": [
+        "analysis",
+        "history",
+        "dualism",
+        "forensic",
+        "gnostic patterns",
+        "analyze",
+        "code_cracking",
+        "power_structures",
+        "central",
+        "moderate research depth"
+      ]
+    },
+    "moderate research depth": {
+      "count": 1,
+      "first_seen": "2025-12-23T05:05:07.559729",
+      "last_seen": "2025-12-23T05:05:07.559729",
+      "related_topics": [
+        "analysis",
+        "history",
+        "dualism",
+        "forensic",
+        "gnostic patterns",
+        "analyze",
+        "code_cracking",
+        "power_structures",
+        "central",
+        "the da vinci code"
+      ]
     }
   },
   "research_threads": [],
   "technical_domains": {},
   "journey_context": {
-    "primary_focus": "their",
+    "primary_focus": "history",
     "active_threads": [],
     "recent_topics": [
-      "their",
-      "here",
-      "power_structures",
-      "however",
-      "while",
-      "reengineering",
-      "consciousness"
+      "history",
+      "what",
+      "chemistry",
+      "physics",
+      "well",
+      "this"
     ]
   },
-  "last_updated": "2025-12-18T09:29:58.370869"
+  "last_updated": "2025-12-23T05:05:36.522987"
 }
