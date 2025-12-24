@@ -24,7 +24,10 @@ try:
 except ImportError:
     WEB_AVAILABLE = False
 
-from ..synthesis.quality_filter import DataQualityFilter
+try:
+    from .data_quality import DataQualityFilter
+except ImportError:
+    from data_quality import DataQualityFilter
 
 
 class WebSearchEngine:
