@@ -12,20 +12,30 @@ Extracted from thesidia_hybrid_adaptive.py as part of Phase 0 modular refactorin
 from __future__ import annotations
 
 import re
+import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Any, Optional
 
-# Import local modules
+# Add sibling directories to path for imports
+_current_dir = Path(__file__).resolve().parent
+_src_dir = _current_dir.parent
+for subdir in ['core', 'reasoning', 'research', 'support']:
+    subdir_path = str(_src_dir / subdir)
+    if subdir_path not in sys.path:
+        sys.path.insert(0, subdir_path)
+
+# Import local modules - try direct imports first (for running from src/)
 try:
-    from .data_quality import IntuitiveSkepticism
-except ImportError:
     from data_quality import IntuitiveSkepticism
+except ImportError:
+    from .data_quality import IntuitiveSkepticism
 
 try:
-    from ..reasoning.model_router import ModelRouter
+    from model_router import ModelRouter
 except ImportError:
     try:
-        from reasoning.model_router import ModelRouter
+        from .reasoning.model_router import ModelRouter
     except ImportError:
         # Inline minimal ModelRouter for standalone testing
         class ModelRouter:
@@ -36,10 +46,10 @@ except ImportError:
                 return self.models.get(task_type, self.models["default"]), self.parameters.get(task_type, self.parameters["default"])
 
 try:
-    from ..support.utils import strip_meta_noise
+    from utils import strip_meta_noise
 except ImportError:
     try:
-        from support.utils import strip_meta_noise
+        from .support.utils import strip_meta_noise
     except ImportError:
         # Inline minimal strip_meta_noise for standalone testing
         def strip_meta_noise(text):
@@ -49,6 +59,8 @@ except ImportError:
             for t in junk:
                 text = text.replace(t, "")
             return text.strip()
+
+
 
 # Optional ollama
 try:

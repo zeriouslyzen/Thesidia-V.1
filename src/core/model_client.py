@@ -34,7 +34,18 @@ except ImportError:
     MLXInference = None
     print("Warning: MLX inference not available in core ModelClient")
 
-from ..support.utils import strip_meta_noise
+# Add support directory to path
+import sys
+from pathlib import Path
+_src_dir = Path(__file__).resolve().parent.parent
+_support_path = str(_src_dir / 'support')
+if _support_path not in sys.path:
+    sys.path.insert(0, _support_path)
+
+try:
+    from utils import strip_meta_noise
+except ImportError:
+    from ..support.utils import strip_meta_noise
 
 
 class ModelClient:

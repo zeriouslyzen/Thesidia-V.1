@@ -159,6 +159,42 @@ except ImportError:
     from aha_moment_tracker import AhaMomentTracker
     from gentle_truth_engine import GentleTruthEngine, EvidenceArrangement
 
+# ============================================================================
+# PHASE 0 MODULAR IMPORTS - Extracted components from monolith
+# These replace the inline class definitions below (now deprecated)
+# ============================================================================
+MODULAR_IMPORTS_AVAILABLE = False
+_modular_ModelClient = None
+_modular_AdaptivePersonality = None
+_modular_ModelRouter = None
+_modular_DataQualityFilter = None
+_modular_IntuitiveSkepticism = None
+_modular_WebSearchEngine = None
+_modular_DataSynthesizer = None
+
+# Try to import modular components (add src/ subdirectories to path if needed)
+import sys
+from pathlib import Path
+_src_dir = Path(__file__).resolve().parent
+for subdir in ['core', 'reasoning', 'research', 'support']:
+    subdir_path = str(_src_dir / subdir)
+    if subdir_path not in sys.path:
+        sys.path.insert(0, subdir_path)
+
+try:
+    from model_client import ModelClient as _modular_ModelClient
+    from personality_system import AdaptivePersonality as _modular_AdaptivePersonality
+    from model_router import ModelRouter as _modular_ModelRouter
+    from data_quality import DataQualityFilter as _modular_DataQualityFilter, IntuitiveSkepticism as _modular_IntuitiveSkepticism
+    from web_search import WebSearchEngine as _modular_WebSearchEngine
+    from data_synthesizer import DataSynthesizer as _modular_DataSynthesizer
+    MODULAR_IMPORTS_AVAILABLE = True
+    print("✅ Phase 0 modular imports loaded successfully")
+except ImportError as e:
+    MODULAR_IMPORTS_AVAILABLE = False
+    print(f"⚠️ Phase 0 modular imports not available: {e}")
+    print("   Falling back to inline class definitions")
+
 # Load Thesidia's real patterns
 def load_thesidia_patterns():
     """Load Thesidia's actual patterns from extracted data"""
