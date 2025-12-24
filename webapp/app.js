@@ -12,7 +12,7 @@ class ThesidiaApp {
         } catch (e) {
             // Fallback to default local endpoints
         }
-        
+
         this.apiEndpoint = apiConfig.API_ENDPOINT || '/api/thesidia'; // Backend API endpoint
         this.statusEndpoint = apiConfig.STATUS_ENDPOINT || '/api/status'; // Status endpoint
         this.conversations = [];
@@ -20,14 +20,14 @@ class ThesidiaApp {
         this.isProcessing = false;
         this.showThinking = false;
         this.attachedFiles = []; // Store attached files
-        
+
         // User session management
         this.userId = null;
         this.sessionId = null;
-        
+
         // Message tracking for regeneration
         this.messageStore = new Map(); // messageId -> {query, params, timestamp, type}
-        
+
         // TTS (Text-to-Speech) system - streaming voice
         this.ttsEnabled = false; // Global toggle
         this.ttsVoice = null; // Selected voice
@@ -36,12 +36,16 @@ class ThesidiaApp {
         this.ttsSpeaking = false;
         this.currentTTSMessageId = null;
         this.thinkingSteps = {}; // Store thinking steps per message
-        
+
         // Research mode: true = fast (regular search), false = deep research
         this.fastMode = true; // Default to fast mode
-        
+
+        // Edge AI (WebLLM)
+        this.edgeAIReady = false;
+        this.edgeAILoading = false;
+
         this.init();
-        
+
         // Initialize TTS voices when available
         if ('speechSynthesis' in window) {
             // Store reference to this for voice loading callback
@@ -59,22 +63,25 @@ class ThesidiaApp {
             }
         }
     }
-    
+
     init() {
         // Detect current page
         this.currentPage = this.detectPage();
-        
+
         this.setupUserSession();
-        
+
+        // Initialize Edge AI (WebLLM) in background
+        this.initEdgeAI();
+
         // Initialize color theme
         this.initColorTheme();
-        
+
         // Universal sidebar infrastructure - setup for ALL pages
         this.setupSidebarInfrastructure();
-        
+
         // Universal scroll behaviors - setup for ALL pages
         this.setupScrollBehaviors();
-        
+
         // Only setup context-specific features if on contexts page
         if (this.currentPage === 'contexts') {
             this.setupEventListeners();
@@ -90,12 +97,62 @@ class ThesidiaApp {
             // Minimal setup for other pages (stream, profile, etc.)
             this.setupMinimalListeners();
         }
-        
+
         this.checkStatus();
         this.startStatusPolling();
     }
-    
-    
+
+
+    async initEdgeAI() {
+        if (!window.edgeInference) {
+            console.log("Edge Inference module not loaded yet, will retry...");
+            setTimeout(() => this.initEdgeAI(), 1000);
+            return;
+        }
+
+        try {
+            // We don't auto-load the 1.6GB model immediately to save bandwidth
+            // Instead, we mark it as available
+            console.log("Edge AI Module Detected. Ready for initialization.");
+
+            // If user has a preference or we want to pre-warm, we can call init()
+            // For now, we'll wait for the first edge-eligible task
+        } catch (error) {
+            console.error("Failed to detect Edge AI:", error);
+        }
+    }
+
+    async ensureEdgeAI() {
+        if (this.edgeAIReady) return true;
+        if (this.edgeAILoading) return false;
+
+        this.edgeAILoading = true;
+        if (this.updateHUDStatus) this.updateHUDStatus('Loading Edge AI...');
+
+        try {
+            await window.edgeInference.init((report) => {
+                // Update HUD status
+                if (this.updateHUDStatus) {
+                    this.updateHUDStatus(`Edge AI: ${Math.round(report.progress * 100)}%`);
+                }
+                // Update inline control panel status
+                const edgeStatusText = document.getElementById('edgeStatusText');
+                if (edgeStatusText) {
+                    edgeStatusText.textContent = `${Math.round(report.progress * 100)}%`;
+                }
+            });
+            this.edgeAIReady = true;
+            this.edgeAILoading = false;
+            if (this.updateHUDStatus) this.updateHUDStatus('Edge AI Ready');
+            return true;
+        } catch (error) {
+            this.edgeAILoading = false;
+            console.error("Edge AI Loading Failed:", error);
+            if (this.updateHUDStatus) this.updateHUDStatus('Edge AI Failed');
+            return false;
+        }
+    }
+
     detectPage() {
         const path = window.location.pathname;
         if (path.includes('stream.html') || path === '/stream.html') return 'stream';
@@ -104,17 +161,17 @@ class ThesidiaApp {
         if (path.includes('settings/') || path.includes('/settings')) return 'settings';
         return 'contexts'; // Default to contexts
     }
-    
+
     // Universal sidebar setup - called once for ALL pages
     setupSidebarInfrastructure() {
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('leftSidebar');
         const app = document.getElementById('app');
         if (!menuBtn || !sidebar || !app) return;
-        
+
         // Menu toggle
         menuBtn.addEventListener('click', () => this.toggleLeftSidebar());
-        
+
         // Click katanx branding to go to stream page
         const headerBranding = document.querySelector('.header-branding');
         if (headerBranding) {
@@ -123,37 +180,37 @@ class ThesidiaApp {
                 window.location.href = '/stream.html';
             });
         }
-        
+
         // Swipe gesture handlers for sidebar
         this.setupSwipeGestures();
-        
+
         // Close on escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && sidebar.classList.contains('open')) {
                 this.closeLeftSidebar();
             }
         });
-        
+
         // Close when clicking outside
         document.addEventListener('click', (e) => {
-            if (sidebar.classList.contains('open') && 
-                !sidebar.contains(e.target) && 
+            if (sidebar.classList.contains('open') &&
+                !sidebar.contains(e.target) &&
                 !menuBtn.contains(e.target) &&
                 app.contains(e.target)) {
                 this.closeLeftSidebar();
             }
         });
     }
-    
+
     setupSwipeGestures() {
         const sidebar = document.getElementById('leftSidebar');
         if (!sidebar) return;
-        
+
         let touchStartX = 0;
         let touchStartY = 0;
         let touchEndX = 0;
         let touchEndY = 0;
-        
+
         // Helper to check if we're on home page
         const isOnHomePage = () => {
             // Only allow sidebar swipe when explicitly on the home section
@@ -164,28 +221,28 @@ class ThesidiaApp {
             const path = window.location.pathname;
             return path === '/home' || path === '/index.html';
         };
-        
+
         // Touch start
         document.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
         }, { passive: true });
-        
+
         // Touch end - detect swipe
         document.addEventListener('touchend', (e) => {
             if (!touchStartX) return;
-            
+
             touchEndX = e.changedTouches[0].clientX;
             touchEndY = e.changedTouches[0].clientY;
-            
+
             const deltaX = touchEndX - touchStartX;
             const deltaY = Math.abs(touchEndY - touchStartY);
             const absDeltaX = Math.abs(deltaX);
-            
+
             // Only trigger if horizontal swipe is dominant and significant
             if (absDeltaX > 50 && absDeltaX > deltaY) {
                 const isOpen = sidebar.classList.contains('open');
-                
+
                 // Check if we're on home section (for carousel navigation)
                 // Check multiple ways to be sure
                 let isOnHome = false;
@@ -196,7 +253,7 @@ class ThesidiaApp {
                 if (!isOnHome) {
                     isOnHome = isOnHomePage();
                 }
-                
+
                 if (deltaX > 0 && !isOpen) {
                     // Swipe right to open - ONLY on home page
                     if (isOnHome) {
@@ -208,33 +265,33 @@ class ThesidiaApp {
                     this.closeLeftSidebar();
                 }
             }
-            
+
             // Reset
             touchStartX = 0;
         }, { passive: true });
     }
-    
+
     setupScrollBehaviors() {
         // Scroll-based UI behaviors with high sensitivity and synchronized animations
         // Works on ALL pages that have header-submenu and fab-orb
         let ticking = false;
         let lastScrollTop = 0;
-        
+
         const headerSubmenu = document.querySelector('.header-submenu');
         const fabOrb = document.getElementById('fabOrb');
         const fabOrbGlow = fabOrb ? fabOrb.querySelector('.fab-orb-glow') : null;
         const scrollContainers = document.querySelectorAll('.carousel-section');
         const mainScrollContainer = document.querySelector('main') || document.querySelector('.chat-container') || window;
-        
+
         // High sensitivity scroll threshold - reacts to small movements
         const scrollThreshold = 20; // Very sensitive - reacts after 20px
         const maxScrollForFullEffect = 100; // Full effect at 100px scroll
-        
+
         function updateScrollState() {
             let currentScrollTop = 0;
             let activeContainer = null;
             let scrollDirection = 'none';
-            
+
             // Find the active scroll container (carousel sections first)
             scrollContainers.forEach(container => {
                 if (container.classList.contains('active')) {
@@ -242,7 +299,7 @@ class ThesidiaApp {
                     currentScrollTop = container.scrollTop;
                 }
             });
-            
+
             // Fallback to main scroll container or window
             if (!activeContainer) {
                 if (mainScrollContainer && mainScrollContainer !== window) {
@@ -251,17 +308,17 @@ class ThesidiaApp {
                     currentScrollTop = window.scrollY || document.documentElement.scrollTop;
                 }
             }
-            
+
             // Calculate scroll progress (0 to 1) for smooth proportional animations
             const scrollProgress = Math.min(currentScrollTop / maxScrollForFullEffect, 1);
             const scrollDelta = currentScrollTop - lastScrollTop;
             if (scrollDelta > 2) scrollDirection = 'down';
             if (scrollDelta < -2) scrollDirection = 'up';
-            
+
             // High sensitivity: Update on any scroll movement
             if (Math.abs(scrollDelta) > 0) {
                 const header = document.querySelector('.header');
-                
+
                 // Update header - add scrolled class
                 if (header) {
                     if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
@@ -270,12 +327,12 @@ class ThesidiaApp {
                         header.classList.remove('scrolled-down');
                     }
                 }
-                
+
                 // Update header submenu - FIXED: use CSS variable instead of direct manipulation
                 if (headerSubmenu) {
                     // Set CSS variable - let CSS handle the animation
                     headerSubmenu.style.setProperty('--scroll-progress', scrollProgress);
-                    
+
                     // Add class for CSS transitions (no direct style manipulation)
                     if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
                         headerSubmenu.classList.add('scrolled-down');
@@ -283,12 +340,12 @@ class ThesidiaApp {
                         headerSubmenu.classList.remove('scrolled-down');
                     }
                 }
-                
+
                 // Update FAB orb - FIXED: use CSS variable, removed expensive box-shadow recalculations
                 if (fabOrb) {
                     // Set CSS variable - let CSS handle opacity transitions
                     fabOrb.style.setProperty('--scroll-progress', scrollProgress);
-                    
+
                     // Add class for state tracking and CSS transitions
                     if (scrollDirection === 'down' && currentScrollTop > scrollThreshold) {
                         fabOrb.classList.remove('scrolled-up');
@@ -299,37 +356,37 @@ class ThesidiaApp {
                     }
                 }
             }
-            
+
             lastScrollTop = currentScrollTop;
             ticking = false;
         }
-        
+
         function onScroll() {
             if (!ticking) {
                 window.requestAnimationFrame(updateScrollState);
                 ticking = true;
             }
         }
-        
+
         // Attach scroll listeners with high sensitivity
         scrollContainers.forEach(container => {
             container.addEventListener('scroll', onScroll, { passive: true });
         });
-        
+
         // Main scroll container
         if (mainScrollContainer && mainScrollContainer !== window) {
             mainScrollContainer.addEventListener('scroll', onScroll, { passive: true });
         }
-        
+
         // Window scroll fallback
         window.addEventListener('scroll', onScroll, { passive: true });
-        
+
         // Touch events for mobile sensitivity
         let touchStartY = 0;
         document.addEventListener('touchstart', (e) => {
             touchStartY = e.touches[0].clientY;
         }, { passive: true });
-        
+
         document.addEventListener('touchmove', (e) => {
             const touchY = e.touches[0].clientY;
             const touchDelta = touchStartY - touchY;
@@ -337,43 +394,43 @@ class ThesidiaApp {
                 onScroll();
             }
         }, { passive: true });
-        
+
         // Initialize state
         updateScrollState();
     }
-    
+
     initColorTheme() {
         // Load saved theme from localStorage
         const savedTheme = localStorage.getItem('thesidia_color_theme') || 'default';
         this.setColorTheme(savedTheme);
-        
+
         // Setup theme selector in sidebar if it exists
         this.setupThemeSelector();
     }
-    
+
     setColorTheme(theme) {
         // Remove all theme classes
         document.body.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
         document.documentElement.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
-        
+
         // Apply new theme (default doesn't need a class)
         if (theme && theme !== 'default') {
             document.body.classList.add(`theme-${theme}`);
             document.documentElement.classList.add(`theme-${theme}`);
         }
-        
+
         // Save to localStorage
         localStorage.setItem('thesidia_color_theme', theme || 'default');
     }
-    
+
     setupThemeSelector() {
         // Find or create theme selector in sidebar settings
         const settingsNav = document.querySelector('.settings-nav');
         if (!settingsNav) return;
-        
+
         // Check if theme selector already exists
         if (document.getElementById('themeSelector')) return;
-        
+
         // Create theme selector
         const themeSelector = document.createElement('div');
         themeSelector.id = 'themeSelector';
@@ -387,7 +444,7 @@ class ThesidiaApp {
             'orange': 'Orange',
             'blue': 'Blue'
         };
-        
+
         themeSelector.innerHTML = `
             <div class="settings-label" style="margin-top: 16px;">Color Theme</div>
             <div class="theme-dropdown-wrapper">
@@ -428,34 +485,34 @@ class ThesidiaApp {
                 </div>
             </div>
         `;
-        
+
         // Insert after settings nav
         settingsNav.parentElement.appendChild(themeSelector);
-        
+
         // Setup dropdown toggle
         const dropdownBtn = document.getElementById('themeDropdownBtn');
         const dropdownMenu = document.getElementById('themeDropdownMenu');
         const dropdownWrapper = dropdownBtn?.closest('.theme-dropdown-wrapper');
-        
+
         if (dropdownBtn && dropdownMenu && dropdownWrapper) {
             dropdownBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 dropdownWrapper.classList.toggle('open');
             });
-            
+
             // Close dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 if (!dropdownWrapper.contains(e.target)) {
                     dropdownWrapper.classList.remove('open');
                 }
             });
-            
+
             // Handle option clicks
             dropdownMenu.querySelectorAll('.theme-dropdown-option').forEach(option => {
                 option.addEventListener('click', () => {
                     const theme = option.dataset.theme;
                     this.setColorTheme(theme);
-                    
+
                     // Update button label
                     const label = dropdownBtn.querySelector('.theme-dropdown-label span:last-child');
                     const preview = dropdownBtn.querySelector('.theme-color-preview');
@@ -471,37 +528,37 @@ class ThesidiaApp {
                         };
                         preview.style.background = colors[theme];
                     }
-                    
+
                     // Update active state
                     dropdownMenu.querySelectorAll('.theme-dropdown-option').forEach(opt => opt.classList.remove('active'));
                     option.classList.add('active');
-                    
+
                     // Close dropdown
                     dropdownWrapper.classList.remove('open');
                 });
             });
         }
     }
-    
+
     setupMinimalListeners() {
         try {
             // Profile picture upload (if on pages with sidebar)
             const profilePictureContainer = document.getElementById('profilePictureContainer');
             const profileImageInput = document.getElementById('profileImageInput');
             const profilePicture = document.getElementById('profilePicture');
-            
+
             if (profilePictureContainer && profileImageInput) {
                 // Load saved profile picture from localStorage
                 const savedProfileImage = localStorage.getItem('profileImage');
                 if (savedProfileImage && profilePicture) {
                     profilePicture.src = savedProfileImage;
                 }
-                
+
                 // Click to upload
                 profilePictureContainer.addEventListener('click', () => {
                     profileImageInput.click();
                 });
-                
+
                 // Handle image selection
                 profileImageInput.addEventListener('change', (e) => {
                     const file = e.target.files[0];
@@ -510,21 +567,21 @@ class ThesidiaApp {
                     }
                 });
             }
-            
+
             // Submenu filter items (Friends, Fans, Communities, Labs)
             const submenuFilters = document.querySelectorAll('.submenu-item[data-filter]');
             submenuFilters.forEach(item => {
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
                     const filterType = item.dataset.filter;
-                    
+
                     // Update active state
                     submenuFilters.forEach(i => i.classList.remove('active'));
                     item.classList.add('active');
-                    
+
                     // Set filter type in localStorage
                     localStorage.setItem('feed_type', filterType);
-                    
+
                     // If on stream page, reload feed; otherwise navigate to stream
                     if (this.currentPage === 'stream') {
                         // Trigger reload if stream page is loaded
@@ -540,7 +597,7 @@ class ThesidiaApp {
                     }
                 });
             });
-            
+
             // Set active filter on page load
             const currentFilter = localStorage.getItem('feed_type');
             if (currentFilter && ['friends', 'fans', 'communities', 'labs'].includes(currentFilter)) {
@@ -572,15 +629,15 @@ class ThesidiaApp {
             console.warn('FAB haptic setup failed:', err);
         }
     }
-    
+
     async setupUserSession() {
         // Get user session from localStorage or create new one
         this.userId = localStorage.getItem('thesidia_user_id');
         this.sessionId = localStorage.getItem('thesidia_session_id');
-        
+
         // AUTHENTICATION DISABLED: Auto-create session if none exists
         // No redirect to auth page - allow anonymous access
-        
+
         try {
             const response = await fetch('/api/user/session', {
                 method: 'POST',
@@ -592,7 +649,7 @@ class ThesidiaApp {
                     session_id: this.sessionId
                 })
             });
-            
+
             if (!response.ok) {
                 // Session invalid - create new anonymous session instead of redirecting
                 console.log('Session invalid, creating new anonymous session');
@@ -609,7 +666,7 @@ class ThesidiaApp {
                         session_id: null
                     })
                 });
-                
+
                 if (retryResponse.ok) {
                     const userData = await retryResponse.json();
                     this.userId = userData.user_id;
@@ -627,15 +684,15 @@ class ThesidiaApp {
                 const userData = await response.json();
                 this.userId = userData.user_id;
                 this.sessionId = userData.session_id;
-                
+
                 // Store in localStorage
                 localStorage.setItem('thesidia_user_id', this.userId);
                 localStorage.setItem('thesidia_session_id', this.sessionId);
             }
-            
+
             // Load user profile (if available)
             await this.loadUserProfile();
-            
+
             console.log('User session initialized:', { user_id: this.userId, session_id: this.sessionId });
         } catch (error) {
             console.error('Error setting up user session:', error);
@@ -650,21 +707,21 @@ class ThesidiaApp {
             }
         }
     }
-    
+
     async loadUserProfile() {
         if (!this.userId) return;
-        
+
         try {
             // Try to get profile from settings
             const response = await fetch(`/api/settings?user_id=${this.userId}&session_id=${this.sessionId}`);
             if (response.ok) {
                 const settings = await response.json();
                 const account = settings.get?.('account', {}) || settings.account || {};
-                
+
                 // Update sidebar profile if elements exist
                 const profileName = document.getElementById('sidebarProfileName');
                 const profileTag = document.getElementById('sidebarProfileTag');
-                
+
                 if (profileName) {
                     profileName.textContent = account.display_name || account.username || 'User';
                 }
@@ -681,13 +738,13 @@ class ThesidiaApp {
             if (profileTag) profileTag.textContent = '@user';
         }
     }
-    
+
     async exportConversation() {
         if (!this.userId && !this.sessionId) {
             alert('No user session found. Please refresh the page.');
             return;
         }
-        
+
         try {
             const response = await fetch('/api/user/export', {
                 method: 'POST',
@@ -699,11 +756,11 @@ class ThesidiaApp {
                     session_id: this.sessionId
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error('Export failed');
             }
-            
+
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -718,12 +775,12 @@ class ThesidiaApp {
             alert('Error exporting conversation. Please try again.');
         }
     }
-    
+
     async checkStatus() {
         try {
             const response = await fetch(this.statusEndpoint);
             const data = await response.json();
-            
+
             this.updateStatusIndicators(data);
         } catch (error) {
             console.error('Status check error:', error);
@@ -733,16 +790,16 @@ class ThesidiaApp {
             });
         }
     }
-    
+
     updateStatusIndicators(status) {
         const ollamaStatus = document.getElementById('ollamaStatus');
         const thesidiaStatus = document.getElementById('thesidiaStatus');
-        
+
         // Status indicators only exist on contexts page - silently return if not found
         if (!ollamaStatus || !thesidiaStatus) {
             return;
         }
-        
+
         // Ollama status
         const ollamaDot = ollamaStatus.querySelector('.status-dot');
         if (ollamaDot) {
@@ -754,7 +811,7 @@ class ThesidiaApp {
                 ollamaDot.classList.remove('online');
             }
         }
-        
+
         // Thesidia status
         const thesidiaDot = thesidiaStatus.querySelector('.status-dot');
         if (thesidiaDot) {
@@ -767,25 +824,25 @@ class ThesidiaApp {
             }
         }
     }
-    
+
     startStatusPolling() {
         // Check status every 5 seconds
         setInterval(() => {
             this.checkStatus();
         }, 5000);
     }
-    
+
     setupEventListeners() {
         try {
             // Send button
             const sendBtn = document.getElementById('sendBtn');
             const promptInput = document.getElementById('promptInput');
-            
+
             if (!sendBtn || !promptInput) {
                 console.error('Critical elements not found: sendBtn or promptInput');
                 return;
             }
-            
+
             sendBtn.addEventListener('click', () => this.sendMessage());
             promptInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -793,40 +850,40 @@ class ThesidiaApp {
                     this.sendMessage();
                 }
             });
-            
+
             // Auto-resize textarea and update cursor placeholder
             promptInput.addEventListener('input', () => {
                 this.autoResizeTextarea(promptInput);
                 this.updateCursorPlaceholder();
             });
-            
+
             // Update cursor placeholder on focus/blur
             promptInput.addEventListener('focus', () => this.updateCursorPlaceholder());
             promptInput.addEventListener('blur', () => this.updateCursorPlaceholder());
-            
+
             // Initial cursor placeholder state
             this.updateCursorPlaceholder();
-            
+
             // Set active nav item based on current page
             this.setActiveNavItem();
-            
+
             // Profile picture upload
             const profilePictureContainer = document.getElementById('profilePictureContainer');
             const profileImageInput = document.getElementById('profileImageInput');
             const profilePicture = document.getElementById('profilePicture');
-            
+
             if (profilePictureContainer && profileImageInput) {
                 // Load saved profile picture from localStorage
                 const savedProfileImage = localStorage.getItem('profileImage');
                 if (savedProfileImage && profilePicture) {
                     profilePicture.src = savedProfileImage;
                 }
-                
+
                 // Click to upload
                 profilePictureContainer.addEventListener('click', () => {
                     profileImageInput.click();
                 });
-                
+
                 // Handle image selection
                 profileImageInput.addEventListener('change', (e) => {
                     const file = e.target.files[0];
@@ -835,17 +892,17 @@ class ThesidiaApp {
                     }
                 });
             }
-            
+
             // New chat
             const newChatBtn = document.getElementById('newChatBtn');
             if (newChatBtn) newChatBtn.addEventListener('click', () => this.newConversation());
-            
+
             const exportBtn = document.getElementById('exportBtn');
             if (exportBtn) exportBtn.addEventListener('click', () => this.exportConversation());
         } catch (error) {
             console.error('Error setting up event listeners:', error);
         }
-        
+
         // Thinking toggle
         const thinkingToggle = document.getElementById('showThinkingToggle');
         if (thinkingToggle) {
@@ -861,7 +918,7 @@ class ThesidiaApp {
                 }
             });
         }
-        
+
         // Deep research toggle
         const deepResearchToggle = document.getElementById('deepResearchToggle');
         if (deepResearchToggle) {
@@ -877,9 +934,9 @@ class ThesidiaApp {
                 }
             });
         }
-        
+
         // Format selector and depth slider are handled in advanced options section below
-        
+
         // Toggle thinking display
         const toggleThinking = document.getElementById('toggleThinking');
         if (toggleThinking) {
@@ -896,18 +953,18 @@ class ThesidiaApp {
                 }
             });
         }
-        
+
         // HUD Module Panel Toggle with Animation
         const hudModuleToggle = document.getElementById('hudModuleToggle');
         const hudModulePanel = document.getElementById('hudModulePanel');
         const hudModules = document.querySelectorAll('.hud-module[data-module]');
-        
+
         // Load saved panel state
         const savedPanelState = localStorage.getItem('hudPanelOpen') === 'true';
-        
+
         const togglePanel = (show) => {
             if (!hudModulePanel) return;
-            
+
             if (show) {
                 hudModulePanel.style.display = 'block';
                 // Trigger reflow for animation
@@ -925,19 +982,19 @@ class ThesidiaApp {
                 localStorage.setItem('hudPanelOpen', 'false');
             }
         };
-        
+
         if (hudModuleToggle && hudModulePanel) {
             // Initialize panel state
             if (savedPanelState) {
                 togglePanel(true);
             }
-            
+
             hudModuleToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isVisible = hudModulePanel.classList.contains('show');
                 togglePanel(!isVisible);
             });
-            
+
             // Make modules clickable to open panel
             hudModules.forEach(module => {
                 module.addEventListener('click', (e) => {
@@ -947,17 +1004,17 @@ class ThesidiaApp {
                     }
                 });
             });
-            
+
             // Click outside to close
             document.addEventListener('click', (e) => {
-                if (hudModulePanel.classList.contains('show') && 
-                    !hudModulePanel.contains(e.target) && 
+                if (hudModulePanel.classList.contains('show') &&
+                    !hudModulePanel.contains(e.target) &&
                     !hudModuleToggle.contains(e.target) &&
                     !Array.from(hudModules).some(m => m.contains(e.target))) {
                     togglePanel(false);
                 }
             });
-            
+
             // Auto-hide after selection (2s delay)
             const controlButtons = document.querySelectorAll('.hud-control-btn');
             controlButtons.forEach(btn => {
@@ -970,7 +1027,7 @@ class ThesidiaApp {
                 });
             });
         }
-        
+
         // File upload
         const fileInput = document.getElementById('fileInput');
         const attachBtn = document.getElementById('attachBtn');
@@ -984,10 +1041,10 @@ class ThesidiaApp {
 
         // Control Panel
         this.setupControlPanel();
-        
+
         // Format selector (HUD controls)
         // Removed all format/depth controls - Thesidia determines these automatically
-        
+
         // Status display updates
         const statusDisplay = document.getElementById('statusDisplay');
         if (statusDisplay) {
@@ -1004,7 +1061,7 @@ class ThesidiaApp {
                     statusDisplay.textContent = statusMap[status] || 'RDY';
                 }
             };
-            
+
             // Check initial status
             this.checkStatus().then(() => {
                 this.updateHUDStatus('ready');
@@ -1013,13 +1070,13 @@ class ThesidiaApp {
             });
         }
     }
-    
+
     handleFileUpload(files, container) {
         if (!files || files.length === 0) return;
-        
+
         container.style.display = 'flex';
         container.innerHTML = '';
-        
+
         Array.from(files).forEach((file, index) => {
             const fileDiv = document.createElement('div');
             fileDiv.className = 'hud-attached-file';
@@ -1035,11 +1092,11 @@ class ThesidiaApp {
             `;
             container.appendChild(fileDiv);
         });
-        
+
         // Store files for sending
         this.attachedFiles = Array.from(files);
     }
-    
+
     setupAutoResize() {
         const promptInput = document.getElementById('promptInput');
         if (!promptInput) return; // Element doesn't exist on this page
@@ -1048,7 +1105,7 @@ class ThesidiaApp {
             promptInput.style.height = Math.min(promptInput.scrollHeight, 200) + 'px';
         });
     }
-    
+
     setupKeyboardShortcuts() {
         document.addEventListener('keydown', (e) => {
             // Cmd/Ctrl + K for new chat
@@ -1056,44 +1113,57 @@ class ThesidiaApp {
                 e.preventDefault();
                 this.newConversation();
             }
-            
+
             // Escape to close sidebar
             if (e.key === 'Escape') {
                 this.closeLeftSidebar();
             }
         });
     }
-    
+
     async sendMessage() {
         const promptInput = document.getElementById('promptInput');
         const message = promptInput.value.trim();
-        
+
         if (!message || this.isProcessing) return;
-        
+
         // Clear input
         promptInput.value = '';
         promptInput.style.height = 'auto';
         this.updateCursorPlaceholder();
-        
+
         // Add user message
         this.addMessage('user', message);
-        
+
         // Show typing indicator
         this.showTypingIndicator();
-        
+
         // Disable send button
         this.isProcessing = true;
         this.updateSendButton();
         if (this.updateHUDStatus) this.updateHUDStatus('processing');
-        
+
         try {
             console.log('Calling Thesidia API with message:', message);
+
+            // Phase 3: Edge AI Pre-processing (Bot Detection / Sentiment)
+            if (this.edgeAIReady) {
+                console.log("Running Edge AI Bot Detection...");
+                window.edgeInference.classifyBot(message).then(analysis => {
+                    console.log("Edge AI Analysis:", analysis);
+                    if (analysis.is_bot && analysis.confidence > 0.8) {
+                        console.warn("Edge AI detected high bot probability:", analysis.reason);
+                        // We could flag the message here or show a warning
+                    }
+                });
+            }
+
             // Send to backend (streaming handles UI updates)
             await this.callThesidiaAPI(message);
-            
+
             // Hide typing indicator (streaming will handle this)
             this.hideTypingIndicator();
-            
+
         } catch (error) {
             console.error('Error:', error);
             this.hideTypingIndicator();
@@ -1105,29 +1175,29 @@ class ThesidiaApp {
             if (this.updateHUDStatus) this.updateHUDStatus('ready');
         }
     }
-    
+
     async callThesidiaAPI(message) {
         // Security: Sanitize input
         let sanitizedMessage = this.sanitizeInput(message);
-        
+
         // Format and depth are now controlled by UI, not auto-detection
-        
+
         // Preserve this context for nested callbacks
         const self = this;
-        
+
         // Use streaming by default
         return new Promise((resolve, reject) => {
             // Generate message ID for tracking
             const messageId = this.generateMessageId();
-            
+
             // Initialize thinking steps storage for this message
             if (!self.thinkingSteps[messageId]) {
                 self.thinkingSteps[messageId] = [];
             }
-            
+
             // Use streaming by default
             const useStreaming = true; // Enable streaming for better UX
-            
+
             // Store query data for regeneration
             const queryData = {
                 query: sanitizedMessage,
@@ -1139,23 +1209,23 @@ class ThesidiaApp {
                     session_id: this.sessionId
                 }
             };
-            
+
             // Create message element for streaming
             const messagesContainer = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message thesidia';
             messageDiv.setAttribute('data-message-id', messageId);
-            
+
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
-            
+
             const textElement = document.createElement('p');
             textElement.textContent = '';
             contentDiv.appendChild(textElement);
-            
+
             messageDiv.appendChild(contentDiv);
             messagesContainer.appendChild(messageDiv);
-            
+
             // Store message data for regeneration
             this.messageStore.set(messageId, {
                 query: sanitizedMessage,
@@ -1163,14 +1233,14 @@ class ThesidiaApp {
                 timestamp: new Date().toISOString(),
                 type: 'thesidia'
             });
-            
+
             // Progress indicator - Better styling
             const progressDiv = document.createElement('div');
             progressDiv.className = 'progress-indicator';
             progressDiv.style.display = 'none';
             progressDiv.style.marginTop = '12px';
             messageDiv.appendChild(progressDiv);
-            
+
             // Cool reasoning visualization (always show, but styled differently)
             const reasoningDiv = document.createElement('div');
             reasoningDiv.className = 'reasoning-visualization';
@@ -1189,7 +1259,7 @@ class ThesidiaApp {
                 </div>
             `;
             messageDiv.appendChild(reasoningDiv);
-            
+
             // Thinking indicator (if enabled - for detailed steps)
             let thinkingDiv = null;
             if (this.showThinking) {
@@ -1199,7 +1269,7 @@ class ThesidiaApp {
                 thinkingDiv.style.marginTop = '8px';
                 messageDiv.appendChild(thinkingDiv);
             }
-            
+
             // Use fetch - handle both streaming and non-streaming
             console.log('Making fetch request to:', this.apiEndpoint, { message: sanitizedMessage });
             // Abort + timeout protection (prevents hanging UI on stalled streams)
@@ -1227,10 +1297,10 @@ class ThesidiaApp {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+
                 // Check content type to determine if streaming or JSON
                 const contentType = response.headers.get('content-type') || '';
-                
+
                 if (useStreaming && contentType.includes('text/event-stream')) {
                     // Handle streaming response (SSE)
                     const reader = response.body.getReader();
@@ -1238,7 +1308,7 @@ class ThesidiaApp {
                     let buffer = '';
                     let fullResponse = '';
                     let currentEvent = null;
-                    
+
                     const readChunk = () => {
                         reader.read().then(({ done, value }) => {
                             if (done) {
@@ -1249,34 +1319,34 @@ class ThesidiaApp {
                                 }
                                 self.scrollToBottom();
                                 self.saveConversation(sanitizedMessage, fullResponse);
-                                
+
                                 // Add action buttons after streaming completes
                                 // Only add if message content exists
                                 if (fullResponse && fullResponse.trim().length > 0) {
                                     self.addMessageActions(messageDiv, 'thesidia', fullResponse, messageId, queryData);
                                 }
-                                
+
                                 resolve(fullResponse);
                                 clearTimeout(timeoutId);
                                 return;
                             }
-                            
+
                             buffer += decoder.decode(value, { stream: true });
                             const lines = buffer.split('\n');
                             buffer = lines.pop() || ''; // Keep incomplete line in buffer
-                            
+
                             for (const line of lines) {
                                 if (line.trim() === '') continue;
-                                
+
                                 if (line.startsWith('event: ')) {
                                     currentEvent = line.substring(7).trim();
                                     continue;
                                 }
-                                
+
                                 if (line.startsWith('data: ')) {
                                     try {
                                         const data = JSON.parse(line.substring(6));
-                                        
+
                                         if (data.phase === 'progress' || currentEvent === 'progress') {
                                             // Show cool reasoning visualization
                                             if (reasoningDiv) {
@@ -1299,19 +1369,19 @@ class ThesidiaApp {
                                         } else if (data.text || currentEvent === 'chunk') {
                                             // Stream text chunk with typing animation
                                             const chunk = data.text || '';
-                                            
+
                                             // Hide reasoning visualization when streaming starts
                                             if (reasoningDiv && chunk.length > 0) {
                                                 reasoningDiv.style.display = 'none';
                                             }
-                                            
+
                                             fullResponse += chunk;
-                                            
+
                                             // Update status to streaming
                                             if (self.updateHUDStatus && chunk.length > 0) {
                                                 self.updateHUDStatus('streaming');
                                             }
-                                            
+
                                             // Hide progress and reasoning when streaming starts
                                             if (chunk.length > 0) {
                                                 if (progressDiv.style.display !== 'none') {
@@ -1321,12 +1391,12 @@ class ThesidiaApp {
                                                     reasoningDiv.style.display = 'none';
                                                 }
                                             }
-                                            
+
                                             // Add chunk to typing queue for smooth character-by-character display
                                             self.typeText(textElement, chunk, () => {
                                                 self.scrollToBottom();
                                             });
-                                            
+
                                             // Streaming TTS: Read chunk as it arrives (if enabled)
                                             if (self.ttsEnabled && self.speakChunk) {
                                                 self.speakChunk(chunk, messageId);
@@ -1341,11 +1411,11 @@ class ThesidiaApp {
                                                 message: data.message || data.thinking,
                                                 timestamp: new Date().toISOString()
                                             });
-                                            
+
                                             // Only show thinking steps if explicitly enabled
                                             if (self.showThinking) {
                                                 self.displayThinkingStep(data.step || 'thinking', data.message || data.thinking);
-                                                
+
                                                 // Also show inline thinking indicator
                                                 if (thinkingDiv) {
                                                     thinkingDiv.style.display = 'block';
@@ -1368,7 +1438,7 @@ class ThesidiaApp {
                                             progressDiv.style.display = 'none';
                                             self.hideTypingIndicator();
                                             if (self.updateHUDStatus) self.updateHUDStatus('ready');
-                                            
+
                                             // Add action buttons after completion
                                             if (fullResponse && fullResponse.trim().length > 0) {
                                                 self.addMessageActions(messageDiv, 'thesidia', fullResponse, messageId, queryData);
@@ -1386,7 +1456,7 @@ class ThesidiaApp {
                                     currentEvent = null;
                                 }
                             }
-                            
+
                             readChunk();
                         }).catch(err => {
                             console.error('Streaming error:', err);
@@ -1397,14 +1467,14 @@ class ThesidiaApp {
                             // Retry once on transient network failures
                             if (attempt < 1 && (err.name === 'AbortError' || /network|fetch/i.test(String(err)))) {
                                 const backoff = 500 * (attempt + 1);
-                                setTimeout(() => doFetch(attempt + 1).then(() => {}).catch(reject), backoff);
+                                setTimeout(() => doFetch(attempt + 1).then(() => { }).catch(reject), backoff);
                                 return;
                             }
                             reject(err);
                             clearTimeout(timeoutId);
                         });
                     };
-                    
+
                     readChunk();
                 } else {
                     // Handle non-streaming JSON response
@@ -1413,13 +1483,13 @@ class ThesidiaApp {
                         if (progressDiv.parentNode) {
                             progressDiv.style.display = 'none';
                         }
-                        
+
                         const responseText = data.response || data.message || 'No response';
                         textElement.textContent = responseText;
-                        
+
                         // Add action buttons for non-streaming response
                         this.addMessageActions(messageDiv, 'thesidia', responseText, messageId, queryData);
-                        
+
                         this.scrollToBottom();
                         this.saveConversation(sanitizedMessage, responseText);
                         resolve(responseText);
@@ -1436,7 +1506,7 @@ class ThesidiaApp {
                 // Retry once on transient failures
                 if (attempt < 1 && (err.name === 'AbortError' || /network|fetch/i.test(String(err)))) {
                     const backoff = 500 * (attempt + 1);
-                    setTimeout(() => doFetch(attempt + 1).then(() => {}).catch(reject), backoff);
+                    setTimeout(() => doFetch(attempt + 1).then(() => { }).catch(reject), backoff);
                     return;
                 }
                 reject(err);
@@ -1446,7 +1516,7 @@ class ThesidiaApp {
             doFetch(0).catch(reject);
         });
     }
-    
+
     async callThesidiaAPIFallback(message) {
         // Fallback non-streaming method
         const response = await fetch(this.apiEndpoint, {
@@ -1463,58 +1533,58 @@ class ThesidiaApp {
                 session_id: this.sessionId
             })
         });
-        
+
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // Display thinking steps if available
         if (data.thinking_steps && data.thinking_steps.length > 0) {
             this.displayThinkingSteps(data.thinking_steps);
         }
-        
+
         return data.response || data.message || 'No response received';
     }
-    
+
     displayThinkingSteps(steps) {
         const thinkingContent = document.getElementById('thinkingContent');
         const thinkingSteps = document.getElementById('thinkingSteps');
-        
+
         if (!thinkingContent || !thinkingSteps) return;
-        
+
         thinkingContent.innerHTML = '';
-        
+
         steps.forEach((step, index) => {
             const stepDiv = document.createElement('div');
             stepDiv.className = 'thinking-step';
             stepDiv.style.animationDelay = `${index * 0.1}s`;
-            
+
             stepDiv.innerHTML = `
                 <div class="thinking-step-header">${this.escapeHtml(step.step)}</div>
                 <div class="thinking-step-detail">${this.escapeHtml(step.detail)}</div>
                 <div class="thinking-step-time">${new Date(step.timestamp).toLocaleTimeString()}</div>
             `;
-            
+
             thinkingContent.appendChild(stepDiv);
         });
-        
+
         thinkingSteps.style.display = 'block';
         this.scrollToBottom();
     }
-    
+
     displayThinkingStep(step, message) {
         // Display real-time thinking step
         const thinkingContent = document.getElementById('thinkingContent');
         const thinkingSteps = document.getElementById('thinkingSteps');
-        
+
         if (!thinkingContent || !thinkingSteps || !this.showThinking) return;
-        
+
         // Show thinking steps container
         thinkingSteps.style.display = 'block';
-        
+
         // Add or update thinking step
         const stepDiv = document.createElement('div');
         stepDiv.className = 'thinking-step';
@@ -1523,11 +1593,11 @@ class ThesidiaApp {
             <div class="thinking-step-detail">${this.escapeHtml(message)}</div>
             <div class="thinking-step-time">${new Date().toLocaleTimeString()}</div>
         `;
-        
+
         thinkingContent.appendChild(stepDiv);
         this.scrollToBottom();
     }
-    
+
     sanitizeInput(input) {
         // Basic sanitization - remove potentially dangerous characters
         return input
@@ -1535,32 +1605,32 @@ class ThesidiaApp {
             .trim()
             .slice(0, 10000); // Limit length
     }
-    
+
     addMessageWithTyping(type, text, speed = 15) {
         // Create message element
         const messagesContainer = document.getElementById('messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}`;
-        
+
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-        
+
         const textElement = document.createElement('p');
         textElement.textContent = '';
         contentDiv.appendChild(textElement);
-        
+
         messageDiv.appendChild(contentDiv);
         messagesContainer.appendChild(messageDiv);
-        
+
         // Scroll to bottom
         this.scrollToBottom();
-        
+
         // Remove system message if exists
         const systemMessage = messagesContainer.querySelector('.system-message');
         if (systemMessage && type !== 'system') {
             systemMessage.remove();
         }
-        
+
         // Type out the text letter by letter
         let index = 0;
         const typingInterval = setInterval(() => {
@@ -1588,25 +1658,25 @@ class ThesidiaApp {
             }
         }, speed);
     }
-    
+
     addMessage(type, content, messageId = null, queryData = null) {
         const messagesContainer = document.getElementById('messages');
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}`;
-        
+
         // Generate message ID if not provided
         if (!messageId) {
             messageId = this.generateMessageId();
         }
         messageDiv.setAttribute('data-message-id', messageId);
-        
+
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-        
+
         // Format content (support markdown-like formatting)
         const formattedContent = this.formatMessage(content);
         contentDiv.innerHTML = formattedContent;
-        
+
         // Set up event delegation for action suggestion buttons
         const actionButtons = contentDiv.querySelectorAll('.action-suggestion-btn');
         actionButtons.forEach(btn => {
@@ -1617,16 +1687,16 @@ class ThesidiaApp {
                 }
             });
         });
-        
+
         messageDiv.appendChild(contentDiv);
-        
+
         // Add action buttons for Thesidia messages
         if (type === 'thesidia') {
             this.addMessageActions(messageDiv, type, content, messageId, queryData);
         }
-        
+
         messagesContainer.appendChild(messageDiv);
-        
+
         // Store message data for regeneration (only for Thesidia responses)
         if (type === 'thesidia' && queryData) {
             this.messageStore.set(messageId, {
@@ -1636,31 +1706,31 @@ class ThesidiaApp {
                 type: type
             });
         }
-        
+
         // Scroll to bottom
         this.scrollToBottom();
-        
+
         // Remove system message if exists
         const systemMessage = messagesContainer.querySelector('.system-message');
         if (systemMessage && type !== 'system') {
             systemMessage.remove();
         }
     }
-    
+
     generateMessageId() {
         return 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
-    
+
     addMessageActions(messageDiv, messageType, content, messageId, queryData) {
         // Check if actions already exist to prevent duplication
         const existingActions = messageDiv.querySelector('.message-actions');
         if (existingActions) {
             existingActions.remove(); // Remove old actions before adding new ones
         }
-        
+
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'message-actions';
-        
+
         // Regenerate button (only if we have query data)
         if (queryData) {
             const regenerateBtn = document.createElement('button');
@@ -1670,7 +1740,7 @@ class ThesidiaApp {
             regenerateBtn.onclick = () => this.regenerateMessage(messageId);
             actionsDiv.appendChild(regenerateBtn);
         }
-        
+
         // Sources button (if sources exist)
         const sourcesData = this.extractSourcesData(content, messageId);
         if (sourcesData.hasSources) {
@@ -1681,14 +1751,14 @@ class ThesidiaApp {
             sourcesBtn.onclick = () => this.showSourcesPanel(messageId, sourcesData);
             actionsDiv.appendChild(sourcesBtn);
         }
-        
+
         // Read button - play message with selected voice
         const readBtn = document.createElement('button');
         readBtn.className = 'message-action read-action';
         readBtn.textContent = 'read';
         readBtn.setAttribute('aria-label', 'Read message aloud');
         const self = this; // Preserve context
-        readBtn.onclick = function() {
+        readBtn.onclick = function () {
             console.log('Read button clicked', { hasSelf: !!self, hasReadMessage: !!(self && self.readMessage) });
             // Direct call - function should exist
             if (self) {
@@ -1704,7 +1774,7 @@ class ThesidiaApp {
             }
         };
         actionsDiv.appendChild(readBtn);
-        
+
         // Copy button
         const copyBtn = document.createElement('button');
         copyBtn.className = 'message-action';
@@ -1712,7 +1782,7 @@ class ThesidiaApp {
         copyBtn.setAttribute('aria-label', 'Copy message');
         copyBtn.onclick = () => this.copyMessage(content);
         actionsDiv.appendChild(copyBtn);
-        
+
         // Share button
         const shareBtn = document.createElement('button');
         shareBtn.className = 'message-action';
@@ -1720,10 +1790,10 @@ class ThesidiaApp {
         shareBtn.setAttribute('aria-label', 'Share message');
         shareBtn.onclick = (e) => this.shareMessage(content, e);
         actionsDiv.appendChild(shareBtn);
-        
+
         messageDiv.appendChild(actionsDiv);
     }
-    
+
     saveMessage(messageId, content, event = null) {
         // Save is already handled by saveConversation, but we can show feedback
         const btn = event?.target || document.querySelector(`[data-message-id="${messageId}"] .message-action`);
@@ -1736,31 +1806,31 @@ class ThesidiaApp {
         }
         // Note: Actual saving happens via saveConversation() which is called after message completion
     }
-    
+
     async regenerateMessage(messageId) {
         const messageData = this.messageStore.get(messageId);
         if (!messageData) {
             console.error('Message data not found for regeneration');
             return;
         }
-        
+
         const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
         if (!messageDiv) {
             console.error('Message element not found');
             return;
         }
-        
+
         // Show loading state
         const regenerateBtn = messageDiv.querySelector('.message-action:nth-of-type(2)');
         if (regenerateBtn) {
             regenerateBtn.textContent = 'regenerating...';
             regenerateBtn.disabled = true;
         }
-        
+
         // Get original query and params
         const originalQuery = messageData.query;
         const originalParams = messageData.params || {};
-        
+
         // Call API again with same parameters
         try {
             await this.callThesidiaAPI(originalQuery);
@@ -1773,16 +1843,16 @@ class ThesidiaApp {
             }
         }
     }
-    
+
     async copyMessage(content, event = null) {
         try {
             // Strip HTML tags for plain text copy
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = content;
             const plainText = tempDiv.textContent || tempDiv.innerText || content;
-            
+
             await navigator.clipboard.writeText(plainText);
-            
+
             // Show feedback
             const btn = event?.target || document.activeElement;
             if (btn && btn.classList.contains('message-action')) {
@@ -1815,19 +1885,19 @@ class ThesidiaApp {
             document.body.removeChild(textArea);
         }
     }
-    
+
     async shareMessage(content, event = null) {
         // Strip HTML for sharing
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = content;
         const plainText = tempDiv.textContent || tempDiv.innerText || content;
-        
+
         const shareData = {
             title: 'Thesidia Response',
             text: plainText.substring(0, 1000), // Limit length
             url: window.location.href
         };
-        
+
         try {
             if (navigator.share && navigator.share.canShare && navigator.share.canShare(shareData)) {
                 await navigator.share(shareData);
@@ -1835,7 +1905,7 @@ class ThesidiaApp {
                 // Fallback: copy shareable link or text
                 const shareUrl = `${window.location.origin}${window.location.pathname}?share=${encodeURIComponent(plainText.substring(0, 200))}`;
                 await navigator.clipboard.writeText(shareUrl);
-                
+
                 const btn = event?.target || document.activeElement;
                 if (btn && btn.classList.contains('message-action')) {
                     const originalText = btn.textContent;
@@ -1853,7 +1923,7 @@ class ThesidiaApp {
             }
         }
     }
-    
+
     formatMessage(content) {
         // Remove leaked "General Framework" blocks (including markdown variants) - strip to end of message
         content = content.replace(/\*{0,2}\s*General Framework:\s*\*{0,2}[\s\S]*$/gi, '');
@@ -1862,12 +1932,12 @@ class ThesidiaApp {
         content = content.replace(/\*{0,2}\s*Practice:\s*\*{0,2}.*?\n/gi, '');
         content = content.replace(/\*{0,2}\s*Learning:\s*\*{0,2}.*?\n/gi, '');
         content = content.replace(/\*{0,2}\s*Growth:\s*\*{0,2}.*?\n/gi, '');
-        
+
         // Convert "I can also" section to clickable action buttons
         const iCanAlsoMatch = content.match(/\*\*I can also:\*\*([\s\S]*?)(?=\n\n|$)/i);
         if (iCanAlsoMatch) {
             const actionsText = iCanAlsoMatch[1];
-            
+
             // Support both formats:
             // - multiline: "1. foo\n2. bar"
             // - single line: "1. foo 2. bar"
@@ -1884,7 +1954,7 @@ class ThesidiaApp {
                     return actionText || null;
                 }).filter(Boolean);
             }
-            
+
             if (actions.length > 0) {
                 // Replace the text section with clickable buttons
                 const actionsHtml = actions.map(action => {
@@ -1892,14 +1962,14 @@ class ThesidiaApp {
                     // Use data attribute and event delegation instead of inline onclick
                     return `<button class="action-suggestion-btn" data-action="${escapedAction.replace(/"/g, '&quot;')}">${escapedAction}</button>`;
                 }).join('');
-                
+
                 content = content.replace(
                     /\*\*I can also:\*\*[\s\S]*?(?=\n\n|$)/i,
                     `<div class="action-suggestions"><strong>I can also:</strong><div class="action-suggestions-list">${actionsHtml}</div></div>`
                 );
             }
         }
-        
+
         // Simple formatting - convert code blocks, preserve line breaks
         return content
             .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
@@ -1908,7 +1978,7 @@ class ThesidiaApp {
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>');
     }
-    
+
     handleActionSuggestion(actionText) {
         // When user clicks an action suggestion, send it as a new message
         const promptInput = document.getElementById('promptInput');
@@ -1921,21 +1991,21 @@ class ThesidiaApp {
             }
         }
     }
-    
+
     showTypingIndicator() {
         const typingIndicator = document.getElementById('typingIndicator');
         typingIndicator.style.display = 'block';
         this.scrollToBottom();
     }
-    
+
     hideTypingIndicator() {
         const typingIndicator = document.getElementById('typingIndicator');
         typingIndicator.style.display = 'none';
     }
-    
+
     // Typing animation queue for smooth character-by-character display
     typingQueues = new Map();
-    
+
     typeText(element, text, onComplete = null) {
         // Get or create typing queue for this element
         if (!this.typingQueues.has(element)) {
@@ -1946,21 +2016,21 @@ class ThesidiaApp {
                 callbacks: []
             });
         }
-        
+
         const queue = this.typingQueues.get(element);
         queue.queue += text;
-        
+
         // Add callback if provided
         if (onComplete) {
             queue.callbacks.push(onComplete);
         }
-        
+
         // Start typing if not already typing
         if (!queue.isTyping) {
             this._processTypingQueue(element, queue);
         }
     }
-    
+
     _processTypingQueue(element, queue) {
         if (queue.queue.length === 0) {
             queue.isTyping = false;
@@ -1969,29 +2039,29 @@ class ThesidiaApp {
             queue.callbacks = [];
             return;
         }
-        
+
         queue.isTyping = true;
-        
+
         // Type one character
         const char = queue.queue[0];
         queue.queue = queue.queue.slice(1);
-        
+
         // Handle special characters
         if (char === '\n') {
             element.innerHTML += '<br>';
         } else {
             element.textContent += char;
         }
-        
+
         // Scroll to bottom as text appears
         this.scrollToBottom();
-        
+
         // Continue typing next character
         setTimeout(() => {
             this._processTypingQueue(element, queue);
         }, queue.speed);
     }
-    
+
     scrollToBottom() {
         const chatContainer = document.getElementById('chatContainer');
         setTimeout(() => {
@@ -2001,19 +2071,19 @@ class ThesidiaApp {
             });
         }, 100);
     }
-    
+
     updateSendButton() {
         const sendBtn = document.getElementById('sendBtn');
         sendBtn.disabled = this.isProcessing;
     }
-    
+
     toggleLeftSidebar() {
         const sidebar = document.getElementById('leftSidebar');
         const app = document.getElementById('app');
-        
+
         if (sidebar && app) {
             const isOpen = sidebar.classList.contains('open');
-            
+
             if (isOpen) {
                 this.closeLeftSidebar();
             } else {
@@ -2027,11 +2097,11 @@ class ThesidiaApp {
             }
         }
     }
-    
+
     closeLeftSidebar() {
         const sidebar = document.getElementById('leftSidebar');
         const app = document.getElementById('app');
-        
+
         if (sidebar && app) {
             // Adjust prompt bar position
             this.adjustPromptBarForSidebar(false);
@@ -2042,19 +2112,19 @@ class ThesidiaApp {
             document.body.style.overflow = '';
         }
     }
-    
+
     adjustPromptBarForSidebar(isOpen) {
         // Handle both prompt bar types
         const hudPromptBar = document.querySelector('.hud-prompt-container');
         const promptBar = document.querySelector('.prompt-bar-container');
         const targetBar = hudPromptBar || promptBar;
-        
+
         if (!targetBar) return;
-        
+
         // Get sidebar width
         const sidebar = document.getElementById('leftSidebar');
         const sidebarWidth = sidebar ? (sidebar.offsetWidth || 240) : 240;
-        
+
         if (isOpen) {
             // Adjust left and remove right to allow proper width calculation
             targetBar.style.left = `${sidebarWidth}px`;
@@ -2065,10 +2135,10 @@ class ThesidiaApp {
             targetBar.style.right = '0';
         }
     }
-    
+
     handleProfileImageUpload(file, imgElement) {
         if (!file || !imgElement) return;
-        
+
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image();
@@ -2079,32 +2149,32 @@ class ThesidiaApp {
                 canvas.width = size;
                 canvas.height = size;
                 const ctx = canvas.getContext('2d');
-                
+
                 // Calculate crop to make it square (center crop)
                 let sourceX = 0;
                 let sourceY = 0;
                 let sourceSize = Math.min(img.width, img.height);
-                
+
                 if (img.width > img.height) {
                     sourceX = (img.width - img.height) / 2;
                 } else {
                     sourceY = (img.height - img.width) / 2;
                 }
-                
+
                 // Draw image centered and cropped to square
                 ctx.drawImage(
                     img,
                     sourceX, sourceY, sourceSize, sourceSize, // Source (cropped square)
                     0, 0, size, size // Destination (canvas)
                 );
-                
+
                 // Convert to data URL and set as image source
                 const dataURL = canvas.toDataURL('image/jpeg', 0.9);
                 imgElement.src = dataURL;
-                
+
                 // Save to localStorage for persistence
                 localStorage.setItem('profileImage', dataURL);
-                
+
                 // Also update header profile picture if it exists
                 const headerProfile = document.getElementById('headerProfilePicture');
                 if (headerProfile) {
@@ -2113,7 +2183,7 @@ class ThesidiaApp {
                         headerImg.src = dataURL;
                     }
                 }
-                
+
                 console.log('Profile picture updated');
             };
             img.onerror = () => {
@@ -2126,14 +2196,14 @@ class ThesidiaApp {
         };
         reader.readAsDataURL(file);
     }
-    
+
     setActiveNavItem() {
         const navItems = document.querySelectorAll('.nav-item');
         const currentPath = window.location.pathname;
-        
+
         navItems.forEach(item => {
             const href = item.getAttribute('href');
-            if (href === currentPath || 
+            if (href === currentPath ||
                 (currentPath === '/' && href === '/') ||
                 (currentPath === '/contexts.html' && href === '/')) {
                 item.classList.add('active');
@@ -2142,7 +2212,7 @@ class ThesidiaApp {
             }
         });
     }
-    
+
     newConversation() {
         this.currentConversationId = null;
         const messagesContainer = document.getElementById('messages');
@@ -2155,12 +2225,12 @@ class ThesidiaApp {
         `;
         this.closeLeftSidebar();
     }
-    
+
     saveConversation(userMessage, thesidiaResponse) {
         if (!this.currentConversationId) {
             this.currentConversationId = Date.now().toString();
         }
-        
+
         const conversation = {
             id: this.currentConversationId,
             title: userMessage.slice(0, 50),
@@ -2171,16 +2241,16 @@ class ThesidiaApp {
                 { type: 'thesidia', content: thesidiaResponse }
             ]
         };
-        
+
         // Save to localStorage (in production, use secure backend)
         this.conversations.unshift(conversation);
         this.conversations = this.conversations.slice(0, 50); // Keep last 50
         localStorage.setItem('thesidia_conversations', JSON.stringify(this.conversations));
-        
+
         this.updateConversationsList();
 
         // Best-effort server sync (non-blocking)
-        this.syncConversationToServer(conversation).catch(() => {});
+        this.syncConversationToServer(conversation).catch(() => { });
     }
 
     async syncConversationToServer(conversation) {
@@ -2208,7 +2278,7 @@ class ThesidiaApp {
             // Silent: localStorage remains the source of truth if server is unreachable
         }
     }
-    
+
     loadConversations() {
         try {
             const stored = localStorage.getItem('thesidia_conversations');
@@ -2247,29 +2317,29 @@ class ThesidiaApp {
             return false;
         }
     }
-    
+
     updateConversationsList() {
         const listContainer = document.getElementById('conversationsList');
         if (!listContainer) return; // Not on contexts page
         listContainer.innerHTML = '';
-        
+
         this.conversations.forEach(conv => {
             const item = document.createElement('div');
             item.className = 'conversation-item';
             if (conv.id === this.currentConversationId) {
                 item.classList.add('active');
             }
-            
+
             item.innerHTML = `
                 <div class="conversation-title">${this.escapeHtml(conv.title)}</div>
                 <div class="conversation-preview">${this.escapeHtml(conv.preview)}</div>
             `;
-            
+
             item.addEventListener('click', () => this.loadConversation(conv.id));
             listContainer.appendChild(item);
         });
     }
-    
+
     loadConversation(conversationId) {
         const conversation = this.conversations.find(c => c.id === conversationId);
         if (!conversation) return;
@@ -2321,13 +2391,13 @@ class ThesidiaApp {
             return false;
         }
     }
-    
+
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
-    
+
     // Sources Panel - Slide up from bottom
     extractSourcesData(content, messageId = null) {
         /**Extract sources, citations, and thinking steps from response*/
@@ -2336,13 +2406,13 @@ class ThesidiaApp {
             citations: [],
             thinkingSteps: []
         };
-        
+
         // Extract ::SOURCES:: section
         const sourcesMatch = content.match(/::SOURCES::\s*\n([\s\S]*?)(?=\n\n|$)/);
         if (sourcesMatch) {
             const sourcesText = sourcesMatch[1].trim();
             const citationLines = sourcesText.split('\n').filter(line => line.trim());
-            
+
             sourcesData.citations = citationLines.map(line => {
                 const match = line.match(/\[(\d+)\]\s*(.+?)\s*-\s*(.+)/);
                 if (match) {
@@ -2358,10 +2428,10 @@ class ThesidiaApp {
                     url: null
                 };
             });
-            
+
             sourcesData.hasSources = sourcesData.citations.length > 0;
         }
-        
+
         // Get thinking steps if stored
         if (messageId && this.thinkingSteps && this.thinkingSteps[messageId]) {
             sourcesData.thinkingSteps = this.thinkingSteps[messageId];
@@ -2369,10 +2439,10 @@ class ThesidiaApp {
                 sourcesData.hasSources = true;
             }
         }
-        
+
         return sourcesData;
     }
-    
+
     showSourcesPanel(messageId, sourcesData) {
         /**Show slide-up panel from bottom with sources, citations, thinking steps*/
         // Remove existing panel
@@ -2380,15 +2450,15 @@ class ThesidiaApp {
         if (existingPanel) {
             existingPanel.remove();
         }
-        
+
         // Create panel
         const panel = document.createElement('div');
         panel.id = 'sources-panel';
         panel.className = 'sources-panel';
-        
+
         const panelContent = document.createElement('div');
         panelContent.className = 'sources-panel-content';
-        
+
         // Header
         const header = document.createElement('div');
         header.className = 'sources-panel-header';
@@ -2397,24 +2467,24 @@ class ThesidiaApp {
             <button class="sources-panel-close" aria-label="Close">×</button>
         `;
         panelContent.appendChild(header);
-        
+
         // Body
         const body = document.createElement('div');
         body.className = 'sources-panel-body';
-        
+
         // Citations
         if (sourcesData.citations && sourcesData.citations.length > 0) {
             const citationsSection = document.createElement('div');
             citationsSection.className = 'sources-section';
             citationsSection.innerHTML = '<h4>Citations</h4>';
-            
+
             const citationsList = document.createElement('div');
             citationsList.className = 'sources-list';
-            
+
             sourcesData.citations.forEach((citation, index) => {
                 const item = document.createElement('div');
                 item.className = 'source-item';
-                
+
                 if (citation.url) {
                     item.innerHTML = `
                         <div class="source-number">${citation.number || index + 1}</div>
@@ -2431,23 +2501,23 @@ class ThesidiaApp {
                         </div>
                     `;
                 }
-                
+
                 citationsList.appendChild(item);
             });
-            
+
             citationsSection.appendChild(citationsList);
             body.appendChild(citationsSection);
         }
-        
+
         // Thinking steps
         if (sourcesData.thinkingSteps && sourcesData.thinkingSteps.length > 0) {
             const thinkingSection = document.createElement('div');
             thinkingSection.className = 'sources-section';
             thinkingSection.innerHTML = '<h4>Thinking Steps</h4>';
-            
+
             const thinkingList = document.createElement('div');
             thinkingList.className = 'thinking-steps-list';
-            
+
             sourcesData.thinkingSteps.forEach((step, index) => {
                 const stepItem = document.createElement('div');
                 stepItem.className = 'thinking-step-item';
@@ -2457,26 +2527,26 @@ class ThesidiaApp {
                 `;
                 thinkingList.appendChild(stepItem);
             });
-            
+
             thinkingSection.appendChild(thinkingList);
             body.appendChild(thinkingSection);
         }
-        
+
         panelContent.appendChild(body);
         panel.appendChild(panelContent);
         document.body.appendChild(panel);
-        
+
         // Animate slide up
         setTimeout(() => {
             panel.classList.add('sources-panel-visible');
         }, 10);
-        
+
         // Close handlers
         header.querySelector('.sources-panel-close').onclick = () => this.closeSourcesPanel();
         panel.onclick = (e) => {
             if (e.target === panel) this.closeSourcesPanel();
         };
-        
+
         const escapeHandler = (e) => {
             if (e.key === 'Escape') {
                 this.closeSourcesPanel();
@@ -2485,7 +2555,7 @@ class ThesidiaApp {
         };
         document.addEventListener('keydown', escapeHandler);
     }
-    
+
     closeSourcesPanel() {
         const panel = document.getElementById('sources-panel');
         if (panel) {
@@ -2493,37 +2563,37 @@ class ThesidiaApp {
             setTimeout(() => panel.remove(), 300);
         }
     }
-    
+
     // TTS (Text-to-Speech) - Streaming voice for Thesidia's replies
     speakChunk(chunk, messageId) {
         /**Speak chunk as it streams - real-time TTS following best practices*/
         if (!this.ttsEnabled || !chunk || !chunk.trim()) {
             return;
         }
-        
+
         // Stop previous message if switching
         if (this.currentTTSMessageId && this.currentTTSMessageId !== messageId) {
             speechSynthesis.cancel();
             this.ttsQueue = [];
             this.ttsSpeaking = false;
         }
-        
+
         this.currentTTSMessageId = messageId;
-        
+
         // Clean chunk
         const cleanChunk = this.cleanTextForTTS(chunk);
         if (!cleanChunk || cleanChunk.trim().length === 0) {
             return;
         }
-        
+
         // Create utterance for chunk
         const utterance = new SpeechSynthesisUtterance(cleanChunk);
-        
+
         // Use selected voice
         if (this.ttsVoice) {
             utterance.voice = this.ttsVoice;
         }
-        
+
         // Optimized for most realistic, natural, expressive speech
         // Rate: 0.9-0.95 is most natural (research shows slower = more human)
         utterance.rate = 0.93; // Slightly slower = more natural, less robotic
@@ -2531,39 +2601,39 @@ class ThesidiaApp {
         utterance.pitch = 0.98; // Natural pitch for realistic sound
         utterance.volume = 0.9; // Clear, audible volume
         utterance.lang = 'en-US';
-        
+
         // Queue chunk
         this.ttsQueue.push(utterance);
-        
+
         // Process queue
         if (!this.ttsSpeaking) {
             this.processTTSQueue();
         }
     }
-    
+
     processTTSQueue() {
         /**Process TTS queue for streaming chunks - best practices for real-time TTS*/
         if (this.ttsQueue.length === 0) {
             this.ttsSpeaking = false;
             return;
         }
-        
+
         this.ttsSpeaking = true;
         const utterance = this.ttsQueue.shift();
         this.ttsUtterance = utterance;
-        
+
         utterance.onend = () => {
             this.processTTSQueue();
         };
-        
+
         utterance.onerror = (e) => {
             console.warn('TTS error:', e);
             this.processTTSQueue();
         };
-        
+
         speechSynthesis.speak(utterance);
     }
-    
+
     stopTTS() {
         /**Stop all TTS playback"""
         speechSynthesis.cancel();
@@ -2774,42 +2844,42 @@ class ThesidiaApp {
     cleanTextForTTS(text) {
         /**Remove markdown, citations, and formatting for clean TTS output - best practices for AI voice synthesis*/
         let clean = text;
-        
+
         // Remove markdown
         clean = clean.replace(/\*\*(.*?)\*\*/g, '$1'); // Bold
         clean = clean.replace(/\*(.*?)\*/g, '$1'); // Italic
         clean = clean.replace(/`(.*?)`/g, '$1'); // Code
         clean = clean.replace(/```[\s\S]*?```/g, ''); // Code blocks
-        
+
         // Remove citations section
         clean = clean.replace(/::SOURCES::[\s\S]*/g, '');
-        
+
         // Remove URLs
         clean = clean.replace(/https?:\/\/([^\s]+)/g, '');
-        
+
         // Remove special markers
         clean = clean.replace(/::[A-Z_]+::/g, '');
-        
+
         // Clean up whitespace
         clean = clean.replace(/\n{3,}/g, '\n\n');
         clean = clean.trim();
-        
+
         return clean;
     }
-    
+
     autoResizeTextarea(textarea) {
         textarea.style.height = 'auto';
         textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
     }
-    
+
     updateCursorPlaceholder() {
         const promptInput = document.getElementById('promptInput');
         const cursorPlaceholder = document.getElementById('cursorPlaceholder');
         if (!promptInput || !cursorPlaceholder) return;
-        
+
         const isEmpty = promptInput.value.trim().length === 0;
         const isFocused = document.activeElement === promptInput;
-        
+
         if (isEmpty && isFocused) {
             cursorPlaceholder.style.opacity = '1';
         } else {
@@ -2851,21 +2921,21 @@ class ThesidiaApp {
             const savedMode = localStorage.getItem('fastMode');
             this.fastMode = savedMode === null ? true : savedMode === 'true'; // Default to fast
             deepResearchToggle.checked = !this.fastMode; // Toggle is "deep research", so inverted
-            
+
             if (modeLabel) {
                 modeLabel.textContent = this.fastMode ? 'Fast' : 'Deep';
             }
-            
+
             deepResearchToggle.addEventListener('change', (e) => {
                 this.fastMode = !e.target.checked; // Toggle is "deep research", so invert
                 localStorage.setItem('fastMode', this.fastMode);
-                
+
                 if (modeLabel) {
                     modeLabel.textContent = this.fastMode ? 'Fast' : 'Deep';
                 }
             });
         }
-        
+
         // Thinking toggle
         const thinkingToggle = document.getElementById('thinkingToggle');
         if (thinkingToggle) {
@@ -2883,18 +2953,47 @@ class ThesidiaApp {
         // Voice toggle
         const voiceToggle = document.getElementById('voiceToggle');
         const voiceSelectorItem = document.getElementById('voiceSelectorItem');
+
+        // Edge AI Load button
+        const loadEdgeBtn = document.getElementById('loadEdgeBtn');
+        const edgeStatus = document.getElementById('edgeStatus');
+        const edgeStatusText = document.getElementById('edgeStatusText');
+        if (loadEdgeBtn) {
+            loadEdgeBtn.addEventListener('click', async () => {
+                loadEdgeBtn.style.display = 'none';
+                if (edgeStatus) {
+                    edgeStatus.style.display = 'flex';
+                    edgeStatus.classList.add('loading');
+                }
+
+                try {
+                    await this.ensureEdgeAI();
+                    if (edgeStatus) {
+                        edgeStatus.classList.remove('loading');
+                        edgeStatus.classList.add('ready');
+                        if (edgeStatusText) edgeStatusText.textContent = 'Ready';
+                    }
+                } catch (error) {
+                    if (edgeStatus) {
+                        edgeStatus.classList.remove('loading');
+                        if (edgeStatusText) edgeStatusText.textContent = 'Error';
+                    }
+                    loadEdgeBtn.style.display = 'block';
+                }
+            });
+        }
         const voiceSelector = document.getElementById('voiceSelector');
-        
+
         if (voiceToggle) {
             const self = this; // Preserve this context
             const savedVoice = localStorage.getItem('ttsEnabled') === 'true';
             voiceToggle.checked = savedVoice;
             self.ttsEnabled = savedVoice;
-            
+
             voiceToggle.addEventListener('change', (e) => {
                 self.ttsEnabled = e.target.checked;
                 localStorage.setItem('ttsEnabled', e.target.checked);
-                
+
                 if (e.target.checked) {
                     voiceSelectorItem.style.display = 'block';
                     // Always reinitialize to get best voice
@@ -2911,15 +3010,15 @@ class ThesidiaApp {
                                     voiceSelector.innerHTML = '<option value="">No voices available</option>';
                                     return;
                                 }
-                                
+
                                 voiceSelector.innerHTML = '';
-                                
+
                                 const realisticVoices = [];
                                 const otherVoices = [];
-                                
+
                                 voices.forEach((voice, index) => {
                                     const name = voice.name.toLowerCase();
-                                    const isRealistic = 
+                                    const isRealistic =
                                         name.includes('premium') ||
                                         name.includes('neural') ||
                                         name.includes('wavenet') ||
@@ -2929,16 +3028,16 @@ class ThesidiaApp {
                                         name.includes('alex') ||
                                         name.includes('victoria') ||
                                         name.includes('karen');
-                                    
+
                                     const voiceData = { voice, index, name: voice.name, lang: voice.lang };
-                                    
+
                                     if (isRealistic) {
                                         realisticVoices.push(voiceData);
                                     } else {
                                         otherVoices.push(voiceData);
                                     }
                                 });
-                                
+
                                 if (realisticVoices.length > 0) {
                                     const optgroup = document.createElement('optgroup');
                                     optgroup.label = 'Most Realistic';
@@ -2947,8 +3046,8 @@ class ThesidiaApp {
                                         option.value = index;
                                         // Mark Premium/Neural voices as most realistic
                                         const isPremium = voice.name.includes('Premium') || voice.name.includes('Neural');
-                                        const label = isPremium 
-                                            ? `${voice.name} ⭐ MOST REALISTIC (${voice.lang})` 
+                                        const label = isPremium
+                                            ? `${voice.name} ⭐ MOST REALISTIC (${voice.lang})`
                                             : `${voice.name} (${voice.lang})`;
                                         option.textContent = label;
                                         if (voice === self.ttsVoice) {
@@ -2958,7 +3057,7 @@ class ThesidiaApp {
                                     });
                                     voiceSelector.appendChild(optgroup);
                                 }
-                                
+
                                 if (otherVoices.length > 0) {
                                     const optgroup = document.createElement('optgroup');
                                     optgroup.label = 'Other Voices';
@@ -2974,7 +3073,7 @@ class ThesidiaApp {
                                     voiceSelector.appendChild(optgroup);
                                 }
                             };
-                            
+
                             // Try to load voices immediately
                             const voicesCheck = speechSynthesis.getVoices();
                             if (voicesCheck && voicesCheck.length > 0) {
@@ -2999,7 +3098,7 @@ class ThesidiaApp {
                 }
             });
         }
-        
+
         // Voice selector - prioritize realistic voices
         if (voiceSelector) {
             const self = this; // Preserve this context
@@ -3010,18 +3109,18 @@ class ThesidiaApp {
                     voiceSelector.innerHTML = '<option value="">No voices available</option>';
                     return;
                 }
-                
+
                 voiceSelector.innerHTML = '';
-                
+
                 // Separate realistic voices from others
                 const realisticVoices = [];
                 const otherVoices = [];
-                
+
                 voices.forEach((voice, index) => {
                     const name = voice.name.toLowerCase();
                     // Prioritize Premium and Neural voices (MOST REALISTIC)
                     // Premium voices are highest quality, then Neural, then high-quality standards
-                    const isRealistic = 
+                    const isRealistic =
                         name.includes('premium') ||   // macOS Premium (MOST REALISTIC)
                         name.includes('neural') ||    // Windows/Chrome Neural (VERY REALISTIC)
                         name.includes('wavenet') ||   // Google Wavenet (high quality)
@@ -3031,16 +3130,16 @@ class ThesidiaApp {
                         name.includes('alex') ||      // macOS (very realistic)
                         name.includes('victoria') ||  // macOS (very realistic)
                         name.includes('karen');       // macOS (very realistic)
-                    
+
                     const voiceData = { voice, index, name: voice.name, lang: voice.lang };
-                    
+
                     if (isRealistic) {
                         realisticVoices.push(voiceData);
                     } else {
                         otherVoices.push(voiceData);
                     }
                 });
-                
+
                 // Add realistic voices first with label
                 if (realisticVoices.length > 0) {
                     const optgroup = document.createElement('optgroup');
@@ -3050,8 +3149,8 @@ class ThesidiaApp {
                         option.value = index;
                         // Mark Premium/Neural as most realistic
                         const isPremium = voice.name.includes('Premium') || voice.name.includes('Neural');
-                        const label = isPremium 
-                            ? `${voice.name} ⭐ MOST REALISTIC (${voice.lang})` 
+                        const label = isPremium
+                            ? `${voice.name} ⭐ MOST REALISTIC (${voice.lang})`
                             : `${voice.name} (${voice.lang})`;
                         option.textContent = label;
                         if (voice === self.ttsVoice) {
@@ -3061,7 +3160,7 @@ class ThesidiaApp {
                     });
                     voiceSelector.appendChild(optgroup);
                 }
-                
+
                 // Add other voices
                 if (otherVoices.length > 0) {
                     const optgroup = document.createElement('optgroup');
@@ -3077,13 +3176,13 @@ class ThesidiaApp {
                     });
                     voiceSelector.appendChild(optgroup);
                 }
-                
+
                 // Show selector if voice is enabled
                 if (self.ttsEnabled) {
                     voiceSelectorItem.style.display = 'block';
                 }
             };
-            
+
             // Try to load voices immediately
             const voices = speechSynthesis.getVoices();
             if (voices && voices.length > 0) {
@@ -3101,7 +3200,7 @@ class ThesidiaApp {
                         voiceSelector.innerHTML = '<option value="">Click dropdown to load voices...</option>';
                     }
                 }, 500);
-                
+
                 // Also try loading when user clicks the dropdown (required by some browsers)
                 voiceSelector.addEventListener('mousedown', function loadOnClick() {
                     const clickedVoices = speechSynthesis.getVoices();
@@ -3110,7 +3209,7 @@ class ThesidiaApp {
                     }
                 }, { once: true });
             }
-            
+
             // Always try to load voices when dropdown is opened
             voiceSelector.addEventListener('mousedown', function loadOnOpen() {
                 const clickedVoices = speechSynthesis.getVoices();
@@ -3118,7 +3217,7 @@ class ThesidiaApp {
                     loadVoices();
                 }
             });
-            
+
             voiceSelector.addEventListener('change', (e) => {
                 const voices = speechSynthesis.getVoices();
                 const selectedIndex = parseInt(e.target.value);
@@ -3129,7 +3228,7 @@ class ThesidiaApp {
                     self.stopTTS();
                 }
             });
-            
+
             // Load saved voice or auto-select most realistic
             const savedVoiceIndex = localStorage.getItem('ttsVoiceIndex');
             if (savedVoiceIndex !== null) {
@@ -3168,11 +3267,11 @@ class ThesidiaApp {
                 }, 500);
             }
         }
-        
+
         // Close panel when clicking outside
         document.addEventListener('click', (e) => {
             if (controlPanelDashboard.classList.contains('open')) {
-                if (!controlPanelDashboard.contains(e.target) && 
+                if (!controlPanelDashboard.contains(e.target) &&
                     !controlPanelTab.contains(e.target)) {
                     controlPanelDashboard.classList.remove('open');
                     controlPanelTab.classList.remove('active');
@@ -3189,17 +3288,17 @@ try {
             try {
                 window.thesidiaApp = new ThesidiaApp();
                 console.log('Thesidia app initialized');
-                
+
                 // Initialize nano dust and header profile
                 initNanoDust();
                 loadHeaderProfileImage();
-                
+
                 // Initialize astrological time
                 initAstrologicalTime();
-                
+
                 // Initialize star notepad
                 initStarNotepad();
-                
+
                 // Initialize status selector
                 initStatusSelector();
             } catch (error) {
@@ -3221,17 +3320,17 @@ try {
         try {
             window.thesidiaApp = new ThesidiaApp();
             console.log('Thesidia app initialized');
-            
+
             // Initialize nano dust and header profile
             initNanoDust();
             loadHeaderProfileImage();
-            
+
             // Initialize astrological time
             initAstrologicalTime();
-            
+
             // Initialize star notepad
             initStarNotepad();
-            
+
             // Initialize status selector
             initStatusSelector();
         } catch (error) {
@@ -3256,31 +3355,31 @@ try {
 function initNanoDust() {
     const canvas = document.getElementById('nanoDustCanvas');
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     const particles = [];
     const particleCount = 80; // More particles for finer effect
-    
+
     // Set canvas size
     canvas.width = 200;
     canvas.height = 60;
-    
+
     // Text position (centered)
     const textCenterX = canvas.width / 2;
     const textCenterY = canvas.height / 2;
     const textWidth = 140; // Approximate width of "THESIDIA"
     const textHeight = 30; // Approximate height
-    
+
     // Create particles emanating from text area
     for (let i = 0; i < particleCount; i++) {
         // Start particles near the text (within text bounds)
         const startX = textCenterX + (Math.random() - 0.5) * textWidth;
         const startY = textCenterY + (Math.random() - 0.5) * textHeight;
-        
+
         // Calculate direction away from center
         const angle = Math.atan2(startY - textCenterY, startX - textCenterX);
         const speed = Math.random() * 0.3 + 0.1; // Slow, fine movement
-        
+
         particles.push({
             x: startX,
             y: startY,
@@ -3292,27 +3391,27 @@ function initNanoDust() {
             maxDistance: Math.random() * 40 + 20 // Distance before respawn
         });
     }
-    
+
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         particles.forEach(particle => {
             // Update position - moving away from text
             particle.x += particle.vx;
             particle.y += particle.vy;
             particle.life += 0.3;
-            
+
             // Calculate distance from text center
             const dx = particle.x - textCenterX;
             const dy = particle.y - textCenterY;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            
+
             // Respawn particle near text if it moves too far
             if (distance > particle.maxDistance) {
                 // Respawn near text with new random position
                 particle.x = textCenterX + (Math.random() - 0.5) * textWidth;
                 particle.y = textCenterY + (Math.random() - 0.5) * textHeight;
-                
+
                 // New direction away from center
                 const angle = Math.atan2(particle.y - textCenterY, particle.x - textCenterX);
                 const speed = Math.random() * 0.3 + 0.1;
@@ -3320,22 +3419,22 @@ function initNanoDust() {
                 particle.vy = Math.sin(angle) * speed;
                 particle.life = 0;
             }
-            
+
             // Fade out as particles move away
             const fadeDistance = Math.min(distance / particle.maxDistance, 1);
             const pulse = Math.sin(particle.life * 0.1) * 0.2 + 0.8;
             const alpha = particle.opacity * (1 - fadeDistance * 0.7) * pulse;
-            
+
             // Draw very fine particle
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
             ctx.fill();
         });
-        
+
         requestAnimationFrame(animate);
     }
-    
+
     animate();
 }
 
@@ -3343,15 +3442,15 @@ function initNanoDust() {
 function loadHeaderProfileImage() {
     const headerProfile = document.getElementById('headerProfilePicture');
     if (!headerProfile) return;
-    
+
     const img = headerProfile.querySelector('img');
     if (!img) return;
-    
+
     const savedImage = localStorage.getItem('profileImage');
     if (savedImage) {
         img.src = savedImage;
     }
-    
+
     // Click to open sidebar
     headerProfile.addEventListener('click', () => {
         if (window.thesidiaApp) {
@@ -3365,18 +3464,18 @@ async function initAstrologicalTime() {
     const indicator = document.getElementById('astroTimeIndicator');
     const timeText = document.getElementById('astroTimeText');
     if (!indicator || !timeText) return;
-    
+
     async function updateAstroTime() {
         try {
             const response = await fetch('/api/astronomical/current');
             if (response.ok) {
                 const data = await response.json();
-                
+
                 // Get current time in a format that shows astronomical significance
                 const now = new Date();
                 const hours = now.getHours().toString().padStart(2, '0');
                 const minutes = now.getMinutes().toString().padStart(2, '0');
-                
+
                 // Format: HH:MM (very faint, small)
                 timeText.textContent = `${hours}:${minutes}`;
             } else {
@@ -3394,7 +3493,7 @@ async function initAstrologicalTime() {
             timeText.textContent = `${hours}:${minutes}`;
         }
     }
-    
+
     // Update immediately and then every minute
     updateAstroTime();
     setInterval(updateAstroTime, 60000);
@@ -3406,41 +3505,41 @@ function initStarNotepad() {
     const notepadPanel = document.getElementById('starNotepadPanel');
     const notepadClose = document.getElementById('notepadClose');
     const notepadTextarea = document.getElementById('notepadTextarea');
-    
+
     if (!notepadBtn || !notepadPanel || !notepadClose || !notepadTextarea) return;
-    
+
     // Load saved notes from localStorage
     const savedNotes = localStorage.getItem('thesidia_notes');
     if (savedNotes) {
         notepadTextarea.value = savedNotes;
     }
-    
+
     // Save notes on input
     notepadTextarea.addEventListener('input', () => {
         localStorage.setItem('thesidia_notes', notepadTextarea.value);
     });
-    
+
     // Toggle notepad
     notepadBtn.addEventListener('click', () => {
         notepadPanel.classList.toggle('open');
     });
-    
+
     // Close notepad
     notepadClose.addEventListener('click', () => {
         notepadPanel.classList.remove('open');
     });
-    
+
     // Close on escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && notepadPanel.classList.contains('open')) {
             notepadPanel.classList.remove('open');
         }
     });
-    
+
     // Close when clicking outside
     document.addEventListener('click', (e) => {
-        if (notepadPanel.classList.contains('open') && 
-            !notepadPanel.contains(e.target) && 
+        if (notepadPanel.classList.contains('open') &&
+            !notepadPanel.contains(e.target) &&
             !notepadBtn.contains(e.target)) {
             notepadPanel.classList.remove('open');
         }
@@ -3452,19 +3551,19 @@ function initStatusSelector() {
     const userNameText = document.getElementById('userNameText');
     const statusOrb = document.getElementById('statusOrb');
     const statusDropdown = document.getElementById('statusSelectorDropdown');
-    
+
     if (!userNameText || !statusOrb || !statusDropdown) {
         console.warn('Status selector elements not found, retrying...');
         setTimeout(initStatusSelector, 100);
         return;
     }
-    
+
     console.log('Initializing status selector...');
-    
+
     // Load saved status from localStorage
     const savedStatus = localStorage.getItem('userStatus') || 'online';
     updateStatus(savedStatus);
-    
+
     // Toggle dropdown on name click - use multiple event types for reliability
     function handleClick(e) {
         e.stopPropagation();
@@ -3472,21 +3571,21 @@ function initStatusSelector() {
         statusDropdown.classList.toggle('open');
         console.log('Status selector clicked, dropdown open:', statusDropdown.classList.contains('open'));
     }
-    
+
     // Remove any existing handlers first
     userNameText.onclick = null;
     const newHandler = handleClick;
-    
+
     // Set onclick handler
     userNameText.onclick = newHandler;
-    
+
     // Also add event listeners for mouse events
     userNameText.addEventListener('click', newHandler, false);
-    userNameText.addEventListener('mousedown', function(e) {
+    userNameText.addEventListener('mousedown', function (e) {
         e.stopPropagation();
         statusDropdown.classList.toggle('open');
     }, false);
-    
+
     // Handle status option clicks
     statusDropdown.querySelectorAll('.status-option').forEach(option => {
         option.addEventListener('click', (e) => {
@@ -3497,23 +3596,23 @@ function initStatusSelector() {
             statusDropdown.classList.remove('open');
         });
     });
-    
+
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
-        if (statusDropdown.classList.contains('open') && 
-            !statusDropdown.contains(e.target) && 
+        if (statusDropdown.classList.contains('open') &&
+            !statusDropdown.contains(e.target) &&
             !userNameText.contains(e.target)) {
             statusDropdown.classList.remove('open');
         }
     });
-    
+
     // Close on escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && statusDropdown.classList.contains('open')) {
             statusDropdown.classList.remove('open');
         }
     });
-    
+
     function updateStatus(status) {
         // Remove all status classes
         statusOrb.classList.remove('status-online', 'status-offline', 'status-away', 'status-focused');

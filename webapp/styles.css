@@ -2498,6 +2498,72 @@ html:has(#app.sidebar-pushed) {
     /* Chrome/Safari */
 }
 
+/* Edge AI Controls */
+.control-btn-small {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.control-btn-small:hover {
+    background: var(--accent-subtle);
+    border-color: var(--text-primary);
+}
+
+.edge-status-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.edge-status-inline .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #555;
+    transition: background 0.3s ease;
+}
+
+.edge-status-inline.loading .status-dot {
+    background: var(--theme-neon);
+    animation: pulse-edge 1.5s infinite;
+}
+
+.edge-status-inline.ready .status-dot {
+    background: #00ff88;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+
+@keyframes pulse-edge {
+    0% {
+        opacity: 0.4;
+        transform: scale(0.9);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 0.4;
+        transform: scale(0.9);
+    }
+}
+
+.edge-status-inline span#edgeStatusText {
+    font-family: var(--font-mono);
+}
+
+
 .circles-categories-loading {
     padding: 8px 16px;
     color: var(--text-tertiary);

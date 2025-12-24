@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katanx Matrix</title>
+    <link rel="icon" type="image/png" href="assets/icon.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --void: #000000;
+            --surface: #0a0a0a;
+            --elevated: #111111;
+            --border: rgba(255, 255, 255, 0.06);
+            --text: #e6edf3;
+            --text-dim: #6e7681;
+            --cyan: #58a6ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --gold: #d29922;
+            --purple: #a371f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--void);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 11px;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Layout */
+        #app {
+            display: grid;
+            grid-template-columns: 48px 1fr;
+            grid-template-rows: 40px 1fr;
+            height: 100vh;
+        }
+
+        @media (max-width: 768px) {
+            #app {
+                grid-template-columns: 1fr;
+                grid-template-rows: 40px 1fr 52px;
+            }
+
+            #sidebar {
+                display: none;
+            }
+
+            #mobile-nav {
+                display: flex;
+            }
+        }
+
+        /* Sidebar */
+        #sidebar {
+            grid-row: 1 / -1;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            gap: 2px;
+        }
+
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-dim);
+            transition: all 0.15s;
+        }
+
+        .nav-btn:hover {
+            background: var(--elevated);
+            color: var(--text);
+        }
+
+        .nav-btn.active {
+            background: var(--cyan);
+            color: var(--void);
+        }
+
+        .nav-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .nav-divider {
+            width: 24px;
+            height: 1px;
+            background: var(--border);
+            margin: 6px 0;
+        }
+
+        /* Header */
+        #header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+        }
+
+        .header-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+        }
+
+        /* Content */
+        #content {
+            background: var(--void);
+            padding: 12px;
+            overflow-y: auto;
+        }
+
+        /* Widget Grid - Compact 4-column */
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 160px;
+            gap: 10px;
+            max-height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+
+        @media (max-width: 1200px) {
+            .widget-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .widget-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .widget-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Widget - Advanced Glassmorphism */
+        .widget {
+            background: linear-gradient(135deg,
+                    rgba(10, 10, 10, 0.85) 0%,
+                    rgba(20, 20, 20, 0.7) 100%);
+            backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(88, 166, 255, 0.3) 50%,
+                    transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .widget:hover {
+            transform: translateY(-4px);
+            border-color: rgba(88, 166, 255, 0.25);
+            box-shadow:
+                0 8px 24px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(88, 166, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .widget:hover::before {
+            opacity: 1;
+        }
+
+        .widget.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .widget.span-2 {
+            grid-column: span 2;
+        }
+
+        .widget.span-3 {
+            grid-column: span 3;
+        }
+
+        .widget.span-4 {
+            grid-column: span 4;
+        }
+
+        .widget.tall {
+            grid-row: span 2;
+        }
+
+        .widget.tall-3 {
+            grid-row: span 3;
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.03) 0%,
+                    transparent 100%);
+            flex-shrink: 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .widget-header svg {
+            width: 12px;
+            height: 12px;
+            color: var(--cyan);
+        }
+
+        .widget-title {
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            flex: 1;
+        }
+
+        .widget-toggle {
+            cursor: pointer;
+            opacity: 0.5;
+        }
+
+        .widget-toggle:hover {
+            opacity: 1;
+        }
+
+        .widget-content {
+            padding: 10px;
+            flex: 1;
+            overflow: auto;
+        }
+
+        /* Metrics */
+        .metric {
+            text-align: center;
+            padding: 4px;
+        }
+
+        .metric-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan) 0%, #79b8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s;
+        }
+
+        .metric-value:hover {
+            transform: scale(1.05);
+        }
+
+        .metric-label {
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .metric-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
+        /* Data List */
+        .data-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            background: var(--elevated);
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+        }
+
+        .data-item .label {
+            color: var(--text-dim);
+        }
+
+        .data-item .value {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        /* Calendar */
+        .calendar-week {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            background: var(--elevated);
+            border-radius: 4px;
+            padding: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .calendar-day:hover {
+            background: rgba(88, 166, 255, 0.1);
+        }
+
+        .calendar-day.today {
+            border: 1px solid var(--cyan);
+        }
+
+        .calendar-day .day-name {
+            font-size: 8px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .calendar-day .day-num {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .calendar-day .day-events {
+            font-size: 8px;
+            color: var(--cyan);
+            margin-top: 4px;
+        }
+
+        /* Globe Container */
+        #globe-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #globe-container canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Chat */
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 8px;
+        }
+
+        .chat-msg {
+            padding: 6px 8px;
+            background: var(--elevated);
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        .chat-msg .sender {
+            color: var(--cyan);
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        .chat-msg .time {
+            color: var(--text-dim);
+            font-size: 8px;
+            float: right;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--elevated);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 6px 10px;
+            color: var(--text);
+            font-size: 10px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+
+        /* Notes */
+        .note-editor {
+            width: 100%;
+            height: 150px;
+            background: var(--elevated);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 8px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            resize: none;
+        }
+
+        .note-editor:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+
+        /* Activity */
+        .activity-item {
+            display: flex;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 10px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            color: var(--cyan);
+        }
+
+        .activity-time {
+            color: var(--text-dim);
+            margin-left: auto;
+            font-size: 9px;
+        }
+
+        /* Buttons - Enhanced */
+        .btn {
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.05) 0%,
+                    rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(88, 166, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            background: var(--surface);
+            border-color: var(--cyan);
+        }
+
+        .btn svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .btn-primary {
+            background: var(--cyan);
+            border-color: var(--cyan);
+            color: var(--void);
+        }
+
+        /* Task List */
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            background: var(--elevated);
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+
+        .task-checkbox {
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-checkbox.checked {
+            background: var(--cyan);
+            border-color: var(--cyan);
+        }
+
+        .task-checkbox.checked svg {
+            color: var(--void);
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 10px;
+        }
+
+        .task-text.done {
+            text-decoration: line-through;
+            color: var(--text-dim);
+        }
+
+        /* Mobile Nav */
+        #mobile-nav {
+            display: none;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            justify-content: space-around;
+            align-items: center;
+            padding: 6px;
+        }
+
+        /* View Toggle */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Command Palette */
+        #command-palette {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90vw;
+            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        #command-palette.open {
+            display: block;
+        }
+
+        #command-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        #command-input:focus {
+            outline: none;
+        }
+
+        #command-results {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .command-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .command-item:hover {
+            background: var(--elevated);
+        }
+
+        .command-item svg {
+            width: 14px;
+            height: 14px;
+            color: var(--text-dim);
+        }
+
+        /* Bottom Sliding Chat */
+        #sliding-chat {
+            position: fixed;
+            bottom: -320px;
+            left: 48px;
+            right: 0;
+            height: 360px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        #sliding-chat.open {
+            bottom: 0;
+        }
+
+        #chat-handle {
+            height: 40px;
+            background: var(--elevated);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+        }
+
+        #chat-handle:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        #chat-handle .handle-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--cyan);
+            flex: 1;
+        }
+
+        #chat-handle svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.3s;
+        }
+
+        #sliding-chat.open #chat-handle svg {
+            transform: rotate(180deg);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        /* Marketing Forge Specifics */
+        .social-hub {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-dim);
+        }
+
+        .social-icon:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(88, 166, 255, 0.2);
+        }
+
+        .asset-portal {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-dim);
+        }
+
+        .asset-portal:hover {
+            border-color: var(--cyan);
+            background: rgba(88, 166, 255, 0.05);
+            color: var(--text);
+        }
+
+        .project-link {
+            padding: 10px 15px;
+            background: var(--elevated);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .project-link:hover {
+            border-color: var(--cyan);
+            background: var(--surface);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <nav id="sidebar">
+            <div class="nav-btn active" data-view="nexus" title="Nexus"><i data-lucide="layout-dashboard"></i></div>
+            <div class="nav-btn" data-view="cerebro" title="Cerebro"><i data-lucide="brain"></i></div>
+            <div class="nav-btn" data-view="oracle" title="Oracle AI"><i data-lucide="sparkles"></i></div>
+            <div class="nav-divider"></div>
+            <div class="nav-btn" data-view="vault" title="Neural Vault"><i data-lucide="file-text"></i></div>
+            <div class="nav-btn" data-view="feeds" title="Feeds"><i data-lucide="rss"></i></div>
+            <div class="nav-btn" data-view="marketing" title="Marketing Forge"><i data-lucide="trending-up"></i></div>
+            <div class="nav-divider"></div>
+            <div class="nav-btn" data-view="settings" title="Settings"><i data-lucide="settings"></i></div>
+        </nav>
+
+        <header id="header">
+            <span class="header-title" id="view-title">Nexus</span>
+            <div class="header-actions">
+                <button class="btn" onclick="openCommandPalette()"><i data-lucide="command"></i> Cmd+K</button>
+                <div class="status-dot"></div>
+            </div>
+        </header>
+
+        <main id="content">
+            <!-- NEXUS VIEW -->
+            <div class="view active" id="view-nexus">
+                <div class="widget-grid" style="grid-auto-rows: auto; display: block;">
+
+                    <!-- 1. Weekly Calendar - TOP WIDER -->
+                    <div class="widget" data-widget="calendar" style="width: 100%; margin-bottom: 10px;">
+                        <div class="widget-header">
+                            <i data-lucide="calendar"></i>
+                            <span class="widget-title">Strategic Calendar</span>
+                        </div>
+                        <div class="widget-content" style="padding: 15px;">
+                            <div class="calendar-week" id="calendar-week"></div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Neural Status - METRICS UNDER IT WIDE -->
+                    <div class="widget" data-widget="metrics" style="width: 100%; margin-bottom: 10px;">
+                        <div class="widget-header">
+                            <i data-lucide="cpu"></i>
+                            <span class="widget-title">Neural Status</span>
+                        </div>
+                        <div class="widget-content" style="padding: 15px;">
+                            <div class="metric-row" style="grid-template-columns: repeat(4, 1fr);">
+                                <div class="metric">
+                                    <div class="metric-value" id="m-model">--</div>
+                                    <div class="metric-label">Identity</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-value" id="m-memory">--%</div>
+                                    <div class="metric-label">Neural Load</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-value" id="m-loaded">0</div>
+                                    <div class="metric-label">Nodes Active</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-value" id="m-uptime">--</div>
+                                    <div class="metric-label">Continuous Uptime</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px; height: 100px;">
+                                <canvas id="neural-velocity-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. RAM, GLOBAL, BOARD Grid -->
+                    <div style="display: grid; grid-template-columns: 200px 250px 1fr; gap: 10px; height: 260px;">
+                        <!-- RAM -->
+                        <div class="widget" data-widget="memory-gauge">
+                            <div class="widget-header">
+                                <i data-lucide="gauge"></i>
+                                <span class="widget-title">Memory Allocation</span>
+                            </div>
+                            <div class="widget-content"
+                                style="display: flex; align-items: center; justify-content: center;">
+                                <canvas id="memory-gauge-chart" style="max-width: 140px; max-height: 140px;"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Global Activity -->
+                        <div class="widget" data-widget="globe">
+                            <div class="widget-header">
+                                <i data-lucide="globe"></i>
+                                <span class="widget-title">Global Activity</span>
+                            </div>
+                            <div class="widget-content"
+                                style="padding: 0; display: flex; align-items: stretch; justify-content: stretch; overflow: hidden;">
+                                <div id="globe-container" style="width: 100%; height: 100%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Team Board -->
+                        <div class="widget" data-widget="board">
+                            <div class="widget-header">
+                                <i data-lucide="layout"></i>
+                                <span class="widget-title">Universal Board</span>
+                            </div>
+                            <div class="widget-content">
+                                <div class="chat-messages" id="board-messages" style="max-height: 180px;"></div>
+                                <div style="color: var(--text-dim); font-size: 8px; font-style: italic;">Important posts
+                                    only</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lower Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;">
+                        <div class="widget" data-widget="tasks">
+                            <div class="widget-header"><i data-lucide="check-square"></i><span
+                                    class="widget-title">Intelligence Tasks</span></div>
+                            <div class="widget-content" id="task-list"></div>
+                        </div>
+                        <div class="widget" data-widget="notes">
+                            <div class="widget-header"><i data-lucide="edit-3"></i><span class="widget-title">Field
+                                    Notes</span></div>
+                            <div class="widget-content">
+                                <textarea class="note-editor" id="quick-notes" style="height: 100px;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CEREBRO VIEW -->
+            <div class="view" id="view-cerebro">
+                <div class="widget-grid">
+                    <div class="widget span-4">
+                        <div class="widget-header"><i data-lucide="database"></i><span class="widget-title">Model
+                                Inventory</span></div>
+                        <div class="widget-content">
+                            <div class="data-list" id="model-list">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORACLE VIEW -->
+            <div class="view" id="view-oracle">
+                <div class="widget-grid">
+                    <div class="widget span-4 tall-3">
+                        <div class="widget-header"><i data-lucide="sparkles"></i><span class="widget-title">Thesidia
+                                Oracle</span></div>
+                        <div class="widget-content">
+                            <div class="ai-output" id="ai-output"
+                                style="height: 250px; background: var(--elevated); border-radius: 4px; padding: 10px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; margin-bottom: 10px;">
+                                Ready for input.</div>
+                            <div class="chat-input-row">
+                                <input type="text" class="chat-input" id="ai-input" placeholder="Ask anything..."
+                                    onkeypress="if(event.key==='Enter')sendQuery()">
+                                <button class="btn btn-primary" onclick="sendQuery()"><i
+                                        data-lucide="send"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VAULT VIEW -->
+            <div class="view" id="view-vault">
+                <div class="widget-grid">
+                    <div class="widget span-4 tall-3">
+                        <div class="widget-header"><i data-lucide="file-text"></i><span class="widget-title">Neural
+                                Vault</span></div>
+                        <div class="widget-content">
+                            <textarea class="note-editor" id="vault-editor" style="height: 300px;" placeholder="# My Note
+
+Write in markdown. Link with [[note-name]]"></textarea>
+                            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                <button class="btn" onclick="saveVaultNote()"><i data-lucide="save"></i> Save</button>
+                                <button class="btn" onclick="loadVaultNotes()"><i data-lucide="folder-open"></i>
+                                    Load</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FEEDS VIEW -->
+            <div class="view" id="view-feeds">
+                <div class="widget-grid">
+                    <div class="widget span-4">
+                        <div class="widget-header"><i data-lucide="globe"></i><span class="widget-title">Web
+                                Surveillance</span></div>
+                        <div class="widget-content">
+                            <div style="text-align: center; padding: 20px; color: var(--text-dim);">Feed integrations
+                                coming soon</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MARKETING FORGE VIEW -->
+            <div class="view" id="view-marketing">
+                <div class="widget-grid" style="grid-auto-rows: auto; display: block;">
+
+                    <!-- Project Core Hub -->
+                    <div class="widget" style="width: 100%; margin-bottom: 10px;">
+                        <div class="widget-header">
+                            <i data-lucide="external-link"></i>
+                            <span class="widget-title">Project Core Hub</span>
+                        </div>
+                        <div class="widget-content" style="display: flex; gap: 10px; padding: 15px; flex-wrap: wrap;">
+                            <a href="https://katanx.com" target="_blank" class="project-link"><i
+                                    data-lucide="shield"></i> Katanx.com</a>
+                            <a href="https://praxislabs.technology" target="_blank" class="project-link"><i
+                                    data-lucide="microscope"></i> Praxis Labs</a>
+                            <a href="https://spiritlink.space" target="_blank" class="project-link"><i
+                                    data-lucide="sparkles"></i> Spirit Link</a>
+                            <a href="https://research-sci.com" target="_blank" class="project-link"><i
+                                    data-lucide="database"></i> Sci Research</a>
+                            <a href="https://1cebrg.com" target="_blank" class="project-link"><i
+                                    data-lucide="layers"></i> 1cebrg</a>
+                        </div>
+                    </div>
+
+                    <!-- Social Pulse Center -->
+                    <div class="widget" style="width: 100%; margin-bottom: 10px;">
+                        <div class="widget-header">
+                            <i data-lucide="share-2"></i>
+                            <span class="widget-title">Social Pulse Hub</span>
+                        </div>
+                        <div class="social-hub">
+                            <div class="social-icon" title="FB" onclick="window.open('fb://feed')"><i
+                                    data-lucide="facebook"></i></div>
+                            <div class="social-icon" title="IG" onclick="window.open('instagram://app')"><i
+                                    data-lucide="instagram"></i></div>
+                            <div class="social-icon" title="TikTok" onclick="window.open('snssdk1128://feed')"><i
+                                    data-lucide="music"></i></div>
+                            <div class="social-icon" title="X" onclick="window.open('twitter://app')"><i
+                                    data-lucide="twitter"></i></div>
+                            <div class="social-icon" title="Reddit" onclick="window.open('reddit://app')"><i
+                                    data-lucide="message-square"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- Mid Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <!-- Asset Portal -->
+                        <div class="widget" data-widget="assets">
+                            <div class="widget-header">
+                                <i data-lucide="upload-cloud"></i>
+                                <span class="widget-title">Asset Portal (CapCut Mode)</span>
+                            </div>
+                            <div class="widget-content">
+                                <div class="asset-portal" onclick="uploadAsset()">
+                                    <i data-lucide="plus-circle"></i>
+                                    <span>Upload & Sync Assets</span>
+                                </div>
+                                <div id="asset-gallery"
+                                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trend Watch -->
+                        <div class="widget" data-widget="trends">
+                            <div class="widget-header">
+                                <i data-lucide="rss"></i>
+                                <span class="widget-title">Growth Trend Watch (AI News)</span>
+                            </div>
+                            <div class="widget-content">
+                                <div id="trend-feed" class="data-list">
+                                    <div class="data-item"><span class="label">AI BREAKING</span><span
+                                            class="value">Gnostic Blade V4 Release</span></div>
+                                    <div class="data-item"><span class="label">SEO TREND</span><span
+                                            class="value">Semantic Core Search</span></div>
+                                    <div class="data-item"><span class="label">VIRAL</span><span class="value">Synthetic
+                                            Influencers</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <!-- Internet Flood Procedures -->
+                        <div class="widget" data-widget="procedures">
+                            <div class="widget-header">
+                                <i data-lucide="zap"></i>
+                                <span class="widget-title">Internet Flood Procedures</span>
+                            </div>
+                            <div class="widget-content">
+                                <div class="data-list" id="flood-procedures">
+                                    <div class="data-item" style="border-left: 2px solid var(--purple);">
+                                        <div>
+                                            <div class="label">P-ALGO-01</div>Procedural Hive Posting
+                                        </div>
+                                        <button class="btn btn-primary" style="padding: 2px 6px;"
+                                            onclick="executeProcedure('P-ALGO-01')">EXECUTE</button>
+                                    </div>
+                                    <div class="data-item" style="border-left: 2px solid var(--green);">
+                                        <div>
+                                            <div class="label">P-VIRAL-09</div>Context Hijacking
+                                        </div>
+                                        <button class="btn btn-primary" style="padding: 2px 6px;"
+                                            onclick="executeProcedure('P-VIRAL-09')">EXECUTE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth Metrics -->
+                        <div class="widget" data-widget="growth-metrics">
+                            <div class="widget-header">
+                                <i data-lucide="trending-up"></i>
+                                <span class="widget-title">Performance Analytics</span>
+                            </div>
+                            <div class="widget-content">
+                                <div class="metric-row">
+                                    <div class="metric">
+                                        <div class="metric-value">12.4k</div>
+                                        <div class="metric-label">Reach</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value">85%</div>
+                                        <div class="metric-label">Sentiment</div>
+                                    </div>
+                                </div>
+                                <div
+                                    style="margin-top: 10px; font-size: 8px; color: var(--text-dim); text-align: center;">
+                                    GITHUB SYNC: <span style="color: var(--green);">CONNECTED</span> | USERS: 2
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS VIEW -->
+            <div class="view" id="view-settings">
+                <div class="widget-grid">
+                    <div class="widget span-2">
+                        <div class="widget-header"><i data-lucide="layout"></i><span class="widget-title">Widget
+                                Toggles</span></div>
+                        <div class="widget-content">
+                            <div class="data-list" id="widget-toggles"></div>
+                        </div>
+                    </div>
+                    <div class="widget span-2">
+                        <div class="widget-header"><i data-lucide="info"></i><span class="widget-title">System
+                                Info</span></div>
+                        <div class="widget-content">
+                            <div class="data-list">
+                                <div class="data-item"><span class="label">Version</span><span class="value">Matrix
+                                        2.0</span></div>
+                                <div class="data-item"><span class="label">Theme</span><span class="value">Void</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Mobile Nav -->
+        <nav id="mobile-nav">
+            <div class="nav-btn active" data-view="nexus"><i data-lucide="layout-dashboard"></i></div>
+            <div class="nav-btn" data-view="cerebro"><i data-lucide="brain"></i></div>
+            <div class="nav-btn" data-view="oracle"><i data-lucide="sparkles"></i></div>
+            <div class="nav-btn" data-view="vault"><i data-lucide="file-text"></i></div>
+        </nav>
+    </div>
+
+    <!-- Command Palette -->
+    <!-- Sliding Team Chat -->
+    <div id="sliding-chat">
+        <div id="chat-handle" onclick="toggleSlidingChat()">
+            <div class="handle-title">Active Team Communication</div>
+            <i data-lucide="chevron-up"></i>
+        </div>
+        <div class="widget-content" style="background: var(--surface);">
+            <div class="chat-messages" id="chat-messages" style="height: 260px; max-height: none;"></div>
+            <div class="chat-input-row" style="padding-top: 10px;">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Secure message..."
+                    onkeypress="if(event.key==='Enter')sendChat()">
+                <button class="btn btn-primary" onclick="sendChat()"><i data-lucide="send"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

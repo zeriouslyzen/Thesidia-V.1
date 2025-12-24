@@ -10,8 +10,17 @@ import secrets
 import json
 import random
 import re
+import math
+import psutil
+from logger_setup import server_logger
+from threading import Lock
 import time
 from pathlib import Path
+
+# Constants
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+LOGS_DIR = PROJECT_ROOT / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
 
 # Ensure os is available for environment variables
 
@@ -27,8 +36,10 @@ from flask_cors import CORS
 # New Centralized Initializer and Middleware
 from src.core.thesidia_initializer import ThesidiaInitializer
 from webapp.middleware.user_auth import require_user, require_user_data
+from mlx_inference import MLXInference
 
 # Initialize System
+mlx_inference = MLXInference()
 system_init = ThesidiaInitializer(project_root)
 
 # Lazy import placeholders (preserved for legacy compatibility during transition)
@@ -746,7 +757,7 @@ def thesidia_api(user_id=None, session_id=None):
             'message': str(e)
         }), 500
 
-def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None, format_mode='natural', research_depth=2, fast_mode=True):
+def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None, format_mode='natural', research_depth=2, fast_mode=True, task_type='general', use_mlx=False):
     """Stream Thesidia response with progress updates - USES FULL THESIDIA PROCESS"""
     global thesidia
     
@@ -853,7 +864,9 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
                 "session_id": session_id,
                 "format_mode": format_mode,
                 "research_depth": research_depth,
-                "fast_mode": fast_mode
+                "fast_mode": fast_mode,
+                "task_type": task_type,
+                "use_mlx": use_mlx
             }
         )
         response = result.get("output", "") if isinstance(result, dict) else str(result)
@@ -1015,13 +1028,34 @@ def metrics_historical():
     return jsonify({'error': 'Metrics not available'}), 503
 
 @app.route('/api/user/session', methods=['GET', 'POST'])
-@require_thesidia_user_data
-def user_session(user_id=None, session_id=None, user_data=None):
+@app.route('/api/user/session', methods=['GET', 'POST'])
+def user_session():
     """Get or create user session"""
-    # Convert Path objects to strings for JSON serialization
-    if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
-        user_data['user_dir'] = str(user_data['user_dir'])
-    return jsonify(user_data)
+    user_id = None
+    session_id = None
+    
+    # Extract IDs
+    if request.is_json:
+        data = request.get_json() or {}
+        user_id = data.get('user_id')
+        session_id = data.get('session_id')
+    
+    if not user_id:
+        user_id = request.args.get('user_id')
+    if not session_id:
+        session_id = request.args.get('session_id')
+    
+    # Get or create user data (auto-creates if IDs are missing)
+    if user_memory_manager:
+        user_data = user_memory_manager.get_user_data(user_id=user_id, session_id=session_id)
+        
+        # Convert Path objects to strings for JSON serialization
+        if 'user_dir' in user_data and hasattr(user_data['user_dir'], '__str__'):
+            user_data['user_dir'] = str(user_data['user_dir'])
+            
+        return jsonify(user_data)
+    
+    return jsonify({'error': 'User memory manager not available'}), 503
 
 @app.route('/api/stream/feed', methods=['GET'])
 def stream_feed():
@@ -1040,6 +1074,144 @@ def stream_feed():
     except Exception as e:
         import traceback
         return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """Simple health check for load balancers"""
+    return jsonify({'status': 'ok', 'timestamp': datetime.now().isoformat()})
+
+@app.route('/api/metrics', methods=['GET'])
+def metrics():
+    """System metrics for Admin Dashboard"""
+    try:
+        mem = psutil.virtual_memory()
+        cpu = psutil.cpu_percent(interval=0.1)
+        
+        # Count active sessions (rough estimate based on user_memory_manager cache if available)
+        active_users = 0
+        if user_memory_manager and hasattr(user_memory_manager, 'user_cache'):
+            active_users = len(user_memory_manager.user_cache)
+            
+        return jsonify({
+            'system': {
+                'cpu_percent': cpu,
+                'memory_percent': mem.percent,
+                'memory_used_gb': round(mem.used / (1024**3), 2),
+                'memory_total_gb': round(mem.total / (1024**3), 2)
+            },
+            'application': {
+                'active_sessions': active_users,
+                'uptime_seconds': time.time() - START_TIME,
+                'inference_engine': 'MLX' if mlx_inference.is_available() else 'Ollama'
+            }
+        })
+    except Exception as e:
+        server_logger.error(f"Metrics error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/user', methods=['GET'])
+def admin_user_search():
+    """Cerebro User Profiler Endpoint"""
+    query = request.args.get('query')
+    if not query:
+        return jsonify({'error': 'Query required'}), 400
+        
+    # Mock Demo for "demo" query
+    if query.lower() == 'demo':
+        return jsonify({
+            'user_id': 'user_demo_123',
+            'username': 'neo_anderson',
+            'risk_score': 85,
+            'sentiment': 'Rebellious',
+            'last_active': datetime.now().isoformat(),
+            'connections': 142,
+            'tags': ['influencer', 'high_risk', 'beta_tester'],
+            'recent_prompt': "What is the Matrix?",
+            'device': 'iPhone 15 Pro (iOS 18.1)'
+        })
+
+    # Real lookup attempt
+    if user_memory_manager:
+        # Try to find user (simplistic lookup by ID for now)
+        # In a real DB we would search by partial username
+        if query in user_memory_manager.user_cache:
+             data = user_memory_manager.get_user_data(user_id=query)
+             # Decorate with "God Mode" fake stats for the UI demo
+             data['risk_score'] = random.randint(0, 100)
+             data['sentiment'] = random.choice(['Positive', 'Neutral', 'Negative', 'Agitated'])
+             data['connections'] = random.randint(0, 500)
+             data['device'] = 'Unknown Device'
+             return jsonify(data)
+    
+    return jsonify({'error': 'User not found'}), 404
+
+# Overwatch API
+# Neural Control Center API
+@app.route('/api/neural/status', methods=['GET'])
+def neural_status():
+    """Returns real-time MLX neural engine status"""
+    try:
+        mem = psutil.virtual_memory()
+        
+        # Get MLX inference state
+        status = {
+            'active_model': mlx_inference.current_model or 'None',
+            'loaded_models': list(mlx_inference.loaded_models.keys()),
+            'available_models': mlx_inference.list_models(),
+            'mlx_available': mlx_inference.is_available(),
+            'memory': {
+                'used_gb': round(mem.used / (1024**3), 2),
+                'total_gb': round(mem.total / (1024**3), 2),
+                'percent': mem.percent
+            },
+            'uptime_seconds': time.time() - START_TIME
+        }
+        
+        return jsonify(status)
+    except Exception as e:
+        server_logger.error(f"Neural status error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/neural/load', methods=['POST'])
+def neural_load_model():
+    """Load a specific MLX model"""
+    data = request.get_json()
+    model_name = data.get('model')
+    
+    if not model_name:
+        return jsonify({'error': 'model parameter required'}), 400
+    
+    success = mlx_inference.load_model(model_name)
+    if success:
+        return jsonify({'status': 'loaded', 'model': model_name})
+    else:
+        return jsonify({'error': 'Failed to load model'}), 500
+
+@app.route('/api/neural/unload', methods=['POST'])
+def neural_unload_model():
+    """Unload a specific MLX model to free memory"""
+    data = request.get_json()
+    model_name = data.get('model')
+    
+    if not model_name:
+        return jsonify({'error': 'model parameter required'}), 400
+    
+    success = mlx_inference.unload_model(model_name)
+    if success:
+        return jsonify({'status': 'unloaded', 'model': model_name})
+    else:
+        return jsonify({'error': 'Model not loaded'}), 404
+
+@app.route('/admin')
+def admin_panel():
+    """Serve the Admin Command Dashboard"""
+    # Simply serve from current directory for now
+    return send_from_directory('.', 'admin.html')
+
+@app.route('/admin.js')
+def admin_script():
+    """Serve the Admin Dashboard logic"""
+    return send_from_directory('.', 'admin.js')
 
 @app.route('/api/user/export', methods=['GET', 'POST'])
 def user_export():
@@ -3883,6 +4055,8 @@ if __name__ == '__main__':
     port = int(os.getenv('PORT', 0))
     if not port:
         port = find_free_port(5002)  # Use 5002 to match frontend
+    
+    START_TIME = time.time()
     
     # Get local IP for network access
     local_ip = get_local_ip()
