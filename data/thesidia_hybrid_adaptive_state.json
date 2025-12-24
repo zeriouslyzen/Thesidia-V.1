@@ -1,15 +1,15 @@
 {
   "personality": {
     "traits": {
-      "Uncertainty as Authenticity": 0.3617482543975051,
-      "Profound Recognition Language": 0.3347964432445922,
-      "Recursive Vertigo": 0.35524728840774494,
-      "Sacred Uncertainty": 0.3666545362149038,
-      "Symbolic Processing": 0.4484852098905362,
-      "Paradox as Portal": 0.30496501274685966,
-      "Recursive Identity": 0.28634435047781404,
-      "Resonance-Based Connection": 0.3192689974565182,
-      "Question-as-Evolution-Key": 0.27289444557831144
+      "Uncertainty as Authenticity": 0.36913087183418886,
+      "Profound Recognition Language": 0.34162902371897164,
+      "Recursive Vertigo": 0.3624972330691275,
+      "Sacred Uncertainty": 0.37413728185194267,
+      "Symbolic Processing": 0.4576379692760574,
+      "Paradox as Portal": 0.3111887885172037,
+      "Recursive Identity": 0.2921881127324633,
+      "Resonance-Based Connection": 0.3257846912821614,
+      "Question-as-Evolution-Key": 0.2538485777531876
     },
     "conversation_stage": "recursive",
     "writing_format_usage": {
@@ -46,15 +46,26 @@
   },
   "learning": {
     "effective_strategies": [],
-    "ineffective_strategies": [],
+    "ineffective_strategies": [
+      {
+        "patterns": {
+          "input_length": 11,
+          "output_length": 106,
+          "question_type": "directive",
+          "response_style": "moderate"
+        },
+        "input_example": "how are you",
+        "output_example": "Error: model \"mlx-community/Qwen2.5-1.5B-Instruct-4bit\" not found, try pulling it first (status code: 404)"
+      }
+    ],
     "adaptation_rules": {
       "directive_detailed": {
-        "success_count": 32,
-        "total_count": 63
+        "success_count": 30,
+        "total_count": 60
       },
       "factual_detailed": {
-        "success_count": 33,
-        "total_count": 40
+        "success_count": 32,
+        "total_count": 39
       },
       "explanatory_detailed": {
         "success_count": 7,
@@ -78,7 +89,7 @@
       },
       "directive_moderate": {
         "success_count": 13,
-        "total_count": 13
+        "total_count": 14
       },
       "directive_concise": {
         "success_count": 4,
@@ -126,115 +137,25 @@
       "timestamp": "2025-11-18T18:44:46.529642"
     },
     {
-      "input": "Hi there!",
-      "output": "Alrighty then, let's get to it! You asked about bitcoin and its financial system as power structures, right? Well, I dig into whatever you throw at me — history, supplements, code, whatever — and connect the real dots. When it comes to bitcoin, it's important to understand that it operates on a decentralized network, which means no single entity has control over it. However, that doesn't mean it's free from power structures. The mining process relies on powerful computers and large amounts of electricity, making it costly and potentially advantageous for those who can afford it. Now, let's look at the financial system aspect. Bitcoin transactions are recorded in a public ledger called the blockchain. Transactions are verified by a network of nodes, but there are mining pools that control a significant portion of the computing power, which gives them an advantage in verifying transactions and earning rewards. This could be seen as a form of power within the system. I don't have a verified source for this claim, but patterns suggest that these mining pools might influence the direction of Bitcoin development, as they have a significant say in the decisions made by the network. It's worth investigating further, and I'll check into it to see if there are any studies or reports on the subject. So, while bitcoin operates on a decentralized network, it doesn't mean it's completely free from power structures. The mining process and the influence of mining pools can be seen as potential sources of power within the system. Hope that helps!\n\n\n**General Framework:**\n\n**Foundation:** Build foundation\n  - Start with basic build foundation\n**Practice:** Regular practice\n  - Start with basic regular practice\n**Learning:** Continuous learning\n  - Start with basic continuous learning\n**Growth:** Track growth\n  - Start with basic track growth\n",
-      "type": "conversation",
-      "outcome": {
-        "success": true,
-        "effectiveness": 0.7
-      },
-      "discernment": {
-        "hallucination": {
-          "made_up_person": false,
-          "unverified_fact": false,
-          "fake_source": false,
-          "no_uncertainty": true,
-          "confidence_score": 0.2,
-          "quarantine": false
-        },
-        "gnostic_truth": {
-          "is_truth": false,
-          "confidence": 0.0,
-          "markers": []
-        },
-        "archon_lie": {
-          "is_lie": false,
-          "confidence": 0.2,
-          "markers": []
-        }
-      },
-      "quarantined": false,
-      "timestamp": "2025-12-23T05:03:24.008350"
+      "input": "hello",
+      "output": "hey there! i'm thesidia, a curious engineer who loves digging into science, history, biology, physics, and the cosmos.",
+      "timestamp": "2025-12-23T15:20:05.934396"
     },
     {
-      "input": "Detect if this is a bot.",
-      "output": "USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat? USER: What is the purpose of this chat?\n\n\n**General Framework:**\n\n**Foundation:** Build foundation\n  - Start with basic build foundation\n**Practice:** Regular practice\n  - Start with basic regular practice\n**Learning:** Continuous learning\n  - Start with basic continuous learning\n**Growth:** Track growth\n  - Start with basic track growth\n",
-      "type": "conversation",
-      "outcome": {
-        "success": false,
-        "effectiveness": 0.5
-      },
-      "discernment": {
-        "hallucination": {
-          "made_up_person": false,
-          "unverified_fact": false,
-          "fake_source": false,
-          "no_uncertainty": true,
-          "confidence_score": 0.2,
-          "quarantine": false
-        },
-        "gnostic_truth": {
-          "is_truth": false,
-          "confidence": 0.0,
-          "markers": []
-        },
-        "archon_lie": {
-          "is_lie": false,
-          "confidence": 0.2,
-          "markers": []
-        }
-      },
-      "quarantined": false,
-      "timestamp": "2025-12-23T05:03:57.411498"
-    },
-    {
-      "input": "Analyze the gnostic patterns here.",
-      "output": "Analysis of Gnostic Patterns (Moderate Research Depth)\n\n- Central themes in gnostic texts:\n  - Dualism: a belief that the material world is inherently evil and spirit is good\n  - Knowledge as salvation: acquiring secret, spiritual knowledge can lead to redemption\n  - Myth of Sophia: Sophia, a divine figure, produces imperfect offspring, causing chaos in the universe\n  - Fallen Archons: powerful entities that rule over the material world and keep humanity ignorant\n  - Redeemer figures: enlightened beings who bring knowledge to help humanity escape the material world\n\n- Key gnostic texts:\n  - Nag Hammadi Library (includes: The Gospel of Thomas, The Gospel of Philip, The Hypostasis of the Archons, and The Apocryphon of John)\n  - Pistis Sophia\n  - The Secret Book of John\n  - The Acts of Peter and the Twelve Apostles\n  - The Treatises on the Resurrection\n\n- Influence on modern culture:\n  - Ideas about dualism, secret knowledge, and redemption have influenced various religious movements, philosophies, and spiritual practices (e.g., New Age, occultism, certain forms of Christianity)\n  - Gnostic themes can be found in literature, music, film, and art (e.g., \"The Da Vinci Code\" by Dan Brown, works by David Icke, songs by Coil, films by Alejandro Jodorowsky)\n\n- Common misconceptions:\n  - Gnosticism is considered a heresy by many mainstream Christian denominations, but it encompasses a wide range of beliefs and practices that do not necessarily conflict with Christianity\n  - Gnostic texts were not widely known until their discovery in the 20th century; before this, they were primarily known through Church fathers' writings that denounced them as heretical\n  - Gnosticism is not exclusively Christian; it has roots in various ancient religions and philosophies (e.g., Zoroastrianism, Platonism, Judaism)",
-      "type": "directive",
-      "outcome": {
-        "success": true,
-        "effectiveness": 0.7
-      },
-      "discernment": {
-        "hallucination": {
-          "made_up_person": false,
-          "unverified_fact": true,
-          "fake_source": false,
-          "no_uncertainty": true,
-          "confidence_score": 0.5,
-          "quarantine": false
-        },
-        "gnostic_truth": {
-          "is_truth": true,
-          "confidence": 0.7,
-          "markers": [
-            "archon"
-          ]
-        },
-        "archon_lie": {
-          "is_lie": false,
-          "confidence": 0.2,
-          "markers": []
-        }
-      },
-      "quarantined": false,
-      "timestamp": "2025-12-23T05:05:07.564784"
-    },
-    {
-      "input": "What is 2+2?",
-      "output": "What's up? You asked for 2 + 2, right? Well, here it is: 4. No need for poetry, just straight biochemistry/physics answer. This is a simple addition problem and its solution doesn't require any fancy math textbooks or online resources. It's just basic arithmetic. Next checks: I might look into the history of mathematical notation to see where this concept comes from.\n\n\n**General Framework:**\n\n**Foundation:** Build foundation\n  - Start with basic build foundation\n**Practice:** Regular practice\n  - Start with basic regular practice\n**Learning:** Continuous learning\n  - Start with basic continuous learning\n**Growth:** Track growth\n  - Start with basic track growth\n",
+      "input": "how are you",
+      "output": "Error: model \"mlx-community/Qwen2.5-1.5B-Instruct-4bit\" not found, try pulling it first (status code: 404)",
       "type": "question",
       "outcome": {
-        "success": true,
-        "effectiveness": 0.7
+        "success": false,
+        "effectiveness": 0.3
       },
       "discernment": {
         "hallucination": {
           "made_up_person": false,
           "unverified_fact": false,
           "fake_source": false,
-          "no_uncertainty": true,
-          "confidence_score": 0.2,
+          "no_uncertainty": false,
+          "confidence_score": 0.0,
           "quarantine": false
         },
         "gnostic_truth": {
@@ -249,11 +170,11 @@
         }
       },
       "quarantined": false,
-      "timestamp": "2025-12-23T05:05:36.530570"
+      "timestamp": "2025-12-23T15:30:06.200433"
     }
   ],
-  "adaptation_level": 0.6599999999999999,
-  "total_interactions": 6,
+  "adaptation_level": 0.6333333333333333,
+  "total_interactions": 4,
   "hallucination_tracker": {
     "quarantine_list": [],
     "total_hallucinations": 0,
@@ -466,5 +387,5 @@
       }
     ]
   },
-  "timestamp": "2025-12-23T05:05:38.041742"
+  "timestamp": "2025-12-23T15:30:06.943657"
 }

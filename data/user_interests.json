@@ -677,9 +677,9 @@
       ]
     },
     "code_cracking": {
-      "count": 57,
+      "count": 58,
       "first_seen": "2025-11-22T22:25:40.260946",
-      "last_seen": "2025-12-23T05:05:07.559729",
+      "last_seen": "2025-12-23T15:30:06.192958",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -1762,9 +1762,9 @@
       ]
     },
     "error": {
-      "count": 48,
+      "count": 49,
       "first_seen": "2025-11-24T01:47:18.941089",
-      "last_seen": "2025-12-23T05:01:26.029421",
+      "last_seen": "2025-12-23T15:30:06.192958",
       "related_topics": [
         "consciousness",
         "detect",
@@ -3832,9 +3832,9 @@
       ]
     },
     "mlx-community/qwen2.5-1.5b-instruct-4bit": {
-      "count": 1,
+      "count": 2,
       "first_seen": "2025-12-23T05:01:24.081982",
-      "last_seen": "2025-12-23T05:01:24.081982",
+      "last_seen": "2025-12-23T15:30:06.192958",
       "related_topics": [
         "code_cracking",
         "instruct",
@@ -3842,9 +3842,9 @@
       ]
     },
     "instruct": {
-      "count": 2,
+      "count": 3,
       "first_seen": "2025-12-23T05:01:24.081982",
-      "last_seen": "2025-12-23T05:01:26.029421",
+      "last_seen": "2025-12-23T15:30:06.192958",
       "related_topics": [
         "code_cracking",
         "mlx-community/qwen2.5-1.5b-instruct-4bit",
@@ -4039,16 +4039,14 @@
   "research_threads": [],
   "technical_domains": {},
   "journey_context": {
-    "primary_focus": "history",
+    "primary_focus": "code_cracking",
     "active_threads": [],
     "recent_topics": [
-      "history",
-      "what",
-      "chemistry",
-      "physics",
-      "well",
-      "this"
+      "code_cracking",
+      "instruct",
+      "error",
+      "mlx-community/qwen2.5-1.5b-instruct-4bit"
     ]
   },
-  "last_updated": "2025-12-23T05:05:36.522987"
+  "last_updated": "2025-12-23T15:30:06.193005"
 }

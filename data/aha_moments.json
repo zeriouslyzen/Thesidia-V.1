@@ -3167,6 +3167,24 @@
       "defensiveness_detected": false,
       "expansion_detected": false,
       "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 118,
+      "timestamp": "2025-12-23T15:20:05.921533",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you",
+      "response_length": 106,
+      "timestamp": "2025-12-23T15:30:06.575162",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
     }
   ],
   "expansion_metrics": [],

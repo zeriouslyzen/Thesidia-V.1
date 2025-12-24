@@ -1,17 +1,6 @@
 {
   "interactions": [
     {
-      "query": "how are you doing?",
-      "response_length": 49,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.14
-      },
-      "timestamp": "2025-12-14T01:06:12.433626"
-    },
-    {
       "query": "whats your favorite movie?",
       "response_length": 49,
       "scores": {
@@ -1099,11 +1088,21 @@
         "overall": 0.14
       },
       "timestamp": "2025-12-23T05:05:36.527404"
+    },
+    {
+      "query": "how are you",
+      "response_length": 106,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-23T15:30:06.195994"
     }
   ],
   "quality_trends": {
     "depth_scores": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1202,10 +1201,10 @@
       0.7,
       1.0,
       0.7,
+      0.2,
       0.2
     ],
     "pattern_scores": [
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -1304,10 +1303,10 @@
       0.2,
       0.0,
       0.2,
+      0.0,
       0.0
     ],
     "truth_seeking_scores": [
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1406,10 +1405,10 @@
       0.8666666666666667,
       0.2,
       0.5333333333333333,
+      0.2,
       0.2
     ],
     "overall_scores": [
-      0.14,
       0.14,
       0.14,
       0.14,
@@ -1508,8 +1507,9 @@
       0.6166666666666667,
       0.38,
       0.4833333333333334,
+      0.14,
       0.14
     ]
   },
-  "last_updated": "2025-12-23T05:05:36.527420"
+  "last_updated": "2025-12-23T15:30:06.196008"
 }
