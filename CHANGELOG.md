@@ -2,6 +2,29 @@
 
 All notable changes to Thesidia will be documented in this file.
 
+## [2.0] - 2025-12-XX
+
+### Added - Matrix V2 Overhaul
+- **Nexus Command Center**: Complete dashboard redesign with a 4-column modular architecture.
+  - **Strategic Calendar**: Full-width horizontal tracking for high-level operations.
+  - **Neural Metrics Hub**: Real-time visualization of `Identity`, `Neural Load`, `Active Nodes`, and `Uptime`.
+  - **Cosmic Reality Monitor**: Upgraded 3D globe with high-fidelity metrology and frequency data (`Hz`).
+  - **Universal Board**: Centralized pinning system for critical system updates (prefixed with `!`).
+- **Marketing Forge**: A dedicated growth-focused dashboard view.
+  - **Project Core Hub**: Integrated links for Katanx, Praxis, Spirit Link, SCI, and 1cebrg.
+  - **Social Pulse Hub**: Mobile/Desktop app-priority links for FB, IG, TikTok, X, and Reddit.
+  - **Asset Portal**: CapCut-inspired interface for uploading and syncing marketing assets.
+  - **Trend Watch**: AI-curated research and breaking news aggregator.
+  - **Internet Flood Procedures**: Interactive AI action plans for procedural growth.
+- **Communication Layer**:
+  - **Sliding Team Chat**: Retractable bottom-up chat interface for real-time collaboration.
+  - **Multi-User Indicators**: Dashboard awareness of connected system users.
+
+### Fixed - UI/UX
+- **Globe Centering**: Resolved CSS/JS conflicts causing 3D elements to drift.
+- **Full-Bleed Visuals**: Expanded globe background to widget borders for a seamless cosmic look.
+- **Emoji-Free Styling**: Enforced strict Inconsolata/JetBrains Mono aesthetic across all V2 components.
+
 ## [Unreleased] - 2025-01-XX
 
 ### Added - Web Interface & Social Features
