@@ -242,10 +242,20 @@ class SQLiteConversationStore(ConversationStore):
 
 def build_store(base_dir: Path) -> ConversationStore:
     """
-    Factory. For now SQLite; later we can switch based on env.
+    Factory with Supabase support.
+    
+    Auto-detects based on SUPABASE_URL environment variable.
+    Falls back to SQLite if Supabase not configured or fails.
     """
-    db_path = base_dir / "data" / "conversations.sqlite3"
-    return SQLiteConversationStore(db_path=db_path)
+    # Import here to avoid circular dependency
+    try:
+        from .supabase_storage import build_store as build_supabase_store
+        return build_supabase_store(base_dir=base_dir)
+    except ImportError:
+        # Supabase module not available, use SQLite
+        print("📁 Using SQLite storage (supabase_storage not found)")
+        db_path = base_dir / "data" / "conversations.sqlite3"
+        return SQLiteConversationStore(db_path=db_path)
 
 
 
