@@ -12,7 +12,6 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/globe.gl"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="css/market-ticker.css">
     <style>
         :root {
             --void: #000000;
@@ -130,59 +129,6 @@
             color: var(--text-dim);
         }
 
-        .agent-status {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        @media (max-width: 768px) {
-            .agent-status {
-                position: static;
-                transform: none;
-                order: -1;
-                margin-right: auto;
-            }
-
-            .header-title {
-                display: none;
-            }
-
-            #header {
-                padding: 0 8px;
-            }
-        }
-
-        .agent-name {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .status-indicator {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--text-dim);
-        }
-
-        .status-indicator.online {
-            background: var(--green);
-            box-shadow: 0 0 4px var(--green);
-        }
-
-        .status-indicator.api-mode {
-            background: var(--gold);
-            box-shadow: 0 0 4px var(--gold);
-        }
-
-        .status-indicator.offline {
-            background: var(--red);
-        }
-
         .header-actions {
             display: flex;
             gap: 8px;
@@ -228,27 +174,6 @@
         @media (max-width: 600px) {
             .widget-grid {
                 grid-template-columns: 1fr;
-            }
-
-            #content {
-                padding: 8px;
-            }
-
-            .widget {
-                min-height: 140px;
-            }
-
-            .widget-header {
-                padding: 8px 10px;
-            }
-
-            .widget-title {
-                font-size: 10px;
-            }
-
-            .widget-content {
-                padding: 8px 10px;
-                font-size: 10px;
             }
         }
 
@@ -900,10 +825,6 @@
 
         <header id="header">
             <span class="header-title" id="view-title">Nexus</span>
-            <div class="agent-status">
-                <span class="agent-name" id="agent-name">Agent</span>
-                <span class="status-indicator" id="status-indicator"></span>
-            </div>
             <div class="header-actions">
                 <button class="btn" onclick="openCommandPalette()"><i data-lucide="command"></i> Cmd+K</button>
                 <div class="status-dot"></div>
@@ -913,10 +834,7 @@
         <main id="content">
             <!-- NEXUS VIEW -->
             <div class="view active" id="view-nexus">
-                <!-- Market Ticker -->
-                <div id="market-ticker"></div>
-
-                <div class="widget-grid">
+                <div class="widget-grid" style="grid-auto-rows: auto; display: block;">
 
                     <!-- 1. Weekly Calendar - TOP WIDER -->
                     <div class="widget" data-widget="calendar" style="width: 100%; margin-bottom: 10px;">
@@ -1088,7 +1006,7 @@ Write in markdown. Link with [[note-name]]"></textarea>
 
             <!-- MARKETING FORGE VIEW -->
             <div class="view" id="view-marketing">
-                <div class="widget-grid">
+                <div class="widget-grid" style="grid-auto-rows: auto; display: block;">
 
                     <!-- Project Core Hub -->
                     <div class="widget" style="width: 100%; margin-bottom: 10px;">
@@ -1275,8 +1193,6 @@ Write in markdown. Link with [[note-name]]"></textarea>
         </div>
     </div>
 
-    <script src="js/market-ticker.js"></script>
-    <script src="js/agent-status.js"></script>
     <script src="admin.js"></script>
     <script>lucide.createIcons();</script>
 </body>

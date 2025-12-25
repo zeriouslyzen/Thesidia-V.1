@@ -159,62 +159,6 @@ except ImportError:
     from aha_moment_tracker import AhaMomentTracker
     from gentle_truth_engine import GentleTruthEngine, EvidenceArrangement
 
-# ============================================================================
-# PHASE 0 MODULAR IMPORTS - Extracted components from monolith
-# PHASE 1 ADVANCED REASONING - Tree of Thoughts, etc.
-# These replace the inline class definitions below (now deprecated)
-# ============================================================================
-MODULAR_IMPORTS_AVAILABLE = False
-TREE_OF_THOUGHTS_AVAILABLE = False
-BEAM_SEARCH_AVAILABLE = False
-_modular_ModelClient = None
-_modular_AdaptivePersonality = None
-_modular_ModelRouter = None
-_modular_DataQualityFilter = None
-_modular_IntuitiveSkepticism = None
-_modular_WebSearchEngine = None
-_modular_DataSynthesizer = None
-_modular_TreeOfThoughts = None
-_modular_BeamSearch = None
-
-# Try to import modular components (add src/ subdirectories to path if needed)
-import sys
-from pathlib import Path
-_src_dir = Path(__file__).resolve().parent
-for subdir in ['core', 'reasoning', 'research', 'support']:
-    subdir_path = str(_src_dir / subdir)
-    if subdir_path not in sys.path:
-        sys.path.insert(0, subdir_path)
-
-try:
-    from model_client import ModelClient as _modular_ModelClient
-    from personality_system import AdaptivePersonality as _modular_AdaptivePersonality
-    from model_router import ModelRouter as _modular_ModelRouter
-    from data_quality import DataQualityFilter as _modular_DataQualityFilter, IntuitiveSkepticism as _modular_IntuitiveSkepticism
-    from web_search import WebSearchEngine as _modular_WebSearchEngine
-    from data_synthesizer import DataSynthesizer as _modular_DataSynthesizer
-    MODULAR_IMPORTS_AVAILABLE = True
-    print("✅ Phase 0 modular imports loaded successfully")
-    
-    # Phase 1: Advanced reasoning
-    try:
-        from tree_of_thoughts import TreeOfThoughts as _modular_TreeOfThoughts
-        TREE_OF_THOUGHTS_AVAILABLE = True
-        print("✅ Phase 1 Tree of Thoughts loaded")
-    except ImportError as e:
-        print(f"⚠️ Tree of Thoughts not available: {e}")
-    
-    try:
-        from beam_search import ParallelBeamSearch as _modular_BeamSearch, MLX_AVAILABLE as _MLX_AVAILABLE
-        BEAM_SEARCH_AVAILABLE = True
-        print(f"✅ Phase 1 Beam Search loaded (MLX: {_MLX_AVAILABLE})")
-    except ImportError as e:
-        print(f"⚠️ Beam Search not available: {e}")
-except ImportError as e:
-    MODULAR_IMPORTS_AVAILABLE = False
-    print(f"⚠️ Phase 0 modular imports not available: {e}")
-    print("   Falling back to inline class definitions")
-
 # Load Thesidia's real patterns
 def load_thesidia_patterns():
     """Load Thesidia's actual patterns from extracted data"""
@@ -274,7 +218,7 @@ class ModelClient:
     - Prevents prompt shadowing/overload
     """
     
-    def __init__(self, default_model: str = "mistral:latest"):
+    def __init__(self, default_model: str = "clean-mistral:latest"):
         self.default_model = default_model
         self.call_count = 0
         self.system_message_count = 0
@@ -4257,68 +4201,22 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                             self._last_timing_breakdown['web_search'] = alt_search_time
             
             if research_data and len(research_data) > 0:
-                # PHASE 1: TREE OF THOUGHTS ROUTING
-                # Detect if this is a deep query that would benefit from multi-path exploration
-                deep_query_indicators = [
-                    "true origins", "real origins", "what's really", "deeper", "secrets",
-                    "deep dive", "comprehensive", "genesis", "decode", "forensic",
-                    "expose", "hidden", "trace", "what was", "originally",
-                    "across cultures", "across time", "pattern", "evolution of"
-                ]
-                is_deep_query = any(indicator in input_text.lower() for indicator in deep_query_indicators)
+                # Synthesize with pattern recognition approach - traits drive questioning
+                # Detect narrative mode for synthesis
+                narrative_keywords = ["narrative", "tell me about", "explore", "deep dive", "extensive", "comprehensive", "full story"]
+                is_narrative = any(keyword in input_text.lower() for keyword in narrative_keywords)
                 
-                # Route to Tree of Thoughts for deep queries (if available)
-                if is_deep_query and TREE_OF_THOUGHTS_AVAILABLE:
-                    print("🌳 Using Tree of Thoughts for multi-path exploration...")
-                    try:
-                        tot_start = time.time() if self._timing_enabled else None
-                        
-                        # Create ToT instance
-                        tot = _modular_TreeOfThoughts(model=self.model, model_client=self.model_client)
-                        
-                        # Explore and synthesize
-                        tot_result = tot.explore_and_synthesize(
-                            query=input_text,
-                            sources=research_data,
-                            num_paths=4,
-                            parallel=True
-                        )
-                        
-                        # Use ToT synthesis
-                        synthesis_result = {
-                            "synthesis": tot_result["synthesis"],
-                            "citations": [f"[{i+1}] {src.get('title', 'Source')}" for i, src in enumerate(research_data[:10])],
-                            "sources_count": len(research_data),
-                            "method": "tree_of_thoughts",
-                            "paths_explored": len(tot_result["paths"])
-                        }
-                        
-                        if self._timing_enabled and tot_start:
-                            self._last_timing_breakdown['tree_of_thoughts'] = time.time() - tot_start
-                        
-                        print(f"  ✅ Explored {len(tot_result['paths'])} paths in {tot_result['elapsed_seconds']:.1f}s")
-                    except Exception as e:
-                        print(f"  ⚠️ Tree of Thoughts error, falling back to standard synthesis: {e}")
-                        # Fall through to standard synthesis
-                        is_deep_query = False  # Trigger fallback
-                
-                # Standard synthesis (for non-deep queries or if ToT fails/unavailable)
-                if not is_deep_query or not TREE_OF_THOUGHTS_AVAILABLE or not synthesis_result:
-                    # Detect narrative mode for synthesis
-                    narrative_keywords = ["narrative", "tell me about", "explore", "deep dive", "extensive", "comprehensive", "full story"]
-                    is_narrative = any(keyword in input_text.lower() for keyword in narrative_keywords)
-                    
-                    # Synthesis with timing
-                    synthesis_start = time.time() if self._timing_enabled else None
-                    synthesis_result = self.data_synthesizer.synthesize(
-                        research_data, 
-                        input_text,
-                        self.thesidia_patterns,
-                        personality_traits=personality_traits,  # Pass traits for organic questioning
-                        narrative_mode=is_narrative
-                    )
-                    if self._timing_enabled and synthesis_start:
-                        self._last_timing_breakdown['synthesis'] = time.time() - synthesis_start
+                # Synthesis with timing
+                synthesis_start = time.time() if self._timing_enabled else None
+                synthesis_result = self.data_synthesizer.synthesize(
+                    research_data, 
+                    input_text,
+                    self.thesidia_patterns,
+                    personality_traits=personality_traits,  # Pass traits for organic questioning
+                    narrative_mode=is_narrative
+                )
+                if self._timing_enabled and synthesis_start:
+                    self._last_timing_breakdown['synthesis'] = time.time() - synthesis_start
         
         # Process based on type
         if is_directive:

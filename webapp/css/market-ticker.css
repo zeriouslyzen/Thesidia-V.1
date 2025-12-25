@@ -152,73 +152,17 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-    #market-ticker {
-        margin-bottom: 8px;
-        padding: 6px 8px;
-    }
-
     .ticker-row {
-        flex-direction: row;
-        align-items: center;
+        flex-direction: column;
+        align-items: flex-start;
         gap: 8px;
-        padding: 3px 0;
-    }
-
-    .ticker-row+.ticker-row {
-        margin-top: 3px;
-        padding-top: 6px;
     }
 
     .ticker-label {
-        min-width: 50px;
-        font-size: 8px;
+        min-width: auto;
     }
 
     .ticker-items {
-        width: auto;
-        flex: 1;
-        gap: 12px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .ticker-item {
-        padding: 3px 6px;
-        gap: 4px;
-        flex-shrink: 0;
-    }
-
-    .ticker-symbol {
-        font-size: 9px;
-    }
-
-    .ticker-price {
-        font-size: 10px;
-    }
-
-    .ticker-change {
-        font-size: 8px;
-        padding: 1px 3px;
-    }
-
-    .ticker-add-btn {
-        width: 20px;
-        height: 20px;
-        flex-shrink: 0;
-    }
-
-    .ticker-add-btn svg {
-        width: 10px;
-        height: 10px;
-    }
-
-    .ticker-remove-btn {
-        width: 14px;
-        height: 14px;
-    }
-
-    .ticker-remove-btn svg {
-        width: 10px;
-        height: 10px;
+        width: 100%;
     }
 }
