@@ -465,6 +465,143 @@ def metrics_page():
     return send_from_directory('.', 'metrics_dashboard.html')
 
 # ============================================================================
+# Market Data API - Real-time Crypto & Stock Prices
+# ============================================================================
+
+import time
+from functools import lru_cache
+
+# Cache for 30 seconds to avoid rate limits
+market_data_cache = {}
+CACHE_DURATION = 30
+
+@app.route('/api/market/crypto', methods=['GET'])
+def get_crypto_prices():
+    """
+    Get real-time cryptocurrency prices from CoinGecko API.
+    Query params: symbols (comma-separated, e.g., bitcoin,ethereum,solana)
+    """
+    try:
+        symbols = request.args.get('symbols', 'bitcoin,ethereum,solana,ripple')
+        cache_key = f"crypto_{symbols}"
+        
+        # Check cache
+        if cache_key in market_data_cache:
+            cached_data, timestamp = market_data_cache[cache_key]
+            if time.time() - timestamp < CACHE_DURATION:
+                return jsonify(cached_data)
+        
+        # Fetch from CoinGecko
+        url = f"https://api.coingecko.com/api/v3/simple/price"
+        params = {
+            'ids': symbols,
+            'vs_currencies': 'usd',
+            'include_24hr_change': 'true'
+        }
+        
+        response = requests.get(url, params=params, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        
+        # Transform to our format
+        result = {}
+        for coin_id, coin_data in data.items():
+            symbol_map = {
+                'bitcoin': 'BTC',
+                'ethereum': 'ETH',
+                'solana': 'SOL',
+                'ripple': 'XRP',
+                'dogecoin': 'DOGE',
+                'cardano': 'ADA',
+                'polkadot': 'DOT'
+            }
+            result[coin_id] = {
+                'symbol': symbol_map.get(coin_id, coin_id.upper()[:4]),
+                'price': coin_data.get('usd', 0),
+                'change_24h': coin_data.get('usd_24h_change', 0)
+            }
+        
+        # Cache result
+        market_data_cache[cache_key] = (result, time.time())
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        logger.error(f"Failed to fetch crypto prices: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/market/stocks', methods=['GET'])
+def get_stock_prices():
+    """
+    Get real-time stock/commodity prices.
+    Query params: symbols (comma-separated, e.g., NASDAQ,GOLD,SILVER)
+    
+    Note: Uses Yahoo Finance as fallback (free, no API key needed)
+    """
+    try:
+        symbols = request.args.get('symbols', 'NASDAQ,GOLD,SILVER')
+        cache_key = f"stocks_{symbols}"
+        
+        # Check cache
+        if cache_key in market_data_cache:
+            cached_data, timestamp = market_data_cache[cache_key]
+            if time.time() - timestamp < CACHE_DURATION:
+                return jsonify(cached_data)
+        
+        # Symbol mapping for Yahoo Finance
+        symbol_map = {
+            'NASDAQ': '^IXIC',
+            'GOLD': 'GC=F',
+            'SILVER': 'SI=F',
+            'SP500': '^GSPC',
+            'DOW': '^DJI'
+        }
+        
+        result = {}
+        symbols_list = [s.strip().upper() for s in symbols.split(',')]
+        
+        for symbol in symbols_list:
+            yahoo_symbol = symbol_map.get(symbol, symbol)
+            
+            try:
+                # Use Yahoo Finance quote endpoint (no API key needed)
+                url = f"https://query1.finance.yahoo.com/v8/finance/chart/{yahoo_symbol}"
+                params = {'interval': '1d', 'range': '2d'}
+                
+                response = requests.get(url, params=params, timeout=5)
+                response.raise_for_status()
+                data = response.json()
+                
+                quote = data['chart']['result'][0]
+                meta = quote['meta']
+                
+                current_price = meta.get('regularMarketPrice', 0)
+                previous_close = meta.get('previousClose', current_price)
+                change_pct = ((current_price - previous_close) / previous_close * 100) if previous_close else 0
+                
+                result[symbol] = {
+                    'price': current_price,
+                    'change': change_pct
+                }
+            
+            except Exception as e:
+                logger.warning(f"Failed to fetch {symbol}: {e}")
+                result[symbol] = {
+                    'price': 0,
+                    'change': 0,
+                    'error': str(e)
+                }
+        
+        # Cache result
+        market_data_cache[cache_key] = (result, time.time())
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        logger.error(f"Failed to fetch stock prices: {e}")
+        return jsonify({'error': str(e)}), 500
+
+# ============================================================================
 # Algorithmic Growth Engine - Event Tracking API
 # ============================================================================
 
