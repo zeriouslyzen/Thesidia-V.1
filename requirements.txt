@@ -11,3 +11,6 @@ twilio>=8.0.0
 # Supabase Integration (Phase 1)
 supabase>=2.0.0
 python-dotenv>=1.0.0
+
+# System monitoring
+psutil>=7.0.0
