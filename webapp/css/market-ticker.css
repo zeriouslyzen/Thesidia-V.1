@@ -15,7 +15,7 @@
     padding: 4px 0;
 }
 
-.ticker-row + .ticker-row {
+.ticker-row+.ticker-row {
     border-top: 1px solid rgba(255, 255, 255, 0.04);
     margin-top: 4px;
     padding-top: 8px;
@@ -139,23 +139,86 @@
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 0.8; }
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+    #market-ticker {
+        margin-bottom: 8px;
+        padding: 6px 8px;
+    }
+
     .ticker-row {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
         gap: 8px;
+        padding: 3px 0;
     }
-    
+
+    .ticker-row+.ticker-row {
+        margin-top: 3px;
+        padding-top: 6px;
+    }
+
     .ticker-label {
-        min-width: auto;
+        min-width: 50px;
+        font-size: 8px;
     }
-    
+
     .ticker-items {
-        width: 100%;
+        width: auto;
+        flex: 1;
+        gap: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ticker-item {
+        padding: 3px 6px;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    .ticker-symbol {
+        font-size: 9px;
+    }
+
+    .ticker-price {
+        font-size: 10px;
+    }
+
+    .ticker-change {
+        font-size: 8px;
+        padding: 1px 3px;
+    }
+
+    .ticker-add-btn {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+    }
+
+    .ticker-add-btn svg {
+        width: 10px;
+        height: 10px;
+    }
+
+    .ticker-remove-btn {
+        width: 14px;
+        height: 14px;
+    }
+
+    .ticker-remove-btn svg {
+        width: 10px;
+        height: 10px;
     }
 }

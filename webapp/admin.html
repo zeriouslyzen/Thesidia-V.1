@@ -139,6 +139,23 @@
             gap: 6px;
         }
 
+        @media (max-width: 768px) {
+            .agent-status {
+                position: static;
+                transform: none;
+                order: -1;
+                margin-right: auto;
+            }
+
+            .header-title {
+                display: none;
+            }
+
+            #header {
+                padding: 0 8px;
+            }
+        }
+
         .agent-name {
             font-size: 11px;
             font-weight: 600;
@@ -211,6 +228,27 @@
         @media (max-width: 600px) {
             .widget-grid {
                 grid-template-columns: 1fr;
+            }
+
+            #content {
+                padding: 8px;
+            }
+
+            .widget {
+                min-height: 140px;
+            }
+
+            .widget-header {
+                padding: 8px 10px;
+            }
+
+            .widget-title {
+                font-size: 10px;
+            }
+
+            .widget-content {
+                padding: 8px 10px;
+                font-size: 10px;
             }
         }
 
