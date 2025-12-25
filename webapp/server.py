@@ -22,6 +22,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 LOGS_DIR = PROJECT_ROOT / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
 
+# Server start time for uptime tracking
+START_TIME = time.time()
+
 # Ensure os is available for environment variables
 
 # Add project root and src to path
