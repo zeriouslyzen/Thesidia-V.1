@@ -1658,12 +1658,8 @@
 
                 return `
                     <div class="stream-post" data-post-id="${post.id}">
-                        <div class="post-avatar-square">
-                            ${authorAvatar ? `
-                                <img src="${this.escapeHtml(authorAvatar)}" alt="${this.escapeHtml(authorName)}" onerror="this.onerror=null; this.classList.add('post-avatar-placeholder'); this.style.backgroundColor='${this.getAvatarColor(post.author_id || 'user_0')}'; this.style.display='block';">
-                            ` : `
-                                <div class="post-avatar-placeholder" data-user-id="${post.author_id || 'user_0'}" style="background-color: ${this.getAvatarColor(post.author_id || 'user_0')};"></div>
-                            `}
+                        <div class="post-avatar-square" style="background: ${this.getCategoryGradient(tags[0] || 'default')};">
+                            ${this.getCategoryIcon(tags[0] || 'default')}
                         </div>
                         <div class="post-header">
                             <div class="post-author-info">
@@ -1745,6 +1741,58 @@
                     hash = userId.charCodeAt(i) + ((hash << 5) - hash);
                 }
                 return colors[Math.abs(hash) % colors.length];
+            }
+
+            getCategoryGradient(category) {
+                const gradients = {
+                    'martial-combative': 'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)',
+                    'martial': 'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)',
+                    'movement': 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)',
+                    'visual': 'linear-gradient(135deg, #9C27B0 0%, #6A1B9A 100%)',
+                    'internal-spiritual': 'linear-gradient(135deg, #673AB7 0%, #4527A0 100%)',
+                    'spiritual': 'linear-gradient(135deg, #673AB7 0%, #4527A0 100%)',
+                    'healing': 'linear-gradient(135deg, #00BCD4 0%, #0097A7 100%)',
+                    'intellectual-science': 'linear-gradient(135deg, #2196F3 0%, #1565C0 100%)',
+                    'intellectual': 'linear-gradient(135deg, #2196F3 0%, #1565C0 100%)',
+                    'performance': 'linear-gradient(135deg, #FF9800 0%, #E65100 100%)',
+                    'social-leadership': 'linear-gradient(135deg, #FF5722 0%, #D84315 100%)',
+                    'social': 'linear-gradient(135deg, #FF5722 0%, #D84315 100%)',
+                    'creative-inventive': 'linear-gradient(135deg, #FFEB3B 0%, #F57F17 100%)',
+                    'creative': 'linear-gradient(135deg, #FFEB3B 0%, #F57F17 100%)',
+                    'research-evidence': 'linear-gradient(135deg, #607D8B 0%, #37474F 100%)',
+                    'research': 'linear-gradient(135deg, #607D8B 0%, #37474F 100%)',
+                    'meta-guidelines': 'linear-gradient(135deg, #9E9E9E 0%, #424242 100%)',
+                    'meta': 'linear-gradient(135deg, #9E9E9E 0%, #424242 100%)',
+                    'default': 'linear-gradient(135deg, #6B7280 0%, #374151 100%)'
+                };
+                const cat = (category || 'default').toLowerCase().trim();
+                return gradients[cat] || gradients['default'];
+            }
+
+            getCategoryIcon(category) {
+                const icons = {
+                    'martial-combative': `<svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 8L28 16H32L26 22L28 30L24 26L20 30L22 22L16 16H20L24 8Z"/><path d="M18 34L14 38H34L30 34" stroke="currentColor" stroke-width="2" fill="none"/></svg>`,
+                    'martial': `<svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 8L28 16H32L26 22L28 30L24 26L20 30L22 22L16 16H20L24 8Z"/></svg>`,
+                    'movement': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 36C12 36 16 28 24 28C32 28 36 36 36 36"/><path d="M18 20C18 20 20 12 24 12C28 12 30 20 30 20"/><circle cx="24" cy="24" r="3" fill="currentColor"/></svg>`,
+                    'visual': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="20" r="8"/><circle cx="24" cy="20" r="4" fill="currentColor"/><path d="M16 28C16 28 18 36 24 36C30 36 32 28 32 28"/></svg>`,
+                    'internal-spiritual': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><path d="M24 10C24 10 18 16 18 24C18 32 24 38 24 38C24 38 30 32 30 24C30 16 24 10 24 10Z"/><circle cx="24" cy="24" r="2" fill="currentColor"/></svg>`,
+                    'spiritual': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><path d="M24 10C24 10 18 16 18 24C18 32 24 38 24 38C24 38 30 32 30 24C30 16 24 10 24 10Z"/><circle cx="24" cy="24" r="2" fill="currentColor"/></svg>`,
+                    'healing': `<svg viewBox="0 0 48 48" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2.5"><path d="M24 12C24 12 16 16 16 24C16 32 24 36 24 36C24 36 32 32 32 24C32 16 24 12 24 12Z"/><path d="M20 24H28" stroke-width="2.5"/><path d="M24 20V28" stroke-width="2.5"/></svg>`,
+                    'intellectual-science': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="18" r="6"/><path d="M18 28C18 28 16 22 24 22C32 22 30 28 30 28"/><circle cx="18" cy="32" r="2" fill="currentColor"/><circle cx="24" cy="34" r="2" fill="currentColor"/><circle cx="30" cy="32" r="2" fill="currentColor"/></svg>`,
+                    'intellectual': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="18" r="6"/><circle cx="18" cy="32" r="2" fill="currentColor"/><circle cx="24" cy="34" r="2" fill="currentColor"/><circle cx="30" cy="32" r="2" fill="currentColor"/></svg>`,
+                    'performance': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="24" r="12"/><path d="M24 12V18"/><path d="M24 30V36"/><circle cx="24" cy="24" r="4" fill="currentColor"/></svg>`,
+                    'social-leadership': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="5"/><circle cx="30" cy="18" r="5"/><circle cx="24" cy="32" r="5"/><path d="M18 23L24 27"/><path d="M30 23L24 27"/></svg>`,
+                    'social': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="5"/><circle cx="30" cy="18" r="5"/><circle cx="24" cy="32" r="5"/><path d="M18 23L24 27"/><path d="M30 23L24 27"/></svg>`,
+                    'creative-inventive': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="28" r="8"/><path d="M24 20V12"/><path d="M20 14L24 10L28 14" fill="none"/><path d="M20 28H28"/><path d="M24 24V32"/></svg>`,
+                    'creative': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="28" r="8"/><path d="M24 20V12"/><path d="M20 14L24 10L28 14" fill="none"/></svg>`,
+                    'research-evidence': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="14" y="14" width="20" height="20" rx="2"/><path d="M20 20L24 24L28 20" fill="none"/><path d="M20 28H28"/></svg>`,
+                    'research': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="14" y="14" width="20" height="20" rx="2"/><path d="M20 20L24 24L28 20" fill="none"/><path d="M20 28H28"/></svg>`,
+                    'meta-guidelines': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="24" r="12"/><path d="M24 16V24L28 28"/><circle cx="24" cy="24" r="2" fill="currentColor"/></svg>`,
+                    'meta': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="24" r="12"/><path d="M24 16V24L28 28"/><circle cx="24" cy="24" r="2" fill="currentColor"/></svg>`,
+                    'default': `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="24" r="12"/><circle cx="24" cy="24" r="4" fill="currentColor"/></svg>`
+                };
+                const cat = (category || 'default').toLowerCase().trim();
+                return icons[cat] || icons['default'];
             }
 
             getTimeAgo(timestamp) {
