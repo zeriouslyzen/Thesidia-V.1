@@ -413,7 +413,138 @@ def sitemap():
         return send_from_directory(str(static_dir), 'sitemap.xml'), 200, {'Content-Type': 'application/xml'}
     return send_from_directory('.', 'sitemap.xml'), 200, {'Content-Type': 'application/xml'}
 
+# ============================================================================
+# Algorithmic Growth Engine - Event Tracking API
+# ============================================================================
+
+# Event storage (SQLite fallback if Supabase not available)
+event_store_path = project_root / 'data' / 'events.json'
+
+@app.route('/api/events', methods=['POST'])
+def track_events():
+    """
+    Ingest user interaction events for Algorithmic Growth Engine.
+    Supports batch event submission from client-side collector.
+    """
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        events = data.get('events', [])
+        if not events:
+            return jsonify({'error': 'No events in payload'}), 400
+        
+        # Validate events
+        valid_action_types = {
+            'view', 'click', 'like', 'unlike', 'share', 'save', 'bookmark',
+            'comment', 'reply', 'scroll', 'dwell', 'hover', 'expand',
+            'play', 'pause', 'complete', 'skip', 'hide', 'report'
+        }
+        
+        processed = []
+        for event in events:
+            # Basic validation
+            if not event.get('content_id') or not event.get('action_type'):
+                continue
+            if event.get('action_type') not in valid_action_types:
+                continue
+            
+            # Add server timestamp
+            event['server_timestamp'] = datetime.now().isoformat()
+            processed.append(event)
+        
+        # Store events (try Supabase first, fall back to local JSON)
+        stored_count = 0
+        try:
+            # Try Supabase if available
+            from webapp.conversations.supabase_storage import SupabaseConversationStore
+            supabase_store = SupabaseConversationStore()
+            if supabase_store.client:
+                # Insert into user_interactions table
+                for event in processed:
+                    try:
+                        supabase_store.client.table('user_interactions').insert({
+                            'user_id': event.get('user_id'),
+                            'session_id': event.get('session_id'),
+                            'content_id': event.get('content_id'),
+                            'content_type': event.get('content_type', 'unknown'),
+                            'action_type': event.get('action_type'),
+                            'action_value': event.get('action_value'),
+                            'sequence_position': event.get('sequence_position'),
+                            'session_start_at': event.get('session_start_at'),
+                            'source_page': event.get('source_page'),
+                            'device_type': event.get('device_type')
+                        }).execute()
+                        stored_count += 1
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+        
+        # Fallback: store locally as JSON
+        if stored_count == 0:
+            try:
+                event_store_path.parent.mkdir(parents=True, exist_ok=True)
+                
+                # Load existing events
+                existing = []
+                if event_store_path.exists():
+                    with open(event_store_path, 'r') as f:
+                        existing = json.load(f)
+                
+                # Append new events (keep last 10000)
+                existing.extend(processed)
+                existing = existing[-10000:]
+                
+                # Save
+                with open(event_store_path, 'w') as f:
+                    json.dump(existing, f)
+                
+                stored_count = len(processed)
+            except Exception as e:
+                return jsonify({'error': f'Failed to store events: {str(e)}'}), 500
+        
+        return jsonify({
+            'status': 'ok',
+            'events_received': len(events),
+            'events_stored': stored_count
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/events/stats', methods=['GET'])
+def event_stats():
+    """Get event tracking statistics"""
+    try:
+        stats = {
+            'total_events': 0,
+            'action_breakdown': {},
+            'content_types': {},
+            'storage': 'local'
+        }
+        
+        # Try to get stats from local store
+        if event_store_path.exists():
+            with open(event_store_path, 'r') as f:
+                events = json.load(f)
+                stats['total_events'] = len(events)
+                
+                # Count by action type
+                for event in events:
+                    action = event.get('action_type', 'unknown')
+                    stats['action_breakdown'][action] = stats['action_breakdown'].get(action, 0) + 1
+                    
+                    ctype = event.get('content_type', 'unknown')
+                    stats['content_types'][ctype] = stats['content_types'].get(ctype, 0) + 1
+        
+        return jsonify(stats)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/status', methods=['GET'])
+
 def status():
     """Get system status"""
     global thesidia_ready, ollama_status
