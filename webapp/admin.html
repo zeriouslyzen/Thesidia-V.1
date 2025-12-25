@@ -836,6 +836,27 @@
             <div class="view active" id="view-nexus">
                 <div class="widget-grid" style="grid-auto-rows: auto; display: block;">
 
+                    <!-- MARKET TICKER - TOP BAR -->
+                    <div class="widget" data-widget="market-ticker" style="width: 100%; margin-bottom: 10px;">
+                        <div class="widget-content" style="padding: 10px 15px;">
+                            <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                                <!-- Crypto Section -->
+                                <div style="display: flex; gap: 15px; align-items: center;">
+                                    <span
+                                        style="font-size: 9px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.5px;">CRYPTO</span>
+                                    <div id="crypto-tickers" style="display: flex; gap: 12px;"></div>
+                                </div>
+                                <!-- Markets Section -->
+                                <div
+                                    style="display: flex; gap: 15px; align-items: center; border-left: 1px solid var(--border); padding-left: 20px;">
+                                    <span
+                                        style="font-size: 9px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.5px;">MARKETS</span>
+                                    <div id="market-tickers" style="display: flex; gap: 12px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- 1. Weekly Calendar - TOP WIDER -->
                     <div class="widget" data-widget="calendar" style="width: 100%; margin-bottom: 10px;">
                         <div class="widget-header">
@@ -1191,10 +1212,74 @@ Write in markdown. Link with [[note-name]]"></textarea>
                 <button class="btn btn-primary" onclick="sendChat()"><i data-lucide="send"></i></button>
             </div>
         </div>
-    </div>
 
-    <script src="admin.js"></script>
-    <script>lucide.createIcons();</script>
+        <script>
+            // Market Ticker - Real-time crypto and stock prices
+            async function updateMarketTicker() {
+                try {
+                    // Fetch crypto prices
+                    const cryptoResponse = await fetch('/api/market/crypto?symbols=bitcoin,ethereum,solana,ripple');
+                    const cryptoData = await cryptoResponse.json();
+
+                    // Fetch stock prices
+                    const stockResponse = await fetch('/api/market/stocks?symbols=^IXIC,GC=F,SI=F');
+                    const stockData = await stockResponse.json();
+
+                    // Update crypto tickers
+                    const cryptoContainer = document.getElementById('crypto-tickers');
+                    if (cryptoContainer && cryptoData) {
+                        cryptoContainer.innerHTML = Object.entries(cryptoData).map(([symbol, data]) => {
+                            const changeClass = data.change_24h >= 0 ? 'positive' : 'negative';
+                            const changeIcon = data.change_24h >= 0 ? '▲' : '▼';
+                            const price = data.price >= 1000 ? data.price.toLocaleString('en-US', { maximumFractionDigits: 0 }) :
+                                data.price >= 1 ? data.price.toLocaleString('en-US', { maximumFractionDigits: 2 }) :
+                                    data.price.toLocaleString('en-US', { maximumFractionDigits: 4 });
+
+                            return `
+                            <div style="display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(255,255,255,0.02); border-radius: 4px;">
+                                <span style="font-size: 10px; font-weight: 600; color: var(--text); letter-spacing: 0.3px;">${data.symbol || symbol.toUpperCase()}</span>
+                                <span style="font-size: 11px; font-weight: 500; color: var(--text); font-family: 'JetBrains Mono', monospace;">$${price}</span>
+                                <span style="font-size: 9px; font-weight: 600; padding: 2px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; color: ${changeClass === 'positive' ? 'var(--green)' : 'var(--red)'}; background: ${changeClass === 'positive' ? 'rgba(63,185,80,0.1)' : 'rgba(248,81,73,0.1)'};">
+                                    ${changeIcon} ${Math.abs(data.change_24h).toFixed(2)}%
+                                </span>
+                            </div>
+                        `;
+                        }).join('');
+                    }
+
+                    // Update stock tickers
+                    const stockContainer = document.getElementById('market-tickers');
+                    if (stockContainer && stockData) {
+                        stockContainer.innerHTML = Object.entries(stockData).map(([symbol, data]) => {
+                            const changeClass = data.change >= 0 ? 'positive' : 'negative';
+                            const changeIcon = data.change >= 0 ? '▲' : '▼';
+                            const price = data.price.toLocaleString('en-US', { maximumFractionDigits: 2 });
+
+                            return `
+                            <div style="display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(255,255,255,0.02); border-radius: 4px;">
+                                <span style="font-size: 10px; font-weight: 600; color: var(--text); letter-spacing: 0.3px;">${symbol}</span>
+                                <span style="font-size: 11px; font-weight: 500; color: var(--text); font-family: 'JetBrains Mono', monospace;">$${price}</span>
+                                <span style="font-size: 9px; font-weight: 600; padding: 2px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; color: ${changeClass === 'positive' ? 'var(--green)' : 'var(--red)'}; background: ${changeClass === 'positive' ? 'rgba(63,185,80,0.1)' : 'rgba(248,81,73,0.1)'};">
+                                    ${changeIcon} ${Math.abs(data.change).toFixed(2)}%
+                                </span>
+                            </div>
+                        `;
+                        }).join('');
+                    }
+                } catch (error) {
+                    console.error('Failed to update market ticker:', error);
+                }
+            }
+
+            // Update on page load and every 30 seconds
+            if (document.getElementById('crypto-tickers')) {
+                updateMarketTicker();
+                setInterval(updateMarketTicker, 30000);
+            }
+        </script>
+
+        <script src="admin.js"></script>
+        <script>lucide.createIcons();</script>
 </body>
 
 </html>

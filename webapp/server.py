@@ -467,8 +467,114 @@ def metrics_page():
 # ============================================================================
 # Algorithmic Growth Engine - Event Tracking API
 # ============================================================================
+# ============================================================================
+# Market Data API - Crypto & Stocks
+# ============================================================================
 
-# Event storage (SQLite fallback if Supabase not available)
+@app.route('/api/market/crypto', methods=['GET'])
+def get_crypto_prices():
+    """
+    Get real-time cryptocurrency prices from CoinGecko API.
+    Query params: symbols (comma-separated, e.g., bitcoin,ethereum,solana,ripple)
+    """
+    try:
+        symbols = request.args.get('symbols', 'bitcoin,ethereum,solana,ripple')
+        symbol_list = [s.strip() for s in symbols.split(',')]
+        
+        # CoinGecko API - free tier, no API key needed
+        url = f"https://api.coingecko.com/api/v3/simple/price"
+        params = {
+            'ids': ','.join(symbol_list),
+            'vs_currencies': 'usd',
+            'include_24hr_change': 'true'
+        }
+        
+        response = requests.get(url, params=params, timeout=10)
+        if response.status_code != 200:
+            return jsonify({'error': 'Failed to fetch crypto prices'}), 500
+        
+        data = response.json()
+        
+        # Format response
+        result = {}
+        symbol_map = {
+            'bitcoin': 'BTC',
+            'ethereum': 'ETH',
+            'solana': 'SOL',
+            'ripple': 'XRP',
+            'cardano': 'ADA',
+            'dogecoin': 'DOGE',
+            'polkadot': 'DOT',
+            'avalanche-2': 'AVAX'
+        }
+        
+        for coin_id, coin_data in data.items():
+            result[coin_id] = {
+                'symbol': symbol_map.get(coin_id, coin_id.upper()),
+                'price': coin_data.get('usd', 0),
+                'change_24h': coin_data.get('usd_24h_change', 0)
+            }
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        logger.error(f"Error fetching crypto prices: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/market/stocks', methods=['GET'])
+def get_stock_prices():
+    """
+    Get real-time stock/commodity prices using Yahoo Finance.
+    Query params: symbols (comma-separated, e.g., ^IXIC,GC=F,SI=F)
+    """
+    try:
+        symbols = request.args.get('symbols', '^IXIC,GC=F,SI=F')
+        symbol_list = [s.strip() for s in symbols.split(',')]
+        
+        result = {}
+        symbol_names = {
+            '^IXIC': 'NASDAQ',
+            'GC=F': 'GOLD',
+            'SI=F': 'SILVER',
+            '^GSPC': 'S&P 500',
+            '^DJI': 'DOW'
+        }
+        
+        for symbol in symbol_list:
+            try:
+                # Yahoo Finance API (free, no key needed)
+                url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
+                params = {'interval': '1d', 'range': '5d'}
+                
+                response = requests.get(url, params=params, timeout=10)
+                if response.status_code != 200:
+                    continue
+                
+                data = response.json()
+                quote = data.get('chart', {}).get('result', [{}])[0]
+                meta = quote.get('meta', {})
+                
+                current_price = meta.get('regularMarketPrice', 0)
+                previous_close = meta.get('previousClose', current_price)
+                change_percent = ((current_price - previous_close) / previous_close * 100) if previous_close else 0
+                
+                result[symbol_names.get(symbol, symbol)] = {
+                    'price': current_price,
+                    'change': change_percent
+                }
+            except Exception as e:
+                logger.error(f"Error fetching {symbol}: {e}")
+                continue
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        logger.error(f"Error fetching stock prices: {e}")
+        return jsonify({'error': str(e)}), 500
+
+# ============================================================================
+# Algorithmic Growth Engine - Event Tracking API
+# ============================================================================
 event_store_path = project_root / 'data' / 'events.json'
 
 @app.route('/api/events', methods=['POST'])
