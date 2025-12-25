@@ -1344,6 +1344,11 @@ def admin_script():
     """Serve the Admin Dashboard logic"""
     return send_from_directory('.', 'admin.js')
 
+@app.route('/admin-control')
+def admin_control_panel():
+    """Serve the Admin Control Panel (no .html extension)"""
+    return send_from_directory('.', 'admin_control.html')
+
 @app.route('/api/user/export', methods=['GET', 'POST'])
 def user_export():
     """Export user conversation data for download"""
