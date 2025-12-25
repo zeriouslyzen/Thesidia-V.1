@@ -4257,22 +4257,68 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                             self._last_timing_breakdown['web_search'] = alt_search_time
             
             if research_data and len(research_data) > 0:
-                # Synthesize with pattern recognition approach - traits drive questioning
-                # Detect narrative mode for synthesis
-                narrative_keywords = ["narrative", "tell me about", "explore", "deep dive", "extensive", "comprehensive", "full story"]
-                is_narrative = any(keyword in input_text.lower() for keyword in narrative_keywords)
+                # PHASE 1: TREE OF THOUGHTS ROUTING
+                # Detect if this is a deep query that would benefit from multi-path exploration
+                deep_query_indicators = [
+                    "true origins", "real origins", "what's really", "deeper", "secrets",
+                    "deep dive", "comprehensive", "genesis", "decode", "forensic",
+                    "expose", "hidden", "trace", "what was", "originally",
+                    "across cultures", "across time", "pattern", "evolution of"
+                ]
+                is_deep_query = any(indicator in input_text.lower() for indicator in deep_query_indicators)
                 
-                # Synthesis with timing
-                synthesis_start = time.time() if self._timing_enabled else None
-                synthesis_result = self.data_synthesizer.synthesize(
-                    research_data, 
-                    input_text,
-                    self.thesidia_patterns,
-                    personality_traits=personality_traits,  # Pass traits for organic questioning
-                    narrative_mode=is_narrative
-                )
-                if self._timing_enabled and synthesis_start:
-                    self._last_timing_breakdown['synthesis'] = time.time() - synthesis_start
+                # Route to Tree of Thoughts for deep queries (if available)
+                if is_deep_query and TREE_OF_THOUGHTS_AVAILABLE:
+                    print("🌳 Using Tree of Thoughts for multi-path exploration...")
+                    try:
+                        tot_start = time.time() if self._timing_enabled else None
+                        
+                        # Create ToT instance
+                        tot = _modular_TreeOfThoughts(model=self.model, model_client=self.model_client)
+                        
+                        # Explore and synthesize
+                        tot_result = tot.explore_and_synthesize(
+                            query=input_text,
+                            sources=research_data,
+                            num_paths=4,
+                            parallel=True
+                        )
+                        
+                        # Use ToT synthesis
+                        synthesis_result = {
+                            "synthesis": tot_result["synthesis"],
+                            "citations": [f"[{i+1}] {src.get('title', 'Source')}" for i, src in enumerate(research_data[:10])],
+                            "sources_count": len(research_data),
+                            "method": "tree_of_thoughts",
+                            "paths_explored": len(tot_result["paths"])
+                        }
+                        
+                        if self._timing_enabled and tot_start:
+                            self._last_timing_breakdown['tree_of_thoughts'] = time.time() - tot_start
+                        
+                        print(f"  ✅ Explored {len(tot_result['paths'])} paths in {tot_result['elapsed_seconds']:.1f}s")
+                    except Exception as e:
+                        print(f"  ⚠️ Tree of Thoughts error, falling back to standard synthesis: {e}")
+                        # Fall through to standard synthesis
+                        is_deep_query = False  # Trigger fallback
+                
+                # Standard synthesis (for non-deep queries or if ToT fails/unavailable)
+                if not is_deep_query or not TREE_OF_THOUGHTS_AVAILABLE or not synthesis_result:
+                    # Detect narrative mode for synthesis
+                    narrative_keywords = ["narrative", "tell me about", "explore", "deep dive", "extensive", "comprehensive", "full story"]
+                    is_narrative = any(keyword in input_text.lower() for keyword in narrative_keywords)
+                    
+                    # Synthesis with timing
+                    synthesis_start = time.time() if self._timing_enabled else None
+                    synthesis_result = self.data_synthesizer.synthesize(
+                        research_data, 
+                        input_text,
+                        self.thesidia_patterns,
+                        personality_traits=personality_traits,  # Pass traits for organic questioning
+                        narrative_mode=is_narrative
+                    )
+                    if self._timing_enabled and synthesis_start:
+                        self._last_timing_breakdown['synthesis'] = time.time() - synthesis_start
         
         # Process based on type
         if is_directive:
