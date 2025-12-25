@@ -161,9 +161,11 @@ except ImportError:
 
 # ============================================================================
 # PHASE 0 MODULAR IMPORTS - Extracted components from monolith
+# PHASE 1 ADVANCED REASONING - Tree of Thoughts, etc.
 # These replace the inline class definitions below (now deprecated)
 # ============================================================================
 MODULAR_IMPORTS_AVAILABLE = False
+TREE_OF_THOUGHTS_AVAILABLE = False
 _modular_ModelClient = None
 _modular_AdaptivePersonality = None
 _modular_ModelRouter = None
@@ -171,6 +173,7 @@ _modular_DataQualityFilter = None
 _modular_IntuitiveSkepticism = None
 _modular_WebSearchEngine = None
 _modular_DataSynthesizer = None
+_modular_TreeOfThoughts = None
 
 # Try to import modular components (add src/ subdirectories to path if needed)
 import sys
@@ -190,6 +193,14 @@ try:
     from data_synthesizer import DataSynthesizer as _modular_DataSynthesizer
     MODULAR_IMPORTS_AVAILABLE = True
     print("✅ Phase 0 modular imports loaded successfully")
+    
+    # Phase 1: Advanced reasoning
+    try:
+        from tree_of_thoughts import TreeOfThoughts as _modular_TreeOfThoughts
+        TREE_OF_THOUGHTS_AVAILABLE = True
+        print("✅ Phase 1 Tree of Thoughts loaded")
+    except ImportError as e:
+        print(f"⚠️ Tree of Thoughts not available: {e}")
 except ImportError as e:
     MODULAR_IMPORTS_AVAILABLE = False
     print(f"⚠️ Phase 0 modular imports not available: {e}")
