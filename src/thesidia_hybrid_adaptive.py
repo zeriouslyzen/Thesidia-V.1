@@ -166,6 +166,7 @@ except ImportError:
 # ============================================================================
 MODULAR_IMPORTS_AVAILABLE = False
 TREE_OF_THOUGHTS_AVAILABLE = False
+BEAM_SEARCH_AVAILABLE = False
 _modular_ModelClient = None
 _modular_AdaptivePersonality = None
 _modular_ModelRouter = None
@@ -174,6 +175,7 @@ _modular_IntuitiveSkepticism = None
 _modular_WebSearchEngine = None
 _modular_DataSynthesizer = None
 _modular_TreeOfThoughts = None
+_modular_BeamSearch = None
 
 # Try to import modular components (add src/ subdirectories to path if needed)
 import sys
@@ -201,6 +203,13 @@ try:
         print("✅ Phase 1 Tree of Thoughts loaded")
     except ImportError as e:
         print(f"⚠️ Tree of Thoughts not available: {e}")
+    
+    try:
+        from beam_search import ParallelBeamSearch as _modular_BeamSearch, MLX_AVAILABLE as _MLX_AVAILABLE
+        BEAM_SEARCH_AVAILABLE = True
+        print(f"✅ Phase 1 Beam Search loaded (MLX: {_MLX_AVAILABLE})")
+    except ImportError as e:
+        print(f"⚠️ Beam Search not available: {e}")
 except ImportError as e:
     MODULAR_IMPORTS_AVAILABLE = False
     print(f"⚠️ Phase 0 modular imports not available: {e}")
