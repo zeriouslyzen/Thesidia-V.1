@@ -414,6 +414,57 @@ def sitemap():
     return send_from_directory('.', 'sitemap.xml'), 200, {'Content-Type': 'application/xml'}
 
 # ============================================================================
+# Clean URL Routes (no .html extension for professional URLs)
+# ============================================================================
+
+@app.route('/stream')
+def stream_page():
+    """Main chat/stream interface"""
+    return send_from_directory('.', 'stream.html')
+
+@app.route('/profile')
+def profile_page():
+    """User profile page"""
+    return send_from_directory('.', 'profile.html')
+
+@app.route('/atlas')
+def atlas_page():
+    """Atlas explorer"""
+    return send_from_directory('.', 'atlas.html')
+
+@app.route('/contexts')
+def contexts_page():
+    """Context management"""
+    return send_from_directory('.', 'contexts.html')
+
+@app.route('/reactor')
+def reactor_page():
+    """Reactor interface"""
+    return send_from_directory('.', 'reactor.html')
+
+@app.route('/archive')
+def archive_page():
+    """Archive browser"""
+    return send_from_directory('.', 'archive.html')
+
+@app.route('/application')
+def application_page():
+    """Application dashboard"""
+    return send_from_directory('.', 'application.html')
+
+@app.route('/knowledge-base')
+@app.route('/knowledge')
+def knowledge_base_page_clean():
+    """Knowledge base (clean URL)"""
+    return send_from_directory('.', 'knowledge_base.html')
+
+@app.route('/metrics')
+@app.route('/metrics-dashboard')
+def metrics_page():
+    """Metrics dashboard (clean URL)"""
+    return send_from_directory('.', 'metrics_dashboard.html')
+
+# ============================================================================
 # Algorithmic Growth Engine - Event Tracking API
 # ============================================================================
 
