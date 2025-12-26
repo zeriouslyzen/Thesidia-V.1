@@ -106,6 +106,6 @@ def _parse_date(date_str: str) -> datetime:
         if 'T' in date_str:
             return datetime.fromisoformat(date_str.replace('Z', '+00:00'))
         return datetime.fromisoformat(date_str)
-    except:
+    except (ValueError, TypeError):
         return datetime.min
 

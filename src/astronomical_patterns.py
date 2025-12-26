@@ -97,8 +97,8 @@ class AstronomicalPatternEngine:
             try:
                 with open(self.calendars_file, 'r') as f:
                     return json.load(f)
-            except:
-                pass
+            except (json.JSONDecodeError, IOError) as e:
+                pass  # Fall through to defaults
         
         # Default calendar systems
         return {
@@ -152,8 +152,8 @@ class AstronomicalPatternEngine:
             try:
                 with open(self.events_file, 'r') as f:
                     return json.load(f)
-            except:
-                pass
+            except (json.JSONDecodeError, IOError) as e:
+                pass  # Fall through to empty list
         
         return []
     
@@ -163,8 +163,8 @@ class AstronomicalPatternEngine:
             try:
                 with open(self.patterns_file, 'r') as f:
                     return json.load(f)
-            except:
-                pass
+            except (json.JSONDecodeError, IOError) as e:
+                pass  # Fall through to defaults
         
         return {'patterns': [], 'correlations': []}
     

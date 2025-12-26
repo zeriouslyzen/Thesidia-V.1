@@ -226,7 +226,7 @@ def check_ollama():
     try:
         ollama.list()
         return True
-    except:
+    except Exception:
         return False
 
 def init_thesidia():
@@ -728,7 +728,7 @@ def status():
                     'web_search': thesidia.web_search is not None if hasattr(thesidia, 'web_search') else False,
                     'model_routing': thesidia.capabilities.model_router is not None if hasattr(thesidia, 'capabilities') and hasattr(thesidia.capabilities, 'model_router') else False,
                 }
-            except:
+            except (AttributeError, TypeError) as e:
                 features = {}
         
         return jsonify({
