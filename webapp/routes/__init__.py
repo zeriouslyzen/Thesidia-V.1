@@ -38,6 +38,8 @@ from webapp.routes import events_routes  # noqa: F401, E402
 from webapp.routes import astronomical_routes  # noqa: F401, E402
 from webapp.routes import admin_routes  # noqa: F401, E402
 from webapp.routes import settings_routes  # noqa: F401, E402
+from webapp.routes import social_routes  # noqa: F401, E402
+from webapp.routes import ai_routes  # noqa: F401, E402
 
 
 def register_blueprints(app):
