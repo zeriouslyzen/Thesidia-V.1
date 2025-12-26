@@ -6,10 +6,16 @@ Handles real-time market data API endpoints:
 - /api/market/stocks - Stock/commodity prices from Yahoo Finance
 """
 
+import logging
 import requests
 from flask import jsonify, request
 from webapp.routes import market_bp
-from logger_setup import server_logger as logger
+
+# Use server logger if available, fallback to standard logging
+try:
+    from logger_setup import server_logger as logger
+except ImportError:
+    logger = logging.getLogger(__name__)
 
 
 # Symbol name mappings

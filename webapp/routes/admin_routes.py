@@ -8,13 +8,19 @@ Handles admin dashboard and system control endpoints:
 - Admin pages
 """
 
+import logging
 import random
 import time
 import psutil
 from flask import jsonify, request, send_from_directory
 from datetime import datetime
 from webapp.routes import admin_bp
-from logger_setup import server_logger
+
+# Use server logger if available, fallback to standard logging
+try:
+    from logger_setup import server_logger
+except ImportError:
+    server_logger = logging.getLogger(__name__)
 
 
 # Lazy references (set by main server)
