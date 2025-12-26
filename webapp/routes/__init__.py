@@ -27,7 +27,7 @@ events_bp = Blueprint('events', __name__, url_prefix='/api/events')
 ai_bp = Blueprint('ai', __name__, url_prefix='/api')
 social_bp = Blueprint('social', __name__, url_prefix='/api')
 settings_bp = Blueprint('settings', __name__, url_prefix='/api/settings')
-admin_bp = Blueprint('admin', __name__, url_prefix='/api/admin')
+admin_bp = Blueprint('admin', __name__, url_prefix='/api')
 astronomical_bp = Blueprint('astronomical', __name__, url_prefix='/api/astronomical')
 
 # Import route modules to register routes with blueprints
@@ -35,6 +35,10 @@ astronomical_bp = Blueprint('astronomical', __name__, url_prefix='/api/astronomi
 from webapp.routes import pages_routes  # noqa: F401, E402
 from webapp.routes import market_routes  # noqa: F401, E402
 from webapp.routes import events_routes  # noqa: F401, E402
+from webapp.routes import astronomical_routes  # noqa: F401, E402
+from webapp.routes import admin_routes  # noqa: F401, E402
+from webapp.routes import settings_routes  # noqa: F401, E402
+
 
 def register_blueprints(app):
     """Register all blueprints with the Flask app"""
@@ -46,4 +50,5 @@ def register_blueprints(app):
     app.register_blueprint(settings_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(astronomical_bp)
+
 
