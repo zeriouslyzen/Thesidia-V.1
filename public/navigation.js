@@ -13,31 +13,31 @@ class NavigationSystem {
         this.followSuggestions = [];
         this.currentSuggestionIndex = 0;
         this.followRotationInterval = null;
-        
+
         this.init();
     }
-    
+
     async renderFollowSuggestions() {
         const listEl = document.getElementById('peopleToFollowList');
         if (!listEl) return;
-        
+
         try {
             const res = await fetch('/mock-profiles.json');
             const data = await res.json();
             const profiles = (data.profiles || []).slice(0, 10); // Get more profiles for rotation
-            
+
             if (profiles.length === 0) {
                 listEl.innerHTML = '<div class="text-secondary" style="font-size:12px;">No suggestions yet.</div>';
                 return;
             }
-            
+
             // Store profiles for rotation
             this.followSuggestions = profiles;
             this.currentSuggestionIndex = 0;
-            
+
             // Render first suggestion
             this.renderCurrentSuggestion();
-            
+
             // Start slideshow rotation every 2 seconds
             if (this.followRotationInterval) {
                 clearInterval(this.followRotationInterval);
@@ -51,13 +51,13 @@ class NavigationSystem {
             listEl.innerHTML = '<div class="text-secondary" style="font-size:12px;">Unable to load suggestions.</div>';
         }
     }
-    
+
     renderCurrentSuggestion() {
         const listEl = document.getElementById('peopleToFollowList');
         if (!listEl || !this.followSuggestions || this.followSuggestions.length === 0) return;
-        
+
         const profile = this.followSuggestions[this.currentSuggestionIndex];
-        
+
         listEl.innerHTML = `
             <a class="sidebar-follow-item" href="/profile.html?user_id=${encodeURIComponent(profile.user_id)}">
                 <div class="sidebar-follow-avatar">
@@ -66,12 +66,12 @@ class NavigationSystem {
                 <div class="sidebar-follow-meta">
                     <div class="sidebar-follow-name">${this.escapeHtml(profile.display_name)}</div>
                     <div class="sidebar-follow-handle">@${this.escapeHtml(profile.username)}</div>
-                    ${profile.domains ? `<div class="sidebar-follow-domain">${this.escapeHtml(profile.domains.slice(0,2).join(' · '))}</div>` : ''}
+                    ${profile.domains ? `<div class="sidebar-follow-domain">${this.escapeHtml(profile.domains.slice(0, 2).join(' · '))}</div>` : ''}
                 </div>
             </a>
         `;
     }
-    
+
     init() {
         this.setupCarousel();
         this.setupNavigationButtons();
@@ -80,16 +80,16 @@ class NavigationSystem {
         this.initLoadingScreen();
         this.loadInitialSection();
     }
-    
+
     /**
      * Initialize loading screen and handle graceful entry
      */
     initLoadingScreen() {
         const loadingScreen = document.getElementById('katanxLoadingScreen');
         const pageContainer = document.querySelector('.stream-page-container');
-        
+
         if (!loadingScreen) return;
-        
+
         // Hide loading screen after initial load
         // Wait for DOM to be ready and initial content to start loading
         window.addEventListener('load', () => {
@@ -98,13 +98,13 @@ class NavigationSystem {
                 this.hideLoadingScreen();
             }, 800); // Minimum display time for branding
         });
-        
+
         // Also hide if page container is ready
         if (pageContainer) {
             pageContainer.classList.add('loaded');
         }
     }
-    
+
     /**
      * Hide loading screen with fade-out animation
      */
@@ -120,20 +120,20 @@ class NavigationSystem {
             }, 600);
         }
     }
-    
+
     /**
      * Trigger fade-in animations for widgets
      */
     triggerWidgetFadeIns() {
         // Get all widget cards
         const widgets = document.querySelectorAll('.widget-card');
-        
+
         // Use Intersection Observer for progressive reveal
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         };
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -142,12 +142,12 @@ class NavigationSystem {
                 }
             });
         }, observerOptions);
-        
+
         // Observe all widgets
         widgets.forEach(widget => {
             observer.observe(widget);
         });
-        
+
         // Also trigger immediate fade-in for visible widgets (fallback)
         setTimeout(() => {
             widgets.forEach((widget, index) => {
@@ -161,7 +161,7 @@ class NavigationSystem {
             });
         }, 100);
     }
-    
+
     /**
      * Fade in content within a widget after it's loaded
      */
@@ -171,32 +171,32 @@ class NavigationSystem {
             container.classList.add('widget-content-loaded');
         }
     }
-    
+
     setupCarousel() {
         const carouselTrack = document.querySelector('.carousel-track');
         if (!carouselTrack) return;
-        
+
         // Ensure carousel starts at position 0 (home section)
         this.sectionIndex = 0;
         this.currentSection = 'home';
-        
+
         // Set initial position immediately (no transition)
         carouselTrack.style.transition = 'none';
         this.updateCarouselPosition();
-        
+
         // Re-enable transitions after a brief moment
         setTimeout(() => {
             carouselTrack.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
         }, 50);
     }
-    
+
     setupNavigationButtons() {
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach((item, index) => {
             // Remove any existing listeners to prevent duplicates
             const newItem = item.cloneNode(true);
             item.parentNode.replaceChild(newItem, item);
-            
+
             newItem.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -207,11 +207,11 @@ class NavigationSystem {
                 }
             }, { once: false });
         });
-        
+
         // Setup filter buttons for circles and studio
         this.setupFilterButtons();
     }
-    
+
     setupFilterButtons() {
         // Circles filter buttons
         const circlesFilters = document.querySelectorAll('.circles-filters .filter-btn');
@@ -223,7 +223,7 @@ class NavigationSystem {
                 this.loadCirclesContent();
             });
         });
-        
+
         // Studio filter buttons
         const studioFilters = document.querySelectorAll('.studio-filters .filter-btn');
         studioFilters.forEach(btn => {
@@ -235,118 +235,118 @@ class NavigationSystem {
             });
         });
     }
-    
+
     setupSwipeGestures() {
         const carousel = document.querySelector('.content-carousel');
         if (!carousel) return;
-        
+
         // Touch events
         carousel.addEventListener('touchstart', (e) => {
             // Don't handle swipe if touch started in circles area (categories scroll or threads)
             const circlesContainer = e.target.closest('.circles-container');
             const categoriesScroll = e.target.closest('.circles-categories-scroll');
             const circlesThreads = e.target.closest('.circles-threads');
-            
+
             if (circlesContainer || categoriesScroll || circlesThreads) {
                 // Let circles handle its own scrolling/swiping
                 return;
             }
-            
+
             this.touchStartX = e.touches[0].clientX;
         }, { passive: true });
-        
+
         carousel.addEventListener('touchmove', (e) => {
             // Don't handle swipe if touch is in circles area
             const circlesContainer = e.target.closest('.circles-container');
             const categoriesScroll = e.target.closest('.circles-categories-scroll');
             const circlesThreads = e.target.closest('.circles-threads');
-            
+
             if (circlesContainer || categoriesScroll || circlesThreads) {
                 return;
             }
             // Allow default scrolling behavior
         }, { passive: true });
-        
+
         carousel.addEventListener('touchend', (e) => {
             // Don't handle swipe if touch ended in circles area
             const circlesContainer = e.target.closest('.circles-container');
             const categoriesScroll = e.target.closest('.circles-categories-scroll');
             const circlesThreads = e.target.closest('.circles-threads');
-            
+
             if (circlesContainer || categoriesScroll || circlesThreads) {
                 return;
             }
-            
+
             this.touchEndX = e.changedTouches[0].clientX;
             this.handleSwipe();
         }, { passive: true });
-        
+
         // Mouse events for desktop drag
         let isMouseDown = false;
         let mouseStartX = 0;
-        
+
         carousel.addEventListener('mousedown', (e) => {
             // Don't handle swipe if click started in circles area
             const circlesContainer = e.target.closest('.circles-container');
             const categoriesScroll = e.target.closest('.circles-categories-scroll');
             const circlesThreads = e.target.closest('.circles-threads');
-            
+
             if (circlesContainer || categoriesScroll || circlesThreads) {
                 return;
             }
-            
+
             isMouseDown = true;
             mouseStartX = e.clientX;
             carousel.style.cursor = 'grabbing';
         });
-        
+
         carousel.addEventListener('mousemove', (e) => {
             if (!isMouseDown) return;
-            
+
             // Don't handle swipe if moving in circles area
             const circlesContainer = e.target.closest('.circles-container');
             const categoriesScroll = e.target.closest('.circles-categories-scroll');
             const circlesThreads = e.target.closest('.circles-threads');
-            
+
             if (circlesContainer || categoriesScroll || circlesThreads) {
                 isMouseDown = false;
                 carousel.style.cursor = '';
                 return;
             }
-            
+
             // Prevent text selection during drag
             e.preventDefault();
         });
-        
+
         carousel.addEventListener('mouseup', (e) => {
             if (isMouseDown) {
                 // Don't handle swipe if click ended in circles area
                 const circlesContainer = e.target.closest('.circles-container');
                 const categoriesScroll = e.target.closest('.circles-categories-scroll');
                 const circlesThreads = e.target.closest('.circles-threads');
-                
+
                 if (!circlesContainer && !categoriesScroll && !circlesThreads) {
                     const mouseEndX = e.clientX;
                     this.touchStartX = mouseStartX;
                     this.touchEndX = mouseEndX;
                     this.handleSwipe();
                 }
-                
+
                 isMouseDown = false;
                 carousel.style.cursor = '';
             }
         });
-        
+
         carousel.addEventListener('mouseleave', () => {
             isMouseDown = false;
             carousel.style.cursor = '';
         });
     }
-    
+
     setupKeyboardNavigation() {
         document.addEventListener('keydown', (e) => {
             if (this.isTransitioning) return;
-            
+
             if (e.key === 'ArrowLeft') {
                 this.navigatePrevious();
             } else if (e.key === 'ArrowRight') {
@@ -354,12 +354,12 @@ class NavigationSystem {
             }
         });
     }
-    
+
     handleSwipe() {
         if (this.isTransitioning) return;
-        
+
         const swipeDistance = this.touchStartX - this.touchEndX;
-        
+
         if (Math.abs(swipeDistance) > this.swipeThreshold) {
             if (swipeDistance > 0) {
                 // Swipe left - next section
@@ -385,7 +385,7 @@ class NavigationSystem {
             }
         }
     }
-    
+
     navigateToSection(sectionName) {
         console.log('=== NAVIGATE TO SECTION ===', sectionName);
         console.log('Current state:', {
@@ -393,17 +393,17 @@ class NavigationSystem {
             currentSection: this.currentSection,
             sectionIndex: this.sectionIndex
         });
-        
+
         if (this.isTransitioning) {
             console.log('Navigation blocked: already transitioning');
             return;
         }
-        
+
         if (!this.sections.includes(sectionName)) {
             console.log('Navigation blocked: section not in list', sectionName);
             return;
         }
-        
+
         const newIndex = this.sections.indexOf(sectionName);
         if (newIndex === this.sectionIndex) {
             console.log('Already on section, scrolling to top:', sectionName);
@@ -417,13 +417,13 @@ class NavigationSystem {
             }
             return;
         }
-        
+
         console.log('Navigating from', this.sectionIndex, 'to', newIndex, '(', sectionName, ')');
-        
+
         this.isTransitioning = true;
         this.sectionIndex = newIndex;
         this.currentSection = sectionName;
-        
+
         // Update active section class
         const allSections = document.querySelectorAll('.carousel-section');
         console.log('Found', allSections.length, 'sections');
@@ -434,40 +434,40 @@ class NavigationSystem {
                 console.log('Activated section:', sectionName);
             }
         });
-        
+
         this.updateCarouselPosition();
         this.updateActiveNavState();
-        
+
         // Load content immediately - don't wait
         console.log('Loading content for:', sectionName);
         this.loadSectionContent(sectionName).catch(err => {
             console.error('Error loading section content:', err);
         });
-        
+
         // Reset transition flag after animation
         setTimeout(() => {
             this.isTransitioning = false;
             console.log('Navigation transition complete:', sectionName);
         }, 600);
     }
-    
+
     navigateNext() {
         if (this.sectionIndex < this.sections.length - 1) {
             this.navigateToSection(this.sections[this.sectionIndex + 1]);
         }
     }
-    
+
     navigatePrevious() {
         if (this.sectionIndex > 0) {
             this.navigateToSection(this.sections[this.sectionIndex - 1]);
         }
     }
-    
+
     updateCarouselPosition() {
         const carouselTrack = document.querySelector('.carousel-track');
         const carouselContainer = document.querySelector('.content-carousel');
         if (!carouselTrack || !carouselContainer) return;
-        
+
         // Calculate transform in pixels based on container width
         // Each section is 100% of container width
         const containerWidth = carouselContainer.offsetWidth;
@@ -480,26 +480,26 @@ class NavigationSystem {
             currentSection: this.currentSection
         });
     }
-    
+
     updateActiveNavState() {
         const navItems = document.querySelectorAll('.nav-item');
         const activeItem = document.querySelector(`.nav-item[data-section="${this.currentSection}"]`);
-        
+
         if (!activeItem) return;
-        
+
         // Update active states
         navItems.forEach(item => item.classList.remove('active'));
         activeItem.classList.add('active');
     }
-    
+
     loadInitialSection() {
         // Check URL hash or default to 'home'
         const hash = window.location.hash.slice(1);
         const initialSection = this.sections.includes(hash) ? hash : 'home';
-        
+
         this.sectionIndex = this.sections.indexOf(initialSection);
         this.currentSection = initialSection;
-        
+
         // Set initial active section
         const allSections = document.querySelectorAll('.carousel-section');
         allSections.forEach(section => {
@@ -508,12 +508,12 @@ class NavigationSystem {
                 section.classList.add('active');
             }
         });
-        
+
         this.updateCarouselPosition();
         this.updateActiveNavState();
         this.loadSectionContent(initialSection);
     }
-    
+
     async loadSectionContent(sectionName) {
         console.log('=== LOAD SECTION CONTENT ===', sectionName);
         try {
@@ -548,12 +548,12 @@ class NavigationSystem {
             throw error;
         }
     }
-    
+
     async loadHomeContent() {
         try {
             let userId = localStorage.getItem('thesidia_user_id');
             let sessionId = localStorage.getItem('thesidia_session_id');
-            
+
             // Create session if doesn't exist
             if (!sessionId) {
                 try {
@@ -571,39 +571,39 @@ class NavigationSystem {
                     console.warn('Could not create session, using mock data:', e);
                 }
             }
-            
+
             const url = `/api/sections/home?user_id=${userId || ''}&session_id=${sessionId || ''}`;
             const response = await fetch(url);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('Home data loaded:', data);
-            
+
             // Welcome hero - only keeping "welcome back" eyebrow text
             // Removed: "hey friend" and "You're on track" messages
 
             // People to follow rail (mock profiles)
             await this.renderFollowSuggestions();
-            
+
             // What You're Following widget
             await this.loadFollowingWidget();
-            
+
             // Activity widget
             await this.loadActivityWidget();
-            
+
             // Mindful Tips widget
             await this.loadMindfulTipsWidget();
-            
+
             // Legacy goals widget (removed but keeping code for reference)
             const goalsList = document.getElementById('homeGoalsList');
             const goalsMeta = document.getElementById('homeGoalsMeta');
             if (goalsList || goalsMeta) {
                 // Widget removed, skip
             }
-            
+
             // Legacy code kept for reference:
             /*
             const goals = (data.goals && data.goals.length) ? data.goals : [
@@ -630,7 +630,7 @@ class NavigationSystem {
                 }).join('');
             }
             */
-            
+
             // News widget
             const newsTiles = document.getElementById('homeNewsTiles');
             const news = (data.news && data.news.length) ? data.news.slice(0, 6) : [
@@ -661,7 +661,7 @@ class NavigationSystem {
                     });
                 });
             }
-            
+
             // Trigger widget fade-ins after content is loaded
             setTimeout(() => {
                 this.triggerWidgetFadeIns();
@@ -671,10 +671,10 @@ class NavigationSystem {
                 this.fadeInWidgetContent('activityList');
                 this.fadeInWidgetContent('tipsContainer');
             }, 200);
-            
+
             // Hide loading screen once home content is ready
             this.hideLoadingScreen();
-            
+
             // Legacy quick actions removed - widgets replaced
         } catch (error) {
             console.error('Error loading home content:', error);
@@ -682,13 +682,13 @@ class NavigationSystem {
             this.hideLoadingScreen();
         }
     }
-    
+
     async loadStreamContent() {
         console.log('=== LOAD STREAM CONTENT ===');
         try {
             let userId = localStorage.getItem('thesidia_user_id');
             let sessionId = localStorage.getItem('thesidia_session_id');
-            
+
             if (!sessionId) {
                 try {
                     const sessionResponse = await fetch('/api/user/session', {
@@ -705,18 +705,18 @@ class NavigationSystem {
                     console.warn('Could not create session:', e);
                 }
             }
-            
+
             const url = `/api/sections/stream?user_id=${userId || ''}&session_id=${sessionId || ''}&limit=20&offset=0`;
             console.log('Fetching Stream from:', url);
             const response = await fetch(url);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('Stream data loaded:', data);
-            
+
             // Try multiple ways to find the element
             let streamFeed = document.getElementById('streamFeed');
             if (!streamFeed) {
@@ -733,7 +733,7 @@ class NavigationSystem {
                     if (streamFeed) break;
                 }
             }
-            
+
             if (streamFeed) {
                 console.log('✅ Found streamFeed, rendering', data.items?.length || 0, 'items');
                 if (data.items && data.items.length > 0) {
@@ -770,13 +770,13 @@ class NavigationSystem {
             }
         }
     }
-    
+
     async loadKxCutsContent() {
         console.log('Loading KX Cuts content...');
         try {
             let userId = localStorage.getItem('thesidia_user_id');
             let sessionId = localStorage.getItem('thesidia_session_id');
-            
+
             if (!sessionId) {
                 try {
                     const sessionResponse = await fetch('/api/user/session', {
@@ -793,18 +793,18 @@ class NavigationSystem {
                     console.warn('Could not create session:', e);
                 }
             }
-            
+
             const url = `/api/sections/kx-cuts?user_id=${userId || ''}&session_id=${sessionId || ''}&limit=20`;
             console.log('Fetching KX Cuts from:', url);
             const response = await fetch(url);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('KX Cuts data loaded:', data);
-            
+
             // Try multiple ways to find the element
             let cutsFeed = document.getElementById('cutsFeed');
             if (!cutsFeed) {
@@ -822,7 +822,7 @@ class NavigationSystem {
                     if (cutsFeed) break;
                 }
             }
-            
+
             if (cutsFeed) {
                 console.log('✅ Found cutsFeed, rendering', data.items?.length || 0, 'items');
                 if (data.items && data.items.length > 0) {
@@ -846,28 +846,28 @@ class NavigationSystem {
             }
         }
     }
-    
+
     renderCut(cut) {
         if (!cut || !cut.id) {
             return '';
         }
-        
+
         const interactions = cut.interactions || {};
         const recognizeCount = interactions.recognize || interactions.recognitions || 0;
         const growthCount = interactions.growth || 0;
         const connectCount = interactions.connect || interactions.connections || 0;
-        
+
         const timeAgo = this.formatTimeAgo(cut.created_at || cut.timestamp || new Date().toISOString());
         const domain = (cut.domains && cut.domains.length > 0) ? cut.domains[0] : (cut.domain || null);
         const author = cut.author || {};
         const authorId = author.user_id || cut.author_id || 'unknown';
         const username = author.username || author.user_id || 'unknown';
-        
+
         // Mock avatar images - tiny HD, no cartoon/nature
         // Using placeholder service with realistic portraits
         const avatarIndex = (username.charCodeAt(0) || 0) % 10;
         const avatarUrl = author.avatar_url || `https://i.pravatar.cc/40?img=${avatarIndex + 1}`;
-        
+
         // Mock topic-related GIFs based on domain
         const topicGifs = {
             'movement': 'https://media.giphy.com/media/l0MYC0Lajbo1e6mdy/giphy.gif',
@@ -879,17 +879,17 @@ class NavigationSystem {
             'performance': 'https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif'
         };
         const topicGif = domain && topicGifs[domain.toLowerCase()] ? topicGifs[domain.toLowerCase()] : null;
-        
+
         const videoUrl = cut.video_url || cut.media_url || '';
         const thumbnailUrl = cut.thumbnail_url || cut.poster_url || topicGif || '';
-        
+
         // Escape HTML to prevent XSS
         const safeUsername = String(username).replace(/[<>&"']/g, '');
         const safeDomain = domain ? String(domain).replace(/[<>&"']/g, '') : '';
         const safeCutId = String(cut.id).replace(/[<>&"']/g, '');
         const safeAuthorId = String(authorId).replace(/[<>&"']/g, '');
         const profileHref = `/profile.html?user_id=${encodeURIComponent(safeAuthorId)}`;
-        
+
         return `
             <article class="cut-item" data-cut-id="${safeCutId}">
                 <div class="cut-video-container">
@@ -934,7 +934,7 @@ class NavigationSystem {
             </article>
         `;
     }
-    
+
     formatTimeAgo(timestamp) {
         if (!timestamp) return 'now';
         try {
@@ -944,7 +944,7 @@ class NavigationSystem {
             const diffMins = Math.floor(diffMs / 60000);
             const diffHours = Math.floor(diffMs / 3600000);
             const diffDays = Math.floor(diffMs / 86400000);
-            
+
             if (diffMins < 1) return 'now';
             if (diffMins < 60) return `${diffMins}m`;
             if (diffHours < 24) return `${diffHours}h`;
@@ -954,33 +954,33 @@ class NavigationSystem {
             return 'recently';
         }
     }
-    
+
     setupCutInteractions() {
         const cutsFeed = document.getElementById('cutsFeed');
         if (!cutsFeed) return;
-        
+
         cutsFeed.addEventListener('click', (e) => {
             const btn = e.target.closest('.cut-interaction-btn');
             if (!btn) return;
-            
+
             const action = btn.dataset.action;
             const cutId = btn.dataset.cutId;
-            
+
             if (!action || !cutId) return;
-            
+
             this.handleCutInteraction(cutId, action, btn);
         });
     }
-    
+
     async handleCutInteraction(cutId, action, btn) {
         try {
             const userId = localStorage.getItem('thesidia_user_id');
             const sessionId = localStorage.getItem('thesidia_session_id');
-            
+
             if (!userId || !cutId || !action) {
                 return;
             }
-            
+
             const response = await fetch(`/api/cuts/${cutId}/${action}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -989,7 +989,7 @@ class NavigationSystem {
                     session_id: sessionId
                 })
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 const countSpan = btn.querySelector('.interaction-count');
@@ -1005,13 +1005,13 @@ class NavigationSystem {
             console.error('Error handling cut interaction:', error);
         }
     }
-    
+
     async loadCirclesContent() {
         console.log('Loading Circles content...');
         try {
             let userId = localStorage.getItem('thesidia_user_id');
             let sessionId = localStorage.getItem('thesidia_session_id');
-            
+
             if (!sessionId) {
                 try {
                     const sessionResponse = await fetch('/api/user/session', {
@@ -1028,27 +1028,27 @@ class NavigationSystem {
                     console.warn('Could not create session:', e);
                 }
             }
-            
+
             const activeSection = document.querySelector('.carousel-section[data-section="circles"]');
             const filterBtn = activeSection ? activeSection.querySelector('.circles-filters .filter-btn.active') : document.querySelector('.circles-filters .filter-btn.active');
             const filter = filterBtn?.dataset.filter || 'all';
-            
+
             // Add category filter to URL if selected
             let url = `/api/sections/circles?user_id=${userId || ''}&session_id=${sessionId || ''}&filter=${filter}&limit=20`;
             if (this.selectedCategory && this.selectedCategory !== 'all') {
                 url += `&category=${encodeURIComponent(this.selectedCategory)}`;
             }
-            
+
             console.log('Fetching Circles from:', url);
             const response = await fetch(url);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('Circles data loaded:', data);
-            
+
             // Filter threads by selected category if needed
             let threadsToDisplay = data.threads || [];
             if (this.selectedCategory && this.selectedCategory !== 'all') {
@@ -1056,16 +1056,16 @@ class NavigationSystem {
                     const threadCircle = thread.circle || '';
                     const threadCategoryId = thread.category_id || '';
                     // Match exact circle path or category ID
-                    return threadCircle === this.selectedCategory || 
-                           threadCircle.startsWith(this.selectedCategory + '/') ||
-                           threadCategoryId === this.selectedCategory ||
-                           threadCircle.split('/')[0] === this.selectedCategory;
+                    return threadCircle === this.selectedCategory ||
+                        threadCircle.startsWith(this.selectedCategory + '/') ||
+                        threadCategoryId === this.selectedCategory ||
+                        threadCircle.split('/')[0] === this.selectedCategory;
                 });
             }
-            
+
             // Load categories first
             await this.loadCirclesCategories(data.categories || []);
-            
+
             // Try multiple ways to find the element
             let threadsContainer = document.getElementById('circlesThreads');
             if (!threadsContainer && activeSection) {
@@ -1079,16 +1079,16 @@ class NavigationSystem {
                     if (threadsContainer) break;
                 }
             }
-            
+
             if (threadsContainer) {
                 console.log('✅ Found circlesThreads, rendering', threadsToDisplay.length, 'threads');
                 if (threadsToDisplay.length > 0) {
                     threadsContainer.innerHTML = threadsToDisplay.map(thread => this.renderThread(thread)).join('');
                     console.log('✅ Rendered', threadsToDisplay.length, 'threads');
-                    
+
                     // Initialize shifting previews
                     this.initializeShiftingPreviews(threadsToDisplay);
-                    
+
                     // Add click handlers for navigation to thread detail
                     this.initializeThreadClickHandlers(threadsContainer);
                 } else {
@@ -1107,16 +1107,16 @@ class NavigationSystem {
             }
         }
     }
-    
+
     async loadCirclesCategories(categories) {
         const activeSection = document.querySelector('.carousel-section[data-section="circles"]');
         let categoriesContainer = activeSection ? activeSection.querySelector('#circlesCategoriesScroll') : document.getElementById('circlesCategoriesScroll');
-        
+
         if (!categoriesContainer) {
             console.warn('Categories container not found');
             return;
         }
-        
+
         // Add "All" category at the beginning
         const allCategories = [
             {
@@ -1128,13 +1128,13 @@ class NavigationSystem {
             },
             ...(categories || [])
         ];
-        
+
         // Render categories
         categoriesContainer.innerHTML = allCategories.map(cat => this.renderCategory(cat)).join('');
-        
+
         // Initialize swipe functionality
         this.initializeCategorySwipe(categoriesContainer);
-        
+
         // Add click handlers for category filtering
         const categoryItems = categoriesContainer.querySelectorAll('.circle-category-item');
         categoryItems.forEach(item => {
@@ -1145,16 +1145,16 @@ class NavigationSystem {
                 }
             });
         });
-        
+
         // Show main categories first, then subcategories (or group by parent)
         // This could be enhanced to show hierarchical structure
     }
-    
+
     async filterByCategory(category) {
         // Update active category visual state
         const activeSection = document.querySelector('.carousel-section[data-section="circles"]');
         const categoriesContainer = activeSection ? activeSection.querySelector('#circlesCategoriesScroll') : document.getElementById('circlesCategoriesScroll');
-        
+
         if (categoriesContainer) {
             const categoryItems = categoriesContainer.querySelectorAll('.circle-category-item');
             categoryItems.forEach(item => {
@@ -1166,14 +1166,14 @@ class NavigationSystem {
                 }
             });
         }
-        
+
         // Store selected category for filtering
         this.selectedCategory = category === 'all' ? null : category;
-        
+
         // Reload threads with category filter
         await this.loadCirclesContent();
     }
-    
+
     renderCategory(category) {
         const name = category.name || category.slug || 'Category';
         const slug = category.slug || category.id || '';
@@ -1181,7 +1181,7 @@ class NavigationSystem {
         const isAll = slug === 'all';
         const isSubcategory = category.type === 'subcategory';
         const categoryId = category.id || slug; // Use full ID for subcategories (category-id/subcategory-id)
-        
+
         // Special handling for "All" category
         let avatarUrl, fallbackAvatarUrl, initial, color;
         if (isAll) {
@@ -1200,19 +1200,19 @@ class NavigationSystem {
             }
             const numericSeed = Math.abs(seedHash);
             const seedNum = numericSeed % 1000;
-            
+
             // Use Unsplash for category photos (portrait/face style)
             avatarUrl = `https://source.unsplash.com/200x200/?portrait,face&sig=${seedNum}`;
             fallbackAvatarUrl = this.getFallbackAvatarUrl(slug, slug);
             initial = this.getCircleInitial(slug);
             color = this.getCircleColor(slug);
         }
-        
+
         // Add visual indicator for subcategories
         const subcategoryClass = isSubcategory ? 'subcategory' : '';
-        const parentIndicator = isSubcategory && category.parent_category_name ? 
+        const parentIndicator = isSubcategory && category.parent_category_name ?
             `<div class="category-parent-name">${this.escapeHtml(category.parent_category_name)}</div>` : '';
-        
+
         return `
             <div class="circle-category-item ${isAll ? 'active' : ''} ${subcategoryClass}" data-category="${categoryId}" data-slug="${slug}">
                 <div class="circle-category-avatar-wrapper">
@@ -1232,14 +1232,14 @@ class NavigationSystem {
             </div>
         `;
     }
-    
+
     initializeCategorySwipe(container) {
         if (!container) return;
-        
+
         let isDown = false;
         let startX = 0;
         let scrollLeft = 0;
-        
+
         // Mouse events
         container.addEventListener('mousedown', (e) => {
             isDown = true;
@@ -1247,17 +1247,17 @@ class NavigationSystem {
             startX = e.pageX - container.offsetLeft;
             scrollLeft = container.scrollLeft;
         });
-        
+
         container.addEventListener('mouseleave', () => {
             isDown = false;
             container.style.cursor = 'grab';
         });
-        
+
         container.addEventListener('mouseup', () => {
             isDown = false;
             container.style.cursor = 'grab';
         });
-        
+
         container.addEventListener('mousemove', (e) => {
             if (!isDown) return;
             e.preventDefault();
@@ -1265,36 +1265,36 @@ class NavigationSystem {
             const walk = (x - startX) * 2; // Scroll speed multiplier
             container.scrollLeft = scrollLeft - walk;
         });
-        
+
         // Touch events for mobile
         let touchStartX = 0;
         let touchScrollLeft = 0;
-        
+
         container.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].pageX - container.offsetLeft;
             touchScrollLeft = container.scrollLeft;
         }, { passive: true });
-        
+
         container.addEventListener('touchmove', (e) => {
             if (!touchStartX) return;
             const x = e.touches[0].pageX - container.offsetLeft;
             const walk = (x - touchStartX) * 1.5;
             container.scrollLeft = touchScrollLeft - walk;
         }, { passive: true });
-        
+
         container.addEventListener('touchend', () => {
             touchStartX = 0;
         });
-        
+
         // Set initial cursor
         container.style.cursor = 'grab';
     }
-    
+
     getCircleInitial(topic) {
         if (!topic) return '?';
         return topic.charAt(0).toUpperCase();
     }
-    
+
     getCircleColor(topic) {
         if (!topic) return '#666';
         const colors = [
@@ -1308,13 +1308,13 @@ class NavigationSystem {
         }
         return colors[Math.abs(hash) % colors.length];
     }
-    
+
     getAvatarUrl(topic, authorId = null, authorAvatarUrl = null) {
         // First, check if author has an avatar URL
         if (authorAvatarUrl && authorAvatarUrl.trim()) {
             return authorAvatarUrl;
         }
-        
+
         // Use Unsplash Source API for real photos
         // Generate consistent seed from topic/author
         const seed = authorId || topic || 'default';
@@ -1324,16 +1324,16 @@ class NavigationSystem {
             seedHash = seedString.charCodeAt(i) + ((seedHash << 5) - seedHash);
         }
         const numericSeed = Math.abs(seedHash);
-        
+
         // Use Unsplash Source for real profile photos
         // Using portrait orientation and face focus
         const width = 200;
         const height = 200;
         const seedNum = numericSeed % 1000; // Use for consistent selection
-        
+
         return `https://source.unsplash.com/${width}x${height}/?portrait,face&sig=${seedNum}`;
     }
-    
+
     getFallbackAvatarUrl(topic, authorId = null) {
         // Use RandomUser.me API for realistic profile photos as fallback
         // Generate consistent seed from topic/author
@@ -1344,12 +1344,12 @@ class NavigationSystem {
             seedHash = seedString.charCodeAt(i) + ((seedHash << 5) - seedHash);
         }
         const numericSeed = Math.abs(seedHash);
-        
+
         // Use randomuser.me with seed for consistent faces
         // This provides realistic profile photos
         return `https://randomuser.me/api/portraits/${numericSeed % 2 === 0 ? 'men' : 'women'}/${numericSeed % 99}.jpg`;
     }
-    
+
     formatMessageTime(createdAt) {
         if (!createdAt) return '';
         const date = new Date(createdAt);
@@ -1358,30 +1358,30 @@ class NavigationSystem {
         const diffMins = Math.floor(diffMs / 60000);
         const diffHours = Math.floor(diffMs / 3600000);
         const diffDays = Math.floor(diffMs / 86400000);
-        
+
         if (diffMins < 1) return 'now';
         if (diffMins < 60) return `${diffMins}m`;
         if (diffHours < 24) return `${diffHours}h`;
         if (diffDays < 7) return `${diffDays}d`;
-        
+
         const month = date.getMonth() + 1;
         const day = date.getDate();
         const year = date.getFullYear();
         const currentYear = now.getFullYear();
-        
+
         if (year === currentYear) {
             return `${month}/${day}`;
         }
         return `${month}/${day}/${year.toString().slice(2)}`;
     }
-    
+
     escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
-    
+
     renderThread(thread) {
         // Get category display name - prefer structured names, fallback to circle
         let categoryDisplay = '';
@@ -1394,34 +1394,34 @@ class NavigationSystem {
             const circleParts = thread.circle.split('/');
             if (circleParts.length === 2) {
                 // Format: "Category Name • Subcategory Name"
-                categoryDisplay = circleParts.map(part => 
+                categoryDisplay = circleParts.map(part =>
                     part.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
                 ).join(' • ');
             } else {
-                categoryDisplay = thread.circle.split('-').map(word => 
+                categoryDisplay = thread.circle.split('-').map(word =>
                     word.charAt(0).toUpperCase() + word.slice(1)
                 ).join(' ');
             }
         } else {
             categoryDisplay = thread.title || 'Topic';
         }
-        
+
         const topic = categoryDisplay;
         const authorId = thread.author_id || thread.author?.user_id || null;
         const authorAvatarUrl = thread.author?.avatar_url || null;
         const avatarUrl = this.getAvatarUrl(topic, authorId, authorAvatarUrl);
         const fallbackAvatarUrl = this.getFallbackAvatarUrl(topic, authorId);
         const timeAgo = this.formatMessageTime(thread.created_at);
-        
+
         // Get thread title for display
         const threadTitle = thread.title || 'Untitled Thread';
-        
+
         // Get first part of paragraph (static preview) - shorter for compact mobile view
         const bodyText = (thread.body || '').trim();
-        const paragraphPreview = bodyText ? 
-            this.escapeHtml(bodyText.length > 80 ? bodyText.substring(0, 77) + '...' : bodyText) : 
+        const paragraphPreview = bodyText ?
+            this.escapeHtml(bodyText.length > 80 ? bodyText.substring(0, 77) + '...' : bodyText) :
             'No content available';
-        
+
         // Create shifting indicators for comments/resonate/respect
         const indicators = [];
         if (thread.comment_count > 0) {
@@ -1438,11 +1438,11 @@ class NavigationSystem {
         if (thread.views > 0) {
             indicators.push(`${thread.views} view${thread.views !== 1 ? 's' : ''}`);
         }
-        
+
         const threadId = thread.id || `thread_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const commentCount = thread.comment_count || 0;
         const circlePath = thread.circle || '';
-        
+
         // Build tag badges if tag_metadata exists
         let tagBadges = '';
         if (thread.tag_metadata) {
@@ -1460,7 +1460,7 @@ class NavigationSystem {
                 tagBadges = `<div class="thread-tags">${tags.join('')}</div>`;
             }
         }
-        
+
         return `
             <div class="circle-message-item" data-thread-id="${threadId}" data-category="${this.escapeHtml(circlePath)}">
                 <img 
@@ -1511,13 +1511,13 @@ class NavigationSystem {
             </div>
         `;
     }
-    
+
     initializeThreadClickHandlers(container) {
         const threadItems = container.querySelectorAll('.circle-message-item');
         threadItems.forEach(item => {
             const threadId = item.dataset.threadId;
             const category = item.dataset.category;
-            
+
             // Make entire item clickable (except action buttons)
             item.style.cursor = 'pointer';
             item.addEventListener('click', (e) => {
@@ -1525,13 +1525,13 @@ class NavigationSystem {
                 if (e.target.closest('.circle-action-btn')) {
                     return;
                 }
-                
+
                 // Navigate to thread detail page
                 if (threadId) {
                     // Store where we came from for back button
                     const referrer = window.location.pathname + window.location.search;
                     sessionStorage.setItem('thread_referrer', referrer);
-                    
+
                     // Use pushState for proper history management
                     let path;
                     if (category) {
@@ -1540,7 +1540,7 @@ class NavigationSystem {
                         path = `/thread/${threadId}`;
                     }
                     window.history.pushState({ threadId, category, referrer }, '', path);
-                    
+
                     // Navigate to thread page
                     if (window.Router && window.Router.navigateToThread) {
                         window.Router.navigateToThread(threadId, category);
@@ -1551,7 +1551,7 @@ class NavigationSystem {
             });
         });
     }
-    
+
     initializeShiftingPreviews(threads) {
         // Set up shifting indicators for comments/resonate/respect/views
         threads.forEach((thread, index) => {
@@ -1570,22 +1570,22 @@ class NavigationSystem {
             if (thread.views > 0) {
                 indicators.push(`${thread.views} view${thread.views !== 1 ? 's' : ''}`);
             }
-            
+
             if (indicators.length <= 1) return; // No need to rotate if only one indicator
-            
+
             const threadId = thread.id || `thread_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            
+
             // Use setTimeout to ensure DOM is ready
             setTimeout(() => {
                 const indicatorElement = document.querySelector(`.circle-indicators[data-thread-id="${threadId}"]`);
                 if (!indicatorElement) return;
-                
+
                 // Set initial state
                 indicatorElement.style.opacity = '1';
                 indicatorElement.style.transform = 'translateY(0)';
-                
+
                 let currentIndex = 0;
-                
+
                 // Rotate indicators every 5.5 seconds (slower, more advanced)
                 const intervalId = setInterval(() => {
                     if (!indicatorElement.isConnected) {
@@ -1603,25 +1603,25 @@ class NavigationSystem {
                         }
                     }, 250);
                 }, 5500); // 5.5 seconds - slower, more polished
-                
+
                 // Store interval ID for cleanup if needed
                 indicatorElement.dataset.intervalId = intervalId;
             }, 150 * index); // Stagger initialization
         });
     }
-    
+
     async loadFollowingWidget() {
         const carouselContainer = document.getElementById('followingCarouselContainer');
         const carouselTrack = document.getElementById('followingCarouselTrack');
-        
+
         if (!carouselContainer || !carouselTrack) {
             console.warn('Following carousel elements not found');
             return;
         }
-        
+
         try {
             console.log('Loading following widget with post previews...');
-            
+
             // Generate mock post previews showing different content types
             const mockPosts = [
                 {
@@ -1667,25 +1667,25 @@ class NavigationSystem {
                     stats: { likes: 35, comments: 9, validates: 11 }
                 }
             ];
-            
+
             // Clear existing content
             carouselTrack.innerHTML = '';
-            
+
             // Create carousel items with post previews
             mockPosts.forEach((post, index) => {
                 const itemEl = document.createElement('div');
                 itemEl.className = 'following-item';
-                
+
                 const tagsHtml = post.tags && post.tags.length > 0 ? `
                     <div class="following-post-tags">
                         ${post.tags.map(tag => `<span class="following-post-tag">//${this.escapeHtml(tag)}</span>`).join('')}
                     </div>
                 ` : '';
-                
+
                 const mediaHtml = post.hasMedia && post.mediaUrl ? `
                     <img src="${post.mediaUrl}" alt="Post preview" class="following-post-media" loading="lazy" onerror="this.style.display='none'">
                 ` : '';
-                
+
                 itemEl.innerHTML = `
                     <div class="following-post-preview">
                         <div class="following-post-header">
@@ -1717,18 +1717,18 @@ class NavigationSystem {
                 `;
                 carouselTrack.appendChild(itemEl);
             });
-            
+
             // Initialize carousel state
             this.followingCurrentIndex = 0;
             this.followingTotalItems = mockPosts.length;
             this.followingAutoSlideInterval = null;
-            
+
             // Setup swipe gestures
             this.setupFollowingSwipe(carouselContainer);
-            
+
             // Start auto-slide
             this.startFollowingAutoSlide();
-            
+
             // Add click handlers to navigate to stream
             carouselTrack.querySelectorAll('.following-post-preview').forEach(preview => {
                 preview.addEventListener('click', () => {
@@ -1736,7 +1736,7 @@ class NavigationSystem {
                     this.navigateToSection('stream');
                 });
             });
-            
+
             console.log('Following widget loaded with', mockPosts.length, 'post previews');
         } catch (error) {
             console.error('Error loading following widget:', error);
@@ -1745,30 +1745,30 @@ class NavigationSystem {
             }
         }
     }
-    
+
     setupFollowingSwipe(container) {
         let touchStartX = 0;
         let touchEndX = 0;
         let isDragging = false;
-        
+
         container.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].clientX;
             isDragging = true;
             this.pauseFollowingAutoSlide();
         }, { passive: true });
-        
+
         container.addEventListener('touchmove', (e) => {
             if (isDragging) {
                 touchEndX = e.touches[0].clientX;
             }
         }, { passive: true });
-        
+
         container.addEventListener('touchend', () => {
             if (!isDragging) return;
-            
+
             const swipeDistance = touchStartX - touchEndX;
             const swipeThreshold = 50;
-            
+
             if (Math.abs(swipeDistance) > swipeThreshold) {
                 if (swipeDistance > 0) {
                     // Swipe left - next slide
@@ -1778,33 +1778,33 @@ class NavigationSystem {
                     this.prevFollowingSlide();
                 }
             }
-            
+
             isDragging = false;
             this.startFollowingAutoSlide();
         }, { passive: true });
-        
+
         // Mouse drag support
         let mouseStartX = 0;
         let mouseIsDown = false;
-        
+
         container.addEventListener('mousedown', (e) => {
             mouseStartX = e.clientX;
             mouseIsDown = true;
             this.pauseFollowingAutoSlide();
             container.style.cursor = 'grabbing';
         });
-        
+
         container.addEventListener('mousemove', (e) => {
             if (!mouseIsDown) return;
             e.preventDefault();
         });
-        
+
         container.addEventListener('mouseup', (e) => {
             if (!mouseIsDown) return;
-            
+
             const dragDistance = mouseStartX - e.clientX;
             const dragThreshold = 50;
-            
+
             if (Math.abs(dragDistance) > dragThreshold) {
                 if (dragDistance > 0) {
                     this.nextFollowingSlide();
@@ -1812,12 +1812,12 @@ class NavigationSystem {
                     this.prevFollowingSlide();
                 }
             }
-            
+
             mouseIsDown = false;
             container.style.cursor = 'grab';
             this.startFollowingAutoSlide();
         });
-        
+
         container.addEventListener('mouseleave', () => {
             if (mouseIsDown) {
                 mouseIsDown = false;
@@ -1826,53 +1826,53 @@ class NavigationSystem {
             }
         });
     }
-    
+
     goToFollowingSlide(index) {
         if (index < 0 || index >= this.followingTotalItems) return;
-        
+
         this.followingCurrentIndex = index;
         const carouselTrack = document.getElementById('followingCarouselTrack');
-        
+
         if (carouselTrack) {
             carouselTrack.style.transform = `translateX(-${index * 100}%)`;
         }
-        
+
         // Reset auto-slide
         this.pauseFollowingAutoSlide();
         this.startFollowingAutoSlide();
     }
-    
+
     nextFollowingSlide() {
         const nextIndex = (this.followingCurrentIndex + 1) % this.followingTotalItems;
         this.goToFollowingSlide(nextIndex);
     }
-    
+
     prevFollowingSlide() {
         const prevIndex = (this.followingCurrentIndex - 1 + this.followingTotalItems) % this.followingTotalItems;
         this.goToFollowingSlide(prevIndex);
     }
-    
+
     startFollowingAutoSlide() {
         this.pauseFollowingAutoSlide();
         this.followingAutoSlideInterval = setInterval(() => {
             this.nextFollowingSlide();
         }, 3000); // Auto-advance every 3 seconds
     }
-    
+
     pauseFollowingAutoSlide() {
         if (this.followingAutoSlideInterval) {
             clearInterval(this.followingAutoSlideInterval);
             this.followingAutoSlideInterval = null;
         }
     }
-    
+
     async loadActivityWidget() {
         const activityList = document.getElementById('activityList');
         if (!activityList) {
             console.warn('activityList not found');
             return;
         }
-        
+
         try {
             console.log('Loading activity widget...');
             // Mock activity data - resonates, refines, reposts
@@ -1882,7 +1882,7 @@ class NavigationSystem {
                 { type: 'repost', content: 'Reposted from @user_3 in Streams', time: '1d ago' },
                 { type: 'resonate', content: 'Resonated with "Visual Design Principles"', time: '2d ago' }
             ];
-            
+
             activityList.innerHTML = activities.map(activity => `
                 <div class="activity-item">
                     <div class="activity-content">
@@ -1892,7 +1892,7 @@ class NavigationSystem {
                     </div>
                 </div>
             `).join('');
-            
+
             console.log('Activity widget loaded:', activities.length, 'activities');
         } catch (error) {
             console.error('Error loading activity widget:', error);
@@ -1901,65 +1901,65 @@ class NavigationSystem {
             }
         }
     }
-    
+
     async loadMindfulTipsWidget() {
         const dailyTipsList = document.getElementById('dailyTipsList');
         const weeklyTipsList = document.getElementById('weeklyTipsList');
-        
+
         if (!dailyTipsList && !weeklyTipsList) {
             console.warn('Tip lists not found');
             return;
         }
-        
+
         try {
             console.log('Loading mindful tips widget...');
             // Daily tips - actionable items for today
             const dailyTips = [
-                { 
-                    title: 'Post a thought', 
+                {
+                    title: 'Post a thought',
                     description: 'Share something you learned today',
                     action: 'Post',
                     actionType: 'post'
                 },
-                { 
-                    title: 'Meditate for 10 minutes', 
+                {
+                    title: 'Meditate for 10 minutes',
                     description: 'Take a mindful break',
                     action: 'Start',
                     actionType: 'meditate'
                 },
-                { 
-                    title: 'Learn a new system', 
+                {
+                    title: 'Learn a new system',
                     description: 'Explore a category you haven\'t visited',
                     action: 'Explore',
                     actionType: 'learn'
                 }
             ];
-            
+
             // Weekly tips - engagement goals
             const weeklyTips = [
-                { 
-                    title: 'Engage with 5 posts this week', 
+                {
+                    title: 'Engage with 5 posts this week',
                     description: 'Comment or resonate with community content',
                     action: 'View',
                     actionType: 'engage',
                     badge: 'weekly'
                 },
-                { 
-                    title: 'Write a detailed post', 
+                {
+                    title: 'Write a detailed post',
                     description: 'Share your insights on a topic you care about',
                     action: 'Write',
                     actionType: 'write',
                     badge: 'weekly'
                 },
-                { 
-                    title: 'Connect with 3 new people', 
+                {
+                    title: 'Connect with 3 new people',
                     description: 'Follow and engage with community members',
                     action: 'Connect',
                     actionType: 'connect',
                     badge: 'weekly'
                 }
             ];
-            
+
             if (dailyTipsList) {
                 dailyTipsList.innerHTML = dailyTips.map(tip => `
                     <div class="tip-item" data-action-type="${tip.actionType}">
@@ -1972,7 +1972,7 @@ class NavigationSystem {
                 `).join('');
                 console.log('Daily tips loaded:', dailyTips.length);
             }
-            
+
             if (weeklyTipsList) {
                 weeklyTipsList.innerHTML = weeklyTips.map(tip => `
                     <div class="tip-item" data-action-type="${tip.actionType}">
@@ -1988,7 +1988,7 @@ class NavigationSystem {
                 `).join('');
                 console.log('Weekly tips loaded:', weeklyTips.length);
             }
-            
+
             // Add click handlers for tip actions
             setTimeout(() => {
                 document.querySelectorAll('.tip-action').forEach(btn => {
@@ -2005,9 +2005,9 @@ class NavigationSystem {
             if (weeklyTipsList) weeklyTipsList.innerHTML = '<div style="padding: 12px; color: var(--text-tertiary); font-size: 12px;">Unable to load goals</div>';
         }
     }
-    
+
     handleTipAction(actionType) {
-        switch(actionType) {
+        switch (actionType) {
             case 'post':
                 // Open post creation modal
                 if (window.streamPage && typeof window.streamPage.openPostModal === 'function') {
@@ -2046,13 +2046,13 @@ class NavigationSystem {
                 console.log('Unknown action:', actionType);
         }
     }
-    
+
     async loadStudioContent() {
         console.log('Loading Studio content...');
         try {
             let userId = localStorage.getItem('thesidia_user_id');
             let sessionId = localStorage.getItem('thesidia_session_id');
-            
+
             if (!sessionId) {
                 try {
                     const sessionResponse = await fetch('/api/user/session', {
@@ -2069,22 +2069,22 @@ class NavigationSystem {
                     console.warn('Could not create session:', e);
                 }
             }
-            
+
             const activeSection = document.querySelector('.carousel-section[data-section="studio"]');
             const filterBtn = activeSection ? activeSection.querySelector('.studio-filters .filter-btn.active') : document.querySelector('.studio-filters .filter-btn.active');
             const filter = filterBtn?.dataset.filter || 'all';
-            
+
             const url = `/api/sections/studio?user_id=${userId || ''}&session_id=${sessionId || ''}&filter=${filter}`;
             console.log('Fetching Studio from:', url);
             const response = await fetch(url);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('Studio data loaded:', data);
-            
+
             // Try multiple ways to find the element
             let programsContainer = document.getElementById('studioPrograms');
             if (!programsContainer && activeSection) {
@@ -2098,7 +2098,7 @@ class NavigationSystem {
                     if (programsContainer) break;
                 }
             }
-            
+
             if (programsContainer) {
                 console.log('✅ Found studioPrograms, rendering', data.programs?.length || 0, 'programs');
                 if (data.programs && data.programs.length > 0) {
@@ -2120,7 +2120,7 @@ class NavigationSystem {
             }
         }
     }
-    
+
     renderProgram(program) {
         return `
             <div class="program-card" data-program-id="${program.id}">

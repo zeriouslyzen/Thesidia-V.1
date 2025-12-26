@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
-    
+
     <!-- Primary Meta Tags -->
     <title>Katanx // Signal Stream - Social Media Feed</title>
     <meta name="title" content="Katanx // Signal Stream - Social Media Feed">
-    <meta name="description" content="Katanx Signal Stream - AI-curated social media feed with quality scoring and bot detection. Created by Jack Danger.">
+    <meta name="description"
+        content="Katanx Signal Stream - AI-curated social media feed with quality scoring and bot detection. Created by Jack Danger.">
     <meta name="keywords" content="social media, AI feed, signal stream, katanx, Jack Danger, AI curation">
     <meta name="author" content="Jack Danger">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://www.katanx.com/stream.html">
-    
+
     <!-- Cross-Domain Connections -->
     <link rel="author" href="https://www.jackdanger.dev">
     <link rel="me" href="https://www.jackdanger.dev">
     <link rel="me" href="https://www.spiritlink.space">
-    
+
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.katanx.com/stream.html">
     <meta property="og:title" content="Katanx // Signal Stream">
-    <meta property="og:description" content="AI-curated social media feed with quality scoring. Created by Jack Danger.">
+    <meta property="og:description"
+        content="AI-curated social media feed with quality scoring. Created by Jack Danger.">
     <meta property="og:image" content="https://www.katanx.com/og-image.jpg">
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Katanx // Signal Stream">
     <meta name="twitter:description" content="AI-curated social media feed with quality scoring.">
     <meta name="twitter:image" content="https://www.katanx.com/twitter-image.jpg">
-    
+
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         /* Loading Screen with /X Logo */
         .katanx-loading-screen {
@@ -54,19 +58,19 @@
             opacity: 1;
             transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .katanx-loading-screen.hidden {
             opacity: 0;
             pointer-events: none;
         }
-        
+
         .katanx-loading-logo {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 24px;
         }
-        
+
         .katanx-logo-x {
             font-family: 'Inconsolata', monospace;
             font-size: 64px;
@@ -76,24 +80,27 @@
             position: relative;
             animation: katanx-logo-pulse 2s ease-in-out infinite;
         }
-        
+
         @keyframes katanx-logo-pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
                 transform: scale(1);
             }
+
             50% {
                 opacity: 0.7;
                 transform: scale(0.98);
             }
         }
-        
+
         .katanx-logo-x::before {
             content: '/';
             color: #ffd700;
             margin-right: 4px;
         }
-        
+
         .katanx-loading-spinner {
             width: 40px;
             height: 40px;
@@ -102,113 +109,117 @@
             border-radius: 50%;
             animation: katanx-spin 1s linear infinite;
         }
-        
+
         @keyframes katanx-spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
+
         /* Progressive Fade-In for Home Dashboard */
         .home-dashboard {
             opacity: 0;
             animation: fade-in-dashboard 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
-        
+
         @keyframes fade-in-dashboard {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         /* Widget Cards - Staggered Fade-In */
         .widget-card {
             opacity: 0;
             transform: translateY(16px);
             transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .widget-card.fade-in {
             opacity: 1;
             transform: translateY(0);
         }
-        
+
         /* Staggered animation delays for widgets */
         .widget-card[data-widget="welcome"] {
             transition-delay: 0.1s;
         }
-        
+
         .widget-card[data-widget="news"] {
             transition-delay: 0.2s;
         }
-        
+
         .widget-card[data-widget="following"] {
             transition-delay: 0.3s;
         }
-        
+
         .widget-card[data-widget="activity"] {
             transition-delay: 0.4s;
         }
-        
+
         .widget-card[data-widget="mindful-tips"] {
             transition-delay: 0.5s;
         }
-        
+
         /* Content fade-in for loaded content */
         .widget-content-loaded {
             animation: fade-in-content 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
-        
+
         @keyframes fade-in-content {
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
         }
-        
+
         /* Skeleton loading states */
         .skeleton {
-            background: linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.1) 50%,
-                rgba(255, 255, 255, 0.05) 100%
-            );
+            background: linear-gradient(90deg,
+                    rgba(255, 255, 255, 0.05) 0%,
+                    rgba(255, 255, 255, 0.1) 50%,
+                    rgba(255, 255, 255, 0.05) 100%);
             background-size: 200% 100%;
             animation: skeleton-shimmer 1.5s ease-in-out infinite;
             border-radius: 4px;
         }
-        
+
         @keyframes skeleton-shimmer {
             0% {
                 background-position: -200% 0;
             }
+
             100% {
                 background-position: 200% 0;
             }
         }
-        
+
         /* Prevent flash of unstyled content */
         .stream-page-container {
             opacity: 0;
             transition: opacity 0.3s ease-in;
         }
-        
+
         .stream-page-container.loaded {
             opacity: 1;
         }
-        
+
         /* Smooth transitions for all interactive elements */
         * {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+
         .stream-container {
             flex: 1;
             overflow-y: auto;
@@ -216,35 +227,35 @@
             padding: var(--spacing-lg) var(--spacing-md);
             scroll-behavior: smooth;
         }
-        
+
         .stream-content {
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
         }
-        
+
         .stream-header {
             margin-bottom: var(--spacing-xl);
         }
-        
+
         .stream-title {
             font-size: var(--font-size-xl);
             font-weight: 600;
             margin-bottom: var(--spacing-sm);
             color: var(--text-primary);
         }
-        
+
         .stream-subtitle {
             color: var(--text-secondary);
             font-size: var(--font-size-sm);
         }
-        
+
         .stream-feed {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-md);
         }
-        
+
         .stream-item {
             background: var(--bg-secondary);
             border: var(--border-width-thin) solid var(--border-color);
@@ -252,37 +263,38 @@
             padding: var(--spacing-lg);
             transition: var(--transition);
         }
-        
+
         .stream-item:hover {
             border-color: var(--text-secondary);
         }
-        
+
         .stream-item-header {
             display: flex;
             justify-content: space-between;
             align-items: start;
             margin-bottom: var(--spacing-md);
         }
-        
+
         .stream-item-title {
             font-size: var(--font-size-base);
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: var(--spacing-xs);
         }
-        
+
         .stream-item-meta {
             font-size: var(--font-size-xs);
             color: var(--text-tertiary);
         }
-        
+
         .stream-item-content {
             color: var(--text-secondary);
-            font-size: 12px; /* Match circles sub preview */
+            font-size: 12px;
+            /* Match circles sub preview */
             line-height: var(--line-height-normal);
             margin-bottom: var(--spacing-md);
         }
-        
+
         .stream-item-connections {
             display: flex;
             flex-wrap: wrap;
@@ -291,7 +303,7 @@
             padding-top: var(--spacing-md);
             border-top: var(--border-width-thin) solid var(--border-color);
         }
-        
+
         .connection-tag {
             background: var(--bg-tertiary);
             border: var(--border-width-thin) solid var(--border-color);
@@ -300,19 +312,19 @@
             font-size: var(--font-size-xs);
             color: var(--text-secondary);
         }
-        
+
         .relevance-score {
             font-size: var(--font-size-xs);
             color: var(--text-tertiary);
             font-family: var(--font-mono);
         }
-        
+
         .stream-empty {
             text-align: center;
             padding: var(--spacing-xxl);
             color: var(--text-secondary);
         }
-        
+
         .comments-modal {
             position: fixed;
             top: 0;
@@ -326,7 +338,7 @@
             z-index: 1000;
             padding: var(--spacing-lg);
         }
-        
+
         .comments-modal-content {
             background: var(--bg-primary);
             border: var(--border-width-thin) solid var(--border-color);
@@ -337,7 +349,7 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .comments-modal-header {
             display: flex;
             justify-content: space-between;
@@ -345,14 +357,14 @@
             padding: var(--spacing-lg);
             border-bottom: var(--border-width-thin) solid var(--border-color);
         }
-        
+
         .comments-modal-header h3 {
             margin: 0;
             font-size: var(--font-size-lg);
             font-weight: 600;
             color: var(--text-primary);
         }
-        
+
         .comments-close {
             background: none;
             border: none;
@@ -368,12 +380,12 @@
             border-radius: var(--border-radius-sm);
             transition: var(--transition);
         }
-        
+
         .comments-close:hover {
             background: var(--bg-secondary);
             color: var(--text-primary);
         }
-        
+
         .comments-list {
             flex: 1;
             overflow-y: auto;
@@ -382,32 +394,32 @@
             flex-direction: column;
             gap: var(--spacing-md);
         }
-        
+
         .comment-item {
             padding: var(--spacing-md);
             background: var(--bg-secondary);
             border-radius: var(--border-radius-md);
             border: var(--border-width-thin) solid var(--border-color);
         }
-        
+
         .comment-author {
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: var(--spacing-xs);
             font-size: var(--font-size-sm);
         }
-        
+
         .comment-content {
             color: var(--text-secondary);
             margin-bottom: var(--spacing-xs);
             line-height: var(--line-height-normal);
         }
-        
+
         .comment-time {
             font-size: var(--font-size-xs);
             color: var(--text-tertiary);
         }
-        
+
         .comment-form {
             padding: var(--spacing-lg);
             border-top: var(--border-width-thin) solid var(--border-color);
@@ -415,7 +427,7 @@
             flex-direction: column;
             gap: var(--spacing-sm);
         }
-        
+
         .comment-input {
             width: 100%;
             min-height: 80px;
@@ -428,12 +440,12 @@
             font-size: var(--font-size-sm);
             resize: vertical;
         }
-        
+
         .comment-input:focus {
             outline: none;
             border-color: var(--text-secondary);
         }
-        
+
         .comment-submit {
             align-self: flex-end;
             padding: var(--spacing-sm) var(--spacing-lg);
@@ -445,18 +457,18 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        
+
         .comment-submit:hover {
             background: var(--bg-secondary);
             border-color: var(--text-secondary);
         }
-        
+
         .stream-loading {
             text-align: center;
             padding: var(--spacing-xl);
             color: var(--text-secondary);
         }
-        
+
         .pull-refresh-indicator {
             position: absolute;
             top: -60px;
@@ -471,7 +483,7 @@
             pointer-events: none;
             z-index: 10;
         }
-        
+
         .refresh-spinner {
             width: 24px;
             height: 24px;
@@ -480,20 +492,22 @@
             border-radius: 50%;
             transition: transform 0.3s ease;
         }
-        
+
         .refresh-spinner.spinning {
             animation: spin 1s linear infinite;
         }
-        
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
+
         .refresh-text {
             font-size: var(--font-size-xs);
             color: var(--text-secondary);
         }
-        
+
         .skeleton-loader {
             background: var(--bg-secondary);
             border-radius: var(--border-radius-md);
@@ -501,27 +515,34 @@
             margin-bottom: var(--spacing-md);
             animation: pulse 1.5s ease-in-out infinite;
         }
-        
+
         .skeleton-line {
             height: 12px;
             background: var(--bg-tertiary);
             border-radius: var(--border-radius-sm);
             margin-bottom: var(--spacing-sm);
         }
-        
+
         .skeleton-line.short {
             width: 60%;
         }
-        
+
         .skeleton-line.medium {
             width: 80%;
         }
-        
+
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
-        
+
         .feed-filter {
             display: flex;
             gap: var(--spacing-sm);
@@ -532,7 +553,7 @@
             top: 0;
             z-index: 100;
         }
-        
+
         .feed-filter-btn {
             padding: var(--spacing-sm) var(--spacing-md);
             background: var(--bg-secondary);
@@ -543,25 +564,25 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        
+
         .feed-filter-btn:hover {
             background: var(--bg-tertiary);
             border-color: var(--text-secondary);
         }
-        
+
         .feed-filter-btn.active {
             background: var(--bg-tertiary);
             border-color: var(--text-primary);
             color: var(--text-primary);
             font-weight: 500;
         }
-        
+
         .post-meta {
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
         }
-        
+
         .ai-quality-badge {
             display: flex;
             align-items: center;
@@ -573,30 +594,30 @@
             background: var(--bg-tertiary);
             border: var(--border-width-thin) solid var(--border-color);
         }
-        
+
         .ai-quality-badge.high-quality {
             background: rgba(0, 255, 0, 0.1);
             border-color: rgba(0, 255, 0, 0.3);
             color: #00ff00;
         }
-        
+
         .ai-quality-badge.medium-quality {
             background: rgba(255, 255, 0, 0.1);
             border-color: rgba(255, 255, 0, 0.3);
             color: #ffff00;
         }
-        
+
         .ai-quality-badge.low-quality {
             background: rgba(255, 0, 0, 0.1);
             border-color: rgba(255, 0, 0, 0.3);
             color: #ff4444;
         }
-        
+
         .ai-quality-badge svg {
             width: 12px;
             height: 12px;
         }
-        
+
         .ai-summary {
             margin-top: 0;
             margin-bottom: 0;
@@ -608,7 +629,7 @@
             color: var(--text-secondary);
             font-style: italic;
         }
-        
+
         .ai-sentiment {
             display: inline-block;
             margin-top: 0;
@@ -618,17 +639,17 @@
             font-size: var(--font-size-xs);
             font-weight: 500;
         }
-        
+
         .ai-sentiment.sentiment-positive {
             background: rgba(0, 255, 0, 0.1);
             color: #00ff00;
         }
-        
+
         .ai-sentiment.sentiment-negative {
             background: rgba(255, 0, 0, 0.1);
             color: #ff4444;
         }
-        
+
         .ai-suggestions-panel {
             background: var(--bg-secondary);
             border: var(--border-width-thin) solid var(--border-color);
@@ -636,7 +657,7 @@
             padding: var(--spacing-md);
             margin-bottom: var(--spacing-lg);
         }
-        
+
         .ai-suggestions-header {
             display: flex;
             align-items: center;
@@ -645,13 +666,13 @@
             font-weight: 600;
             color: var(--text-primary);
         }
-        
+
         .ai-suggestions-list {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-sm);
         }
-        
+
         .ai-suggestion-item {
             padding: var(--spacing-sm);
             background: var(--bg-tertiary);
@@ -660,17 +681,18 @@
             transition: var(--transition);
             border: var(--border-width-thin) solid transparent;
         }
-        
+
         .ai-suggestion-item:hover {
             background: var(--bg-primary);
             border-color: var(--text-secondary);
         }
-        
+
         .stream-post {
             position: relative;
         }
     </style>
 </head>
+
 <body>
     <!-- Katanx Loading Screen with /X Logo -->
     <div class="katanx-loading-screen" id="katanxLoadingScreen">
@@ -679,7 +701,7 @@
             <div class="katanx-loading-spinner"></div>
         </div>
     </div>
-    
+
     <div id="app">
         <!-- Header -->
         <header class="header">
@@ -688,13 +710,13 @@
                 <div class="header-branding">
                     <span class="thesidia-text"><span class="katanx-slash">/</span>katanx</span>
                 </div>
-                
+
                 <!-- Menu Orb - Right -->
                 <button class="menu-orb" id="menuBtn" aria-label="Menu">
                     <div class="orb-glow"></div>
                 </button>
             </div>
-            
+
             <!-- Sub Menu -->
             <div class="header-submenu">
                 <!-- User Status Indicator - Far Left -->
@@ -702,7 +724,7 @@
                     <span class="user-name-text" id="userNameText">Katanx Explore</span>
                     <span class="status-orb status-online" id="statusOrb" title="Status: Online"></span>
                 </div>
-                
+
                 <!-- Status Selector Dropdown -->
                 <div class="status-selector-dropdown" id="statusSelectorDropdown">
                     <div class="status-option" data-status="online">
@@ -722,7 +744,7 @@
                         <span>Focused</span>
                     </div>
                 </div>
-                
+
                 <nav class="advanced-nav">
                     <button class="nav-item" data-section="home">home</button>
                     <button class="nav-item" data-section="stream">stream</button>
@@ -730,22 +752,23 @@
                     <button class="nav-item" data-section="circles">forums</button>
                     <button class="nav-item" data-section="studio">studio</button>
                 </nav>
-                
+
                 <!-- Star Notepad Button - Far Right -->
                 <button class="star-notepad-btn" id="starNotepadBtn" aria-label="Notes">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                     </svg>
                 </button>
             </div>
-            
+
             <!-- Star Notepad Panel -->
             <div class="notepad-panel" id="starNotepadPanel">
                 <div class="notepad-header">
                     <h3>Notes</h3>
                     <button class="notepad-close" id="notepadClose" aria-label="Close">×</button>
                 </div>
-                <textarea class="notepad-textarea" id="notepadTextarea" placeholder="Your notes here... They persist across pages."></textarea>
+                <textarea class="notepad-textarea" id="notepadTextarea"
+                    placeholder="Your notes here... They persist across pages."></textarea>
             </div>
         </header>
 
@@ -821,15 +844,17 @@
                             </div>
                         </div>
                     </section>
-                    
+
                     <!-- Stream Section - Curated Algorithmic Feed -->
                     <section class="carousel-section" data-section="stream">
                         <!-- Stream Filter Bar -->
                         <div class="stream-filter-bar">
                             <div class="stream-filter-left">
                                 <div class="stream-filter-search">
-                                    <input type="text" id="streamSearchInput" class="stream-search-input" placeholder="Search stream..." />
-                                    <svg class="stream-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <input type="text" id="streamSearchInput" class="stream-search-input"
+                                        placeholder="Search stream..." />
+                                    <svg class="stream-search-icon" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <path d="m21 21-4.35-4.35"></path>
                                     </svg>
@@ -839,12 +864,15 @@
                                 </div>
                             </div>
                             <div class="stream-filter-right">
-                                <button class="stream-filter-btn" id="streamForYouBtn" data-filter="for-you">For you</button>
-                                <button class="stream-filter-btn" id="streamDiscoverBtn" data-filter="discover">Discover</button>
+                                <button class="stream-filter-btn" id="streamForYouBtn" data-filter="for-you">For
+                                    you</button>
+                                <button class="stream-filter-btn" id="streamDiscoverBtn"
+                                    data-filter="discover">Discover</button>
                                 <div class="stream-vibe-selector">
                                     <button class="stream-filter-btn stream-vibe-btn" id="streamVibeBtn">
                                         <span id="streamVibeLabel">Vibe</span>
-                                        <svg class="vibe-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <svg class="vibe-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
                                             <polyline points="6 9 12 15 18 9"></polyline>
                                         </svg>
                                     </button>
@@ -866,7 +894,7 @@
                             </div>
                         </div>
                     </section>
-                    
+
                     <!-- KX Cuts Section - Short Form Content -->
                     <section class="carousel-section" data-section="kx-cuts">
                         <div class="kx-cuts-container">
@@ -875,7 +903,7 @@
                             </div>
                         </div>
                     </section>
-                    
+
                     <!-- Forums Section - Advanced Reddit-Style Forum -->
                     <section class="carousel-section" data-section="circles">
                         <div class="circles-container">
@@ -899,7 +927,7 @@
                             </div>
                         </div>
                     </section>
-                    
+
                     <!-- Studio Section - Mentor Program Streams -->
                     <section class="carousel-section" data-section="studio">
                         <div class="studio-container">
@@ -919,7 +947,7 @@
                 </div>
             </div>
         </main>
-        
+
         <!-- Scuba Depth Indicator - Fixed to right side of screen -->
         <div class="scuba-depth-indicator" id="scubaDepthIndicator">
             <div class="depth-line"></div>
@@ -954,10 +982,12 @@
                     <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
                     <div class="profile-picture-container" id="profilePictureContainer">
                         <div class="profile-picture" id="profilePicture">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='24' cy='18' r='7' fill='%23ffffff' fill-opacity='0.3'/%3E%3Cpath d='M12 46 Q24 38 36 46' stroke='%23ffffff' stroke-width='2' fill='none' stroke-opacity='0.3'/%3E%3C/svg%3E" alt="Profile">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='24' cy='18' r='7' fill='%23ffffff' fill-opacity='0.3'/%3E%3Cpath d='M12 46 Q24 38 36 46' stroke='%23ffffff' stroke-width='2' fill='none' stroke-opacity='0.3'/%3E%3C/svg%3E"
+                                alt="Profile">
                             <div class="profile-picture-overlay">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
                                 </svg>
                             </div>
                         </div>
@@ -970,51 +1000,55 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="sidebar-follow" id="peopleToFollow">
                     <div class="sidebar-follow-title">People to follow</div>
                     <div class="sidebar-follow-list" id="peopleToFollowList"></div>
                 </div>
-                
+
                 <!-- Main Navigation -->
                 <nav class="sidebar-nav">
                     <a href="/profile.html" class="nav-menu-item">
                         <div class="nav-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
                             </svg>
                         </div>
                         <span class="nav-title">Profile</span>
                     </a>
                     <a href="/stream.html" class="nav-menu-item active">
                         <div class="nav-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="3" y1="12" x2="21" y2="12"/>
-                                <line x1="3" y1="6" x2="21" y2="6"/>
-                                <line x1="3" y1="18" x2="21" y2="18"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="3" y1="12" x2="21" y2="12" />
+                                <line x1="3" y1="6" x2="21" y2="6" />
+                                <line x1="3" y1="18" x2="21" y2="18" />
                             </svg>
                         </div>
                         <span class="nav-title">Stream</span>
                     </a>
                     <a href="/app.html" class="nav-menu-item">
                         <div class="nav-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                             </svg>
                         </div>
                         <span class="nav-title">Thesidia</span>
                     </a>
                     <a href="/archive.html" class="nav-menu-item">
                         <div class="nav-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                             </svg>
                         </div>
                         <span class="nav-title">Archive</span>
                     </a>
                 </nav>
-                
+
                 <!-- Settings Section -->
                 <div class="sidebar-settings">
                     <div class="settings-label">Settings</div>
@@ -1025,7 +1059,7 @@
             </div>
         </div>
     </div>
-    
+
     <script src="app.js"></script>
     <script src="navigation.js"></script>
     <script>
@@ -2343,13 +2377,14 @@
             <div class="post-modal-header">
                 <h3>Create Post</h3>
                 <button class="post-modal-close" id="postModalClose" aria-label="Close">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
             </div>
-            
+
             <div class="post-modal-body">
                 <!-- Post Type Selector -->
                 <div class="post-type-selector">
@@ -2364,12 +2399,8 @@
 
                 <!-- Content Input -->
                 <div class="post-content-input">
-                    <textarea 
-                        class="post-textarea" 
-                        id="postTextarea" 
-                        placeholder="What would you like to share?"
-                        rows="6"
-                    ></textarea>
+                    <textarea class="post-textarea" id="postTextarea" placeholder="What would you like to share?"
+                        rows="6"></textarea>
                 </div>
 
                 <!-- Media Options -->
@@ -2377,31 +2408,37 @@
                     <label class="post-media-label">Add Media</label>
                     <div class="post-media-grid">
                         <button class="post-media-btn" data-action="image" id="postModalAddImageBtn">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <path d="M21 15l-5-5L5 21"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <path d="M21 15l-5-5L5 21" />
                             </svg>
                             <span>Image</span>
                         </button>
                         <button class="post-media-btn" data-action="video" id="postModalAddVideoBtn">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polygon points="23 7 16 12 23 17 23 7"/>
-                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polygon points="23 7 16 12 23 17 23 7" />
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                             </svg>
                             <span>Video</span>
                         </button>
                         <button class="post-media-btn" data-action="selfie" id="postModalTakeSelfieBtn">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                                <circle cx="12" cy="13" r="4"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                <circle cx="12" cy="13" r="4" />
                             </svg>
                             <span>Selfie</span>
                         </button>
                         <button class="post-media-btn" data-action="camera" id="postModalTakeVideoBtn">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                                <circle cx="12" cy="13" r="4"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                <circle cx="12" cy="13" r="4" />
                             </svg>
                             <span>Record</span>
                         </button>
@@ -2430,18 +2467,18 @@
                 this.submitBtn = document.getElementById('postSubmitBtn');
                 this.postType = 'stream';
                 this.selectedMedia = [];
-                
+
                 this.init();
             }
 
             init() {
                 // FAB click handler
                 this.fabOrb?.addEventListener('click', () => this.openModal());
-                
+
                 // Close handlers
                 this.closeBtn?.addEventListener('click', () => this.closeModal());
                 this.backdrop?.addEventListener('click', () => this.closeModal());
-                
+
                 // Post type selection
                 document.querySelectorAll('.post-type-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
@@ -2499,8 +2536,8 @@
 
             handleMediaAction(action) {
                 const input = document.createElement('input');
-                
-                switch(action) {
+
+                switch (action) {
                     case 'image':
                         input.type = 'file';
                         input.accept = 'image/*';
@@ -2555,10 +2592,10 @@
                 preview.style.display = 'block';
                 preview.innerHTML = this.selectedMedia.map((media, index) => `
                     <div class="media-preview-item">
-                        ${media.type === 'image' 
-                            ? `<img src="${media.url}" alt="Preview ${index + 1}">`
-                            : `<video src="${media.url}" controls></video>`
-                        }
+                        ${media.type === 'image'
+                        ? `<img src="${media.url}" alt="Preview ${index + 1}">`
+                        : `<video src="${media.url}" controls></video>`
+                    }
                         <button class="media-remove-btn" data-index="${index}">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -2581,7 +2618,7 @@
             updateSubmitButton() {
                 const hasContent = this.textarea?.value.trim().length > 0;
                 const hasMedia = this.selectedMedia.length > 0;
-                
+
                 if (this.submitBtn) {
                     this.submitBtn.disabled = !(hasContent || hasMedia);
                 }
@@ -2589,7 +2626,7 @@
 
             async submitPost() {
                 const content = this.textarea?.value.trim() || '';
-                
+
                 if (!content && this.selectedMedia.length === 0) {
                     return;
                 }
@@ -2660,7 +2697,7 @@
             window.postCreationModal = new PostCreationModal();
         }
     </script>
-        
-</body>
-</html>
 
+</body>
+
+</html>
