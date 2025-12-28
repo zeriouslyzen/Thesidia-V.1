@@ -230,35 +230,53 @@ pip3 install --user --break-system-packages requests beautifulsoup4 lxml yt-dlp
 
 ## Documentation
 
-### Key Documents
+### Quick Start
 
-**Platform Overview**:
-- `README_KATANX.md`: **Katanx platform overview** - The Arts of Human Development, platform purpose, and philosophy
+- **[QUICK_START.md](QUICK_START.md)**: Get up and running in 5 minutes
+- **[docs/ENGINEERING.md](docs/ENGINEERING.md)**: Engineering practices and standards ⭐ NEW
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**: System architecture overview ⭐ NEW  
+- **[docs/TESTING.md](docs/TESTING.md)**: Comprehensive testing guide ⭐ NEW
+- **[docs/INDEX.md](docs/INDEX.md)**: Complete documentation index
 
-**Philosophy & Principles**:
+### Platform Overview
+
+**Katanx**: Social platform for practitioners of human development arts
+- **[docs/platform/README_KATANX.md](docs/platform/README_KATANX.md)**: Complete platform overview
+
+### Philosophy & Principles
+
 - `docs/philosophy/DEEPER_PURPOSE_AND_PHILOSOPHY.md`: Core philosophical framework
 - `docs/philosophy/THE_DEEPER_MEANING_OF_GNOSTIC.md`: Gnostic understanding explained
 - `analysis_output/gnostic_principles/EMBEDDING_GNOSTIC_PRINCIPLES_EXPLORATION.md`: Implementation techniques
 
-**Technical**:
-- `docs/technical/TECHNICAL_IMPLEMENTATION_AND_CAPABILITIES.md`: Technical architecture
-- `docs/SOPHIA_ARCHITECTURE_ENHANCEMENT.md`: Complete Sophia system design
-- `docs/TWO_MODE_SYSTEM_IMPACT_ANALYSIS.md`: Mode system architecture impact
+### Technical
 
-**Analysis**:
-- `docs/analysis/WHAT_IT_ACTUALLY_DOES.md`: System capabilities overview
-- `docs/analysis/SYSTEM_CLASSIFICATION_AND_COMPARISON.md`: System classification
-- `analysis_output/performance/SPEED_DEPTH_NEW_INTEL_ANALYSIS.md`: Performance analysis
+- **Architecture**: `docs/ARCHITECTURE.md` - System architecture and design patterns ⭐
+- **Engineering**: `docs/ENGINEERING.md` - Coding standards and best practices ⭐
+- **Testing**: `docs/TESTING.md` - How to run and write tests ⭐
+- **Sophia System**: `docs/SOPHIA_ARCHITECTURE_ENHANCEMENT.md` - Complete Sophia design
+- **Two-Mode System**: `docs/TWO_MODE_SYSTEM_IMPACT_ANALYSIS.md` - Mode system architecture
+- **Deployment**: `docs/deployment/README_RAILWAY.md`, `docs/deployment/README_API.md`
 
-**Evolution**:
-- `docs/evolution/EVOLUTIONARY_POTENTIAL_AND_SCALING.md`: Future potential
+### Analysis & Audits
 
-**Status & Reference**:
-- `docs/status/`: Status markers and completion notes
-- `docs/reference/`: Reference documents and test results
-- `analysis_output/verification/`: Test results and verification reports
+- **Project Audits**: `docs/audit/` - Comprehensive project audits and analysis ⭐
+- **System Analysis**: `docs/analysis/WHAT_IT_ACTUALLY_DOES.md` - Capabilities overview
+- **Performance**: `analysis_output/performance/SPEED_DEPTH_NEW_INTEL_ANALYSIS.md`
 
-See `docs/INDEX.md` for complete documentation index.
+### Development & Proposals
+
+- **Development History**: `docs/development/` - Bug fixes and improvements ⭐
+- **Design Proposals**: `docs/proposals/` - Design proposals and planning ⭐
+
+### Datasets
+
+- **[datasets/README.md](datasets/README.md)**: Fine-tuning dataset documentation ⭐ NEW
+  - Original and cleaned datasets
+  - Data format and usage instructions
+  - Quality criteria and ethics
+
+See **[docs/INDEX.md](docs/INDEX.md)** for complete documentation index.
 
 ### Architecture
 

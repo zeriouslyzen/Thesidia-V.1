@@ -1274,7 +1274,7 @@ class ThesidiaApp {
             console.log('Making fetch request to:', this.apiEndpoint, { message: sanitizedMessage });
             // Abort + timeout protection (prevents hanging UI on stalled streams)
             const controller = new AbortController();
-            const timeoutMs = 120000; // 2 minutes
+            const timeoutMs = 600000; // 10 minutes (increased for deep research mode)
             const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
             const doFetch = (attempt = 0) => fetch(this.apiEndpoint, {

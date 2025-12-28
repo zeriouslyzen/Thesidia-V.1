@@ -1,9 +1,9 @@
 {
   "topics": {
     "chemistry": {
-      "count": 30,
+      "count": 31,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-12-23T05:05:36.522906",
+      "last_seen": "2025-12-27T08:24:26.373382",
       "related_topics": [
         "power_structures",
         "photosynthesis",
@@ -86,13 +86,14 @@
         "analysis",
         "central",
         "analyze",
-        "well"
+        "well",
+        "coding framework"
       ]
     },
     "power_structures": {
-      "count": 78,
+      "count": 82,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-12-23T05:05:07.559729",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "chemistry",
         "photosynthesis",
@@ -227,7 +228,14 @@
         "when",
         "dualism",
         "the da vinci code",
-        "moderate research depth"
+        "moderate research depth",
+        "plan",
+        "earth",
+        "rayleigh",
+        "coding framework",
+        "alex",
+        "san francisco",
+        "hello thesidia"
       ]
     },
     "photosynthesis": {
@@ -308,9 +316,9 @@
       ]
     },
     "consciousness": {
-      "count": 92,
+      "count": 94,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-12-23T04:58:44.296800",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -452,13 +460,15 @@
         "that",
         "aight",
         "human.",
-        "detect"
+        "detect",
+        "coding framework",
+        "hello thesidia"
       ]
     },
     "physics": {
-      "count": 33,
+      "count": 39,
       "first_seen": "2025-11-22T22:24:24.448183",
-      "last_seen": "2025-12-23T05:05:36.522906",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -514,7 +524,18 @@
         "hard problem of consciousness",
         "orchestrated objective reduction",
         "definition",
-        "well"
+        "well",
+        "string theory",
+        "inflationary cosmology",
+        "hello thesidia",
+        "plan",
+        "earth",
+        "rayleigh",
+        "coding framework",
+        "scalable quantum algorithms for machine learning",
+        "good",
+        "hey thesidia",
+        "quantum computing today"
       ]
     },
     "eric blair": {
@@ -533,9 +554,9 @@
       ]
     },
     "reengineering": {
-      "count": 65,
+      "count": 70,
       "first_seen": "2025-11-22T22:25:00.616408",
-      "last_seen": "2025-12-23T05:03:23.998929",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "eric blair",
         "chemistry",
@@ -643,7 +664,18 @@
         "next",
         "their",
         "well",
-        "when"
+        "when",
+        "plan",
+        "earth",
+        "rayleigh",
+        "coding framework",
+        "alex",
+        "san francisco",
+        "scalable quantum algorithms for machine learning",
+        "good",
+        "hey thesidia",
+        "quantum computing today",
+        "hello thesidia"
       ]
     },
     "1984": {
@@ -677,9 +709,9 @@
       ]
     },
     "code_cracking": {
-      "count": 58,
+      "count": 63,
       "first_seen": "2025-11-22T22:25:40.260946",
-      "last_seen": "2025-12-23T15:30:06.192958",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -790,7 +822,15 @@
         "when",
         "dualism",
         "the da vinci code",
-        "moderate research depth"
+        "moderate research depth",
+        "hello thesidia",
+        "coding framework",
+        "alex",
+        "san francisco",
+        "scalable quantum algorithms for machine learning",
+        "good",
+        "hey thesidia",
+        "quantum computing today"
       ]
     },
     "paris": {
@@ -830,9 +870,9 @@
       ]
     },
     "history": {
-      "count": 45,
+      "count": 48,
       "first_seen": "2025-11-22T22:25:40.260946",
-      "last_seen": "2025-12-23T05:05:36.522906",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "code_cracking",
         "chemistry",
@@ -922,13 +962,17 @@
         "analyze",
         "central",
         "the da vinci code",
-        "moderate research depth"
+        "moderate research depth",
+        "coding framework",
+        "alex",
+        "san francisco",
+        "hello thesidia"
       ]
     },
     "forensic": {
-      "count": 27,
+      "count": 29,
       "first_seen": "2025-11-22T22:25:40.260946",
-      "last_seen": "2025-12-23T05:05:07.559729",
+      "last_seen": "2025-12-27T08:23:06.587230",
       "related_topics": [
         "code_cracking",
         "chemistry",
@@ -989,7 +1033,13 @@
         "central",
         "dualism",
         "the da vinci code",
-        "moderate research depth"
+        "moderate research depth",
+        "hello thesidia",
+        "sputnik",
+        "earth",
+        "coding framework",
+        "alex",
+        "san francisco"
       ]
     },
     "france": {
@@ -1088,9 +1138,9 @@
       ]
     },
     "explain": {
-      "count": 6,
+      "count": 7,
       "first_seen": "2025-11-22T22:26:31.339432",
-      "last_seen": "2025-11-22T23:09:34.970014",
+      "last_seen": "2025-12-27T08:16:25.979106",
       "related_topics": [
         "relativity",
         "einstein",
@@ -1118,7 +1168,12 @@
         "buddhism",
         "alright",
         "meditation",
-        "simultaneously"
+        "simultaneously",
+        "science framework",
+        "quantum",
+        "learning",
+        "start",
+        "learn"
       ]
     },
     "relativity: the special and the general theory": {
@@ -1158,9 +1213,9 @@
       ]
     },
     "this": {
-      "count": 13,
+      "count": 14,
       "first_seen": "2025-11-22T22:27:16.700093",
-      "last_seen": "2025-12-23T05:05:36.522906",
+      "last_seen": "2025-12-27T08:15:01.565518",
       "related_topics": [
         "chemistry",
         "power_structures",
@@ -1202,7 +1257,11 @@
         "their",
         "octopuses",
         "they",
-        "well"
+        "well",
+        "thesidia",
+        "plan",
+        "earth",
+        "rayleigh"
       ]
     },
     "flow.": {
@@ -1762,9 +1821,9 @@
       ]
     },
     "error": {
-      "count": 49,
+      "count": 51,
       "first_seen": "2025-11-24T01:47:18.941089",
-      "last_seen": "2025-12-23T15:30:06.192958",
+      "last_seen": "2025-12-27T09:21:22.334602",
       "related_topics": [
         "consciousness",
         "detect",
@@ -1773,7 +1832,8 @@
         "mlx-community/qwen2.5-1.5b-instruct-4bit",
         "instruct",
         "mlx-community/llama-3.2-1b-instruct-4bit",
-        "llama"
+        "llama",
+        "hello thesidia"
       ]
     },
     "test": {
@@ -2008,9 +2068,9 @@
       ]
     },
     "thesidia": {
-      "count": 5,
+      "count": 6,
       "first_seen": "2025-11-25T00:20:37.687642",
-      "last_seen": "2025-12-14T21:23:46.863774",
+      "last_seen": "2025-12-27T08:15:01.565518",
       "related_topics": [
         "moneta,",
         "tracing",
@@ -2030,7 +2090,11 @@
         "consciousness",
         "forensic",
         "chemistry",
-        "what"
+        "what",
+        "plan",
+        "earth",
+        "rayleigh",
+        "this"
       ]
     },
     "money": {
@@ -2431,9 +2495,9 @@
       ]
     },
     "general framework": {
-      "count": 29,
+      "count": 33,
       "first_seen": "2025-12-14T04:47:44.873371",
-      "last_seen": "2025-12-23T04:58:44.296800",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "interstellar",
         "forensic",
@@ -2460,7 +2524,10 @@
         "j",
         "this",
         "archon.",
-        "detect"
+        "detect",
+        "string theory",
+        "inflationary cosmology",
+        "hello thesidia"
       ]
     },
     "interstellar": {
@@ -2582,9 +2649,9 @@
       ]
     },
     "start": {
-      "count": 27,
+      "count": 34,
       "first_seen": "2025-12-14T21:16:27.397917",
-      "last_seen": "2025-12-23T04:58:44.296800",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "general framework",
         "practice",
@@ -2609,13 +2676,21 @@
         "this",
         "archon.",
         "forensic",
-        "detect"
+        "detect",
+        "string theory",
+        "inflationary cosmology",
+        "hello thesidia",
+        "quantum",
+        "explain",
+        "coding framework",
+        "alex",
+        "san francisco"
       ]
     },
     "practice": {
-      "count": 23,
+      "count": 29,
       "first_seen": "2025-12-14T21:16:27.397917",
-      "last_seen": "2025-12-23T04:58:44.296800",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "general framework",
         "start",
@@ -2633,7 +2708,13 @@
         "p",
         "j",
         "forensic",
-        "detect"
+        "detect",
+        "string theory",
+        "inflationary cosmology",
+        "hello thesidia",
+        "coding framework",
+        "alex",
+        "san francisco"
       ]
     },
     "very": {
@@ -2654,9 +2735,9 @@
       ]
     },
     "build": {
-      "count": 25,
+      "count": 31,
       "first_seen": "2025-12-14T21:16:27.397917",
-      "last_seen": "2025-12-23T04:58:44.296800",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "general framework",
         "start",
@@ -2677,13 +2758,19 @@
         "this",
         "archon.",
         "forensic",
-        "detect"
+        "detect",
+        "string theory",
+        "inflationary cosmology",
+        "hello thesidia",
+        "coding framework",
+        "alex",
+        "san francisco"
       ]
     },
     "foundation": {
-      "count": 26,
+      "count": 32,
       "first_seen": "2025-12-14T21:16:27.397917",
-      "last_seen": "2025-12-23T04:58:44.296800",
+      "last_seen": "2025-12-27T09:22:41.967142",
       "related_topics": [
         "general framework",
         "start",
@@ -2706,7 +2793,13 @@
         "this",
         "archon.",
         "forensic",
-        "detect"
+        "detect",
+        "string theory",
+        "inflationary cosmology",
+        "hello thesidia",
+        "coding framework",
+        "alex",
+        "san francisco"
       ]
     },
     "what is consciousness?": {
@@ -2996,15 +3089,20 @@
       ]
     },
     "quantum": {
-      "count": 1,
+      "count": 2,
       "first_seen": "2025-12-14T21:25:13.952169",
-      "last_seen": "2025-12-14T21:25:13.952169",
+      "last_seen": "2025-12-27T08:16:25.979106",
       "related_topics": [
         "quantum weirdness.",
         "physics",
         "consciousness",
         "here",
-        "acknowledging"
+        "acknowledging",
+        "science framework",
+        "explain",
+        "learning",
+        "start",
+        "learn"
       ]
     },
     "satoshi nakamoto": {
@@ -3100,9 +3198,9 @@
       ]
     },
     "learn": {
-      "count": 2,
+      "count": 3,
       "first_seen": "2025-12-14T21:28:52.162845",
-      "last_seen": "2025-12-17T13:56:44.466929",
+      "last_seen": "2025-12-27T08:16:25.979106",
       "related_topics": [
         "start",
         "experimentation",
@@ -3112,13 +3210,15 @@
         "science framework",
         "learning",
         "power_structures",
-        "code_cracking"
+        "code_cracking",
+        "quantum",
+        "explain"
       ]
     },
     "science framework": {
-      "count": 2,
+      "count": 3,
       "first_seen": "2025-12-14T21:28:52.162845",
-      "last_seen": "2025-12-17T13:56:44.466929",
+      "last_seen": "2025-12-27T08:16:25.979106",
       "related_topics": [
         "start",
         "experimentation",
@@ -3128,13 +3228,15 @@
         "reengineering",
         "learning",
         "power_structures",
-        "code_cracking"
+        "code_cracking",
+        "quantum",
+        "explain"
       ]
     },
     "learning": {
-      "count": 2,
+      "count": 3,
       "first_seen": "2025-12-14T21:28:52.162845",
-      "last_seen": "2025-12-17T13:56:44.466929",
+      "last_seen": "2025-12-27T08:16:25.979106",
       "related_topics": [
         "start",
         "experimentation",
@@ -3144,7 +3246,9 @@
         "reengineering",
         "science framework",
         "power_structures",
-        "code_cracking"
+        "code_cracking",
+        "quantum",
+        "explain"
       ]
     },
     "hard problem of consciousness": {
@@ -3832,26 +3936,28 @@
       ]
     },
     "mlx-community/qwen2.5-1.5b-instruct-4bit": {
-      "count": 2,
+      "count": 3,
       "first_seen": "2025-12-23T05:01:24.081982",
-      "last_seen": "2025-12-23T15:30:06.192958",
+      "last_seen": "2025-12-27T08:00:49.306907",
       "related_topics": [
         "code_cracking",
         "instruct",
-        "error"
+        "error",
+        "hello thesidia"
       ]
     },
     "instruct": {
-      "count": 3,
+      "count": 4,
       "first_seen": "2025-12-23T05:01:24.081982",
-      "last_seen": "2025-12-23T15:30:06.192958",
+      "last_seen": "2025-12-27T08:00:49.306907",
       "related_topics": [
         "code_cracking",
         "mlx-community/qwen2.5-1.5b-instruct-4bit",
         "error",
         "mlx-community/llama-3.2-1b-instruct-4bit",
         "detect",
-        "llama"
+        "llama",
+        "hello thesidia"
       ]
     },
     "mlx-community/llama-3.2-1b-instruct-4bit": {
@@ -4034,19 +4140,245 @@
         "central",
         "the da vinci code"
       ]
+    },
+    "hello thesidia": {
+      "count": 6,
+      "first_seen": "2025-12-27T08:00:49.306907",
+      "last_seen": "2025-12-27T09:22:41.967142",
+      "related_topics": [
+        "error",
+        "instruct",
+        "mlx-community/qwen2.5-1.5b-instruct-4bit",
+        "code_cracking",
+        "string theory",
+        "start",
+        "practice",
+        "physics",
+        "foundation",
+        "build",
+        "general framework",
+        "inflationary cosmology",
+        "forensic",
+        "sputnik",
+        "earth",
+        "history",
+        "reengineering",
+        "consciousness",
+        "power_structures"
+      ]
+    },
+    "string theory": {
+      "count": 1,
+      "first_seen": "2025-12-27T08:05:14.971442",
+      "last_seen": "2025-12-27T08:05:14.971442",
+      "related_topics": [
+        "start",
+        "practice",
+        "physics",
+        "foundation",
+        "build",
+        "general framework",
+        "inflationary cosmology",
+        "hello thesidia"
+      ]
+    },
+    "inflationary cosmology": {
+      "count": 1,
+      "first_seen": "2025-12-27T08:05:14.971442",
+      "last_seen": "2025-12-27T08:05:14.971442",
+      "related_topics": [
+        "string theory",
+        "start",
+        "practice",
+        "physics",
+        "foundation",
+        "build",
+        "general framework",
+        "hello thesidia"
+      ]
+    },
+    "sputnik": {
+      "count": 1,
+      "first_seen": "2025-12-27T08:12:51.474851",
+      "last_seen": "2025-12-27T08:12:51.474851",
+      "related_topics": [
+        "hello thesidia",
+        "forensic",
+        "earth"
+      ]
+    },
+    "earth": {
+      "count": 2,
+      "first_seen": "2025-12-27T08:12:51.474851",
+      "last_seen": "2025-12-27T08:15:01.565518",
+      "related_topics": [
+        "hello thesidia",
+        "forensic",
+        "sputnik",
+        "thesidia",
+        "plan",
+        "power_structures",
+        "rayleigh",
+        "this",
+        "physics",
+        "reengineering"
+      ]
+    },
+    "plan": {
+      "count": 1,
+      "first_seen": "2025-12-27T08:15:01.565518",
+      "last_seen": "2025-12-27T08:15:01.565518",
+      "related_topics": [
+        "thesidia",
+        "earth",
+        "power_structures",
+        "rayleigh",
+        "this",
+        "physics",
+        "reengineering"
+      ]
+    },
+    "rayleigh": {
+      "count": 1,
+      "first_seen": "2025-12-27T08:15:01.565518",
+      "last_seen": "2025-12-27T08:15:01.565518",
+      "related_topics": [
+        "thesidia",
+        "plan",
+        "earth",
+        "power_structures",
+        "this",
+        "physics",
+        "reengineering"
+      ]
+    },
+    "coding framework": {
+      "count": 2,
+      "first_seen": "2025-12-27T08:23:06.587230",
+      "last_seen": "2025-12-27T08:24:26.373382",
+      "related_topics": [
+        "code_cracking",
+        "alex",
+        "build",
+        "san francisco",
+        "history",
+        "foundation",
+        "forensic",
+        "power_structures",
+        "start",
+        "practice",
+        "reengineering",
+        "physics",
+        "consciousness",
+        "chemistry"
+      ]
+    },
+    "alex": {
+      "count": 1,
+      "first_seen": "2025-12-27T08:23:06.587230",
+      "last_seen": "2025-12-27T08:23:06.587230",
+      "related_topics": [
+        "code_cracking",
+        "coding framework",
+        "build",
+        "san francisco",
+        "history",
+        "foundation",
+        "forensic",
+        "power_structures",
+        "start",
+        "practice",
+        "reengineering"
+      ]
+    },
+    "san francisco": {
+      "count": 1,
+      "first_seen": "2025-12-27T08:23:06.587230",
+      "last_seen": "2025-12-27T08:23:06.587230",
+      "related_topics": [
+        "code_cracking",
+        "coding framework",
+        "alex",
+        "build",
+        "history",
+        "foundation",
+        "forensic",
+        "power_structures",
+        "start",
+        "practice",
+        "reengineering"
+      ]
+    },
+    "scalable quantum algorithms for machine learning": {
+      "count": 1,
+      "first_seen": "2025-12-27T09:18:26.528297",
+      "last_seen": "2025-12-27T09:18:26.528297",
+      "related_topics": [
+        "code_cracking",
+        "good",
+        "hey thesidia",
+        "physics",
+        "quantum computing today",
+        "reengineering"
+      ]
+    },
+    "good": {
+      "count": 1,
+      "first_seen": "2025-12-27T09:18:26.528297",
+      "last_seen": "2025-12-27T09:18:26.528297",
+      "related_topics": [
+        "code_cracking",
+        "scalable quantum algorithms for machine learning",
+        "hey thesidia",
+        "physics",
+        "quantum computing today",
+        "reengineering"
+      ]
+    },
+    "hey thesidia": {
+      "count": 1,
+      "first_seen": "2025-12-27T09:18:26.528297",
+      "last_seen": "2025-12-27T09:18:26.528297",
+      "related_topics": [
+        "code_cracking",
+        "scalable quantum algorithms for machine learning",
+        "good",
+        "physics",
+        "quantum computing today",
+        "reengineering"
+      ]
+    },
+    "quantum computing today": {
+      "count": 1,
+      "first_seen": "2025-12-27T09:18:26.528297",
+      "last_seen": "2025-12-27T09:18:26.528297",
+      "related_topics": [
+        "code_cracking",
+        "scalable quantum algorithms for machine learning",
+        "good",
+        "hey thesidia",
+        "physics",
+        "reengineering"
+      ]
     }
   },
   "research_threads": [],
   "technical_domains": {},
   "journey_context": {
-    "primary_focus": "code_cracking",
+    "primary_focus": "hello thesidia",
     "active_threads": [],
     "recent_topics": [
+      "hello thesidia",
+      "physics",
+      "foundation",
       "code_cracking",
-      "instruct",
-      "error",
-      "mlx-community/qwen2.5-1.5b-instruct-4bit"
+      "history",
+      "reengineering",
+      "consciousness",
+      "start",
+      "practice",
+      "power_structures"
     ]
   },
-  "last_updated": "2025-12-23T15:30:06.193005"
+  "last_updated": "2025-12-27T09:22:41.967347"
 }

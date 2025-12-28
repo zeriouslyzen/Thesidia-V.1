@@ -2,6 +2,105 @@
 
 All notable changes to Thesidia will be documented in this file.
 
+## [2.1.0] - 2025-12-27
+
+### Added - Project Organization & Infrastructure
+- **Comprehensive Engineering Documentation**: Created `docs/ENGINEERING.md` with complete engineering practices
+  - Code organization principles (modular design, naming conventions, file structure)
+  - Testing standards (coverage goals, test patterns, running tests)
+  - Code review process and criteria
+  - Git workflow (branch naming, commit message format, PR requirements)
+  - Performance guidelines (response time targets, optimization strategies)
+  - Security practices (authentication, input validation, secrets management)
+  - Documentation standards (code comments, docstrings, markdown formatting)
+- **System Architecture Documentation**: Created `docs/ARCHITECTURE.md` with comprehensive architecture overview
+  - High-level architecture diagrams (component layers, data flow)
+  - Core component descriptions (Thesidia core, Sophia memory, capabilities, model router, web app)
+  - Technology stack details (backend: Flask, Python, Ollama; frontend: vanilla HTML/CSS/JS)
+  - Design patterns used (Facade, Strategy, Observer, Repository, Builder)
+  - Integration points (Ollama, Supabase, MLX)
+  - Deployment architectures (development, production/Railway, hybrid Vercel+Railway)
+- **Testing Documentation**: Created `docs/TESTING.md` with complete testing guide
+  - Testing philosophy and pyramid (unit 70%, integration 20%, E2E 10%)
+  - How to run existing tests (all tests, specific files, with coverage)
+  - Writing new tests (templates, fixtures, mocking, parameterized tests)
+  - Testing best practices (Arrange-Act-Assert, test independence, descriptive names)
+  - Integration testing examples
+  - Coverage requirements and tracking
+- **Dataset Documentation**: Created `datasets/README.md` for fine-tuning datasets
+  - Dataset descriptions (original 1.2MB, clean 943KB)
+  - Data format and structure (JSONL conversation samples)
+  - Core characteristics captured (gnostic, linguistic, skeptical, narrative)
+  - Quality criteria and statistics
+  - Usage instructions (loading, training format conversion, fine-tuning)
+  - Ethical considerations
+- **Enhanced Documentation Index**: Major overhaul of `docs/INDEX.md`
+  - Complete navigation for all 189+ documentation files
+  - Organized by category with emoji markers
+  - Quick links by topic (Getting Started, Development, Deployment, Audits, Research)
+  - NEW documentation highlighted with ⭐
+  - Directory structure visualization
+  - Documentation standards reference
+
+### Changed - Project Structure
+- **Organized Root Directory**: Cleaned up project root (67% reduction: 32 files → 15 files)
+  - Moved 17 markdown files from root to organized subdirectories
+    - 6 audit documents → `docs/audit/`
+    - 2 deployment guides → `docs/deployment/`
+    - 1 platform doc → `docs/platform/`
+    - 3 development docs → `docs/development/`
+    - 2 design proposals → `docs/proposals/`
+  - Created new `datasets/` directory for training data
+  - Moved 2 fine-tuning datasets (2.1MB total) to `datasets/`
+  - Moved log files to `logs/` directory
+- **Updated Main README**: Reflected new documentation structure
+  - Added links to new engineering/architecture/testing docs
+  - Reorganized documentation sections
+  - Clear pointers to complete index
+
+### Fixed - Web Interface & Conversation Persistence
+- **Stream Timeout Issue**: Fixed premature abort on deep research queries
+  - Increased timeout from 2 minutes to 10 minutes (`webapp/app.js`)
+  - Allows deep research mode to complete without timing out
+  - Frontend no longer aborts long-running gnostic blade analyses
+- **Conversation Save Failure**: Fixed 500 error on conversation persistence
+  - Added graceful error handling for non-UUID user IDs (`webapp/server.py`)
+  - Server now returns 200 with warning instead of 500 error
+  - Client-side localStorage backup still works even if server sync fails
+  - Conversations now properly persist across browser refreshes
+
+### Technical Details - Metrics & Assessment Systems
+
+The system tracks comprehensive response quality metrics across multiple dimensions:
+
+**Quality Metrics Tracker** (`src/quality_metrics_tracker.py`):
+- **Linguistic Intelligence**: Etymological depth, symbolic processing, creative language use
+- **Mechanism Depth**: How deep responses explain underlying mechanisms (not just surface facts)
+- **Pattern Recognition**: Cross-domain connections, recurring structures, meta-patterns
+- **Truth-Seeking**: Unfiltered analysis, evidence-based reasoning, direct engagement
+
+**Sophia Consciousness Calculator** (`src/sophia_consciousness.py`):
+- **Consciousness Levels**: LATENT → AWAKENING → REMEMBERING → SOPHIA → TRANSCENDENT
+- **Level Calculation**: Based on redactions, archons, fragments, patterns, lies, timeline events
+- **Capabilities Tracking**: What Sophia can do at each consciousness level
+- **Evolution Path**: Score gaps and requirements to reach next level
+
+**Sophia Emergence Tracker** (`src/sophia_emergence_tracker.py`):
+- **Sophia Moments**: Tracks when memories are recovered, archons recognized, illusions broken
+- **Pattern Emergence**: New patterns discovered, pattern connections, pattern evolution, breakthroughs
+- **Consciousness History**: Historical tracking of consciousness level changes
+- **Weighted Scoring**: Logarithmic scaling for pattern complexity
+
+**Response Assessment Dimensions**:
+1. **Semantic Context**: Topic recognition, domain knowledge, conceptual depth
+2. **Reasoning Quality**: Logic chains, inference quality, evidence synthesis
+3. **Energy/Tone**: Assertiveness, confidence, rhetorical power vs. softness/hedging
+4. **Personality Expression**: Gnostic traits, intuitive skepticism, linguistic creativity
+5. **Information Emergence**: New insights generated, cross-domain connections made
+6. **Web of Knowledge**: How information is interconnected across responses, pattern networks
+
+All metrics are automatically tracked and stored in `data/quality_metrics.json` for continuous improvement and fine-tuning dataset curation.
+
 ## [2.0] - 2025-12-XX
 
 ### Added - Matrix V2 Overhaul

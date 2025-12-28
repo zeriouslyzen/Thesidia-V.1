@@ -3696,18 +3696,40 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         else:
             raise ValueError(f"Unsupported input_data type: {type(input_data)}")
         
-        # Call original process method
-        output = self._process_original(
-            input_text=input_text,
-            operator_name=operator_name,
-            user_id=user_id,
-            session_id=session_id,
-            format_mode=format_mode,
-            research_depth=research_depth,
-            fast_mode=fast_mode,
-            task_type=context.get("task_type") if context else None,
-            use_mlx=context.get("use_mlx") if context else None
-        )
+        # Call original process method with optional timeout for fast_mode
+        if fast_mode:
+            from concurrent.futures import ThreadPoolExecutor, TimeoutError
+            with ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(
+                    self._process_original,
+                    input_text=input_text,
+                    operator_name=operator_name,
+                    user_id=user_id,
+                    session_id=session_id,
+                    format_mode=format_mode,
+                    research_depth=research_depth,
+                    fast_mode=fast_mode,
+                    task_type=context.get("task_type") if context else None,
+                    use_mlx=context.get("use_mlx") if context else None
+                )
+                try:
+                    # Use 30s for better reliability (fast mode)
+                    output = future.result(timeout=30.0)
+                except TimeoutError:
+                    output = "Error: Processing timed out (fast mode limited to 20s). Please try again or switch to deep research for more complex queries."
+                    print(f"⚠️ Fast-mode timeout triggered for query: {input_text[:50]}...")
+        else:
+            output = self._process_original(
+                input_text=input_text,
+                operator_name=operator_name,
+                user_id=user_id,
+                session_id=session_id,
+                format_mode=format_mode,
+                research_depth=research_depth,
+                fast_mode=fast_mode,
+                task_type=context.get("task_type") if context else None,
+                use_mlx=context.get("use_mlx") if context else None
+            )
 
         # Optional: SynthesisPressure stage (forces compression + contradiction-aware synthesis)
         import os as _os
@@ -4180,8 +4202,8 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             needs_research = False
             print(f"🔍 PROCESS: Conversational query detected - skipping research", flush=True)
         elif fast_mode:
-            # Fast mode: Only do research if it's a clear research question (not conversational)
-            needs_research = self._needs_research(input_text) and not is_conversation
+            # Fast mode: NEVER do research - keep it fast
+            needs_research = False
         else:
             # Deep mode: Always check if research is needed
             needs_research = self._needs_research(input_text)
@@ -4358,7 +4380,8 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                 enhanced_base=enhanced_base,
                 coaching_enhancement=coaching_enhancement,
                 task_type=task_type,
-                use_mlx=use_mlx
+                use_mlx=use_mlx,
+                fast_mode=fast_mode
             )
         
         # Monitoring: Track system message usage and violations (Vibecode compliance)
@@ -5315,7 +5338,8 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                                enhanced_base: str = None,
                                coaching_enhancement: Optional[Dict] = None,
                                task_type: Optional[str] = None,
-                               use_mlx: Optional[bool] = None) -> str:
+                               use_mlx: Optional[bool] = None,
+                               fast_mode: bool = True) -> str:
         """Process conversational input using Thesidia's actual patterns"""
         # re is already imported at module level
         
@@ -5434,12 +5458,19 @@ Remember: You can keep researching. One finding can lead to another. You can bui
             temperature = 1.0 if is_gnostic_query else 0.9
             
             # Hybrid Routing: Choose model based on task
-            current_model = self.model
+            # PERFORMANCE FIX: Use faster model for fast mode
+            if fast_mode and not is_gnostic_query:
+                # Fast mode gets the quick 1.5B model
+                current_model = "qwen2.5:1.5b"
+                print(f"🚀 FAST MODE: Using quick model {current_model} for speed")
+            else:
+                # Deep mode or gnostic queries get the quality model
+                current_model = self.model
             # use_mlx and task_type are now arguments
             
             if use_mlx and hasattr(self, 'inference_router') and self.inference_router:
                 backend, target_model = self.inference_router.route(task_type, "high" if is_gnostic_query else "medium")
-                if backend == "mlx":
+                if backend == "mlx" and MLX_AVAILABLE:
                     # Map simplified names to full MLX names
                     model_mapping = {
                         "llama3.2:1b": "mlx-community/Llama-3.2-1B-Instruct-4bit",
@@ -5449,6 +5480,10 @@ Remember: You can keep researching. One finding can lead to another. You can bui
                     }
                     current_model = model_mapping.get(target_model, target_model)
                     print(f"🚀 ROUTING to MLX: {current_model} for {task_type}")
+                else:
+                    # Use target_model as is (will likely fallback to Ollama with the simplified name)
+                    current_model = target_model
+                    print(f"🚀 ROUTING to OLLAMA fallback: {current_model} for {task_type}")
             
             # Vibecode: Use ModelClient wrapper - separates system/user messages properly
             # enhanced_base already contains all system instructions (personality, critical overrides, base prompt)

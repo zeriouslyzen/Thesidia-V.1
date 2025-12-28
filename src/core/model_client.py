@@ -171,6 +171,25 @@ class ModelClient:
                 print(f"Error in MLX core inference: {e}. Falling back to Ollama.")
                 # Fall through to Ollama
         
+        # Defensive fix: If model name contains MLX-style path, normalize for Ollama
+        if "mlx-community/" in model:
+            # Strip prefix and -4bit/-instruct suffix to get base name
+            # Example: mlx-community/Qwen2.5-1.5B-Instruct-4bit -> qwen2.5:1.5b
+            original_model = model
+            if "Qwen2.5-1.5B" in model:
+                model = "qwen2.5:1.5b"
+            elif "Llama-3.2-1B" in model:
+                model = "llama3.2:1b"
+            elif "Llama-3.2-3B" in model:
+                model = "llama3.2:3b"
+            elif "Phi-3.5-mini" in model:
+                model = "phi3.5:3.8b"
+            elif "Llama-3.1-8B" in model:
+                model = "llama3.1:8b"
+            
+            if model != original_model:
+                print(f"⚠️ Normalized MLX model path '{original_model}' to Ollama name '{model}'")
+
         # Make the call
         response = ollama.chat(
             model=model,

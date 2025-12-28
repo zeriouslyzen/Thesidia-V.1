@@ -1,0 +1,31 @@
+{
+  "interactions": [
+    {
+      "user": "Thesidia, what can you help me with?",
+      "assistant": "there! i can definitely help you with your hiking adventures in the redwoods. here's some interesting tidbits: - redwoods are known for being the tallest trees on earth, with the tallest one measuring over 379 feet. - they have an average lifespan of about 500-700 years, but some can live up to 2,000 years! - redwood trees have thick bark that can be up to 12 inches thick, which helps them survive wildfires. - the coast redwoods are native to only a small area along the northwestern coast of california and southwestern oregon, while the giant sequoias (also called sierras) are found in the sierra nevada range of california. - redwood trees are so tall that their branches can be over 100 feet off the ground! if you're interested in learning more about these amazing trees, i recommend checki",
+      "timestamp": "2025-12-27T09:19:01.157650",
+      "metadata": {
+        "type": "question",
+        "outcome": {
+          "success": true,
+          "effectiveness": 0.7
+        },
+        "timestamp": "2025-12-27T09:19:01.157193",
+        "user_id": "test_user_001",
+        "session_id": "test_session_001"
+      }
+    },
+    {
+      "user": "Thesidia, what can you help me with?",
+      "assistant": "Error: Processing timed out (fast mode limited to 20s). Please try again or switch to deep research for more complex queries.",
+      "timestamp": "2025-12-27T09:19:03.017142",
+      "metadata": {
+        "timestamp": "2025-12-27T09:19:03.017005",
+        "response_length": 125,
+        "user_id": "test_user_001",
+        "session_id": "test_session_001"
+      }
+    }
+  ],
+  "last_updated": "2025-12-27T09:19:03.017145"
+}

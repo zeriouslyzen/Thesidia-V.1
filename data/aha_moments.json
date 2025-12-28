@@ -3185,6 +3185,114 @@
       "defensiveness_detected": false,
       "expansion_detected": false,
       "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia, tell me one interesting fact about space.",
+      "response_length": 106,
+      "timestamp": "2025-12-27T08:00:49.715537",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia, tell me one interesting fact about space.",
+      "response_length": 1285,
+      "timestamp": "2025-12-27T08:05:16.532814",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia, tell me one interesting fact about space.",
+      "response_length": 705,
+      "timestamp": "2025-12-27T08:12:54.097669",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Thesidia, write a 2-sentence explanation of why the sky is blue using technical terms.",
+      "response_length": 1227,
+      "timestamp": "2025-12-27T08:15:02.973680",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Explain the concept of quantum entanglement in 1 sentence for a beginner.",
+      "response_length": 487,
+      "timestamp": "2025-12-27T08:16:26.860065",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "My name is Alex and I&#x27;m a software engineer working on AI systems in San Francisco.",
+      "response_length": 1387,
+      "timestamp": "2025-12-27T08:23:08.074201",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "I&#x27;m particularly interested in quantum computing and symbolic AI architectures.",
+      "response_length": 1508,
+      "timestamp": "2025-12-27T08:24:27.892840",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "By the way, I love hiking in the redwoods on weekends.",
+      "response_length": 688,
+      "timestamp": "2025-12-27T08:25:07.398455",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hey Thesidia, how are you today?",
+      "response_length": 1677,
+      "timestamp": "2025-12-27T09:18:26.534942",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia, what can you help me with?",
+      "response_length": 1571,
+      "timestamp": "2025-12-27T09:19:03.014478",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia",
+      "response_length": 38,
+      "timestamp": "2025-12-27T09:21:22.343353",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia",
+      "response_length": 1117,
+      "timestamp": "2025-12-27T09:22:43.366619",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
     }
   ],
   "expansion_metrics": [],
