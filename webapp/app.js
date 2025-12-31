@@ -166,6 +166,7 @@ class ThesidiaApp {
         if (path.includes('profile.html') || path === '/profile.html') return 'profile';
         if (path.includes('archive.html') || path === '/archive.html') return 'archive';
         if (path.includes('settings/') || path.includes('/settings')) return 'settings';
+        if (path.includes('search.html') || path === '/search.html') return 'search';
         return 'contexts'; // Default to contexts
     }
 

@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+
+    <!-- Primary Meta Tags -->
+    <title>Katanx // Explore</title>
+    <meta name="title" content="Katanx // Explore">
+    <meta name="description"
+        content="Explore the Katanx universe. Discover practitioners, research, and stories from the Iceberg Praxis community.">
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Search Page Specific Styles - Fixed */
+        html {
+            overflow-y: auto !important;
+            height: auto !important;
+            min-height: 100% !important;
+        }
+
+        body {
+            overflow-y: auto !important;
+            /* Allow scroll */
+            overflow-x: hidden !important;
+            height: auto !important;
+            min-height: 100% !important;
+            display: block !important;
+            /* Disable global flex layout */
+            position: relative !important;
+            overscroll-behavior-y: none;
+        }
+
+        #app {
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow: visible !important;
+            /* Allow content to overflow */
+            display: block !important;
+            position: relative !important;
+            transform: none !important;
+            margin-left: 0 !important;
+            /* Override sidebar pushes */
+            width: 100% !important;
+        }
+
+        .search-page {
+            background: var(--bg-primary);
+            /* Reset flex properties locally just in case */
+            display: block;
+        }
+
+        /* Hero Section - Spacious & Somatic */
+        .search-hero {
+            padding: 100px 20px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .search-brand {
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+        }
+
+        .search-title {
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .search-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            max-width: 320px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* News Grid - Apple Presentation Style */
+        .news-section {
+            flex: 1;
+            padding: 0 16px 120px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        .section-action {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .section-action:hover {
+            color: var(--text-primary);
+        }
+
+        /* Featured Story - Full Width Hero Card */
+        .featured-story {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .featured-story:hover {
+            transform: scale(1.01);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .featured-story-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-story-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 24px 24px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 50%, transparent 100%);
+        }
+
+        .featured-tag {
+            display: inline-block;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--theme-neon);
+            margin-bottom: 8px;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            backdrop-filter: blur(10px);
+        }
+
+        .featured-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #ffffff;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .featured-excerpt {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+            max-width: 500px;
+        }
+
+        /* News Grid */
+        .news-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        @media (min-width: 480px) {
+            .news-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .news-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* News Card */
+        .news-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            background: var(--bg-secondary);
+        }
+
+        .news-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .news-card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .news-card:hover .news-card-image {
+            transform: scale(1.05);
+        }
+
+        .news-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 60px 16px 16px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+        }
+
+        .news-card-tag {
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--theme-neon);
+            margin-bottom: 6px;
+        }
+
+        .news-card-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #ffffff;
+            line-height: 1.35;
+            margin-bottom: 4px;
+        }
+
+        .news-card-meta {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Trending Section */
+        .trending-section {
+            margin-top: 40px;
+        }
+
+        .trending-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px 0 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .trending-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .trending-chip {
+            flex-shrink: 0;
+            padding: 10px 18px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .trending-chip:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-color: var(--text-tertiary);
+        }
+
+        .trending-chip.hot {
+            border-color: var(--theme-neon);
+            color: var(--theme-neon);
+        }
+
+        /* Topics Grid */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        @media (min-width: 600px) {
+            .topics-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .topic-card {
+            padding: 20px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .topic-card:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--theme-neon);
+            transform: translateY(-2px);
+        }
+
+        .topic-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .topic-name {
+            font-size: 13px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .topic-count {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        /* Search Bar - Fixed Bottom */
+        .search-bar-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(to top, var(--bg-primary) 60%, transparent);
+            z-index: 100;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            backdrop-filter: blur(20px);
+            transition: all 0.2s ease;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--text-secondary);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--text-tertiary);
+            flex-shrink: 0;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .search-filter-btn {
+            padding: 6px 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .search-filter-btn:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Article Modal/Popup */
+        .article-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .article-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .article-content {
+            max-width: 700px;
+            max-height: 85vh;
+            width: 100%;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            overflow: hidden;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .article-modal.active .article-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .article-hero {
+            position: relative;
+            aspect-ratio: 16/9;
+        }
+
+        .article-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .article-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: background 0.2s ease;
+        }
+
+        .article-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .article-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: 50vh;
+        }
+
+        .article-tag {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--theme-neon);
+            margin-bottom: 12px;
+        }
+
+        .article-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .article-meta {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .article-text {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .article-text p {
+            margin-bottom: 16px;
+        }
+
+        /* Header */
+        .search-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, var(--bg-primary) 60%, transparent);
+            z-index: 50;
+        }
+
+        .header-logo {
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+        }
+
+        .header-logo span {
+            color: var(--theme-neon);
+        }
+
+        .header-action {
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .header-action:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Search Results State */
+        .search-results {
+            display: none;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .results-header {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .results-query {
+            font-size: 24px;
+            color: var(--text-primary);
+        }
+
+        .results-count {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        .results-tabs {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .results-tab {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            padding-bottom: 8px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .results-tab.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--theme-neon);
+        }
+
+        /* User Result Card */
+        .user-result {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-result:hover {
+            background: var(--bg-tertiary);
+            transform: translateX(4px);
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            object-fit: cover;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .user-handle {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .user-bio {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .follow-btn {
+            padding: 8px 20px;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .follow-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Light Mode Adjustments */
+        [data-theme="light"] .featured-story-overlay,
+        [data-theme="light"] .news-card-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 40%, transparent 100%);
+        }
+
+        [data-theme="light"] .search-page {
+            background: var(--bg-primary);
+        }
+
+        [data-theme="light"] .search-bar-container {
+            background: linear-gradient(to top, var(--bg-primary) 60%, transparent);
+        }
+
+        /* ============================================
+           SCROLL REVEAL ANIMATIONS
+           ============================================ */
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-scale.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Stagger children animation */
+        .stagger-children>* {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .stagger-children.visible>*:nth-child(1) {
+            transition-delay: 0.05s;
+        }
+
+        .stagger-children.visible>*:nth-child(2) {
+            transition-delay: 0.1s;
+        }
+
+        .stagger-children.visible>*:nth-child(3) {
+            transition-delay: 0.15s;
+        }
+
+        .stagger-children.visible>*:nth-child(4) {
+            transition-delay: 0.2s;
+        }
+
+        .stagger-children.visible>*:nth-child(5) {
+            transition-delay: 0.25s;
+        }
+
+        .stagger-children.visible>*:nth-child(6) {
+            transition-delay: 0.3s;
+        }
+
+        .stagger-children.visible>* {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           FEATURED PRACTITIONERS SECTION
+           ============================================ */
+        .practitioners-section {
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .practitioner-spotlight {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .practitioner-spotlight {
+                flex-direction: row;
+            }
+        }
+
+        .spotlight-main {
+            flex: 2;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 16/10;
+            cursor: pointer;
+        }
+
+        .spotlight-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .spotlight-main:hover img {
+            transform: scale(1.03);
+        }
+
+        .spotlight-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 24px 24px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+        }
+
+        .spotlight-tag {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--theme-neon);
+            margin-bottom: 8px;
+        }
+
+        .spotlight-name {
+            font-size: 22px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .spotlight-bio {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        .spotlight-sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .mini-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+        }
+
+        .mini-profile:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-color);
+            transform: translateX(4px);
+        }
+
+        .mini-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .mini-info {
+            flex: 1;
+        }
+
+        .mini-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .mini-discipline {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* ============================================
+           QUOTE/WISDOM SECTION
+           ============================================ */
+        .wisdom-section {
+            margin: 80px 0;
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .wisdom-section::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 120px;
+            color: var(--theme-neon);
+            opacity: 0.1;
+            font-family: Georgia, serif;
+        }
+
+        .wisdom-quote {
+            font-size: 24px;
+            font-weight: 300;
+            color: var(--text-primary);
+            line-height: 1.5;
+            max-width: 600px;
+            margin: 0 auto 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wisdom-author {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .wisdom-author span {
+            color: var(--theme-neon);
+        }
+
+        /* ============================================
+           STATS/METRICS SECTION
+           ============================================ */
+        .stats-section {
+            margin: 60px 0;
+            padding: 40px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        @media (min-width: 600px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .stat-card {
+            padding: 24px 16px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--theme-neon);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--theme-neon);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ============================================
+           VIDEO/MEDIA SHOWCASE
+           ============================================ */
+        .media-showcase {
+            margin: 60px 0;
+        }
+
+        .showcase-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 8px 0 24px;
+            scrollbar-width: none;
+        }
+
+        .showcase-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .showcase-item {
+            flex-shrink: 0;
+            width: 280px;
+            aspect-ratio: 9/16;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .showcase-item:hover {
+            transform: scale(1.02);
+        }
+
+        .showcase-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .showcase-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 16px 16px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+        }
+
+        .showcase-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .showcase-item:hover .showcase-play {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .showcase-play svg {
+            width: 20px;
+            height: 20px;
+            fill: #fff;
+            margin-left: 3px;
+        }
+
+        .showcase-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .showcase-views {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+        }
+
+        /* ============================================
+           COMMUNITY HIGHLIGHTS
+           ============================================ */
+        .community-section {
+            margin: 60px 0;
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .community-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        @media (min-width: 600px) {
+            .community-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .community-card {
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .community-card:hover {
+            border-color: var(--theme-neon);
+            transform: translateY(-2px);
+        }
+
+        .community-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .community-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .community-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .community-members {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .community-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="search-page" id="app">
+        <!-- Header -->
+        <header class="search-header">
+            <a href="/stream.html" class="header-logo"><span>/</span>katanx</a>
+            <a href="/stream.html" class="header-action">Enter Stream →</a>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="search-hero">
+            <div class="search-brand">ICEBERG PRAXIS</div>
+            <h1 class="search-title">Explore the Depth</h1>
+            <p class="search-subtitle">Discover practitioners, research, and stories from the frontier of human
+                development.</p>
+        </section>
+
+        <!-- News Section -->
+        <main class="news-section" id="newsSection">
+            <!-- Featured Story -->
+            <article class="featured-story" onclick="openArticle(this)" data-article="featured">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
+                    alt="Featured Story" class="featured-story-image">
+                <div class="featured-story-overlay">
+                    <span class="featured-tag">Research Brief</span>
+                    <h2 class="featured-title">The Neuroplasticity of Deliberate Practice: New Frontiers</h2>
+                    <p class="featured-excerpt">How focused, repetitive training physically rewires neural pathways—and
+                        what this means for skill acquisition in any domain.</p>
+                </div>
+            </article>
+
+            <!-- News Grid -->
+            <section class="section-header">
+                <span class="section-title">Latest Signal</span>
+                <a href="#" class="section-action">View all</a>
+            </section>
+
+            <div class="news-grid" id="newsGrid">
+                <article class="news-card" onclick="openArticle(this)" data-article="1">
+                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80"
+                        alt="Movement Practice" class="news-card-image">
+                    <div class="news-card-overlay">
+                        <div class="news-card-tag">Movement</div>
+                        <h3 class="news-card-title">The Quiet Revolution in Somatic Intelligence</h3>
+                        <span class="news-card-meta">4 min read</span>
+                    </div>
+                </article>
+
+                <article class="news-card" onclick="openArticle(this)" data-article="2">
+                    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80"
+                        alt="Internal Arts" class="news-card-image">
+                    <div class="news-card-overlay">
+                        <div class="news-card-tag">Internal Arts</div>
+                        <h3 class="news-card-title">Breath as Technology: Ancient Systems, Modern Science</h3>
+                        <span class="news-card-meta">6 min read</span>
+                    </div>
+                </article>
+
+                <article class="news-card" onclick="openArticle(this)" data-article="3">
+                    <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80"
+                        alt="Research" class="news-card-image">
+                    <div class="news-card-overlay">
+                        <div class="news-card-tag">Research</div>
+                        <h3 class="news-card-title">Meta-Learning: The Skill Behind All Skills</h3>
+                        <span class="news-card-meta">8 min read</span>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Trending Topics -->
+            <section class="trending-section">
+                <div class="section-header">
+                    <span class="section-title">Trending Now</span>
+                </div>
+                <div class="trending-scroll">
+                    <span class="trending-chip hot">#neuroplasticity</span>
+                    <span class="trending-chip">#somaticpractice</span>
+                    <span class="trending-chip">#flowstate</span>
+                    <span class="trending-chip">#martialarts</span>
+                    <span class="trending-chip">#meditation</span>
+                    <span class="trending-chip">#biohacking</span>
+                    <span class="trending-chip">#deepwork</span>
+                </div>
+            </section>
+
+            <!-- Topics -->
+            <section class="topics-section">
+                <div class="section-header" style="margin-top: 32px;">
+                    <span class="section-title">Explore Topics</span>
+                </div>
+                <div class="topics-grid">
+                    <div class="topic-card">
+                        <div class="topic-icon"></div>
+                        <div class="topic-name">Martial Arts</div>
+                        <div class="topic-count">2.4k posts</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-icon"></div>
+                        <div class="topic-name">Internal Arts</div>
+                        <div class="topic-count">1.8k posts</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-icon"></div>
+                        <div class="topic-name">Visual Arts</div>
+                        <div class="topic-count">3.1k posts</div>
+                    </div>
+                    <div class="topic-card">
+                        <div class="topic-icon"></div>
+                        <div class="topic-name">Research</div>
+                        <div class="topic-count">890 posts</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hot Debates -->
+            <section class="debates-section reveal-section" style="margin-top: 40px;">
+                <div class="section-header">
+                    <span class="section-title">Hot Debates</span>
+                    <a href="#" class="section-action">Join discussion</a>
+                </div>
+                <div class="news-grid stagger-children" id="debatesGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Wisdom Quote Section -->
+            <section class="wisdom-section reveal-scale">
+                <p class="wisdom-quote">The master has failed more times than the beginner has even tried.</p>
+                <p class="wisdom-author">— <span>Stephen McCranie</span></p>
+            </section>
+
+            <!-- Featured Practitioners -->
+            <section class="practitioners-section reveal-section">
+                <div class="section-header">
+                    <span class="section-title">Featured Practitioners</span>
+                    <a href="#" class="section-action">Browse all</a>
+                </div>
+                <div class="practitioner-spotlight" id="practitionersContainer">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats-section reveal-section">
+                <div class="section-header">
+                    <span class="section-title">Community Pulse</span>
+                </div>
+                <div class="stats-grid stagger-children" id="statsGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Media Showcase - Short Videos -->
+            <section class="media-showcase reveal-section">
+                <div class="section-header">
+                    <span class="section-title">Featured Cuts</span>
+                    <a href="/stream.html#kx-cuts" class="section-action">Watch more</a>
+                </div>
+                <div class="showcase-scroll" id="mediaScroll">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Community Highlights -->
+            <section class="community-section reveal-section">
+                <div class="section-header">
+                    <span class="section-title">Active Communities</span>
+                    <a href="/stream.html#circles" class="section-action">Join a circle</a>
+                </div>
+                <div class="community-grid stagger-children" id="communityGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Search Results (Hidden by default) -->
+        <main class="news-section search-results" id="searchResults">
+            <div class="results-header">
+                <h2 class="results-query" id="resultsQuery">Searching...</h2>
+                <p class="results-count" id="resultsCount"></p>
+                <div class="results-tabs">
+                    <span class="results-tab active" data-tab="all">All</span>
+                    <span class="results-tab" data-tab="people">People</span>
+                    <span class="results-tab" data-tab="posts">Posts</span>
+                    <span class="results-tab" data-tab="topics">Topics</span>
+                </div>
+            </div>
+            <div id="resultsContent"></div>
+        </main>
+
+        <!-- Search Bar -->
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search people, posts, topics...">
+                <button class="search-filter-btn">Filters</button>
+            </div>
+        </div>
+
+        <!-- Article Modal -->
+        <div class="article-modal" id="articleModal">
+            <div class="article-content">
+                <div class="article-hero">
+                    <img id="articleImage" src="" alt="Article">
+                    <button class="article-close" onclick="closeArticle()">×</button>
+                </div>
+                <div class="article-body">
+                    <div class="article-tag" id="articleTag">Research</div>
+                    <h1 class="article-title" id="articleTitle">Article Title</h1>
+                    <p class="article-meta" id="articleMeta">Published December 2024 · 5 min read</p>
+                    <div class="article-text" id="articleText">
+                        <p>Article content goes here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Article Data
+        const articles = {
+            featured: {
+                tag: 'Research Brief',
+                title: 'The Neuroplasticity of Deliberate Practice: New Frontiers',
+                image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+                meta: 'Published December 30, 2024 · 12 min read',
+                content: `
+                    <p>The brain's capacity for change—neuroplasticity—represents one of the most profound discoveries in modern neuroscience. What we're now understanding is that this plasticity isn't random; it responds to specific types of training in predictable ways.</p>
+                    <p>Deliberate practice, as defined by K. Anders Ericsson, involves focused, repetitive training on specific aspects of performance. But what actually happens in the brain during this process?</p>
+                    <p>Recent studies using fMRI and diffusion tensor imaging have revealed that intensive practice leads to measurable changes in both gray and white matter. Musicians show increased cortical thickness in motor and auditory regions. Athletes display enhanced connectivity in circuits related to spatial processing and motor control.</p>
+                    <p>The implications for learning any skill—from martial arts to visual arts to intellectual pursuits—are profound. The brain literally restructures itself around what we repeatedly do with focused attention.</p>
+                `
+            },
+            1: {
+                tag: 'Movement',
+                title: 'The Quiet Revolution in Somatic Intelligence',
+                image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80',
+                meta: 'Published December 29, 2024 · 4 min read',
+                content: `
+                    <p>There's a revolution happening in how we understand human movement—and it's not about bigger muscles or faster times. It's about intelligence that lives in the body itself.</p>
+                    <p>Somatic intelligence refers to the body's own form of knowing: proprioception, interoception, and the vast network of sensory-motor feedback loops that operate largely below conscious awareness.</p>
+                    <p>Practitioners across disciplines—from dancers to martial artists to surgeons—are discovering that cultivating this intelligence leads to performance gains that pure technical training cannot match.</p>
+                `
+            },
+            2: {
+                tag: 'Internal Arts',
+                title: 'Breath as Technology: Ancient Systems, Modern Science',
+                image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80',
+                meta: 'Published December 28, 2024 · 6 min read',
+                content: `
+                    <p>For millennia, contemplative traditions have used breath as a tool for transforming consciousness and physiology. Modern science is finally catching up to what practitioners have long known.</p>
+                    <p>Controlled breathing practices directly influence the autonomic nervous system, shifting the balance between sympathetic (fight-or-flight) and parasympathetic (rest-and-digest) activation.</p>
+                    <p>Techniques like box breathing, tummo, and various pranayama methods are now being studied in clinical settings for their effects on stress resilience, cognitive performance, and emotional regulation.</p>
+                `
+            },
+            3: {
+                tag: 'Research',
+                title: 'Meta-Learning: The Skill Behind All Skills',
+                image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80',
+                meta: 'Published December 27, 2024 · 8 min read',
+                content: `
+                    <p>What if the most valuable skill isn't any particular domain expertise, but the ability to learn itself? This is the premise behind meta-learning—learning how to learn.</p>
+                    <p>Meta-learners develop transferable strategies: they understand how to break down complex skills, how to structure practice sessions, how to manage motivation and frustration, and how to integrate feedback effectively.</p>
+                    <p>Research suggests that explicit instruction in learning strategies can dramatically accelerate skill acquisition across domains. The best practitioners aren't just talented—they're sophisticated learners.</p>
+                `
+            },
+            4: {
+                tag: 'Debate',
+                title: 'Is Traditional Training Still Relevant?',
+                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+                meta: 'Active Discussion · 127 comments',
+                content: `
+                    <p>The rise of "functional" training and MMA has led many to question the utility of traditional martial arts forms (kata, taolu). Are they outdated artifacts or essential repositories of somatic knowledge?</p>
+                    <p>In this community debate, we explore arguments from both sides:</p>
+                    <ul>
+                        <li><strong>Pro-Tradition:</strong> Forms teach structure, biomechanics, and mental focus that sparring alone cannot.</li>
+                        <li><strong>Pro-Modern:</strong> Aliveness and resistance are the only true tests of combat efficacy.</li>
+                    </ul>
+                    <p>Join the discussion in the comments section below.</p>
+                `
+            },
+            5: {
+                tag: 'Discussion',
+                title: 'The Role of Competition in Mastery',
+                image: 'https://images.unsplash.com/photo-1552058544-f2b08422138a?auto=format&fit=crop&w=600&q=80',
+                meta: 'Active Discussion · 89 comments',
+                content: `
+                    <p>Does competition accelerate growth or encourage bad habits? A deep dive into the psychology of winning vs. the pursuit of perfection.</p>
+                    <p>Many practitioners find that the pressure of competition sharpens their skills. Others argue it narrows their focus to "what works now" rather than "what is sustainable and deep".</p>
+                    <p>What has been your experience? Does the medal matter more than the movement?</p>
+                `
+            }
+        };
+
+        // --- DYNAMIC DATA ---
+
+        const hotDebatesData = [
+            {
+                tag: 'Debate',
+                title: 'Is Traditional Training Still Relevant?',
+                comments: '127 comments',
+                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+                articleId: '4'
+            },
+            {
+                tag: 'Discussion',
+                title: 'The Role of Competition in Mastery',
+                comments: '89 comments',
+                image: 'https://images.unsplash.com/photo-1552058544-f2b08422138a?auto=format&fit=crop&w=600&q=80',
+                articleId: '5'
+            }
+        ];
+
+        const practitionerData = {
+            spotlight: {
+                name: 'Elena Vasquez',
+                tag: 'Practitioner of the Week',
+                bio: 'Capoeira master & movement researcher. Bridging traditional Brazilian martial arts with contemporary somatic practices.',
+                image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=800&q=80'
+            },
+            featured: [
+                { name: 'Marcus Chen', discipline: 'Tai Chi · Qigong', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80' },
+                { name: 'Sarah Kim', discipline: 'Flow Arts · Research', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80' },
+                { name: 'David Okonkwo', discipline: 'BJJ · Wrestling', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80' }
+            ]
+        };
+
+        const statsData = [
+            { number: '12.4K', label: 'Practitioners' },
+            { number: '847', label: 'Disciplines' },
+            { number: '34K', label: 'Posts This Week' },
+            { number: '2.1M', label: 'Hours Practiced' }
+        ];
+
+        const mediaData = [
+            { title: 'Morning Flow Routine', views: '24.5K views', image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=400&q=80' },
+            { title: 'Breath Control Basics', views: '18.2K views', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=400&q=80' },
+            { title: 'Silent Power Training', views: '31.8K views', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=400&q=80' },
+            { title: 'Muscle Memory Secrets', views: '12.1K views', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=400&q=80' }
+        ];
+
+        const communityData = [
+            { name: 'Flow State Practitioners', members: '4.2K members', desc: 'Exploring the intersection of martial arts, meditation, and peak performance states.' },
+            { name: 'Research & Evidence', members: '2.8K members', desc: 'Science-backed discussions on training methodology, neuroplasticity, and skill acquisition.' },
+            { name: 'Movement Culture', members: '6.1K members', desc: 'Breaking movement out of discipline silos. Parkour, dance, gymnastics, and beyond.' },
+            { name: 'Internal Arts Circle', members: '3.4K members', desc: 'Tai Chi, Qigong, yoga, breathwork, and the cultivation of internal power.' }
+        ];
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderDebates() {
+            const container = document.getElementById('debatesGrid');
+            if (!container) return;
+            container.innerHTML = hotDebatesData.map(item => `
+                <article class="news-card" onclick="openArticle(this)" data-article="${item.articleId}">
+                    <img src="${item.image}" alt="Debate" class="news-card-image">
+                    <div class="news-card-overlay">
+                        <div class="news-card-tag">${item.tag}</div>
+                        <h3 class="news-card-title">${item.title}</h3>
+                        <span class="news-card-meta">${item.comments}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function renderPractitioners() {
+            const container = document.getElementById('practitionersContainer');
+            if (!container) return;
+
+            const featureList = practitionerData.featured.map(p => `
+                <div class="mini-profile">
+                    <img src="${p.image}" alt="Profile" class="mini-avatar">
+                    <div class="mini-info">
+                        <div class="mini-name">${p.name}</div>
+                        <div class="mini-discipline">${p.discipline}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="spotlight-main reveal-left">
+                    <img src="${practitionerData.spotlight.image}" alt="Practitioner">
+                    <div class="spotlight-overlay">
+                        <div class="spotlight-tag">${practitionerData.spotlight.tag}</div>
+                        <h3 class="spotlight-name">${practitionerData.spotlight.name}</h3>
+                        <p class="spotlight-bio">${practitionerData.spotlight.bio}</p>
+                    </div>
+                </div>
+                <div class="spotlight-sidebar stagger-children reveal-right">
+                    ${featureList}
+                </div>
+            `;
+        }
+
+        function renderStats() {
+            const container = document.getElementById('statsGrid');
+            if (!container) return;
+            container.innerHTML = statsData.map(stat => `
+                <div class="stat-card">
+                    <div class="stat-number">${stat.number}</div>
+                    <div class="stat-label">${stat.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderMedia() {
+            const container = document.getElementById('mediaScroll');
+            if (!container) return;
+            container.innerHTML = mediaData.map(media => `
+                <div class="showcase-item">
+                    <img src="${media.image}" alt="Video">
+                    <div class="showcase-play">
+                        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                    </div>
+                    <div class="showcase-overlay">
+                        <div class="showcase-title">${media.title}</div>
+                        <div class="showcase-views">${media.views}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCommunities() {
+            const container = document.getElementById('communityGrid');
+            if (!container) return;
+            container.innerHTML = communityData.map(comm => `
+                <div class="community-card">
+                    <div class="community-header">
+                        <div class="community-icon"></div>
+                        <div>
+                            <div class="community-name">${comm.name}</div>
+                            <div class="community-members">${comm.members}</div>
+                        </div>
+                    </div>
+                    <p class="community-desc">${comm.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        // Initialize Render
+        renderDebates();
+        renderPractitioners();
+        renderStats();
+        renderMedia();
+        renderCommunities();
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const newsSection = document.getElementById('newsSection');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', debounce(function (e) {
+            const query = e.target.value.trim();
+            if (query.length > 0) {
+                performSearch(query);
+            } else {
+                hideResults();
+            }
+        }, 300));
+
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        function performSearch(query) {
+            newsSection.style.display = 'none';
+            searchResults.classList.add('active');
+
+            document.getElementById('resultsQuery').textContent = `Results for "${query}"`;
+            document.getElementById('resultsCount').textContent = 'Searching...';
+
+            // Simulate search delay
+            setTimeout(() => {
+                const mockResults = generateMockResults(query);
+                renderResults(mockResults);
+            }, 400);
+        }
+
+        function generateMockResults(query) {
+            return {
+                people: [
+                    { name: 'Marcus Chen', handle: '@marcuschen', bio: 'Movement practitioner. Exploring the intersection of martial arts and somatic therapy.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80' },
+                    { name: 'Sarah Kim', handle: '@sarahkim', bio: 'Researcher | Cognitive Science | Flow states and peak performance.', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80' }
+                ],
+                posts: [],
+                topics: ['#' + query.toLowerCase().replace(/\s+/g, '')]
+            };
+        }
+
+        function renderResults(results) {
+            document.getElementById('resultsCount').textContent = `${results.people.length} people, ${results.posts.length} posts found`;
+
+            let html = '';
+            results.people.forEach(person => {
+                html += `
+                    <div class="user-result" onclick="window.location.href='/profile.html'">
+                        <img src="${person.avatar}" class="user-avatar" alt="${person.name}">
+                        <div class="user-info">
+                            <div class="user-name">${person.name}</div>
+                            <div class="user-handle">${person.handle}</div>
+                            <div class="user-bio">${person.bio}</div>
+                        </div>
+                        <button class="follow-btn" onclick="event.stopPropagation()">Follow</button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('resultsContent').innerHTML = html;
+        }
+
+        function hideResults() {
+            newsSection.style.display = 'block';
+            searchResults.classList.remove('active');
+        }
+
+        // Article Modal
+        function openArticle(element) {
+            const articleId = element.dataset.article;
+            const article = articles[articleId];
+
+            if (!article) return;
+
+            document.getElementById('articleImage').src = article.image;
+            document.getElementById('articleTag').textContent = article.tag;
+            document.getElementById('articleTitle').textContent = article.title;
+            document.getElementById('articleMeta').textContent = article.meta;
+            document.getElementById('articleText').innerHTML = article.content;
+
+            document.getElementById('articleModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeArticle() {
+            document.getElementById('articleModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on background click
+        document.getElementById('articleModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeArticle();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeArticle();
+            }
+        });
+
+        // Results tabs
+        document.querySelectorAll('.results-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.results-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Apply saved theme
+        const savedTheme = localStorage.getItem('kx_theme_mode') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        const savedColor = localStorage.getItem('kx_accent_color');
+        if (savedColor && savedColor !== 'white') {
+            document.documentElement.classList.add('theme-' + savedColor);
+        }
+
+        // Scroll Reveal Animation using Intersection Observer
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Optionally unobserve after revealing for performance
+                    // revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: null,
+            rootMargin: '0px 0px -80px 0px',
+            threshold: 0.1
+        });
+
+        // Observe all reveal elements
+        document.querySelectorAll('.reveal-section, .reveal-left, .reveal-right, .reveal-scale, .stagger-children').forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // Add visible class to elements already in view on page load
+        setTimeout(() => {
+            document.querySelectorAll('.reveal-section, .reveal-left, .reveal-right, .reveal-scale, .stagger-children').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    el.classList.add('visible');
+                }
+            });
+        }, 100);
+    </script>
+    <script>
+        // Force scroll capability
+        window.onload = function () {
+            document.body.style.overflowY = 'auto';
+            document.body.style.height = 'auto';
+            document.documentElement.style.overflowY = 'auto';
+            document.documentElement.style.height = 'auto';
+            document.getElementById('app').style.height = 'auto';
+            document.getElementById('app').style.overflow = 'visible';
+
+            // Re-check visibility
+            setTimeout(() => {
+                document.querySelectorAll('.reveal-section, .reveal-left, .reveal-right, .reveal-scale, .stagger-children').forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        el.classList.add('visible');
+                    }
+                });
+            }, 500);
+        };
+    </script>
+</body>
+
+</html>
