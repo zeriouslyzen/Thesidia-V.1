@@ -219,10 +219,14 @@ class ThesidiaApp {
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
-                // If it's a link with a direct HREF, let it navigate normally
+                // If it's a link with a direct HREF, force navigation
                 if (item.tagName === 'A' && item.getAttribute('href')) {
-                    // Do not prevent default
-                    return;
+                    // Explicitly navigate to ensure it works
+                    const href = item.getAttribute('href');
+                    if (href && !href.startsWith('#')) {
+                        window.location.href = href;
+                        return;
+                    }
                 }
 
                 // Otherwise, handle as section button

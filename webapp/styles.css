@@ -597,7 +597,6 @@ a:hover {
 }
 
 .advanced-nav .nav-item {
-    background: none !important;
     border: none !important;
     border-left: none !important;
     border-right: none !important;
@@ -676,6 +675,34 @@ a:hover {
 .advanced-nav .nav-item:focus-visible {
     outline: none !important;
     box-shadow: none !important;
+}
+
+/* Mobile Adjustments for Advanced Nav */
+@media (max-width: 768px) {
+    .header-submenu {
+        padding-left: 10px;
+        padding-right: 10px;
+        justify-content: space-between;
+    }
+
+    .user-status-indicator,
+    .status-selector-dropdown {
+        display: none !important;
+        /* Hide status on mobile to save space */
+    }
+
+    .advanced-nav {
+        padding-left: 0;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .advanced-nav .nav-item {
+        font-size: 10px !important;
+        /* Smaller text on mobile */
+        padding: 4px 4px !important;
+    }
 }
 
 /* Legacy submenu-item support */
