@@ -214,13 +214,21 @@ class ThesidiaApp {
     }
 
     // Navigation setup - redirects nav-item buttons to stream.html with section hash
+    // Navigation setup
     setupNavigation() {
-        const navItems = document.querySelectorAll('.nav-item[data-section]');
+        const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const section = item.dataset.section;
-                if (section) {
+                // If it's a link with a direct HREF, let it navigate normally
+                if (item.tagName === 'A' && item.getAttribute('href')) {
+                    // Do not prevent default
+                    return;
+                }
+
+                // Otherwise, handle as section button
+                if (item.dataset.section) {
+                    e.preventDefault();
+                    const section = item.dataset.section;
                     // Navigate to stream.html with the section as hash
                     window.location.href = `/stream.html#${section}`;
                 }
