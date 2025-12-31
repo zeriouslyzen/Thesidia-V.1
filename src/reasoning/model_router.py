@@ -19,10 +19,10 @@ class ModelRouter:
         # Model assignments
         self.models = {
             "code": "deepseek-coder:6.7b",
-            "synthesis": "clean-mistral:latest",  # Use clean-mistral (oracle-agent has hardcoded system prompt that refuses)
-            "planning": "clean-mistral:latest",
-            "research": "clean-mistral:latest",
-            "default": "clean-mistral:latest"
+            "synthesis": "dolphin-mistral:latest",  # Uncensored for gnostic analysis
+            "planning": "dolphin-mistral:latest",
+            "research": "dolphin-mistral:latest",
+            "default": "dolphin-mistral:latest"
         }
         
         # Parameter optimization per task type

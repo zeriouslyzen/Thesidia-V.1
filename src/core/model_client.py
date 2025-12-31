@@ -59,7 +59,7 @@ class ModelClient:
     - Prevents prompt shadowing/overload
     """
     
-    def __init__(self, default_model: str = "clean-mistral:latest"):
+    def __init__(self, default_model: str = "dolphin-mistral:latest"):
         self.default_model = default_model
         self.call_count = 0
         self.system_message_count = 0

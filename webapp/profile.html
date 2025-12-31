@@ -1,42 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
-    
+
     <!-- Primary Meta Tags -->
     <title>Katanx // Profile - User Profile & Settings</title>
     <meta name="title" content="Katanx // Profile - User Profile & Settings">
-    <meta name="description" content="Katanx user profile page. Manage your account, view your posts, and customize your Katanx experience. Created by Jack Danger.">
+    <meta name="description"
+        content="Katanx user profile page. Manage your account, view your posts, and customize your Katanx experience. Created by Jack Danger.">
     <meta name="keywords" content="katanx profile, user profile, account settings, Jack Danger">
     <meta name="author" content="Jack Danger">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://www.katanx.com/profile.html">
-    
+
     <!-- Cross-Domain Connections -->
     <link rel="author" href="https://www.jackdanger.dev">
     <link rel="me" href="https://www.jackdanger.dev">
     <link rel="me" href="https://www.spiritlink.space">
-    
+
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.katanx.com/profile.html">
     <meta property="og:title" content="Katanx // Profile">
     <meta property="og:description" content="User profile and account management on Katanx.">
     <meta property="og:image" content="https://www.katanx.com/og-image.jpg">
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Katanx // Profile">
     <meta name="twitter:description" content="User profile and account management.">
-    
+
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         .profile-page {
             width: 100%;
@@ -339,7 +342,7 @@
             padding: 0;
             margin: -1px;
             overflow: hidden;
-            clip: rect(0,0,0,0);
+            clip: rect(0, 0, 0, 0);
             border: 0;
         }
 
@@ -1088,6 +1091,7 @@
         }
     </style>
 </head>
+
 <body class="profile-page-context">
     <div id="app">
         <!-- Header -->
@@ -1097,7 +1101,7 @@
                 <div class="header-branding">
                     <span class="thesidia-text"><span class="katanx-slash">/</span>katanx</span>
                 </div>
-                
+
                 <!-- Menu Orb - Right -->
                 <button class="menu-orb" id="menuBtn" aria-label="Menu">
                     <div class="orb-glow"></div>
@@ -1110,7 +1114,7 @@
             <!-- Back Button -->
             <a href="/" class="profile-back-btn" aria-label="Back to home">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
             </a>
 
@@ -1118,8 +1122,8 @@
             <div class="profile-banner" id="profileBanner">
                 <div class="profile-banner-edit" id="bannerEditBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                     </svg>
                     <span>Edit banner</span>
                 </div>
@@ -1129,11 +1133,13 @@
             <div class="profile-header">
                 <!-- Profile Picture -->
                 <div class="profile-picture-large square" id="profilePictureLarge">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' rx='12' ry='12' fill='%23ffffff' fill-opacity='0.06'/%3E%3Crect x='30' y='30' width='60' height='60' rx='10' ry='10' fill='%23ffffff' fill-opacity='0.12'/%3E%3C/svg%3E" alt="Profile" id="profilePictureImg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'%3E%3Crect width=\'120\' height=\'120\' rx=\'12\' ry=\'12\' fill=\'%23ffffff\' fill-opacity=\'0.06\'/%3E%3Crect x=\'30\' y=\'30\' width=\'60\' height=\'60\' rx=\'10\' ry=\'10\' fill=\'%23ffffff\' fill-opacity=\'0.12\'/%3E%3C/svg%3E'">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' rx='12' ry='12' fill='%23ffffff' fill-opacity='0.06'/%3E%3Crect x='30' y='30' width='60' height='60' rx='10' ry='10' fill='%23ffffff' fill-opacity='0.12'/%3E%3C/svg%3E"
+                        alt="Profile" id="profilePictureImg"
+                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\'%3E%3Crect width=\'120\' height=\'120\' rx=\'12\' ry=\'12\' fill=\'%23ffffff\' fill-opacity=\'0.06\'/%3E%3Crect x=\'30\' y=\'30\' width=\'60\' height=\'60\' rx=\'10\' ry=\'10\' fill=\'%23ffffff\' fill-opacity=\'0.12\'/%3E%3C/svg%3E'">
                     <div class="profile-picture-edit-overlay">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                         </svg>
                     </div>
                 </div>
@@ -1149,43 +1155,51 @@
                     <div class="profile-username-large" id="profileUsernameLarge">//loading</div>
                     <div class="profile-role" id="profileRole">Practitioner</div>
                     <div class="profile-disciplines" id="profileDisciplines"></div>
-                    <div class="profile-bio" id="profileBio">Exploring the depths of consciousness and pattern recognition. Building Thesidia.</div>
-                    
+                    <div class="profile-bio" id="profileBio">Exploring the depths of consciousness and pattern
+                        recognition. Building Thesidia.</div>
+
                     <div class="profile-meta">
                         <div class="profile-meta-item" id="profileLocation">
                             <span>San Francisco, CA</span>
                         </div>
                         <div class="profile-meta-item" id="profileWebsite">
-                            <a href="#" class="profile-meta-link" id="profileWebsiteLink" target="_blank">thesidia.com</a>
+                            <a href="#" class="profile-meta-link" id="profileWebsiteLink"
+                                target="_blank">thesidia.com</a>
                         </div>
                     </div>
 
                     <div class="profile-social-links">
-                        <a href="#" class="profile-social-link ig" id="profileSocialIG" target="_blank" aria-label="Instagram">
+                        <a href="#" class="profile-social-link ig" id="profileSocialIG" target="_blank"
+                            aria-label="Instagram">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="5" ry="5"/>
-                                <circle cx="12" cy="12" r="4"/>
-                                <circle cx="17" cy="7" r="1.2"/>
+                                <rect x="3" y="3" width="18" height="18" rx="5" ry="5" />
+                                <circle cx="12" cy="12" r="4" />
+                                <circle cx="17" cy="7" r="1.2" />
                             </svg>
                         </a>
                         <a href="#" class="profile-social-link x" id="profileSocialX" target="_blank" aria-label="X">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 4l16 16M4 20 20 4"/>
+                                <path d="M4 4l16 16M4 20 20 4" />
                             </svg>
                         </a>
-                        <a href="#" class="profile-social-link fb" id="profileSocialFB" target="_blank" aria-label="Facebook">
+                        <a href="#" class="profile-social-link fb" id="profileSocialFB" target="_blank"
+                            aria-label="Facebook">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 8h2V4h-2a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h2.5l.5-4H14V8a1 1 0 0 1 1-1z"/>
+                                <path d="M14 8h2V4h-2a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h2.5l.5-4H14V8a1 1 0 0 1 1-1z" />
                             </svg>
                         </a>
-                        <a href="#" class="profile-social-link tt" id="profileSocialTT" target="_blank" aria-label="TikTok">
+                        <a href="#" class="profile-social-link tt" id="profileSocialTT" target="_blank"
+                            aria-label="TikTok">
                             <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M14 3h2.3c.2 2.2 1.8 3.7 3.7 3.8v2.3c-1.2 0-2.3-.3-3.4-.9v5.7c0 3-2.4 5.5-5.5 5.8-3.2.3-6-2.1-6.3-5.3-.3-3.2 2.1-6 5.3-6.3.2 0 .5 0 .7.1v2.5c-.2 0-.4-.1-.6-.1-1.6.1-2.9 1.5-2.8 3.2.1 1.7 1.6 3 3.3 2.9 1.6-.1 2.9-1.5 2.9-3.1V3z"/>
+                                <path
+                                    d="M14 3h2.3c.2 2.2 1.8 3.7 3.7 3.8v2.3c-1.2 0-2.3-.3-3.4-.9v5.7c0 3-2.4 5.5-5.5 5.8-3.2.3-6-2.1-6.3-5.3-.3-3.2 2.1-6 5.3-6.3.2 0 .5 0 .7.1v2.5c-.2 0-.4-.1-.6-.1-1.6.1-2.9 1.5-2.8 3.2.1 1.7 1.6 3 3.3 2.9 1.6-.1 2.9-1.5 2.9-3.1V3z" />
                             </svg>
                         </a>
-                        <a href="#" class="profile-social-link ln" id="profileSocialLN" target="_blank" aria-label="LinkedIn">
+                        <a href="#" class="profile-social-link ln" id="profileSocialLN" target="_blank"
+                            aria-label="LinkedIn">
                             <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.08 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V22h-4V8zm7 0h3.8v1.9h.1c.5-1 1.7-2 3.6-2 3.8 0 4.5 2.5 4.5 5.8V22h-4v-6.2c0-1.5 0-3.5-2.1-3.5-2.1 0-2.4 1.6-2.4 3.4V22h-4V8z"/>
+                                <path
+                                    d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.08 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V22h-4V8zm7 0h3.8v1.9h.1c.5-1 1.7-2 3.6-2 3.8 0 4.5 2.5 4.5 5.8V22h-4v-6.2c0-1.5 0-3.5-2.1-3.5-2.1 0-2.4 1.6-2.4 3.4V22h-4V8z" />
                             </svg>
                         </a>
                     </div>
@@ -1225,7 +1239,7 @@
                 <div class="profile-empty">
                     <div class="profile-empty-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                         </svg>
                     </div>
                     <p>No posts yet. Start sharing your thoughts!</p>
@@ -1252,9 +1266,10 @@
                     <div class="portfolio-section-header">
                         <div class="portfolio-section-title">Origin</div>
                         <button class="portfolio-edit-btn" data-section="origin" aria-label="Edit origin story">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </button>
                     </div>
@@ -1267,9 +1282,10 @@
                     <div class="portfolio-section-header">
                         <div class="portfolio-section-title">Education</div>
                         <button class="portfolio-edit-btn" data-section="education" aria-label="Edit education">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </button>
                     </div>
@@ -1282,9 +1298,10 @@
                     <div class="portfolio-section-header">
                         <div class="portfolio-section-title">Services</div>
                         <button class="portfolio-edit-btn" data-section="services" aria-label="Edit services">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </button>
                     </div>
@@ -1297,9 +1314,10 @@
                     <div class="portfolio-section-header">
                         <div class="portfolio-section-title">Reading</div>
                         <button class="portfolio-edit-btn" data-section="reading" aria-label="Edit reading">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </button>
                     </div>
@@ -1312,9 +1330,10 @@
                     <div class="portfolio-section-header">
                         <div class="portfolio-section-title">Mind-Body Disciplines</div>
                         <button class="portfolio-edit-btn" data-section="disciplines" aria-label="Edit disciplines">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </button>
                     </div>
@@ -1327,9 +1346,10 @@
                     <div class="portfolio-section-header">
                         <div class="portfolio-section-title">Studios & locations</div>
                         <button class="portfolio-edit-btn" data-section="links" aria-label="Edit links">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </button>
                     </div>
@@ -1342,9 +1362,10 @@
                     <div class="portfolio-section-header">
                         <div class="portfolio-section-title">Credentials</div>
                         <button class="portfolio-edit-btn" data-section="credentials" aria-label="Edit credentials">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </button>
                     </div>
@@ -1357,8 +1378,9 @@
                     <div class="portfolio-section-header">
                         <div class="portfolio-section-title">Resume / CV</div>
                         <button class="portfolio-edit-btn" data-section="resume" aria-label="Upload resume">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
                             </svg>
                         </button>
                     </div>
@@ -1391,10 +1413,12 @@
                     <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
                     <div class="profile-picture-container" id="profilePictureContainer">
                         <div class="profile-picture" id="profilePicture">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='24' cy='18' r='7' fill='%23ffffff' fill-opacity='0.3'/%3E%3Cpath d='M12 46 Q24 38 36 46' stroke='%23ffffff' stroke-width='2' fill='none' stroke-opacity='0.3'/%3E%3C/svg%3E" alt="Profile">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='24' cy='18' r='7' fill='%23ffffff' fill-opacity='0.3'/%3E%3Cpath d='M12 46 Q24 38 36 46' stroke='%23ffffff' stroke-width='2' fill='none' stroke-opacity='0.3'/%3E%3C/svg%3E"
+                                alt="Profile">
                             <div class="profile-picture-overlay">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
                                 </svg>
                             </div>
                         </div>
@@ -1410,46 +1434,88 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Main Navigation -->
                 <nav class="sidebar-nav">
                     <a href="/profile.html" class="nav-menu-item active">
                         <div class="nav-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
                             </svg>
                         </div>
                         <span class="nav-title">Profile</span>
                     </a>
                     <a href="/stream.html" class="nav-menu-item">
                         <div class="nav-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="3" y1="12" x2="21" y2="12"/>
-                                <line x1="3" y1="6" x2="21" y2="6"/>
-                                <line x1="3" y1="18" x2="21" y2="18"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="3" y1="12" x2="21" y2="12" />
+                                <line x1="3" y1="6" x2="21" y2="6" />
+                                <line x1="3" y1="18" x2="21" y2="18" />
                             </svg>
                         </div>
                         <span class="nav-title">Stream</span>
                     </a>
                     <a href="/app.html" class="nav-menu-item">
                         <div class="nav-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                             </svg>
                         </div>
                         <span class="nav-title">Thesidia</span>
                     </a>
                     <a href="/archive.html" class="nav-menu-item">
                         <div class="nav-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                             </svg>
                         </div>
                         <span class="nav-title">Archive</span>
                     </a>
                 </nav>
-                
+
+                <!-- Appearance Section -->
+                <div class="sidebar-appearance">
+                    <div class="settings-label">Appearance</div>
+
+                    <!-- Theme Toggle -->
+                    <div class="appearance-row">
+                        <span class="appearance-label">Theme</span>
+                        <div class="theme-toggle" id="themeToggle">
+                            <button class="theme-btn active" data-theme="dark" aria-label="Dark theme">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                                </svg>
+                            </button>
+                            <button class="theme-btn" data-theme="light" aria-label="Light theme">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="5" />
+                                    <path
+                                        d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Font Stack Selector -->
+                    <div class="appearance-row">
+                        <span class="appearance-label">Font</span>
+                        <select class="font-stack-select" id="fontStackSelect">
+                            <option value="cyberx">CyberX</option>
+                            <option value="editorial">Editorial</option>
+                            <option value="terminal">Terminal</option>
+                            <option value="classic">Classic</option>
+                            <option value="minimal">Minimal</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Settings Section -->
                 <div class="sidebar-settings">
                     <div class="settings-label">Settings</div>
@@ -1468,8 +1534,8 @@
                 <h2 class="edit-profile-title">Edit profile</h2>
                 <button class="edit-profile-close" id="closeEditModal">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
                 </button>
             </div>
@@ -1480,7 +1546,8 @@
                 </div>
                 <div class="edit-profile-field">
                     <label class="edit-profile-label">Username</label>
-                    <input type="text" class="edit-profile-input" id="editUsername" maxlength="30" pattern="[a-zA-Z0-9_]+" required>
+                    <input type="text" class="edit-profile-input" id="editUsername" maxlength="30"
+                        pattern="[a-zA-Z0-9_]+" required>
                 </div>
                 <div class="edit-profile-field">
                     <label class="edit-profile-label">Tag</label>
@@ -1488,12 +1555,14 @@
                 </div>
                 <div class="edit-profile-field">
                     <label class="edit-profile-label">Bio</label>
-                    <textarea class="edit-profile-textarea" id="editBio" maxlength="300" placeholder="Tell us about yourself"></textarea>
+                    <textarea class="edit-profile-textarea" id="editBio" maxlength="300"
+                        placeholder="Tell us about yourself"></textarea>
                     <div class="edit-profile-char-count" id="bioCharCount">0 / 300</div>
                 </div>
                 <div class="edit-profile-field">
                     <label class="edit-profile-label">Location</label>
-                    <input type="text" class="edit-profile-input" id="editLocation" maxlength="100" placeholder="City, Country">
+                    <input type="text" class="edit-profile-input" id="editLocation" maxlength="100"
+                        placeholder="City, Country">
                 </div>
                 <div class="edit-profile-field">
                     <label class="edit-profile-label">Website</label>
@@ -1596,8 +1665,8 @@
         <div class="image-popup-content">
             <button class="image-popup-close" id="imagePopupCloseBtn" aria-label="Close">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
             </button>
             <img id="imagePopupImg" src="" alt="Expanded view">
@@ -1612,8 +1681,8 @@
                 <h3 class="metric-popout-title" id="metricPopoutTitle">Friends</h3>
                 <button class="metric-popout-close" id="metricPopoutCloseBtn" aria-label="Close">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
                 </button>
             </div>
@@ -1631,5 +1700,5 @@
     <script src="app.js"></script>
     <script src="profile.js"></script>
 </body>
-</html>
 
+</html>

@@ -5,8 +5,8 @@
   "media": [
     {
       "type": "video",
-      "url": "https://videos.pexels.com/video-files/2491284/2491284-hd_1920_1080_30fps.mp4",
-      "thumbnail": "https://videos.pexels.com/video-files/2491284/2491284-hd_1920_1080_30fps.jpg",
+      "url": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      "thumbnail": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
       "duration": 13
     }
   ],

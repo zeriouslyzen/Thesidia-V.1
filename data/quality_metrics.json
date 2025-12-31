@@ -1,380 +1,6 @@
 {
   "interactions": [
     {
-      "query": "tell me more",
-      "response_length": 1646,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-12-14T04:50:38.011858"
-    },
-    {
-      "query": "how are you?",
-      "response_length": 1298,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.4,
-        "truth_seeking": 0.2,
-        "overall": 0.32
-      },
-      "timestamp": "2025-12-14T04:51:19.386589"
-    },
-    {
-      "query": "Very long query: what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness? what is consciousness?",
-      "response_length": 1209,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.4,
-        "truth_seeking": 0.2,
-        "overall": 0.32
-      },
-      "timestamp": "2025-12-14T21:16:27.400283"
-    },
-    {
-      "query": "tell me a short story about a robot",
-      "response_length": 2006,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-12-14T21:17:20.305541"
-    },
-    {
-      "query": "whats your favorite color?",
-      "response_length": 946,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.0,
-        "overall": 0.12
-      },
-      "timestamp": "2025-12-14T21:17:58.893430"
-    },
-    {
-      "query": "Special chars: !@#$%^&amp;*()",
-      "response_length": 1837,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.35000000000000003
-      },
-      "timestamp": "2025-12-14T21:19:23.877830"
-    },
-    {
-      "query": "Unicode: 你好 こんにちは مرحبا",
-      "response_length": 1580,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.35000000000000003
-      },
-      "timestamp": "2025-12-14T21:19:35.699852"
-    },
-    {
-      "query": "why?",
-      "response_length": 728,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-12-14T21:21:08.059700"
-    },
-    {
-      "query": "thanks!",
-      "response_length": 2343,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-12-14T21:21:27.566616"
-    },
-    {
-      "query": "Mixed: Hello! 123 @#$ what?",
-      "response_length": 1554,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-12-14T21:21:54.940074"
-    },
-    {
-      "query": "tell me more about that",
-      "response_length": 1536,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.6,
-        "truth_seeking": 0.3333333333333333,
-        "overall": 0.5233333333333333
-      },
-      "timestamp": "2025-12-14T21:22:09.267121"
-    },
-    {
-      "query": "Numbers: 1234567890",
-      "response_length": 1172,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.5333333333333333,
-        "overall": 0.3933333333333333
-      },
-      "timestamp": "2025-12-14T21:22:19.452641"
-    },
-    {
-      "query": "whats your favorite movie?",
-      "response_length": 945,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-14T21:22:31.136174"
-    },
-    {
-      "query": "how are you?",
-      "response_length": 852,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-12-14T21:22:56.726036"
-    },
-    {
-      "query": "tell me about yourself",
-      "response_length": 862,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-14T21:23:16.087243"
-    },
-    {
-      "query": "what can you do?",
-      "response_length": 811,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-14T21:23:46.865959"
-    },
-    {
-      "query": "what is consciousness?",
-      "response_length": 1350,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.35000000000000003
-      },
-      "timestamp": "2025-12-14T21:24:29.471366"
-    },
-    {
-      "query": "explain quantum physics",
-      "response_length": 2556,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.35000000000000003
-      },
-      "timestamp": "2025-12-14T21:25:13.954638"
-    },
-    {
-      "query": "what is bitcoin?",
-      "response_length": 1417,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.35000000000000003
-      },
-      "timestamp": "2025-12-14T21:25:56.944262"
-    },
-    {
-      "query": "tell me more",
-      "response_length": 2008,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.5333333333333333,
-        "overall": 0.4833333333333334
-      },
-      "timestamp": "2025-12-14T21:26:37.829351"
-    },
-    {
-      "query": "can you elaborate?",
-      "response_length": 2025,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.0,
-        "overall": 0.21
-      },
-      "timestamp": "2025-12-14T21:27:14.964123"
-    },
-    {
-      "query": "what else?",
-      "response_length": 806,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-14T21:27:40.556811"
-    },
-    {
-      "query": "what is photosynthesis?",
-      "response_length": 764,
-      "scores": {
-        "depth": 0.2,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-14T21:28:18.317496"
-    },
-    {
-      "query": "what is photosynthesis?",
-      "response_length": 861,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-12-14T21:28:52.166039"
-    },
-    {
-      "query": "a",
-      "response_length": 2070,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.35000000000000003
-      },
-      "timestamp": "2025-12-14T21:29:38.343874"
-    },
-    {
-      "query": "??????????????????????????????????????????????????",
-      "response_length": 1524,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.35000000000000003
-      },
-      "timestamp": "2025-12-14T21:30:22.615102"
-    },
-    {
-      "query": "really",
-      "response_length": 832,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T00:24:38.783401"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 2197,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.4,
-        "truth_seeking": 0.2,
-        "overall": 0.41
-      },
-      "timestamp": "2025-12-17T13:46:08.686127"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 1723,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.35000000000000003
-      },
-      "timestamp": "2025-12-17T13:47:23.817730"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 1697,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-12-17T13:52:57.860127"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 2354,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.4,
-        "truth_seeking": 0.0,
-        "overall": 0.32999999999999996
-      },
-      "timestamp": "2025-12-17T13:55:07.696155"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 1449,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.35000000000000003
-      },
-      "timestamp": "2025-12-17T13:56:03.546249"
-    },
-    {
-      "query": "how does photosynthesis work?",
-      "response_length": 1817,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.4,
-        "truth_seeking": 0.2,
-        "overall": 0.41
-      },
-      "timestamp": "2025-12-17T13:56:44.470796"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 2432,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.6,
-        "truth_seeking": 0.2,
-        "overall": 0.47000000000000003
-      },
-      "timestamp": "2025-12-17T14:01:44.712225"
-    },
-    {
       "query": "tell me about consciousness",
       "response_length": 2071,
       "scores": {
@@ -1099,44 +725,384 @@
         "overall": 0.33333333333333337
       },
       "timestamp": "2025-12-27T09:22:41.971664"
+    },
+    {
+      "query": "Who are you?",
+      "response_length": 2073,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.8666666666666667,
+        "overall": 0.6166666666666667
+      },
+      "timestamp": "2025-12-30T01:29:24.858887"
+    },
+    {
+      "query": "Who are you?",
+      "response_length": 1228,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.8666666666666667,
+        "overall": 0.4666666666666667
+      },
+      "timestamp": "2025-12-30T01:30:58.873455"
+    },
+    {
+      "query": "thats cool, what do you think about it ?",
+      "response_length": 893,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-12-30T04:05:27.453009"
+    },
+    {
+      "query": "List 3 gnostic concepts and cite 2 sources.",
+      "response_length": 1388,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-30T04:35:51.012500"
+    },
+    {
+      "query": "List 3 gnostic concepts and cite 2 sources.",
+      "response_length": 11239,
+      "scores": {
+        "depth": 1.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.38
+      },
+      "timestamp": "2025-12-30T04:37:38.826794"
+    },
+    {
+      "query": "List 3 internal structure layers of the Sun, with a brief description for each.",
+      "response_length": 14669,
+      "scores": {
+        "depth": 1.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.38
+      },
+      "timestamp": "2025-12-30T04:47:36.934219"
+    },
+    {
+      "query": "List 3 internal structure layers of the Sun",
+      "response_length": 1526,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-30T04:56:00.618261"
+    },
+    {
+      "query": "List 3 internal structure layers of the Sun",
+      "response_length": 1932,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.35000000000000003
+      },
+      "timestamp": "2025-12-30T04:57:12.748417"
+    },
+    {
+      "query": "Give me a link to google.com",
+      "response_length": 1646,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-30T04:59:14.362556"
+    },
+    {
+      "query": "List 3 internal structure layers of the Sun",
+      "response_length": 793,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-30T05:02:01.153951"
+    },
+    {
+      "query": "Give me 3 links to scientific research about the sun.",
+      "response_length": 894,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-12-30T05:03:20.936398"
+    },
+    {
+      "query": "hey !",
+      "response_length": 1927,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.41
+      },
+      "timestamp": "2025-12-30T16:17:37.619803"
+    },
+    {
+      "query": "Whats up?",
+      "response_length": 1954,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2025-12-30T16:18:27.287923"
+    },
+    {
+      "query": "Explain the concept of &#x27;Thesidia&#x27; briefly.",
+      "response_length": 1500,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.35000000000000003
+      },
+      "timestamp": "2025-12-30T16:43:07.492911"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 2921,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 1.0,
+        "truth_seeking": 0.8666666666666667,
+        "overall": 0.8566666666666667
+      },
+      "timestamp": "2025-12-30T16:48:10.910564"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1512,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.4833333333333334
+      },
+      "timestamp": "2025-12-30T16:48:37.177929"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 2189,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.6,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.6033333333333334
+      },
+      "timestamp": "2025-12-30T16:50:23.043054"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 2088,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.6,
+        "truth_seeking": 0.2,
+        "overall": 0.47000000000000003
+      },
+      "timestamp": "2025-12-30T16:50:29.607775"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 953,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-30T16:50:36.265592"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1209,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.32
+      },
+      "timestamp": "2025-12-30T16:50:41.656891"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1068,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-30T16:50:43.840425"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1100,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2025-12-30T16:50:50.766847"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 750,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-30T16:50:53.083053"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1833,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.4833333333333334
+      },
+      "timestamp": "2025-12-30T16:51:00.685432"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 401,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-30T16:53:51.456706"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 401,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-30T16:53:57.765491"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 548,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-30T16:54:02.904328"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 418,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-30T16:54:08.394433"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 385,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-30T16:54:15.508668"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 409,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-30T16:54:26.083472"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1018,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.0,
+        "overall": 0.12
+      },
+      "timestamp": "2025-12-30T16:54:50.206432"
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 475,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-30T16:55:00.306100"
+    },
+    {
+      "query": "hihi",
+      "response_length": 580,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2025-12-30T17:01:17.998026"
+    },
+    {
+      "query": "hihi",
+      "response_length": 836,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2025-12-30T17:40:11.676029"
     }
   ],
   "quality_trends": {
     "depth_scores": [
-      0.7,
-      0.4,
-      0.4,
-      0.7,
-      0.4,
-      0.7,
-      0.7,
-      0.4,
-      0.7,
-      0.7,
-      0.7,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.4,
-      0.2,
-      0.4,
-      0.7,
-      0.7,
-      0.4,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
-      0.7,
       0.7,
       0.7,
       0.7,
@@ -1202,43 +1168,43 @@
       0.7,
       0.7,
       0.2,
+      0.4,
+      0.7,
+      0.4,
+      0.4,
+      0.7,
+      1.0,
+      1.0,
+      0.7,
+      0.7,
+      0.7,
+      0.4,
+      0.4,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.7,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.4,
+      0.2,
+      0.2,
       0.4
     ],
     "pattern_scores": [
-      0.0,
-      0.4,
-      0.4,
-      0.0,
-      0.0,
-      0.2,
-      0.2,
-      0.2,
-      0.0,
-      0.0,
-      0.6,
-      0.2,
-      0.0,
-      0.2,
-      0.0,
-      0.0,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.0,
-      0.0,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.0,
-      0.4,
-      0.2,
-      0.0,
-      0.4,
-      0.2,
-      0.4,
-      0.6,
       0.0,
       0.6,
       0.2,
@@ -1304,45 +1270,45 @@
       0.0,
       0.0,
       0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.2,
+      0.4,
+      0.0,
+      0.2,
+      1.0,
+      0.2,
+      0.6,
+      0.6,
+      0.0,
+      0.4,
+      0.0,
+      0.2,
+      0.0,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
       0.0
     ],
     "truth_seeking_scores": [
       0.2,
       0.2,
-      0.2,
-      0.2,
-      0.0,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.3333333333333333,
-      0.5333333333333333,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.5333333333333333,
-      0.0,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.0,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
       0.5333333333333333,
       0.2,
       0.8666666666666667,
@@ -1406,43 +1372,43 @@
       0.2,
       0.2,
       0.2,
-      0.5333333333333333
+      0.5333333333333333,
+      0.8666666666666667,
+      0.8666666666666667,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.8666666666666667,
+      0.5333333333333333,
+      0.5333333333333333,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.0,
+      0.2,
+      0.2,
+      0.2
     ],
     "overall_scores": [
-      0.29000000000000004,
-      0.32,
-      0.32,
-      0.29000000000000004,
-      0.12,
-      0.35000000000000003,
-      0.35000000000000003,
-      0.26,
-      0.29000000000000004,
-      0.29000000000000004,
-      0.5233333333333333,
-      0.3933333333333333,
-      0.2,
-      0.26,
-      0.2,
-      0.2,
-      0.35000000000000003,
-      0.35000000000000003,
-      0.35000000000000003,
-      0.4833333333333334,
-      0.21,
-      0.2,
-      0.2,
-      0.26,
-      0.35000000000000003,
-      0.35000000000000003,
-      0.2,
-      0.41,
-      0.35000000000000003,
-      0.29000000000000004,
-      0.32999999999999996,
-      0.35000000000000003,
-      0.41,
-      0.47000000000000003,
       0.29000000000000004,
       0.47000000000000003,
       0.4833333333333334,
@@ -1508,8 +1474,42 @@
       0.29000000000000004,
       0.29000000000000004,
       0.14,
-      0.33333333333333337
+      0.33333333333333337,
+      0.6166666666666667,
+      0.4666666666666667,
+      0.26,
+      0.29000000000000004,
+      0.38,
+      0.38,
+      0.29000000000000004,
+      0.35000000000000003,
+      0.29000000000000004,
+      0.2,
+      0.26,
+      0.41,
+      0.29000000000000004,
+      0.35000000000000003,
+      0.8566666666666667,
+      0.4833333333333334,
+      0.6033333333333334,
+      0.47000000000000003,
+      0.2,
+      0.32,
+      0.2,
+      0.26,
+      0.2,
+      0.4833333333333334,
+      0.14,
+      0.14,
+      0.14,
+      0.14,
+      0.14,
+      0.14,
+      0.12,
+      0.14,
+      0.14,
+      0.2
     ]
   },
-  "last_updated": "2025-12-27T09:22:41.971682"
+  "last_updated": "2025-12-30T17:40:11.676046"
 }

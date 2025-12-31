@@ -85,7 +85,7 @@ class ThesidiaInitializer:
                 from thesidia_hybrid_adaptive import ThesidiaHybridAdaptive
             
             # Create fresh instance
-            self.thesidia = ThesidiaHybridAdaptive(model="clean-mistral:latest")
+            self.thesidia = ThesidiaHybridAdaptive(model="dolphin-mistral:latest")
             
             if self.user_memory_manager:
                 self.thesidia.user_memory_manager = self.user_memory_manager

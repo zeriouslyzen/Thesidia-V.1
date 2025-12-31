@@ -1330,7 +1330,6 @@ def metrics_historical():
     return jsonify({'error': 'Metrics not available'}), 503
 
 @app.route('/api/user/session', methods=['GET', 'POST'])
-@app.route('/api/user/session', methods=['GET', 'POST'])
 def user_session():
     """Get or create user session"""
     user_id = None
@@ -1376,11 +1375,6 @@ def stream_feed():
     except Exception as e:
         import traceback
         return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
-
-@app.route('/api/health', methods=['GET'])
-def health_check():
-    """Simple health check for load balancers"""
-    return jsonify({'status': 'ok', 'timestamp': datetime.now().isoformat()})
 
 @app.route('/api/metrics', methods=['GET'])
 def metrics():

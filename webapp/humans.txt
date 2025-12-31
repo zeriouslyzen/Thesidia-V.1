@@ -1,0 +1,15 @@
+/* TEAM */
+Developer: Jack Danger
+Contact: https://www.jackdanger.dev
+From: USA
+
+/* THANKS */
+Katanx - AI Research Platform
+Created with passion for knowledge and exploration
+
+/* SITE */
+Last update: 2025/01/26
+Standards: HTML5, CSS3, JavaScript ES6+
+Components: Flask, Ollama, Thesidia AI
+Software: Python, JavaScript, HTML, CSS
+

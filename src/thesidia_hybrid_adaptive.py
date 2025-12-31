@@ -379,6 +379,10 @@ class ModelClient:
                     max_tokens=options.get("num_predict", 1024)
                 )
                 
+                # CRITICAL FIX: If MLX returns empty/null, force fallback to Ollama
+                if not mlx_response_text or not mlx_response_text.strip():
+                    raise ValueError("Empty response from MLX model - triggering fallback")
+                
                 # Format to match Ollama response structure
                 return {
                     "message": {
@@ -3060,7 +3064,7 @@ except ImportError:
 class ThesidiaHybridAdaptive(BaseAgent):
     """Hybrid system: Conversational evolution + Frontier capabilities + Adaptive learning + Research + AGI Actions"""
     
-    def __init__(self, model: str = "clean-mistral:latest", agent_id: str = "thesidia_main", **kwargs):  # Changed from oracle-agent (has hardcoded Oracle identity)
+    def __init__(self, model: str = "dolphin-mistral:latest", agent_id: str = "thesidia_main", **kwargs):  # Uncensored model for gnostic analysis
         # Get base_dir first
         base_dir = kwargs.get('base_dir', Path(__file__).parent.parent)
         
@@ -3696,12 +3700,32 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         else:
             raise ValueError(f"Unsupported input_data type: {type(input_data)}")
         
-        # Call original process method with optional timeout for fast_mode
-        if fast_mode:
-            from concurrent.futures import ThreadPoolExecutor, TimeoutError
-            with ThreadPoolExecutor(max_workers=1) as executor:
-                future = executor.submit(
-                    self._process_original,
+        # PIPELINE RESILIENCE: Wrap core processing in safety net
+        try:
+            # Call original process method with optional timeout for fast_mode
+            if fast_mode:
+                from concurrent.futures import ThreadPoolExecutor, TimeoutError
+                with ThreadPoolExecutor(max_workers=1) as executor:
+                    future = executor.submit(
+                        self._process_original,
+                        input_text=input_text,
+                        operator_name=operator_name,
+                        user_id=user_id,
+                        session_id=session_id,
+                        format_mode=format_mode,
+                        research_depth=research_depth,
+                        fast_mode=fast_mode,
+                        task_type=context.get("task_type") if context else None,
+                        use_mlx=context.get("use_mlx") if context else None
+                    )
+                    try:
+                        # Use 30s for better reliability (fast mode)
+                        output = future.result(timeout=30.0)
+                    except TimeoutError:
+                        output = "Error: Processing timed out (fast mode limited to 20s). Please try again or switch to deep research for more complex queries."
+                        print(f"⚠️ Fast-mode timeout triggered for query: {input_text[:50]}...")
+            else:
+                output = self._process_original(
                     input_text=input_text,
                     operator_name=operator_name,
                     user_id=user_id,
@@ -3712,24 +3736,11 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                     task_type=context.get("task_type") if context else None,
                     use_mlx=context.get("use_mlx") if context else None
                 )
-                try:
-                    # Use 30s for better reliability (fast mode)
-                    output = future.result(timeout=30.0)
-                except TimeoutError:
-                    output = "Error: Processing timed out (fast mode limited to 20s). Please try again or switch to deep research for more complex queries."
-                    print(f"⚠️ Fast-mode timeout triggered for query: {input_text[:50]}...")
-        else:
-            output = self._process_original(
-                input_text=input_text,
-                operator_name=operator_name,
-                user_id=user_id,
-                session_id=session_id,
-                format_mode=format_mode,
-                research_depth=research_depth,
-                fast_mode=fast_mode,
-                task_type=context.get("task_type") if context else None,
-                use_mlx=context.get("use_mlx") if context else None
-            )
+        except Exception as e:
+            # STATIC FALLBACK: If _process_original crashes entirely (e.g. Ollama down, critical bug)
+            # Responding is better than crashing.
+            print(f"🔥 CRITICAL PIPELINE FAILURE: {e}")
+            output = f"::SYSTEM OVERLOAD:: My neural pathways are currently congested. Please try again in 10 seconds. [Error: {str(e)[:50]}]"
 
         # Optional: SynthesisPressure stage (forces compression + contradiction-aware synthesis)
         import os as _os
@@ -3826,7 +3837,10 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         # Only retrieve for non-greetings to keep greetings fast
         user_memory_context = ""
         text_stripped = input_text.strip()
-        greeting_only_patterns = [r'^(hi|hello|hey|greetings)[\s,]*$', r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$']
+        greeting_only_patterns = [
+            r'^(hi|hello|hey|greetings|hi+)+[\s,]*$', 
+            r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$'
+        ]
         is_simple_greeting = any(re.match(pattern, text_stripped, re.IGNORECASE) for pattern in greeting_only_patterns) and len(text_stripped.split()) <= 4
         
         # Only retrieve memory for non-greetings (greetings handle memory separately)

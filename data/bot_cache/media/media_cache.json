@@ -27,7 +27,7 @@
     "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif"
   ],
   "videos": [
-    "https://videos.pexels.com/video-files/2491284/2491284-hd_1920_1080_30fps.mp4",
-    "https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_30fps.mp4"
+    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
   ]
 }

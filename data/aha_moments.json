@@ -3293,6 +3293,348 @@
       "defensiveness_detected": false,
       "expansion_detected": false,
       "user_feedback": null
+    },
+    {
+      "query": "Who are you?",
+      "response_length": 2073,
+      "timestamp": "2025-12-30T01:29:27.133301",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Who are you?",
+      "response_length": 1228,
+      "timestamp": "2025-12-30T01:31:00.345090",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "thats cool, what do you think about it ?",
+      "response_length": 893,
+      "timestamp": "2025-12-30T04:05:32.144651",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "List 3 gnostic concepts and cite 2 sources.",
+      "response_length": 1388,
+      "timestamp": "2025-12-30T04:35:55.646327",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "List 3 gnostic concepts and cite 2 sources.",
+      "response_length": 11239,
+      "timestamp": "2025-12-30T04:38:06.530304",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "List 3 internal structure layers of the Sun, with a brief description for each.",
+      "response_length": 14669,
+      "timestamp": "2025-12-30T04:48:03.538856",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 131,
+      "timestamp": "2025-12-30T04:55:22.942742",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "List 3 internal structure layers of the Sun",
+      "response_length": 1526,
+      "timestamp": "2025-12-30T04:56:05.476118",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 72,
+      "timestamp": "2025-12-30T04:56:14.603253",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "List 3 internal structure layers of the Sun",
+      "response_length": 1932,
+      "timestamp": "2025-12-30T04:57:18.103353",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Give me a link to google.com",
+      "response_length": 1646,
+      "timestamp": "2025-12-30T04:59:19.609708",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 113,
+      "timestamp": "2025-12-30T05:01:15.034008",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "List 3 internal structure layers of the Sun",
+      "response_length": 793,
+      "timestamp": "2025-12-30T05:02:06.190292",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Give me 3 links to scientific research about the sun.",
+      "response_length": 894,
+      "timestamp": "2025-12-30T05:03:22.544261",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hey !",
+      "response_length": 1927,
+      "timestamp": "2025-12-30T16:17:43.658043",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Whats up?",
+      "response_length": 1954,
+      "timestamp": "2025-12-30T16:18:33.001337",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hey",
+      "response_length": 128,
+      "timestamp": "2025-12-30T16:37:42.800273",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Explain the concept of &#x27;Thesidia&#x27; briefly.",
+      "response_length": 1500,
+      "timestamp": "2025-12-30T16:43:14.181006",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1512,
+      "timestamp": "2025-12-30T16:48:37.181623",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 2189,
+      "timestamp": "2025-12-30T16:50:23.046631",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1068,
+      "timestamp": "2025-12-30T16:50:43.842612",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 2921,
+      "timestamp": "2025-12-30T16:51:13.874857",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 2088,
+      "timestamp": "2025-12-30T16:51:30.054022",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 953,
+      "timestamp": "2025-12-30T16:51:31.968506",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1209,
+      "timestamp": "2025-12-30T16:51:34.368520",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1100,
+      "timestamp": "2025-12-30T16:51:37.059792",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 750,
+      "timestamp": "2025-12-30T16:51:38.744429",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1833,
+      "timestamp": "2025-12-30T16:51:44.480464",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 401,
+      "timestamp": "2025-12-30T16:53:56.111628",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 401,
+      "timestamp": "2025-12-30T16:53:58.912677",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 548,
+      "timestamp": "2025-12-30T16:54:04.760447",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 418,
+      "timestamp": "2025-12-30T16:54:10.075373",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 385,
+      "timestamp": "2025-12-30T16:54:17.062970",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 409,
+      "timestamp": "2025-12-30T16:54:29.394643",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 1018,
+      "timestamp": "2025-12-30T16:54:58.992352",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, stress test.",
+      "response_length": 475,
+      "timestamp": "2025-12-30T16:55:01.709712",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hihi",
+      "response_length": 580,
+      "timestamp": "2025-12-30T17:01:18.021150",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hihi",
+      "response_length": 836,
+      "timestamp": "2025-12-30T17:40:15.957628",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
     }
   ],
   "expansion_metrics": [],

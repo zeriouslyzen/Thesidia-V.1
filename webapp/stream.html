@@ -1049,6 +1049,57 @@
                     </a>
                 </nav>
 
+                <!-- Appearance Section -->
+                <div class="sidebar-appearance">
+                    <div class="settings-label">Appearance</div>
+
+                    <!-- Theme Toggle -->
+                    <div class="appearance-row">
+                        <span class="appearance-label">Theme</span>
+                        <div class="theme-toggle" id="themeToggle">
+                            <button class="theme-btn active" data-theme="dark" aria-label="Dark theme">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                                </svg>
+                            </button>
+                            <button class="theme-btn" data-theme="light" aria-label="Light theme">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="5" />
+                                    <path
+                                        d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Font Stack Selector -->
+                    <div class="appearance-row">
+                        <span class="appearance-label">Font</span>
+                        <select class="font-stack-select" id="fontStackSelect">
+                            <option value="cyberx">CyberX</option>
+                            <option value="editorial">Editorial</option>
+                            <option value="terminal">Terminal</option>
+                            <option value="classic">Classic</option>
+                            <option value="minimal">Minimal</option>
+                        </select>
+                    </div>
+
+                    <!-- Accent Color Selector -->
+                    <div class="appearance-row">
+                        <span class="appearance-label">Color</span>
+                        <select class="font-stack-select" id="colorSelect">
+                            <option value="white">White</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="tan">Tan</option>
+                            <option value="red">Red</option>
+                            <option value="orange">Orange</option>
+                            <option value="blue">Blue</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Settings Section -->
                 <div class="sidebar-settings">
                     <div class="settings-label">Settings</div>
@@ -2696,6 +2747,98 @@
         } else {
             window.postCreationModal = new PostCreationModal();
         }
+
+        // DIRECT FIX: Ensure menu button opens sidebar (fallback if ThesidiaApp fails)
+        (function setupMenuButton() {
+            const menuBtn = document.getElementById('menuBtn');
+            const sidebar = document.getElementById('leftSidebar');
+            const app = document.getElementById('app');
+
+            if (menuBtn && sidebar && app) {
+                menuBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const isOpen = sidebar.classList.contains('open');
+                    if (isOpen) {
+                        sidebar.classList.remove('open');
+                        app.classList.remove('sidebar-pushed');
+                        document.body.style.overflow = '';
+                    } else {
+                        sidebar.classList.add('open');
+                        app.classList.add('sidebar-pushed');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+                console.log('Menu button handler attached directly');
+            }
+        })();
+
+        // DIRECT FIX: Theme toggle and font selector handlers
+        (function setupAppearance() {
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                const themeBtns = themeToggle.querySelectorAll('.theme-btn');
+                const currentMode = localStorage.getItem('kx_theme_mode') || 'dark';
+
+                // Apply initial theme
+                document.documentElement.setAttribute('data-theme', currentMode);
+                themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === currentMode));
+
+                themeBtns.forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const mode = this.dataset.theme;
+                        document.documentElement.setAttribute('data-theme', mode);
+                        localStorage.setItem('kx_theme_mode', mode);
+                        themeBtns.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        console.log('Theme set to:', mode);
+                    });
+                });
+            }
+
+            // Font selector
+            const fontSelect = document.getElementById('fontStackSelect');
+            if (fontSelect) {
+                const currentStack = localStorage.getItem('kx_font_stack') || 'cyberx';
+                document.documentElement.setAttribute('data-font-stack', currentStack);
+                fontSelect.value = currentStack;
+
+                fontSelect.addEventListener('change', function () {
+                    document.documentElement.setAttribute('data-font-stack', this.value);
+                    localStorage.setItem('kx_font_stack', this.value);
+                    console.log('Font set to:', this.value);
+                });
+            }
+
+            // Color dropdown
+            const colorSelect = document.getElementById('colorSelect');
+            if (colorSelect) {
+                const currentColor = localStorage.getItem('kx_accent_color') || 'white';
+
+                // Apply initial color class
+                if (currentColor !== 'white') {
+                    document.documentElement.classList.add('theme-' + currentColor);
+                }
+                colorSelect.value = currentColor;
+
+                colorSelect.addEventListener('change', function () {
+                    const color = this.value;
+
+                    // Remove all theme classes
+                    document.documentElement.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
+
+                    // Add new theme class (white = no class)
+                    if (color !== 'white') {
+                        document.documentElement.classList.add('theme-' + color);
+                    }
+
+                    localStorage.setItem('kx_accent_color', color);
+                    console.log('Accent color set to:', color);
+                });
+            }
+        })();
     </script>
 
 </body>

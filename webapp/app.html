@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Primary Meta Tags -->
+    <title>Katanx - AI Deep Research & Forensic Analysis Platform</title>
+    <meta name="title" content="Katanx - AI Deep Research & Forensic Analysis Platform">
+    <meta name="description" content="Katanx is an AI-powered deep research and forensic analysis platform. Uncover hidden patterns, decode symbols, explore the cosmos, and conduct advanced research with cutting-edge AI intelligence. Created by Jack Danger.">
+    <meta name="keywords" content="AI research, forensic analysis, pattern recognition, deep learning, AI assistant, research platform, Jack Danger, katanx, AI intelligence, knowledge base, research tools">
+    <meta name="author" content="Jack Danger">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.katanx.com/">
+    
+    <!-- Cross-Domain Connections -->
+    <link rel="author" href="https://www.jackdanger.dev">
+    <link rel="me" href="https://www.jackdanger.dev">
+    <link rel="me" href="https://www.spiritlink.space">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.katanx.com/">
+    <meta property="og:title" content="Katanx - AI Deep Research & Forensic Analysis Platform">
+    <meta property="og:description" content="AI-powered deep research and forensic analysis. Uncover hidden patterns, decode symbols, and explore the cosmos with advanced AI intelligence. Created by Jack Danger.">
+    <meta property="og:image" content="https://www.katanx.com/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Katanx">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://www.katanx.com/">
+    <meta name="twitter:title" content="Katanx - AI Deep Research & Forensic Analysis">
+    <meta name="twitter:description" content="AI-powered deep research and forensic analysis platform. Created by Jack Danger.">
+    <meta name="twitter:image" content="https://www.katanx.com/twitter-image.jpg">
+    <meta name="twitter:creator" content="@jackdanger">
+    <meta name="twitter:site" content="@katanx">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Katanx",
+      "alternateName": "KATANX",
+      "url": "https://www.katanx.com",
+      "description": "AI-powered deep research and forensic analysis platform. Uncover hidden patterns, decode symbols, and explore the cosmos with advanced AI intelligence.",
+      "applicationCategory": "ResearchApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Person",
+        "name": "Jack Danger",
+        "url": "https://www.jackdanger.dev",
+        "sameAs": [
+          "https://www.jackdanger.dev",
+          "https://www.spiritlink.space"
+        ]
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Jack Danger",
+        "url": "https://www.jackdanger.dev"
+      },
+      "keywords": "AI research, forensic analysis, pattern recognition, deep learning, AI assistant",
+      "inLanguage": "en-US",
+      "isAccessibleForFree": true,
+      "featureList": [
+        "Deep Research Engine",
+        "Forensic Analysis",
+        "Pattern Recognition",
+        "Web Search Integration",
+        "Knowledge Base",
+        "AI-Powered Synthesis"
+      ]
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Katanx",
+      "url": "https://www.katanx.com",
+      "logo": "https://www.katanx.com/logo.png",
+      "founder": {
+        "@type": "Person",
+        "name": "Jack Danger",
+        "url": "https://www.jackdanger.dev"
+      },
+      "sameAs": [
+        "https://www.jackdanger.dev",
+        "https://www.spiritlink.space"
+      ]
+    }
+    </script>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Note: For actual Neue Montreal or Gotham Book, add @font-face declarations if you have licenses -->
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <!-- Katanx Branding - Left (replaced profile) -->
+                <div class="header-branding">
+                    <span class="thesidia-text"><span class="katanx-slash">/</span>katanx</span>
+                </div>
+                
+                <!-- Menu Orb - Right -->
+                <button class="menu-orb" id="menuBtn" aria-label="Menu">
+                    <div class="orb-glow"></div>
+                </button>
+            </div>
+            
+            <!-- Sub Menu -->
+            <div class="header-submenu">
+                <!-- User Status Indicator - Far Left -->
+                <div class="user-status-indicator" id="userStatusIndicator">
+                    <span class="user-name-text" id="userNameText">Katanx Explore</span>
+                    <span class="status-orb status-online" id="statusOrb" title="Status: Online"></span>
+                </div>
+                
+                <!-- Status Selector Dropdown -->
+                <div class="status-selector-dropdown" id="statusSelectorDropdown">
+                    <div class="status-option" data-status="online">
+                        <span class="status-orb status-online"></span>
+                        <span>Online</span>
+                    </div>
+                    <div class="status-option" data-status="offline">
+                        <span class="status-orb status-offline"></span>
+                        <span>Offline</span>
+                    </div>
+                    <div class="status-option" data-status="away">
+                        <span class="status-orb status-away"></span>
+                        <span>Away</span>
+                    </div>
+                    <div class="status-option" data-status="focused">
+                        <span class="status-orb status-focused"></span>
+                        <span>Focused</span>
+                    </div>
+                </div>
+                
+                <nav class="advanced-nav">
+                    <button class="nav-item" data-section="home">home</button>
+                    <button class="nav-item" data-section="stream">stream</button>
+                    <button class="nav-item" data-section="kx-cuts">kx cuts</button>
+                    <button class="nav-item" data-section="circles">forums</button>
+                    <button class="nav-item" data-section="studio">studio</button>
+                </nav>
+                
+                <!-- Star Notepad Button - Far Right -->
+                <button class="star-notepad-btn" id="starNotepadBtn" aria-label="Notes">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Star Notepad Panel -->
+            <div class="notepad-panel" id="starNotepadPanel">
+                <div class="notepad-header">
+                    <h3>Notes</h3>
+                    <button class="notepad-close" id="notepadClose" aria-label="Close">×</button>
+                </div>
+                <textarea class="notepad-textarea" id="notepadTextarea" placeholder="Your notes here... They persist across pages."></textarea>
+            </div>
+        </header>
+
+        <!-- Main Chat Container -->
+        <main class="chat-container" id="chatContainer">
+            <div class="messages" id="messages">
+                <!-- Messages will appear here -->
+            </div>
+
+            <!-- Typing indicator -->
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Control Panel Dashboard -->
+        <div class="control-panel-dashboard" id="controlPanelDashboard">
+            <div class="control-panel-header">
+                <span class="control-panel-title">Controls</span>
+                <button class="control-panel-close" id="controlPanelClose" aria-label="Close controls">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="control-panel-content">
+                <div class="control-item">
+                    <label class="control-label">
+                        <span>Mode</span>
+                        <span class="control-description">Fast responses or deep research</span>
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label class="control-toggle">
+                            <input type="checkbox" id="deepResearchToggle" />
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label" id="modeLabel">Fast</span>
+                    </div>
+                </div>
+                
+                <div class="control-item">
+                    <label class="control-label">
+                        <span>Thinking Steps</span>
+                        <span class="control-description">Show internal reasoning process</span>
+                    </label>
+                    <label class="control-toggle">
+                        <input type="checkbox" id="thinkingToggle" />
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="control-item">
+                    <label class="control-label">
+                        <span>Voice</span>
+                        <span class="control-description">Hear Thesidia's replies as they're written</span>
+                    </label>
+                    <label class="control-toggle">
+                        <input type="checkbox" id="voiceToggle" />
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="control-item" id="voiceSelectorItem" style="display: none;">
+                    <label class="control-label">
+                        <span>Voice Selection</span>
+                        <span class="control-description">Choose voice for Thesidia</span>
+                    </label>
+                    <select id="voiceSelector" class="control-select">
+                        <option value="">Loading voices...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modern Prompt Bar - Clean Design -->
+        <div class="prompt-bar-container">
+            <div class="prompt-bar-wrapper">
+                <!-- Main Prompt Input -->
+                <div class="prompt-input-wrapper">
+                    <div class="prompt-input-container" id="promptContainer">
+                        <!-- File Upload Button -->
+                        <input type="file" id="fileInput" multiple accept="*/*" style="display: none;">
+                        <button class="attach-btn" id="attachBtn" aria-label="Attach file" title="Attach file">
+                            <span class="attach-orb">
+                                <span class="attach-plus">+</span>
+                            </span>
+                        </button>
+                        
+                        <!-- Text Input -->
+                        <textarea 
+                            id="promptInput" 
+                            class="prompt-input" 
+                            placeholder=""
+                            rows="1"
+                            autocomplete="off"
+                            autocorrect="off"
+                            autocapitalize="off"
+                            spellcheck="false"
+                        ></textarea>
+                        <span class="cursor-placeholder" id="cursorPlaceholder">|</span>
+                        
+                        <!-- Attached Files Indicator -->
+                        <div class="attached-files" id="attachedFiles" style="display: none;"></div>
+                        
+                        <!-- Send Button -->
+                        <button class="send-btn" id="sendBtn" aria-label="Send" title="Send message">
+                            <span class="send-orb"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel Tab -->
+        <div class="control-panel-tab" id="controlPanelTab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <div class="left-sidebar" id="leftSidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <h2>Conversations</h2>
+                    <button class="close-btn" id="closeSidebar" aria-label="Close">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="sidebar-actions">
+                    <button class="sidebar-action-btn" id="newChatBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        <span>New Conversation</span>
+                    </button>
+                </div>
+                <div class="conversations-list" id="conversationsList">
+                    <!-- Conversations will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+    <div class="overlay" id="overlay"></div>
+    </div>
+
+    <script type="module" src="edge_inference.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

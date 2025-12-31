@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#000000">
+    <title>Careers - katanx</title>
+    <meta name="description" content="Join the katanx team. We're hiring for AI research, coaching, education, development, and marketing roles.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --yellow: #ffd700;
+            --blue: #00d4ff;
+            --black: #000000;
+            --gray-700: #374151;
+            --gray-600: #4b5563;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inconsolata', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #ffffff;
+            background: #000000;
+            color-scheme: dark;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-y: auto;
+            min-height: 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .nav {
+            background: #000000;
+            border-bottom: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .nav-content {
+                padding: 1rem 2rem;
+            }
+        }
+
+        .nav-brand {
+            font-weight: 600;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.125rem;
+            transition: color 0.2s ease, opacity 0.2s ease;
+            animation: glowPulseNav 3s ease-in-out infinite;
+        }
+
+        .nav-brand::before {
+            content: '/';
+            color: #ffd700;
+        }
+
+        @keyframes glowPulseNav {
+            0%, 100% {
+                text-shadow: 0 0 3px rgba(255, 255, 255, 0.2), 0 0 6px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                text-shadow: 0 0 6px rgba(255, 255, 255, 0.4), 0 0 12px rgba(255, 255, 255, 0.2), 0 0 18px rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-join {
+            color: #ffd700 !important;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .filters {
+            background: #000000;
+            border: 1px solid var(--gray-700);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .filters-grid {
+                grid-template-columns: 2fr 1fr 1fr auto;
+            }
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 0.5rem;
+            background: #000000;
+            border: 1px solid var(--gray-700);
+            border-radius: 0.375rem;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.875rem;
+            width: 100%;
+        }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--yellow);
+        }
+
+        .filter-input::placeholder {
+            color: var(--gray-600);
+        }
+
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-wrapper .filter-input {
+            flex: 1;
+        }
+
+        .search-button {
+            padding: 0.5rem 1rem;
+            background: var(--yellow);
+            color: #000000;
+            border: none;
+            border-radius: 0.375rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .search-button:hover {
+            opacity: 0.9;
+        }
+
+        .search-button:active {
+            opacity: 0.8;
+        }
+
+        .clear-filters {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--gray-700);
+            border-radius: 0.375rem;
+            color: var(--white);
+            font-family: inherit;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            align-self: flex-end;
+        }
+
+        .clear-filters:hover {
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .jobs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .jobs-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .job-card {
+            background: #000000;
+            border: 1px solid var(--gray-700);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: border-color 0.2s;
+            cursor: pointer;
+        }
+
+        .job-card:hover {
+            border-color: var(--yellow);
+        }
+
+        .job-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .job-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .job-summary {
+            font-size: 0.875rem;
+            color: var(--white);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .job-view-details {
+            color: var(--yellow);
+            font-size: 0.875rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .job-view-details:hover {
+            text-decoration: underline;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-600);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        html.modal-open {
+            overflow: hidden;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .modal-content {
+            background: #000000;
+            border: 1px solid var(--gray-700);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            max-width: 800px;
+            width: 100%;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: var(--yellow);
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+
+        .modal-section h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-section ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .modal-section li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-section li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--yellow);
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--yellow);
+            color: #000000;
+            border: none;
+            border-radius: 0.375rem;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: 1.5rem;
+        }
+
+        .apply-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Application Form Modal */
+        .application-form {
+            display: none;
+        }
+
+        .application-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #000000;
+            border: 1px solid var(--gray-700);
+            border-radius: 0.375rem;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--yellow);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-file {
+            margin-top: 0.5rem;
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--yellow);
+            color: #000000;
+            border: none;
+            border-radius: 0.375rem;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .form-submit:hover {
+            opacity: 0.9;
+        }
+
+        .form-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .success-message,
+        .error-message {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: #00ff00;
+        }
+
+        .error-message.active {
+            display: block;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff4444;
+        }
+
+        .footer {
+            background: #000000;
+            color: #ffffff;
+            padding: 2rem 0 1rem;
+            border-top: 1px solid var(--gray-700);
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-700);
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        .footer-bottom a {
+            color: var(--gray-600);
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--yellow);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="nav-brand">katanx</a>
+                <div class="nav-links">
+                    <a href="landing.html" class="nav-link">Home</a>
+                    <a href="auth.html" class="nav-link nav-join">Join</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Join the Team</h1>
+            <p>We're building a platform for practitioners of the arts of human development. Join us in creating a space where quality, community, and growth converge.</p>
+        </div>
+
+        <div class="filters">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <div class="search-wrapper">
+                        <input type="text" id="searchInput" class="filter-input" placeholder="Search jobs...">
+                        <button type="button" class="search-button" id="searchButton">Search</button>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Department</label>
+                    <select id="departmentFilter" class="filter-select">
+                        <option value="">All Departments</option>
+                        <option value="AI Research">AI Research</option>
+                        <option value="Community">Community</option>
+                        <option value="Education">Education</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Marketing">Marketing</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Location</label>
+                    <select id="locationFilter" class="filter-select">
+                        <option value="">All Locations</option>
+                        <option value="Remote">Remote</option>
+                        <option value="On-site">On-site</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">&nbsp;</label>
+                    <button class="clear-filters" id="clearFilters">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="jobs-grid" id="jobsGrid">
+            <!-- Jobs will be populated by JavaScript -->
+        </div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            <p>No jobs match your filters. Try adjusting your search criteria.</p>
+        </div>
+    </div>
+
+    <!-- Job Detail Modal -->
+    <div class="modal" id="jobModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalJobTitle"></h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div id="jobDetails">
+                <!-- Job details will be populated by JavaScript -->
+            </div>
+            <button class="apply-btn" id="showApplicationForm">Apply Now</button>
+        </div>
+    </div>
+
+    <!-- Application Form Modal -->
+    <div class="modal" id="applicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Application Form</h2>
+                <button class="modal-close" id="closeApplicationModal">&times;</button>
+            </div>
+            <form id="applicationForm">
+                <div class="success-message" id="successMessage"></div>
+                <div class="error-message" id="errorMessage"></div>
+                
+                <input type="hidden" id="applicationJobTitle" name="jobTitle">
+                
+                <div class="form-group">
+                    <label class="form-label" for="applicantName">Full Name *</label>
+                    <input type="text" id="applicantName" name="name" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="applicantEmail">Email *</label>
+                    <input type="email" id="applicantEmail" name="email" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="applicantPhone">Phone</label>
+                    <input type="tel" id="applicantPhone" name="phone" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="applicantResume">Resume/CV *</label>
+                    <input type="file" id="applicantResume" name="resume" class="form-input form-file" accept=".pdf,.doc,.docx" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="applicantPortfolio">Portfolio Link (optional)</label>
+                    <input type="url" id="applicantPortfolio" name="portfolio" class="form-input" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="applicantCoverLetter">Cover Letter *</label>
+                    <textarea id="applicantCoverLetter" name="coverLetter" class="form-textarea" required placeholder="Tell us why you're interested in this role and what you'd bring to the team..."></textarea>
+                </div>
+
+                <button type="submit" class="form-submit" id="submitApplication">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>katanx © 2025</p>
+            <div class="footer-bottom">
+                <a href="landing.html">Home</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="careers.html">Careers</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="careers.js"></script>
+</body>
+</html>
+

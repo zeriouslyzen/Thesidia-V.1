@@ -1,0 +1,212 @@
+/**
+ * Landing Page V3 - Enhanced Styles
+ * Scoped with .v3- prefix and [data-v3] attributes
+ */
+
+/* V3-specific enhancements */
+.v3-enabled {
+  /* Enhanced scroll behavior */
+  scroll-behavior: smooth;
+}
+
+/* V3 Navigation enhancements */
+.v3-nav[data-v3="nav"] {
+  /* Will be enhanced by animations.js */
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              visibility 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* V3 Card enhancements - Glassmorphism effect */
+.v3-enabled .card[data-v3="card"] {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(10, 10, 10, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.v3-enabled .card[data-v3="card"]:hover {
+  background: rgba(10, 10, 10, 0.9);
+  border-color: rgba(255, 215, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* V3 Enhanced glow effects */
+.v3-enabled .hero-title {
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3),
+               0 0 40px rgba(255, 215, 0, 0.2),
+               0 0 60px rgba(255, 215, 0, 0.1);
+}
+
+/* V3 Parallax container */
+.v3-parallax-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.v3-parallax-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+/* V3 Scroll progress indicator */
+.v3-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--yellow), var(--blue, #00d4ff));
+  z-index: 1000;
+  transition: width 0.1s ease-out;
+}
+
+/* V3 Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .v3-enabled *,
+  .v3-enabled *::before,
+  .v3-enabled *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* V3 Container queries (progressive enhancement) */
+@container (min-width: 400px) {
+  .v3-card-container .card[data-v3="card"] {
+    /* Enhanced layout for larger containers */
+  }
+}
+
+/* Fallback for browsers without container query support */
+@supports not (container-type: inline-size) {
+  .v3-card-container .card[data-v3="card"] {
+    /* Use media queries as fallback */
+  }
+}
+
+/* V3 Comparison Tool Styles */
+.v3-comparison-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.v3-comparison-header,
+.v3-comparison-row {
+  display: contents;
+}
+
+.v3-comparison-cell {
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 10, 10, 0.5);
+}
+
+.v3-comparison-header .v3-comparison-cell {
+  background: rgba(255, 215, 0, 0.1);
+  font-weight: 600;
+  font-family: 'Inconsolata', monospace;
+}
+
+.v3-bar {
+  height: 20px;
+  background: linear-gradient(90deg, var(--yellow), #00d4ff);
+  border-radius: 4px;
+  transition: width 1s ease-out;
+}
+
+.v3-check {
+  color: #00ff88;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.v3-cross {
+  color: #ff4444;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* V3 Highlighted Text */
+[data-v3="highlight"].v3-highlighted {
+  background: linear-gradient(120deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0) 100%);
+  padding: 0 0.25rem;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* V3 Interactive Quotes */
+[data-v3="quote"] {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 1rem;
+  border-left: 3px solid transparent;
+}
+
+[data-v3="quote"]:hover {
+  border-left-color: var(--yellow);
+  background: rgba(255, 215, 0, 0.05);
+}
+
+[data-v3="quote"].v3-quote-expanded {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.v3-quote-context {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+  color: var(--text-gray-light);
+}
+
+/* V3 Visible State */
+.v3-visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* V3 Expandable Cards */
+.card[data-v3="card"].v3-expandable {
+  cursor: pointer;
+}
+
+.card[data-v3="card"].v3-expanded {
+  transform: scale(1.02);
+  z-index: 10;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* V3 Hover Active State */
+[data-v3="hover"].v3-hover-active {
+  transform: translateY(-2px);
+  transition: transform 0.3s ease;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .v3-comparison-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .v3-comparison-header,
+  .v3-comparison-row {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  
+  .v3-comparison-cell {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+}
+

@@ -87,11 +87,23 @@ class UserMemoryManager:
         Returns:
             Dictionary with memory context
         """
-        memory_manager, user_data = self.get_memory_manager(user_id=user_id, session_id=session_id)
-        context = memory_manager.retrieve_context(query)
-        context["user_id"] = user_data["user_id"]
-        context["session_id"] = user_data["session_id"]
-        return context
+        try:
+            memory_manager, user_data = self.get_memory_manager(user_id=user_id, session_id=session_id)
+            context = memory_manager.retrieve_context(query)
+            context["user_id"] = user_data["user_id"]
+            context["session_id"] = user_data["session_id"]
+            return context
+        except Exception as e:
+            # SAFE MODE: If DB reads fail, return empty context instead of crashing
+            # This allows the AI to answer "dumb" rather than returning 500
+            print(f"⚠️ Memory Retrieval Error (Entering Safe Mode): {e}")
+            return {
+                "short_term": [],
+                "long_term": [],
+                "user_id": user_id or "unknown",
+                "session_id": session_id or "unknown",
+                "_safe_mode_active": True
+            }
     
     def export_user_data(self, user_id: Optional[str] = None, 
                         session_id: Optional[str] = None) -> Dict[str, Any]:

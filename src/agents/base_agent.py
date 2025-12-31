@@ -27,7 +27,7 @@ class BaseAgent(ABC):
     def __init__(
         self,
         agent_id: str,
-        model: str = "clean-mistral:latest",
+        model: str = "dolphin-mistral:latest",
         base_dir: Path = None,
         model_client: Optional[ModelClient] = None,
         memory_manager: Optional[MemoryManager] = None

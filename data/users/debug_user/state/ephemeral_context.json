@@ -1,0 +1,32 @@
+{
+  "interactions": [
+    {
+      "user": "List 3 internal structure layers of the Sun",
+      "assistant": "Error: Processing timed out (fast mode limited to 20s). Please try again or switch to deep research for more complex queries.",
+      "timestamp": "2025-12-30T04:56:05.481623",
+      "metadata": {
+        "timestamp": "2025-12-30T04:56:05.481379",
+        "response_length": 125,
+        "streamed": true,
+        "user_id": "debug_user",
+        "session_id": "debug_sess"
+      }
+    },
+    {
+      "user": "hi",
+      "assistant": "there! 😃 How's it going? You seem to be in a light-hearted mood. If you want some cosmic chaos, I can dig into that. As for a quick laugh, I'm not exactly a comedian but I can try my best. For the next checks, I suggest looking up \"humor through history\" and \"physics jokes\". **General Framework:** **Foundation:** Build foundation - Start with basic build foundation **Practice:** Regular practice - Start with basic regular practice **Learning:** Continuous learning - Start with basic continuous learning **Growth:** Track growth - Start with basic track growth",
+      "timestamp": "2025-12-30T17:01:18.019744",
+      "metadata": {
+        "type": "conversation",
+        "outcome": {
+          "success": true,
+          "effectiveness": 0.7
+        },
+        "timestamp": "2025-12-30T17:01:18.017602",
+        "user_id": "debug_user",
+        "session_id": "debug_session"
+      }
+    }
+  ],
+  "last_updated": "2025-12-30T17:01:18.019760"
+}

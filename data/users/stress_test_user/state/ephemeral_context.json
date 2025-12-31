@@ -1,0 +1,31 @@
+{
+  "interactions": [
+    {
+      "user": ", stress test.",
+      "assistant": "there! What a curious beginning. Are you here to take on a new challenge, or do you just want some random trivia? **I can also:** 1. research history 2. research europe **General Framework:** **Foundation:** Build foundation - Start with basic build foundation **Practice:** Regular practice - Start with basic regular practice **Learning:** Continuous learning - Start with basic continuous learning **Growth:** Track growth - Start with basic track growth",
+      "timestamp": "2025-12-30T16:55:00.309591",
+      "metadata": {
+        "type": "conversation",
+        "outcome": {
+          "success": true,
+          "effectiveness": 0.7
+        },
+        "timestamp": "2025-12-30T16:55:00.308992",
+        "user_id": "stress_test_user",
+        "session_id": "stress_test_session"
+      }
+    },
+    {
+      "user": ", stress test.",
+      "assistant": "Error: Processing timed out (fast mode limited to 20s). Please try again or switch to deep research for more complex queries.",
+      "timestamp": "2025-12-30T16:55:01.714483",
+      "metadata": {
+        "timestamp": "2025-12-30T16:55:01.714247",
+        "response_length": 125,
+        "user_id": "stress_test_user",
+        "session_id": "stress_test_session"
+      }
+    }
+  ],
+  "last_updated": "2025-12-30T16:55:01.714499"
+}
