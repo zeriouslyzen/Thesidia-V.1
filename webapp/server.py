@@ -709,6 +709,20 @@ def event_stats():
 
 def status():
     """Get system status"""
+    # PROXY SUPPORT: Check upstream status instead
+    upstream_url = os.getenv('UPSTREAM_API_URL')
+    if upstream_url:
+        try:
+            resp = requests.get(f"{upstream_url.rstrip('/')}/api/status", timeout=5)
+            return jsonify(resp.json()), resp.status_code
+        except Exception as e:
+            # If upstream fails, return simplified error status
+            return jsonify({
+                'ollama_status': False,
+                'thesidia_ready': False,
+                'error': f"Upstream unreachable: {e}"
+            }), 200
+
     global thesidia_ready, ollama_status
     
     try:
@@ -866,6 +880,28 @@ def eval_latest():
 @require_user
 def thesidia_api(user_id=None, session_id=None):
     """Main API endpoint for Thesidia interactions - with streaming support"""
+    # PROXY SUPPORT: If UPSTREAM_API_URL is set, forward requests there
+    upstream_url = os.getenv('UPSTREAM_API_URL')
+    if upstream_url:
+        print(f"🔄 PROXY: Forwarding request to {upstream_url}")
+        try:
+            # Forward JSON payload with auth headers if needed
+            resp = requests.post(
+                f"{upstream_url.rstrip('/')}/api/thesidia",
+                json=request.get_json(),
+                stream=True,
+                timeout=120
+            )
+            # Stream response back
+            return Response(
+                stream_with_context(resp.iter_content(chunk_size=None)),
+                content_type=resp.headers.get('Content-Type'),
+                status=resp.status_code
+            )
+        except Exception as e:
+            print(f"❌ PROXY ERROR: {e}")
+            return jsonify({'error': f'Upstream proxy failed: {e}'}), 502
+
     # Check status and auto-init if needed
     if not thesidia_ready or not thesidia:
         if not init_thesidia():
