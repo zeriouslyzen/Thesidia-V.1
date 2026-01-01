@@ -609,6 +609,8 @@ a:hover {
     /* Reduced from 8px 12px - smaller padding */
     cursor: pointer;
     text-shadow: 0 0 6px rgba(212, 212, 0, 0.2);
+    -webkit-tap-highlight-color: transparent;
+    /* Remove block highlight on mobile */
     animation: nav-glow 4s ease-in-out infinite;
     transition: color 0.3s ease-out;
     border-radius: 0;
@@ -685,10 +687,20 @@ a:hover {
         justify-content: space-between;
     }
 
-    .user-status-indicator,
+    .user-status-indicator {
+        display: flex !important;
+        /* Restore status */
+        position: absolute;
+        top: -30px;
+        /* Position above nav */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        justify-content: center;
+    }
+
     .status-selector-dropdown {
         display: none !important;
-        /* Hide status on mobile to save space */
     }
 
     .advanced-nav {
