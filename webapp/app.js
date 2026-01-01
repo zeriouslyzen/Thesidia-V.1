@@ -175,10 +175,17 @@ class ThesidiaApp {
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('leftSidebar');
         const app = document.getElementById('app');
-        if (!menuBtn || !sidebar || !app) return;
+        if (!sidebar || !app) return;
 
-        // Menu toggle
-        menuBtn.addEventListener('click', () => this.toggleLeftSidebar());
+        // Menu toggle - use event delegation to survive DOM changes
+        document.addEventListener('click', (e) => {
+            const clickedMenuBtn = e.target.closest('#menuBtn');
+            if (clickedMenuBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggleLeftSidebar();
+            }
+        });
 
         // Click katanx branding to go to stream page
         const headerBranding = document.querySelector('.header-branding');
