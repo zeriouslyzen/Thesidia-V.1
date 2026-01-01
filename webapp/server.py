@@ -705,6 +705,18 @@ def event_stats():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Health Check Endpoint (lightweight, no auth required)
+# ─────────────────────────────────────────────────────────────────────────────
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Simple health check for process monitors and load balancers."""
+    return jsonify({
+        'status': 'ok',
+        'uptime_seconds': round(time.time() - START_TIME, 2),
+        'timestamp': datetime.utcnow().isoformat() + 'Z'
+    }), 200
+
 @app.route('/api/status', methods=['GET'])
 
 def status():

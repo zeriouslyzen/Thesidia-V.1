@@ -198,6 +198,15 @@ class NavigationSystem {
             item.parentNode.replaceChild(newItem, item);
 
             newItem.addEventListener('click', (e) => {
+                // Allow native <a> links with href to navigate normally
+                if (newItem.tagName === 'A' && newItem.getAttribute('href')) {
+                    const href = newItem.getAttribute('href');
+                    if (href && !href.startsWith('#')) {
+                        // Let the browser handle this as a normal link
+                        return;
+                    }
+                }
+
                 e.preventDefault();
                 e.stopPropagation();
                 const section = newItem.dataset.section;

@@ -689,14 +689,14 @@ a:hover {
 
     .user-status-indicator {
         display: flex !important;
-        /* Restore status */
-        position: absolute;
-        top: -30px;
-        /* Position above nav */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        justify-content: center;
+        /* Keep status visible on mobile */
+        position: static;
+        /* Use normal flow instead of absolute */
+        transform: none;
+        width: auto;
+        justify-content: flex-start;
+        margin-right: auto;
+        font-size: 10px;
     }
 
     .status-selector-dropdown {
