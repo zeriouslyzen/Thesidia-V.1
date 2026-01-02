@@ -2828,27 +2828,33 @@
             // Color dropdown
             const colorSelect = document.getElementById('colorSelect');
             if (colorSelect) {
-                const currentColor = localStorage.getItem('kx_accent_color') || 'white';
+                // Use the same storage key as app.js
+                let currentColor = localStorage.getItem('thesidia_color_theme') || 'default';
 
-                // Apply initial color class
-                if (currentColor !== 'white') {
-                    document.documentElement.classList.add('theme-' + currentColor);
-                }
+                // Map default to white for the dropdown value
+                if (currentColor === 'default') currentColor = 'white';
+
                 colorSelect.value = currentColor;
 
                 colorSelect.addEventListener('change', function () {
-                    const color = this.value;
+                    let color = this.value;
+                    // Map white back to default for the app logic
+                    const themeValue = (color === 'white') ? 'default' : color;
 
-                    // Remove all theme classes
-                    document.documentElement.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
+                    if (window.thesidiaApp && window.thesidiaApp.setColorTheme) {
+                        window.thesidiaApp.setColorTheme(themeValue);
+                    } else {
+                        // Fallback manual update
+                        document.body.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
+                        document.documentElement.classList.remove('theme-yellow', 'theme-tan', 'theme-red', 'theme-orange', 'theme-blue');
 
-                    // Add new theme class (white = no class)
-                    if (color !== 'white') {
-                        document.documentElement.classList.add('theme-' + color);
+                        if (themeValue !== 'default') {
+                            document.body.classList.add('theme-' + themeValue);
+                            document.documentElement.classList.add('theme-' + themeValue);
+                        }
+                        localStorage.setItem('thesidia_color_theme', themeValue);
                     }
-
-                    localStorage.setItem('kx_accent_color', color);
-                    console.log('Accent color set to:', color);
+                    console.log('Accent color set to:', themeValue);
                 });
             }
         })();
