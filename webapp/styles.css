@@ -597,6 +597,8 @@ a:hover {
 }
 
 .advanced-nav .nav-item {
+    background: none !important;
+    background-color: transparent !important;
     border: none !important;
     border-left: none !important;
     border-right: none !important;
