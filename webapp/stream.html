@@ -1138,7 +1138,7 @@
                 this.pendingMedia = [];
                 this.currentAutocomplete = null;
                 this.tagRotationInterval = null;
-                this.currentFilter = 'for-you';
+                this.currentFilter = 'discover';
                 this.currentVibe = null;
                 this.init();
             }
@@ -1274,7 +1274,7 @@
                 const vibeDropdown = document.getElementById('streamVibeDropdown');
                 const vibeSelector = vibeBtn?.closest('.stream-vibe-selector');
 
-                this.currentFilter = localStorage.getItem('stream_filter') || 'for-you';
+                this.currentFilter = localStorage.getItem('stream_filter') || 'discover';
                 this.currentVibe = localStorage.getItem('stream_vibe');
 
                 // Set active state
@@ -1596,7 +1596,7 @@
                     const sessionId = localStorage.getItem('thesidia_session_id');
 
                     // Get filter and vibe
-                    const filter = this.currentFilter || localStorage.getItem('stream_filter') || 'for-you';
+                    const filter = this.currentFilter || localStorage.getItem('stream_filter') || 'discover';
                     const vibe = this.currentVibe || localStorage.getItem('stream_vibe') || null;
 
                     // Build query params

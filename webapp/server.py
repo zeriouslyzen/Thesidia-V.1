@@ -2170,7 +2170,7 @@ def delete_post(post_id, user_id=None, session_id=None, user_data=None):
 @require_thesidia_user_data
 def get_feed(user_id=None, session_id=None, user_data=None):
     """Get user feed with filter and vibe support"""
-    filter_type = request.args.get('filter', 'for-you')  # for-you, discover
+    filter_type = request.args.get('filter', 'discover')  # for-you, discover
     vibe = request.args.get('vibe')  # relaxing, exciting, inspiring, focused, creative, analytical
     limit = int(request.args.get('limit', 20))
     offset = int(request.args.get('offset', 0))
