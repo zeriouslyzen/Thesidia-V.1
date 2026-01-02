@@ -7302,6 +7302,32 @@ h6 {
     transform: translateX(-2px);
 }
 
+/* Inline back button for thread page submenu */
+.thread-back-btn-inline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--border-radius-sm);
+    transition: var(--transition);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+}
+
+.thread-back-btn-inline:hover {
+    color: var(--text-primary);
+    background: var(--accent-subtle);
+}
+
+.thread-back-btn-inline svg {
+    flex-shrink: 0;
+}
+
 .thread-header-info {
     flex: 1;
     display: flex;

@@ -1,84 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
-    
+
     <title>Thread - Katanx</title>
     <meta name="description" content="Thread discussion - Katanx Circles">
-    
+
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
-    <div class="thread-page">
-        <!-- Header -->
-        <header class="thread-header">
-            <button class="thread-back-btn" id="threadBackBtn" aria-label="Back">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-            </button>
-            <div class="thread-header-info">
-                <div class="thread-category" id="threadCategory"></div>
-                <div class="thread-meta-header" id="threadMetaHeader"></div>
+    <div id="app">
+        <!-- Global Header (consistent with other pages) -->
+        <header class="header">
+            <div class="header-content">
+                <!-- Katanx Branding - Left -->
+                <div class="header-branding">
+                    <a href="/stream.html" class="thesidia-text"><span class="katanx-slash">/</span>katanx</a>
+                </div>
+
+                <!-- Menu Orb - Right -->
+                <button class="menu-orb" id="menuBtn" aria-label="Menu">
+                    <div class="orb-glow"></div>
+                </button>
+            </div>
+
+            <!-- Sub Menu -->
+            <div class="header-submenu">
+                <!-- Thread Back Button -->
+                <div class="user-status-indicator" id="userStatusIndicator">
+                    <button class="thread-back-btn-inline" id="threadBackBtn" aria-label="Back to forums">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                        <span id="threadCategory">Forums</span>
+                    </button>
+                </div>
+
+                <nav class="advanced-nav">
+                    <a href="/search.html" class="nav-item">explore</a>
+                    <a href="/stream.html#home" class="nav-item">home</a>
+                    <a href="/stream.html#stream" class="nav-item">stream</a>
+                    <a href="/stream.html#kx-cuts" class="nav-item">kx cuts</a>
+                    <a href="/stream.html#circles" class="nav-item active">forums</a>
+                    <a href="/stream.html#studio" class="nav-item">studio</a>
+                </nav>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="thread-main">
-            <div class="thread-container">
-                <!-- Thread Content -->
-                <article class="thread-post" id="threadPost">
-                    <div class="thread-loading">
-                        <div class="loading-spinner"></div>
-                        <p>Loading thread...</p>
-                    </div>
-                </article>
-
-                <!-- Comment Section -->
-                <section class="thread-comments">
-                    <div class="comments-header">
-                        <h2 class="comments-title">Comments</h2>
-                        <div class="comments-sort" id="commentsSort">
-                            <button class="sort-btn active" data-sort="best">Best</button>
-                            <button class="sort-btn" data-sort="top">Top</button>
-                            <button class="sort-btn" data-sort="new">New</button>
-                            <button class="sort-btn" data-sort="controversial">Controversial</button>
+        <!-- Left Sidebar (same as other pages) -->
+        <div class="left-sidebar" id="leftSidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-profile">
+                    <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                    <div class="profile-picture-container" id="profilePictureContainer">
+                        <div class="profile-picture" id="profilePicture">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='24' cy='18' r='7' fill='%23ffffff' fill-opacity='0.3'/%3E%3Cpath d='M12 46 Q24 38 36 46' stroke='%23ffffff' stroke-width='2' fill='none' stroke-opacity='0.3'/%3E%3C/svg%3E"
+                                alt="Profile">
                         </div>
                     </div>
-                    
-                    <div class="comments-tree" id="commentsTree">
-                        <div class="comments-loading">
-                            <div class="loading-spinner"></div>
-                            <p>Loading comments...</p>
-                        </div>
+                    <div class="profile-info">
+                        <div class="profile-name" id="sidebarProfileName">User</div>
+                        <div class="profile-tag" id="sidebarProfileTag">@user</div>
                     </div>
-                </section>
-
-                <!-- Comment Form -->
-                <section class="thread-comment-form">
-                    <div class="comment-form-container">
-                        <textarea 
-                            id="commentInput" 
-                            class="comment-input" 
-                            placeholder="Add a comment..."
-                            rows="2"
-                        ></textarea>
-                        <div class="comment-form-actions">
-                            <button class="comment-submit-btn" id="commentSubmit">Post</button>
-                        </div>
-                    </div>
-                </section>
+                </div>
+                <nav class="nav-menu">
+                    <a href="/stream.html#home" class="nav-menu-item">Home</a>
+                    <a href="/stream.html#stream" class="nav-menu-item">Stream</a>
+                    <a href="/stream.html#circles" class="nav-menu-item active">Forums</a>
+                    <a href="/profile.html" class="nav-menu-item">Profile</a>
+                    <a href="/search.html" class="nav-menu-item">Explore</a>
+                </nav>
             </div>
-        </main>
+        </div>
+
+        <!-- Thread Page -->
+        <div class="thread-page">
+            <!-- Main Content -->
+            <main class="thread-main">
+                <div class="thread-container">
+                    <!-- Thread Content -->
+                    <article class="thread-post" id="threadPost">
+                        <div class="thread-loading">
+                            <div class="loading-spinner"></div>
+                            <p>Loading thread...</p>
+                        </div>
+                    </article>
+
+                    <!-- Comment Section -->
+                    <section class="thread-comments">
+                        <div class="comments-header">
+                            <h2 class="comments-title">Comments</h2>
+                            <div class="comments-sort" id="commentsSort">
+                                <button class="sort-btn active" data-sort="best">Best</button>
+                                <button class="sort-btn" data-sort="top">Top</button>
+                                <button class="sort-btn" data-sort="new">New</button>
+                                <button class="sort-btn" data-sort="controversial">Controversial</button>
+                            </div>
+                        </div>
+
+                        <div class="comments-tree" id="commentsTree">
+                            <div class="comments-loading">
+                                <div class="loading-spinner"></div>
+                                <p>Loading comments...</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Comment Form -->
+                    <section class="thread-comment-form">
+                        <div class="comment-form-container">
+                            <textarea id="commentInput" class="comment-input" placeholder="Add a comment..."
+                                rows="2"></textarea>
+                            <div class="comment-form-actions">
+                                <button class="comment-submit-btn" id="commentSubmit">Post</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
     </div>
 
+    <script src="app.js"></script>
     <script src="router.js"></script>
     <script src="thread.js"></script>
+
     <script>
         // Initialize thread page when DOM is ready
         function initThreadPage() {
@@ -87,7 +142,7 @@
                 setTimeout(initThreadPage, 100);
                 return;
             }
-            
+
             // Handle browser back/forward
             window.addEventListener('popstate', () => {
                 if (window.ThreadDetailPage && window.Router) {
@@ -98,7 +153,7 @@
                     }
                 }
             });
-            
+
             // Handle hash changes (for direct navigation to thread.html#threadId)
             window.addEventListener('hashchange', () => {
                 if (window.ThreadDetailPage) {
@@ -109,7 +164,7 @@
                 }
             });
         }
-        
+
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initThreadPage);
         } else {
@@ -117,5 +172,5 @@
         }
     </script>
 </body>
-</html>
 
+</html>

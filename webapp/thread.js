@@ -12,10 +12,10 @@ class ThreadDetailPage {
         this.collapsedComments = new Set();
         this.userId = localStorage.getItem('thesidia_user_id');
         this.sessionId = localStorage.getItem('thesidia_session_id');
-        
+
         this.init();
     }
-    
+
     async ensureSession() {
         // Create session if doesn't exist
         if (!this.sessionId) {
@@ -35,20 +35,23 @@ class ThreadDetailPage {
             }
         }
     }
-    
+
     async init() {
+        // Apply saved theme settings from localStorage
+        this.applyTheme();
+
         // Ensure session exists
         await this.ensureSession();
-        
+
         // Get thread ID from URL - try multiple methods
         let threadId = null;
-        
+
         // Method 1: Router (if available)
         if (window.Router) {
             const route = window.Router.getCurrentRoute();
             threadId = route?.params?.threadId || route?.params?.id;
         }
-        
+
         // Method 2: Extract from URL path
         if (!threadId) {
             const path = window.location.pathname;
@@ -57,31 +60,31 @@ class ThreadDetailPage {
                 threadId = match[1];
             }
         }
-        
+
         // Method 3: URL hash or query param
         if (!threadId) {
             const hash = window.location.hash.replace('#', '');
             const params = new URLSearchParams(window.location.search);
             threadId = hash || params.get('thread') || params.get('id');
         }
-        
+
         // Method 4: Check if we're on thread.html and extract from current URL
         if (!threadId && window.location.pathname.includes('thread.html')) {
             // Try to get from hash
             threadId = window.location.hash.replace('#', '');
-            
+
             // Also try query params
             if (!threadId) {
                 const params = new URLSearchParams(window.location.search);
                 threadId = params.get('id') || params.get('thread');
             }
         }
-        
+
         this.threadId = threadId;
-        
+
         // Setup event listeners
         this.setupEventListeners();
-        
+
         // Load thread if ID is available
         if (this.threadId) {
             this.loadThread(this.threadId);
@@ -101,7 +104,7 @@ class ThreadDetailPage {
             }
         }
     }
-    
+
     setupEventListeners() {
         // Back button
         const backBtn = document.getElementById('threadBackBtn');
@@ -110,13 +113,13 @@ class ThreadDetailPage {
                 this.handleBack();
             });
         }
-        
+
         // Comment form submit
         const submitBtn = document.getElementById('commentSubmit');
         if (submitBtn) {
             submitBtn.addEventListener('click', () => this.submitComment());
         }
-        
+
         // Enter key in comment input
         const commentInput = document.getElementById('commentInput');
         if (commentInput) {
@@ -132,14 +135,14 @@ class ThreadDetailPage {
                     commentInput.placeholder = 'Add a comment...';
                 }
             });
-            
+
             // Auto-resize textarea
             commentInput.addEventListener('input', () => {
                 commentInput.style.height = 'auto';
                 commentInput.style.height = Math.min(commentInput.scrollHeight, 120) + 'px'; // Match max-height
             });
         }
-        
+
         // Sort buttons
         const sortButtons = document.querySelectorAll('.sort-btn');
         sortButtons.forEach(btn => {
@@ -149,20 +152,20 @@ class ThreadDetailPage {
             });
         });
     }
-    
+
     async loadThread(threadId, retryCount = 0) {
         this.threadId = threadId;
         const maxRetries = 2;
-        
+
         const postContainer = document.getElementById('threadPost');
         if (postContainer) {
             postContainer.innerHTML = '<div class="thread-loading">Loading thread...</div>';
         }
-        
+
         try {
             // Load thread data
             const threadResponse = await fetch(`/api/threads/${threadId}?user_id=${this.userId || ''}&session_id=${this.sessionId || ''}`);
-            
+
             if (!threadResponse.ok) {
                 // Retry on 404 or 500 errors
                 if ((threadResponse.status === 404 || threadResponse.status === 500) && retryCount < maxRetries) {
@@ -170,20 +173,20 @@ class ThreadDetailPage {
                     await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
                     return this.loadThread(threadId, retryCount + 1);
                 }
-                
+
                 const errorData = await threadResponse.json().catch(() => ({}));
                 throw new Error(errorData.error || `Failed to load thread: ${threadResponse.status}`);
             }
-            
+
             this.thread = await threadResponse.json();
-            
+
             // Validate thread data
             if (!this.thread || !this.thread.id) {
                 throw new Error('Invalid thread data received');
             }
-            
+
             this.renderThread(this.thread);
-            
+
             // Load comments
             await this.loadComments(threadId, this.currentSort);
         } catch (error) {
@@ -202,18 +205,18 @@ class ThreadDetailPage {
             }
         }
     }
-    
+
     renderThread(thread) {
         const container = document.getElementById('threadPost');
         if (!container) return;
-        
+
         const author = thread.author || {};
         const avatarUrl = this.getAvatarUrl(thread.circle || '', author.user_id, author.avatar_url);
         const fallbackAvatarUrl = this.getFallbackAvatarUrl(thread.circle || '', author.user_id);
         const timeAgo = this.formatTime(thread.created_at);
         const score = thread.score || (thread.upvotes || 0) - (thread.downvotes || 0);
         const userVote = thread.user_vote;
-        
+
         container.innerHTML = `
             <div class="thread-vote-section">
                 <button class="vote-btn vote-up ${userVote === 'up' ? 'active' : ''}" 
@@ -250,19 +253,19 @@ class ThreadDetailPage {
                     </div>
                 </div>
                 <h1 class="thread-title">${this.escapeHtml(thread.title || '')}</h1>
-                <div class="thread-body">${this.escapeHtml(thread.body || '').replace(/\n/g, '<br>')}</div>
+                <div class="thread-body">${this.parseMarkdown(thread.body || '')}</div>
                 ${thread.media && thread.media.length > 0 ? `
                     <div class="thread-media">
                         ${thread.media.map(mediaItem => {
-                            if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
-                                return `<img src="${mediaItem.url}" alt="Thread media" class="thread-media-item" loading="lazy">`;
-                            } else if (mediaItem.type === 'image') {
-                                return `<img src="${mediaItem.url}" alt="Thread media" class="thread-media-item" loading="lazy">`;
-                            } else if (mediaItem.type === 'video') {
-                                return `<video src="${mediaItem.url}" controls class="thread-media-item"></video>`;
-                            }
-                            return '';
-                        }).join('')}
+            if (mediaItem.type === 'gif' || mediaItem.url.includes('.gif')) {
+                return `<img src="${mediaItem.url}" alt="Thread media" class="thread-media-item" loading="lazy">`;
+            } else if (mediaItem.type === 'image') {
+                return `<img src="${mediaItem.url}" alt="Thread media" class="thread-media-item" loading="lazy">`;
+            } else if (mediaItem.type === 'video') {
+                return `<video src="${mediaItem.url}" controls class="thread-media-item"></video>`;
+            }
+            return '';
+        }).join('')}
                     </div>
                 ` : ''}
                 <div class="thread-footer-actions">
@@ -275,36 +278,36 @@ class ThreadDetailPage {
                 </div>
             </div>
         `;
-        
+
         // Update header
         const categoryEl = document.getElementById('threadCategory');
         if (categoryEl) {
             categoryEl.textContent = thread.circle || 'General';
         }
-        
+
         const metaEl = document.getElementById('threadMetaHeader');
         if (metaEl) {
             metaEl.textContent = `${thread.comment_count || 0} comments`;
         }
-        
+
         // Setup vote handlers
         this.setupVoteHandlers(thread.id);
     }
-    
+
     async loadComments(threadId, sort = 'best', retryCount = 0) {
         this.currentSort = sort;
         const maxRetries = 2;
-        
+
         const container = document.getElementById('commentsTree');
         if (container && retryCount === 0) {
             container.innerHTML = '<div class="comments-loading">Loading comments...</div>';
         }
-        
+
         try {
             const response = await fetch(
                 `/api/threads/${threadId}/comments?sort=${sort}&limit=50&user_id=${this.userId || ''}&session_id=${this.sessionId || ''}`
             );
-            
+
             if (!response.ok) {
                 // Retry on 404 or 500 errors
                 if ((response.status === 404 || response.status === 500) && retryCount < maxRetries) {
@@ -312,15 +315,15 @@ class ThreadDetailPage {
                     await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
                     return this.loadComments(threadId, sort, retryCount + 1);
                 }
-                
+
                 const errorData = await response.json().catch(() => ({}));
                 throw new Error(errorData.error || `Failed to load comments: ${response.status}`);
             }
-            
+
             const data = await response.json();
             this.comments = data.comments || [];
             this.renderCommentTree(this.comments);
-            
+
             // Update sort button states
             document.querySelectorAll('.sort-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.sort === sort);
@@ -340,22 +343,22 @@ class ThreadDetailPage {
             }
         }
     }
-    
+
     renderCommentTree(comments, depth = 0) {
         const container = document.getElementById('commentsTree');
         if (!container) return;
-        
+
         if (!comments || comments.length === 0) {
             container.innerHTML = '<div class="comments-empty">No comments yet. Be the first to comment!</div>';
             return;
         }
-        
+
         container.innerHTML = comments.map(comment => this.renderComment(comment, depth)).join('');
-        
+
         // Setup event handlers for all comments
         this.setupCommentHandlers();
     }
-    
+
     renderComment(comment, depth = 0) {
         const isCollapsed = this.collapsedComments.has(comment.id);
         const author = comment.author || {};
@@ -365,7 +368,7 @@ class ThreadDetailPage {
         const score = comment.score || (comment.upvotes || 0) - (comment.downvotes || 0);
         const userVote = comment.user_vote;
         const replyCount = this.countReplies(comment);
-        
+
         if (isCollapsed) {
             return `
                 <div class="comment collapsed" data-comment-id="${comment.id}" data-depth="${depth}">
@@ -376,11 +379,11 @@ class ThreadDetailPage {
                 </div>
             `;
         }
-        
+
         const repliesHtml = comment.replies && comment.replies.length > 0
             ? comment.replies.map(reply => this.renderComment(reply, depth + 1)).join('')
             : '';
-        
+
         return `
             <div class="comment" data-comment-id="${comment.id}" data-depth="${depth}">
                 <div class="comment-vote-section">
@@ -417,7 +420,7 @@ class ThreadDetailPage {
                             </svg>
                         </button>
                     </div>
-                    <div class="comment-body">${this.escapeHtml(comment.content || '').replace(/\n/g, '<br>')}</div>
+                    <div class="comment-body">${this.parseMarkdown(comment.content || '')}</div>
                     <div class="comment-actions">
                         <button class="comment-reply-btn" data-comment-id="${comment.id}" data-parent-id="${comment.id}">
                             Reply
@@ -429,22 +432,22 @@ class ThreadDetailPage {
                     ${comment.cuts && comment.cuts.length > 0 ? `
                         <div class="comment-cuts">
                             ${comment.cuts.map(cut => {
-                                const cutTypes = {
-                                    'quality': { icon: '★', name: 'Quality' },
-                                    'insightful': { icon: '💡', name: 'Insightful' },
-                                    'helpful': { icon: '✓', name: 'Helpful' },
-                                    'original': { icon: '✨', name: 'Original' },
-                                    'well_researched': { icon: '📚', name: 'Well Researched' },
-                                    'thoughtful': { icon: '🤔', name: 'Thoughtful' }
-                                };
-                                const cutInfo = cutTypes[cut.type] || { icon: '★', name: cut.type || 'Cut' };
-                                return `
+            const cutTypes = {
+                'quality': { icon: '★', name: 'Quality' },
+                'insightful': { icon: '💡', name: 'Insightful' },
+                'helpful': { icon: '✓', name: 'Helpful' },
+                'original': { icon: '✨', name: 'Original' },
+                'well_researched': { icon: '📚', name: 'Well Researched' },
+                'thoughtful': { icon: '🤔', name: 'Thoughtful' }
+            };
+            const cutInfo = cutTypes[cut.type] || { icon: '★', name: cut.type || 'Cut' };
+            return `
                                     <span class="cut-badge" title="${this.escapeHtml(cutInfo.name)}">
                                         <span class="cut-badge-icon">${cutInfo.icon}</span>
                                         <span class="cut-badge-count">${cut.count || 1}</span>
                                     </span>
                                 `;
-                            }).join('')}
+        }).join('')}
                         </div>
                     ` : ''}
                     ${repliesHtml ? `<div class="comment-replies">${repliesHtml}</div>` : ''}
@@ -452,7 +455,7 @@ class ThreadDetailPage {
             </div>
         `;
     }
-    
+
     countReplies(comment) {
         let count = 0;
         if (comment.replies) {
@@ -463,7 +466,7 @@ class ThreadDetailPage {
         }
         return count;
     }
-    
+
     setupCommentHandlers() {
         // Vote buttons
         document.querySelectorAll('.comment .vote-btn').forEach(btn => {
@@ -474,7 +477,7 @@ class ThreadDetailPage {
                 this.handleCommentVote(commentId, direction);
             });
         });
-        
+
         // Collapse buttons
         document.querySelectorAll('.comment-collapse-btn, .comment-expand-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -483,7 +486,7 @@ class ThreadDetailPage {
                 this.toggleCollapse(commentId);
             });
         });
-        
+
         // Reply buttons
         document.querySelectorAll('.comment-reply-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -492,7 +495,7 @@ class ThreadDetailPage {
                 this.showReplyForm(commentId);
             });
         });
-        
+
         // Cut buttons
         document.querySelectorAll('.comment-cut-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -502,14 +505,14 @@ class ThreadDetailPage {
             });
         });
     }
-    
+
     async showCutMenu(commentId) {
         try {
             // Load cut types
             const response = await fetch('/api/cuts/types');
             const data = await response.json();
             const cutTypes = data.cuts || [];
-            
+
             // Create cut modal
             const modal = document.createElement('div');
             modal.className = 'cut-modal';
@@ -533,14 +536,14 @@ class ThreadDetailPage {
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
-            
+
             // Close handlers
             const closeModal = () => modal.remove();
             modal.querySelector('.cut-modal-backdrop').addEventListener('click', closeModal);
             modal.querySelector('.cut-modal-close').addEventListener('click', closeModal);
-            
+
             // Cut type selection
             modal.querySelectorAll('.cut-type-btn').forEach(btn => {
                 btn.addEventListener('click', async () => {
@@ -554,7 +557,7 @@ class ThreadDetailPage {
             alert('Error loading cuts. Please try again.');
         }
     }
-    
+
     async giveCut(commentId, cutType) {
         try {
             const response = await fetch(`/api/comments/${commentId}/cut`, {
@@ -566,7 +569,7 @@ class ThreadDetailPage {
                     session_id: this.sessionId
                 })
             });
-            
+
             if (response.ok) {
                 // Reload comments to show new cut
                 await this.loadComments(this.threadId, this.currentSort);
@@ -579,7 +582,7 @@ class ThreadDetailPage {
             alert('Error giving cut. Please try again.');
         }
     }
-    
+
     setupVoteHandlers(threadId) {
         document.querySelectorAll('.thread-vote-section .vote-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -589,22 +592,22 @@ class ThreadDetailPage {
             });
         });
     }
-    
+
     async handleVote(threadId, direction) {
         // Ensure session exists
         await this.ensureSession();
-        
+
         try {
             const btn = document.querySelector(`.thread-vote-section .vote-btn[data-direction="${direction}"]`);
             const isActive = btn?.classList.contains('active');
             const currentDirection = isActive ? null : direction;
-            
+
             // Optimistic UI update
             if (btn) {
                 const container = btn.closest('.thread-vote-section');
                 const scoreEl = container?.querySelector('.vote-score');
                 const currentScore = parseInt(scoreEl?.textContent || '0');
-                
+
                 // Temporarily update score
                 if (currentDirection === 'up' && !isActive) {
                     scoreEl.textContent = currentScore + 1;
@@ -619,7 +622,7 @@ class ThreadDetailPage {
                     }
                 }
             }
-            
+
             const response = await fetch(`/api/threads/${threadId}/vote`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -629,7 +632,7 @@ class ThreadDetailPage {
                     session_id: this.sessionId
                 })
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 this.updateVoteUI('.thread-vote-section', data);
@@ -645,24 +648,24 @@ class ThreadDetailPage {
             }
         }
     }
-    
+
     async handleCommentVote(commentId, direction) {
         // Ensure session exists
         await this.ensureSession();
-        
+
         try {
             const commentEl = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
             if (!commentEl) return;
-            
+
             const btn = commentEl.querySelector(`.vote-btn[data-direction="${direction}"]`);
             const isActive = btn?.classList.contains('active');
             const currentDirection = isActive ? null : direction;
-            
+
             // Optimistic UI update
             const container = commentEl.querySelector('.comment-vote-section');
             const scoreEl = container?.querySelector('.vote-score');
             const currentScore = parseInt(scoreEl?.textContent || '0');
-            
+
             if (currentDirection === 'up' && !isActive) {
                 scoreEl.textContent = currentScore + 1;
             } else if (currentDirection === 'down' && !isActive) {
@@ -674,7 +677,7 @@ class ThreadDetailPage {
                     scoreEl.textContent = currentScore + 1;
                 }
             }
-            
+
             const response = await fetch(`/api/comments/${commentId}/vote`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -684,7 +687,7 @@ class ThreadDetailPage {
                     session_id: this.sessionId
                 })
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 this.updateVoteUI(container, data);
@@ -698,51 +701,51 @@ class ThreadDetailPage {
             await this.loadComments(this.threadId, this.currentSort);
         }
     }
-    
+
     updateVoteUI(container, data) {
         if (!container) return;
-        
+
         const scoreEl = container.querySelector('.vote-score');
         if (scoreEl) {
             scoreEl.textContent = data.score;
             scoreEl.className = `vote-score ${data.score > 0 ? 'positive' : data.score < 0 ? 'negative' : ''}`;
         }
-        
+
         // Update button states
         container.querySelectorAll('.vote-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        
+
         if (data.user_vote === 'up') {
             container.querySelector('.vote-up')?.classList.add('active');
         } else if (data.user_vote === 'down') {
             container.querySelector('.vote-down')?.classList.add('active');
         }
     }
-    
+
     toggleCollapse(commentId) {
         if (this.collapsedComments.has(commentId)) {
             this.collapsedComments.delete(commentId);
         } else {
             this.collapsedComments.add(commentId);
         }
-        
+
         // Re-render comments to update UI
         this.renderCommentTree(this.comments);
     }
-    
+
     changeSort(sortType) {
         this.currentSort = sortType;
         this.loadComments(this.threadId, sortType);
     }
-    
+
     showReplyForm(commentId) {
         // Scroll to comment form and set parent ID
         const form = document.getElementById('commentInput');
         if (form) {
             form.dataset.parentId = commentId;
             form.placeholder = 'Write a reply...';
-            
+
             // Highlight the comment being replied to
             const commentEl = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
             if (commentEl) {
@@ -755,7 +758,7 @@ class ThreadDetailPage {
                     }, 300);
                 }, 2000);
             }
-            
+
             // Scroll to form
             setTimeout(() => {
                 form.focus();
@@ -766,7 +769,7 @@ class ThreadDetailPage {
             }, 100);
         }
     }
-    
+
     async submitComment() {
         const input = document.getElementById('commentInput');
         if (!input || !input.value.trim()) {
@@ -779,20 +782,20 @@ class ThreadDetailPage {
             }
             return;
         }
-        
+
         const submitBtn = document.getElementById('commentSubmit');
         const originalText = submitBtn?.textContent;
         if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.textContent = 'Posting...';
         }
-        
+
         const content = input.value.trim();
         const parentId = input.dataset.parentId;
         input.value = '';
         input.placeholder = 'Add a comment...';
         delete input.dataset.parentId;
-        
+
         try {
             let response;
             if (parentId) {
@@ -819,7 +822,7 @@ class ThreadDetailPage {
                     })
                 });
             }
-            
+
             if (response.ok) {
                 // Reload comments
                 await this.loadComments(this.threadId, this.currentSort);
@@ -854,11 +857,11 @@ class ThreadDetailPage {
             }
         }
     }
-    
+
     handleBack() {
         // Check if we have a stored referrer
         const referrer = sessionStorage.getItem('thread_referrer');
-        
+
         if (referrer) {
             // Navigate back to the referrer page
             sessionStorage.removeItem('thread_referrer');
@@ -877,7 +880,7 @@ class ThreadDetailPage {
             window.location.href = '/stream.html#circles';
         }
     }
-    
+
     // Utility methods
     escapeHtml(text) {
         if (!text) return '';
@@ -885,7 +888,70 @@ class ThreadDetailPage {
         div.textContent = text;
         return div.innerHTML;
     }
-    
+
+    // Apply saved theme settings from localStorage
+    applyTheme() {
+        const savedThemeMode = localStorage.getItem('kx_theme_mode') || 'dark';
+        const savedFontStack = localStorage.getItem('kx_font_stack') || 'cyberx';
+        const savedColorTheme = localStorage.getItem('thesidia_color_theme') || 'default';
+
+        document.documentElement.setAttribute('data-theme', savedThemeMode);
+        document.documentElement.setAttribute('data-font-stack', savedFontStack);
+
+        // Apply color theme
+        if (savedColorTheme && savedColorTheme !== 'default') {
+            document.body.classList.add(`theme-${savedColorTheme}`);
+            document.documentElement.classList.add(`theme-${savedColorTheme}`);
+        }
+
+        // Update meta theme-color
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+            metaThemeColor.setAttribute('content', savedThemeMode === 'light' ? '#f5f0e8' : '#000000');
+        }
+    }
+
+    // Parse markdown-like text to HTML (lightweight parser)
+    parseMarkdown(text) {
+        if (!text) return '';
+
+        // First escape HTML entities to prevent XSS
+        let html = this.escapeHtml(text);
+
+        // Bold: **text** or __text__
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+
+        // Italic: *text* or _text_ (not preceded by * or followed by *)
+        html = html.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+        html = html.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em>$1</em>');
+
+        // Inline code: `code`
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+        // Headers: # Header (at start of line)
+        html = html.replace(/^##### (.+)$/gm, '<h5>$1</h5>');
+        html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+        html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+        html = html.replace(/^## (.+)$/gm, '<h3>$1</h3>');
+        html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+
+        // Links: [text](url)
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+        // Line breaks
+        html = html.replace(/\n/g, '<br>');
+
+        // Simple unordered lists (lines starting with - or *)
+        html = html.replace(/(?:^|<br>)(?:- |\* )(.+?)(?=<br>|$)/g, '<li>$1</li>');
+        html = html.replace(/(<li>.*<\/li>)+/g, '<ul>$&</ul>');
+
+        // Simple ordered lists (lines starting with 1. 2. etc)
+        html = html.replace(/(?:^|<br>)(\d+)\. (.+?)(?=<br>|$)/g, '<li>$2</li>');
+
+        return html;
+    }
+
     formatTime(dateStr) {
         if (!dateStr) return '';
         const date = new Date(dateStr);
@@ -894,17 +960,17 @@ class ThreadDetailPage {
         const diffMins = Math.floor(diffMs / 60000);
         const diffHours = Math.floor(diffMs / 3600000);
         const diffDays = Math.floor(diffMs / 86400000);
-        
+
         if (diffMins < 1) return 'now';
         if (diffMins < 60) return `${diffMins}m`;
         if (diffHours < 24) return `${diffHours}h`;
         if (diffDays < 7) return `${diffDays}d`;
-        
+
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return `${month}/${day}`;
     }
-    
+
     getAvatarUrl(topic, authorId, authorAvatarUrl) {
         if (authorAvatarUrl && authorAvatarUrl.trim()) {
             return authorAvatarUrl;
@@ -917,7 +983,7 @@ class ThreadDetailPage {
         const numericSeed = Math.abs(seedHash);
         return `https://api.dicebear.com/7.x/personas/svg?seed=${numericSeed}&size=40&radius=50`;
     }
-    
+
     getFallbackAvatarUrl(topic, authorId) {
         const seed = authorId || topic || 'default';
         let seedHash = 0;

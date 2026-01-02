@@ -1141,6 +1141,12 @@ class NavigationSystem {
         // Render categories
         categoriesContainer.innerHTML = allCategories.map(cat => this.renderCategory(cat)).join('');
 
+        // Add enhanced-design class for new card layout
+        categoriesContainer.classList.add('enhanced-design');
+
+        // Apply topic images and /slash naming
+        this.applyEnhancedCategoryDesign(categoriesContainer);
+
         // Initialize swipe functionality
         this.initializeCategorySwipe(categoriesContainer);
 
@@ -1297,6 +1303,85 @@ class NavigationSystem {
 
         // Set initial cursor
         container.style.cursor = 'grab';
+    }
+
+    // Topic-to-keyword mapping for Unsplash images
+    getCategoryImageKeywords(slug, name) {
+        const topicKeywords = {
+            'all': 'abstract,pattern',
+            'visual': 'art,painting,canvas',
+            'movement': 'dance,yoga,fitness',
+            'craft': 'handmade,pottery,craft',
+            'writing': 'writing,typewriter,book',
+            'music': 'music,instrument,piano',
+            'performance': 'stage,theater,performance',
+            'teaching': 'classroom,education,learning',
+            'meta-guidelines': 'compass,direction,guide',
+            'posting-rules': 'rules,organization,structure',
+            'human-development': 'growth,mindfulness,nature',
+            'martial': 'dojo,boxing-gloves,punching-bag',
+            'martial-arts': 'dojo,boxing-gloves,punching-bag',
+            'literature': 'books,library,reading',
+            'digital': 'technology,digital,code',
+            'sculpture': 'sculpture,statue,art',
+            'photography': 'camera,photography,lens',
+            'film': 'cinema,film,movie',
+            'cooking': 'cooking,food,kitchen',
+            'gaming': 'gaming,controller,esports',
+            'meditation': 'meditation,zen,peaceful',
+            'sports': 'sports,athlete,fitness',
+            'nature': 'nature,landscape,outdoor',
+            'healing': 'wellness,spa,calm',
+            'internal': 'meditation,mindfulness,spiritual'
+        };
+
+        const slugLower = (slug || '').toLowerCase();
+        const nameLower = (name || '').toLowerCase();
+
+        for (const [key, keywords] of Object.entries(topicKeywords)) {
+            if (slugLower.includes(key) || nameLower.includes(key)) {
+                return keywords;
+            }
+        }
+
+        return 'abstract,minimal,dark';
+    }
+
+    // Format category name as clean /slug
+    formatCategorySlug(slug, name) {
+        const cleanSlug = (slug || name || 'category')
+            .toLowerCase()
+            .replace(/[\s&]+/g, '')
+            .replace(/[^a-z0-9]/g, '');
+        return `/${cleanSlug}`;
+    }
+
+    // Apply enhanced design: topic images and /slash naming
+    applyEnhancedCategoryDesign(container) {
+        const categories = container.querySelectorAll('.circle-category-item');
+
+        categories.forEach((item, index) => {
+            const slug = item.dataset.slug || item.dataset.category || '';
+            const nameEl = item.querySelector('.circle-category-name');
+            const name = nameEl ? nameEl.textContent : '';
+            const img = item.querySelector('.circle-category-avatar');
+
+            // Update name to /slash format
+            if (nameEl) {
+                nameEl.textContent = this.formatCategorySlug(slug, name);
+            }
+
+            // Update image to topic-related
+            if (img && slug !== 'all') {
+                const keywords = this.getCategoryImageKeywords(slug, name);
+                const seed = index + Math.abs(slug.split('').reduce((a, c) => a + c.charCodeAt(0), 0));
+
+                img.src = `https://source.unsplash.com/300x400/?${keywords}&sig=${seed}`;
+                img.onerror = function () {
+                    this.src = `https://picsum.photos/seed/${slug || index}/300/400?grayscale`;
+                };
+            }
+        });
     }
 
     getCircleInitial(topic) {
