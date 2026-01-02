@@ -449,8 +449,7 @@ class ThesidiaApp {
         const savedTheme = localStorage.getItem('thesidia_color_theme') || 'default';
         this.setColorTheme(savedTheme);
 
-        // Setup theme selector in sidebar if it exists
-        this.setupThemeSelector();
+
     }
 
     setColorTheme(theme) {
@@ -468,122 +467,7 @@ class ThesidiaApp {
         localStorage.setItem('thesidia_color_theme', theme || 'default');
     }
 
-    setupThemeSelector() {
-        // Find or create theme selector in sidebar settings
-        const settingsNav = document.querySelector('.settings-nav');
-        if (!settingsNav) return;
 
-        // Check if theme selector already exists
-        if (document.getElementById('themeSelector')) return;
-
-        // Create theme selector
-        const themeSelector = document.createElement('div');
-        themeSelector.id = 'themeSelector';
-        themeSelector.className = 'theme-selector';
-        const currentTheme = localStorage.getItem('thesidia_color_theme') || 'default';
-        const themeLabels = {
-            'default': 'Default',
-            'yellow': 'Yellow',
-            'tan': 'Tan',
-            'red': 'Red',
-            'orange': 'Orange',
-            'blue': 'Blue'
-        };
-
-        themeSelector.innerHTML = `
-            <div class="settings-label" style="margin-top: 16px;">Color Theme</div>
-            <div class="theme-dropdown-wrapper">
-                <button class="theme-dropdown-btn" id="themeDropdownBtn">
-                    <span class="theme-dropdown-label">
-                        <span class="theme-color-preview" style="background: ${currentTheme === 'default' ? '#ffffff' : currentTheme === 'yellow' ? '#d4d400' : currentTheme === 'tan' ? '#d2b48c' : currentTheme === 'red' ? '#ff4444' : currentTheme === 'orange' ? '#ff8800' : '#4488ff'};"></span>
-                        <span>${themeLabels[currentTheme]}</span>
-                    </span>
-                    <svg class="theme-dropdown-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </button>
-                <div class="theme-dropdown-menu" id="themeDropdownMenu">
-                    <button class="theme-dropdown-option ${currentTheme === 'default' ? 'active' : ''}" data-theme="default">
-                        <span class="theme-color" style="background: #ffffff;"></span>
-                        <span>Default</span>
-                    </button>
-                    <button class="theme-dropdown-option ${currentTheme === 'yellow' ? 'active' : ''}" data-theme="yellow">
-                        <span class="theme-color" style="background: #d4d400;"></span>
-                        <span>Yellow</span>
-                    </button>
-                    <button class="theme-dropdown-option ${currentTheme === 'tan' ? 'active' : ''}" data-theme="tan">
-                        <span class="theme-color" style="background: #d2b48c;"></span>
-                        <span>Tan</span>
-                    </button>
-                    <button class="theme-dropdown-option ${currentTheme === 'red' ? 'active' : ''}" data-theme="red">
-                        <span class="theme-color" style="background: #ff4444;"></span>
-                        <span>Red</span>
-                    </button>
-                    <button class="theme-dropdown-option ${currentTheme === 'orange' ? 'active' : ''}" data-theme="orange">
-                        <span class="theme-color" style="background: #ff8800;"></span>
-                        <span>Orange</span>
-                    </button>
-                    <button class="theme-dropdown-option ${currentTheme === 'blue' ? 'active' : ''}" data-theme="blue">
-                        <span class="theme-color" style="background: #4488ff;"></span>
-                        <span>Blue</span>
-                    </button>
-                </div>
-            </div>
-        `;
-
-        // Insert after settings nav
-        settingsNav.parentElement.appendChild(themeSelector);
-
-        // Setup dropdown toggle
-        const dropdownBtn = document.getElementById('themeDropdownBtn');
-        const dropdownMenu = document.getElementById('themeDropdownMenu');
-        const dropdownWrapper = dropdownBtn?.closest('.theme-dropdown-wrapper');
-
-        if (dropdownBtn && dropdownMenu && dropdownWrapper) {
-            dropdownBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownWrapper.classList.toggle('open');
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!dropdownWrapper.contains(e.target)) {
-                    dropdownWrapper.classList.remove('open');
-                }
-            });
-
-            // Handle option clicks
-            dropdownMenu.querySelectorAll('.theme-dropdown-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    const theme = option.dataset.theme;
-                    this.setColorTheme(theme);
-
-                    // Update button label
-                    const label = dropdownBtn.querySelector('.theme-dropdown-label span:last-child');
-                    const preview = dropdownBtn.querySelector('.theme-color-preview');
-                    if (label) label.textContent = themeLabels[theme];
-                    if (preview) {
-                        const colors = {
-                            'default': '#ffffff',
-                            'yellow': '#d4d400',
-                            'tan': '#d2b48c',
-                            'red': '#ff4444',
-                            'orange': '#ff8800',
-                            'blue': '#4488ff'
-                        };
-                        preview.style.background = colors[theme];
-                    }
-
-                    // Update active state
-                    dropdownMenu.querySelectorAll('.theme-dropdown-option').forEach(opt => opt.classList.remove('active'));
-                    option.classList.add('active');
-
-                    // Close dropdown
-                    dropdownWrapper.classList.remove('open');
-                });
-            });
-        }
-    }
 
     initAppearance() {
         // Load saved appearance settings from localStorage

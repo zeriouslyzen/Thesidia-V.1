@@ -1338,8 +1338,8 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 24px;
+    width: 24px;
+    height: 22px;
     border: none;
     border-radius: 4px;
     background: transparent;
@@ -1369,8 +1369,11 @@ a:hover {
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    padding: 6px 28px 6px 10px;
-    font-size: 13px;
+    padding: 4px 24px 4px 8px;
+    font-size: 12px;
+    height: 26px;
+    /* Match theme toggle height approximately */
+    line-height: 1.2;
     color: var(--text-primary);
     cursor: pointer;
     transition: var(--transition-fast);
