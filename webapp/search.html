@@ -35,7 +35,12 @@
             display: block !important;
             /* Disable global flex layout */
             position: relative !important;
+            position: relative !important;
             overscroll-behavior-y: none;
+            padding-bottom: 90px;
+            /* Reserve space for sticky search bar */
+            transform: none !important;
+            /* Ensure fixed positioning works relative to viewport */
         }
 
         #app {
@@ -365,8 +370,9 @@
             position: fixed;
             bottom: 0;
             left: 0;
+            left: 0;
             right: 0;
-            padding: 16px;
+            padding: 16px 16px 8px;
             background: linear-gradient(to top, var(--bg-primary) 60%, transparent);
             z-index: 100;
         }
@@ -1343,17 +1349,7 @@
             <div id="resultsContent"></div>
         </main>
 
-        <!-- Search Bar -->
-        <div class="search-bar-container">
-            <div class="search-bar">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search people, posts, topics...">
-                <button class="search-filter-btn">Filters</button>
-            </div>
-        </div>
+
 
         <!-- Article Modal -->
         <div class="article-modal" id="articleModal">
@@ -1780,6 +1776,17 @@
             }, 500);
         };
     </script>
+    <!-- Search Bar (Fixed Bottom) -->
+    <div class="search-bar-container">
+        <div class="search-bar">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search people, posts, topics...">
+            <button class="search-filter-btn">Filters</button>
+        </div>
+    </div>
 </body>
 
 </html>
