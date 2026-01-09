@@ -1,27 +1,32 @@
 {
   "interactions": [
     {
-      "user": "",
-      "assistant": "there, long time no chat! whatcha been up to?",
-      "timestamp": "2025-12-17T14:35:03.388538",
+      "user": "bridge check",
+      "assistant": "USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol USER: what is the meaning of the symbol ",
+      "timestamp": "2025-12-30T21:25:29.919434",
       "metadata": {
-        "type": "greeting",
-        "timestamp": "2025-12-17T14:35:03.388202",
+        "type": "conversation",
+        "outcome": {
+          "success": false,
+          "effectiveness": 0.5
+        },
+        "timestamp": "2025-12-30T21:25:29.917354",
         "user_id": "test_user",
-        "session_id": "test_sess"
+        "session_id": "test_session"
       }
     },
     {
-      "user": "",
-      "assistant": "there, long time no chat! whatcha been up to?",
-      "timestamp": "2025-12-17T14:35:03.390709",
+      "user": "bridge check",
+      "assistant": "Error: Processing timed out (fast mode limited to 20s). Please try again or switch to deep research for more complex queries.",
+      "timestamp": "2025-12-30T21:25:50.714783",
       "metadata": {
-        "timestamp": "2025-12-17T14:35:03.390577",
-        "response_length": 49,
+        "timestamp": "2025-12-30T21:25:50.714481",
+        "response_length": 125,
+        "streamed": true,
         "user_id": "test_user",
-        "session_id": "test_sess"
+        "session_id": "test_session"
       }
     }
   ],
-  "last_updated": "2025-12-17T14:35:03.390714"
+  "last_updated": "2025-12-30T21:25:50.714811"
 }

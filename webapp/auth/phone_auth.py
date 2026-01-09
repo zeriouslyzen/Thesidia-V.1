@@ -107,11 +107,23 @@ class PhoneAuthManager:
                 'error': 'Failed to send SMS. Please check your phone number and try again.'
             }
         
-        return {
+        result = {
             'success': True,
             'verification_id': verification_id,
             'message': 'Verification code sent'
         }
+        
+        # In dev/mock mode, include the code in response
+        if not self.use_twilio:
+            result['mock_code'] = code
+            print(f"\n{'='*60}")
+            print(f"📱 MOCK SMS VERIFICATION CODE")
+            print(f"Phone: {normalized_phone}")
+            print(f"Code: {code}")
+            print(f"Verification ID: {verification_id}")
+            print(f"{'='*60}\n")
+        
+        return result
     
     def _send_sms(self, phone: str, message: str) -> bool:
         """Send SMS using Twilio or fallback service"""

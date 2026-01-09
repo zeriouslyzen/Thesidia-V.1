@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding System Test Page</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/onboarding.css">
+    
+    <style>
+        body {
+            padding: 40px;
+            background: var(--bg-primary, #000000);
+            color: var(--text-primary, #ffffff);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-header {
+            margin-bottom: 40px;
+        }
+        
+        .test-header h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .test-header p {
+            color: var(--text-secondary, #a0a0a0);
+            font-size: 14px;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 24px;
+            background: var(--bg-secondary, #1a1a1a);
+            border: 1px solid var(--border-color, #3a3a3a);
+            border-radius: 12px;
+        }
+        
+        .test-section h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: var(--theme-neon, #ffffff);
+        }
+        
+        .test-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        
+        .test-btn {
+            padding: 10px 20px;
+            background: var(--bg-tertiary, #141414);
+            border: 1px solid var(--border-color, #3a3a3a);
+            border-radius: 8px;
+            color: var(--text-primary, #ffffff);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .test-btn:hover {
+            background: var(--bg-secondary, #1a1a1a);
+            border-color: var(--theme-neon, #ffffff);
+        }
+        
+        .test-btn-primary {
+            background: var(--theme-neon, #ffffff);
+            color: var(--bg-primary, #000000);
+        }
+        
+        .test-btn-primary:hover {
+            opacity: 0.9;
+        }
+        
+        .test-status {
+            padding: 12px;
+            background: var(--bg-tertiary, #141414);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--text-secondary, #a0a0a0);
+        }
+        
+        .mock-profile {
+            padding: 24px;
+            background: var(--bg-tertiary, #141414);
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        
+        .profile-name-large {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .profile-username-large {
+            font-size: 14px;
+            color: var(--theme-neon, #ffffff);
+            margin-bottom: 16px;
+        }
+        
+        .profile-bio {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .profile-info {
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>Onboarding System Test Page</h1>
+            <p>Test all onboarding features in isolation. This page has no dependencies on the main app.</p>
+        </div>
+        
+        <!-- Feature Flags -->
+        <div class="test-section">
+            <h2>Feature Flags</h2>
+            <div class="test-controls">
+                <button class="test-btn test-btn-primary" onclick="enableOnboarding()">Enable Onboarding</button>
+                <button class="test-btn" onclick="disableOnboarding()">Disable Onboarding</button>
+                <button class="test-btn" onclick="resetProgress()">Reset Progress</button>
+                <button class="test-btn" onclick="clearAll()">Clear All Data</button>
+            </div>
+            <div class="test-status" id="featureFlagStatus">
+                Loading status...
+            </div>
+        </div>
+        
+        <!-- Tutorial Testing -->
+        <div class="test-section">
+            <h2>Tutorial Testing</h2>
+            <div class="test-controls">
+                <button class="test-btn" onclick="showTutorial('welcome')">Welcome Tutorial</button>
+                <button class="test-btn" onclick="showTutorial('profile-setup')">Profile Setup</button>
+                <button class="test-btn" onclick="showTutorial('stream-navigation')">Stream Navigation</button>
+                <button class="test-btn" onclick="showTutorial('explore')">Explore Tutorial</button>
+                <button class="test-btn" onclick="showTutorial('kim-chat')">KIM Chat</button>
+                <button class="test-btn" onclick="showTutorial('posting')">Posting</button>
+                <button class="test-btn" onclick="showTutorial('profile-customization')">Profile Customization</button>
+            </div>
+            <div class="test-status" id="tutorialStatus">
+                Click a button to test a tutorial
+            </div>
+        </div>
+        
+        <!-- Profile Customization Testing -->
+        <div class="test-section">
+            <h2>Profile Customization Testing</h2>
+            <div class="test-controls">
+                <button class="test-btn" onclick="showOwnProfile()">Show Own Profile View</button>
+                <button class="test-btn" onclick="showOthersProfile()">Show Others' Profile View</button>
+                <button class="test-btn" onclick="togglePreview()">Toggle Preview</button>
+                <button class="test-btn" onclick="openCustomization()">Open Customization Panel</button>
+            </div>
+            
+            <div class="mock-profile" id="mockProfile">
+                <div class="profile-info">
+                    <div class="profile-name-large">Test User</div>
+                    <div class="profile-username-large">@testuser</div>
+                    <div class="profile-bio">This is a test profile bio. It demonstrates how the profile customization system works.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Display -->
+        <div class="test-section">
+            <h2>System Status</h2>
+            <div class="test-status" id="systemStatus">
+                Loading...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load onboarding system -->
+    <script type="module">
+        import { OnboardingUtils } from './js/onboarding/utils.js';
+        import { OnboardingManager } from './js/onboarding/onboarding-manager.js';
+        import { ProfileCustomization } from './js/onboarding/profile-customization.js';
+        import { TutorialRegistry } from './js/onboarding/tutorials.js';
+        
+        // Make available globally for test functions
+        window.OnboardingUtils = OnboardingUtils;
+        window.testOnboardingManager = null;
+        window.testProfileCustomization = null;
+        window.testTutorialRegistry = new TutorialRegistry();
+        
+        // Initialize for testing
+        function initTest() {
+            window.testOnboardingManager = new OnboardingManager();
+            window.testOnboardingManager.init();
+            
+            window.testProfileCustomization = new ProfileCustomization();
+            window.testProfileCustomization.init();
+            
+            updateStatus();
+        }
+        
+        // Update status display
+        function updateStatus() {
+            const enabled = OnboardingUtils.isEnabled();
+            const progress = OnboardingUtils.getProgress();
+            const completed = JSON.parse(localStorage.getItem('tutorials_completed') || '[]');
+            
+            document.getElementById('featureFlagStatus').textContent = 
+                `Onboarding: ${enabled ? 'ENABLED' : 'DISABLED'} | ` +
+                `First Visit: ${progress.firstVisitCompleted ? 'Yes' : 'No'} | ` +
+                `Completed Tutorials: ${completed.length}`;
+            
+            document.getElementById('systemStatus').textContent = 
+                `User ID: ${OnboardingUtils.getCurrentUserId() || 'None'} | ` +
+                `Page: ${OnboardingUtils.getCurrentPage()} | ` +
+                `Customization: ${JSON.stringify(OnboardingUtils.getProfileCustomization())}`;
+        }
+        
+        // Test functions
+        window.enableOnboarding = function() {
+            OnboardingUtils.setEnabled(true);
+            initTest();
+            updateStatus();
+            document.getElementById('tutorialStatus').textContent = 'Onboarding enabled';
+        };
+        
+        window.disableOnboarding = function() {
+            OnboardingUtils.setEnabled(false);
+            if (window.testOnboardingManager) {
+                window.testOnboardingManager.destroy();
+                window.testOnboardingManager = null;
+            }
+            updateStatus();
+            document.getElementById('tutorialStatus').textContent = 'Onboarding disabled';
+        };
+        
+        window.resetProgress = function() {
+            localStorage.removeItem('onboarding_progress');
+            localStorage.removeItem('tutorials_completed');
+            updateStatus();
+            document.getElementById('tutorialStatus').textContent = 'Progress reset';
+        };
+        
+        window.clearAll = function() {
+            localStorage.removeItem('onboarding_progress');
+            localStorage.removeItem('tutorials_completed');
+            localStorage.removeItem('onboarding_enabled');
+            localStorage.removeItem('profile_customization');
+            updateStatus();
+            document.getElementById('tutorialStatus').textContent = 'All data cleared';
+        };
+        
+        window.showTutorial = function(tutorialId) {
+            if (!window.testOnboardingManager) {
+                initTest();
+            }
+            const tutorial = window.testTutorialRegistry.get(tutorialId);
+            if (tutorial) {
+                window.testOnboardingManager.showTutorial(tutorial);
+                document.getElementById('tutorialStatus').textContent = `Showing: ${tutorial.title}`;
+            } else {
+                document.getElementById('tutorialStatus').textContent = `Tutorial not found: ${tutorialId}`;
+            }
+        };
+        
+        window.showOwnProfile = function() {
+            if (!window.testProfileCustomization) {
+                initTest();
+            }
+            window.testProfileCustomization.showOwnProfileView();
+            document.getElementById('tutorialStatus').textContent = 'Showing own profile view';
+        };
+        
+        window.showOthersProfile = function() {
+            if (!window.testProfileCustomization) {
+                initTest();
+            }
+            window.testProfileCustomization.showOthersProfileView();
+            document.getElementById('tutorialStatus').textContent = 'Showing others profile view';
+        };
+        
+        window.togglePreview = function() {
+            if (!window.testProfileCustomization) {
+                initTest();
+            }
+            window.testProfileCustomization.togglePreview();
+            document.getElementById('tutorialStatus').textContent = 'Preview toggled';
+        };
+        
+        window.openCustomization = function() {
+            if (!window.testProfileCustomization) {
+                initTest();
+            }
+            const panel = document.querySelector('.onboarding-customization-panel');
+            if (panel) {
+                panel.style.display = 'block';
+                panel.classList.add('active');
+            } else {
+                window.testProfileCustomization.addCustomizationPanel();
+                const newPanel = document.querySelector('.onboarding-customization-panel');
+                if (newPanel) {
+                    newPanel.style.display = 'block';
+                    newPanel.classList.add('active');
+                }
+            }
+            document.getElementById('tutorialStatus').textContent = 'Customization panel opened';
+        };
+        
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                initTest();
+                setInterval(updateStatus, 2000);
+            });
+        } else {
+            initTest();
+            setInterval(updateStatus, 2000);
+        }
+    </script>
+</body>
+</html>
+

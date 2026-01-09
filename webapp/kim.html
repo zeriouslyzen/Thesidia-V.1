@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katanx // Messages</title>
+    <link rel="stylesheet" href="css/kim.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
+</head>
+
+<body>
+    <div class="kim-app">
+        <!-- Login / Key Gen Overlay -->
+        <div id="kim-login-overlay" class="login-overlay">
+            <div class="login-box">
+                <div class="brand-header">
+                    <span class="brand-glitch">Messages</span>
+                    <span class="brand-sub">Connect with others</span>
+                </div>
+                <div class="status-text">Setting up your connection...</div>
+                <input type="text" id="nickname-input" placeholder="Your name" maxlength="15" autocomplete="off">
+                <button id="connect-btn">Connect</button>
+                <div class="security-notice" style="display: none;">
+                    <!-- Removed tech language -->
+                </div>
+            </div>
+        </div>
+
+        <div class="kim-container hidden" id="kim-main-interface">
+            <!-- Sidebar: Contacts & Rooms -->
+            <aside class="kim-sidebar">
+                <div class="sidebar-header">
+                    <div class="user-profile">
+                        <div class="user-status-dot online"></div>
+                        <span id="my-nickname" class="user-name">GHOST</span>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <span>Chat Rooms</span>
+                    <button class="kim-add-room-btn" id="kimAddRoomBtn" title="Create new room">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-add">
+                            <path d="M12 5v14"></path>
+                            <path d="M5 12h14"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Expandable Room Categories -->
+                <div class="kim-room-category">
+                    <div class="kim-category-header" data-category="general">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-icon">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                        <span class="kim-category-name">General</span>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-toggle">
+                            <path d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </div>
+                    <div class="kim-category-rooms" id="general-rooms">
+                        <li class="kim-conversation-item active" data-room="global">
+                            <span class="kim-conversation-icon">💫</span>
+                            <span class="kim-conversation-name">Welcome</span>
+                            <span class="kim-room-desc">New beginnings</span>
+                        </li>
+                        <li class="kim-conversation-item" data-room="inspiration">
+                            <span class="kim-conversation-icon">🌱</span>
+                            <span class="kim-conversation-name">Inspiration</span>
+                            <span class="kim-room-desc">Creative sparks</span>
+                        </li>
+                        <li class="kim-conversation-item" data-room="mindfulness">
+                            <span class="kim-conversation-icon">🧘</span>
+                            <span class="kim-conversation-name">Mindfulness</span>
+                            <span class="kim-room-desc">Peace & presence</span>
+                        </li>
+                        <li class="kim-conversation-item" data-room="connections">
+                            <span class="kim-conversation-icon">🤝</span>
+                            <span class="kim-conversation-name">Connections</span>
+                            <span class="kim-room-desc">Building bridges</span>
+                        </li>
+                    </div>
+                </div>
+
+                <div class="kim-room-category">
+                    <div class="kim-category-header" data-category="creative">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-icon">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                        <span class="kim-category-name">Creative</span>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-toggle">
+                            <path d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </div>
+                    <div class="kim-category-rooms" id="creative-rooms">
+                        <li class="kim-conversation-item" data-room="art">
+                            <span class="kim-conversation-icon">🎨</span>
+                            <span class="kim-conversation-name">Art Studio</span>
+                            <span class="kim-room-desc">Express yourself</span>
+                        </li>
+                        <li class="kim-conversation-item" data-room="writing">
+                            <span class="kim-conversation-icon">✍️</span>
+                            <span class="kim-conversation-name">Writing Circle</span>
+                            <span class="kim-room-desc">Words & wisdom</span>
+                        </li>
+                        <li class="kim-conversation-item" data-room="music">
+                            <span class="kim-conversation-icon">🎵</span>
+                            <span class="kim-conversation-name">Sound Garden</span>
+                            <span class="kim-room-desc">Harmonious vibes</span>
+                        </li>
+                    </div>
+                </div>
+
+                <div class="kim-room-category">
+                    <div class="kim-category-header" data-category="growth">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-icon">
+                            <path d="M3 21V3h18"></path>
+                            <path d="M7 9l4-4 4 4"></path>
+                            <path d="M7 15l4-4 4 4"></path>
+                        </svg>
+                        <span class="kim-category-name">Growth</span>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-toggle">
+                            <path d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </div>
+                    <div class="kim-category-rooms" id="growth-rooms">
+                        <li class="kim-conversation-item" data-room="learning">
+                            <span class="kim-conversation-icon">📚</span>
+                            <span class="kim-conversation-name">Learning Path</span>
+                            <span class="kim-room-desc">Knowledge journey</span>
+                        </li>
+                        <li class="kim-conversation-item" data-room="goals">
+                            <span class="kim-conversation-icon">🎯</span>
+                            <span class="kim-conversation-name">Dream Space</span>
+                            <span class="kim-room-desc">Goals & aspirations</span>
+                        </li>
+                        <li class="kim-conversation-item" data-room="reflection">
+                            <span class="kim-conversation-icon">🪷</span>
+                            <span class="kim-conversation-name">Reflection</span>
+                            <span class="kim-room-desc">Inner peace</span>
+                        </li>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <span>Direct Messages</span>
+                    <div class="kim-online-count" id="kimOnlineCount">0 online</div>
+                </div>
+                <ul class="contact-list" id="user-list">
+                    <!-- Users injected here -->
+                </ul>
+            </aside>
+
+            <!-- Main Chat Area -->
+            <main class="kim-chat-area" id="kimChatArea">
+                <header class="kim-chat-header">
+                    <div class="kim-chat-title">
+                        <span class="kim-room-icon">💫</span>
+                        <span id="current-room-name">Welcome</span>
+                        <span class="kim-room-subtitle">New beginnings</span>
+                    </div>
+                    <div class="kim-chat-actions">
+                        <button id="kim-search-btn" class="kim-header-btn" title="Search messages">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-search">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                        </button>
+                        <button id="kim-attach-btn" class="kim-attach-btn" title="Attach file">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-attach">
+                                <path d="M14.828 14.828a4 4 0 0 1-5.656 0l-4-4A4 4 0 1 1 10.828 5.172l4 4a4 4 0 0 1 0 5.656z"/>
+                                <path d="M9 9l6 6"/>
+                                <path d="M9 15l6-6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="kim-messages-feed" id="messages-feed">
+                    <!-- Messages go here -->
+                    <div class="kim-system-message">
+                        Welcome to the conversation! 💫
+                    </div>
+                </div>
+
+                <div class="kim-typing-indicator hidden" id="typing-indicator">
+                    Someone is typing...
+                </div>
+
+                <div class="kim-input-area">
+                    <div class="kim-input-wrapper">
+                        <textarea id="message-input" placeholder="Share your thoughts..." rows="1"></textarea>
+                        <button id="send-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13"></path>
+                                <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- KIM Room Creation Modal -->
+        <div class="kim-modal" id="kimCreateRoomModal">
+            <div class="kim-modal-overlay"></div>
+            <div class="kim-modal-content">
+                <div class="kim-modal-header">
+                    <h3>Create New Room</h3>
+                    <button class="kim-modal-close" id="kimModalClose">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 6L6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="kim-modal-body">
+                    <div class="kim-form-group">
+                        <label for="kimRoomName">Room Name</label>
+                        <input type="text" id="kimRoomName" placeholder="Enter room name..." maxlength="50">
+                    </div>
+                    <div class="kim-form-group">
+                        <label for="kimRoomDescription">Description (optional)</label>
+                        <input type="text" id="kimRoomDescription" placeholder="What's this room about?" maxlength="100">
+                    </div>
+                    <div class="kim-form-group">
+                        <label for="kimRoomCategory">Category</label>
+                        <select id="kimRoomCategory">
+                            <option value="general">General</option>
+                            <option value="creative">Creative</option>
+                            <option value="growth">Growth</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="kim-form-group">
+                        <label for="kimRoomIcon">Icon</label>
+                        <div class="kim-icon-selector">
+                            <button class="kim-icon-option selected" data-icon="💫">💫</button>
+                            <button class="kim-icon-option" data-icon="🌱">🌱</button>
+                            <button class="kim-icon-option" data-icon="🧘">🧘</button>
+                            <button class="kim-icon-option" data-icon="🎨">🎨</button>
+                            <button class="kim-icon-option" data-icon="📚">📚</button>
+                            <button class="kim-icon-option" data-icon="🎯">🎯</button>
+                            <button class="kim-icon-option" data-icon="🪷">🪷</button>
+                            <button class="kim-icon-option" data-icon="✨">✨</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="kim-modal-footer">
+                    <button class="kim-btn-secondary" id="kimCancelCreate">Cancel</button>
+                    <button class="kim-btn-primary" id="kimCreateRoom">Create Room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/kim-crypto.js"></script>
+    <script src="js/kim-ui.js"></script>
+</body>
+
+</html>
+</html>

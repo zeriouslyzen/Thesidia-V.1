@@ -1,0 +1,548 @@
+/**
+ * Onboarding System Styles - Mobile-First
+ * Isolated styles optimized for touch interactions
+ */
+
+/* Overlay Base - Match app animation patterns */
+.onboarding-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Match app transition */
+    pointer-events: auto;
+    touch-action: pan-y; /* Allow vertical scrolling */
+    -webkit-tap-highlight-color: transparent;
+}
+
+.onboarding-overlay.active {
+    opacity: 1;
+}
+
+/* Full-Screen Overlay (Welcome Tutorial) */
+.onboarding-overlay.onboarding-fullscreen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.onboarding-fullscreen-content {
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 20px;
+    padding: 32px 24px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    position: relative;
+    animation: onboarding-fullscreen-enter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-overflow-scrolling: touch;
+}
+
+@keyframes onboarding-fullscreen-enter {
+    from {
+        transform: scale(0.95) translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Bottom Sheet (Mobile-Native Pattern) */
+.onboarding-overlay.onboarding-bottom-sheet {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.onboarding-bottom-sheet-content {
+    background: var(--bg-secondary, #1a1a1a);
+    border-top: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 20px 20px 0 0;
+    padding: 24px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.5);
+    position: relative;
+    animation: onboarding-bottom-sheet-enter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-overflow-scrolling: touch;
+    transform: translateY(0);
+    transition: transform 0.2s ease;
+}
+
+@keyframes onboarding-bottom-sheet-enter {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes onboarding-bottom-sheet-exit {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+/* Swipe Handle */
+.onboarding-swipe-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--text-tertiary, #666666);
+    border-radius: 2px;
+    margin: 12px auto 8px;
+    cursor: grab;
+}
+
+.onboarding-swipe-handle:active {
+    cursor: grabbing;
+}
+
+/* Content Styles (Shared) */
+.onboarding-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary, #ffffff);
+    margin: 0 0 16px 0;
+    line-height: 1.4;
+}
+
+.onboarding-content {
+    color: var(--text-secondary, #a0a0a0);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.onboarding-content p {
+    margin: 0 0 12px 0;
+}
+
+.onboarding-content p:last-child {
+    margin-bottom: 0;
+}
+
+.onboarding-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+/* Buttons - Mobile Touch Targets (44x44px minimum) */
+.onboarding-btn-primary,
+.onboarding-btn-secondary {
+    min-height: 44px; /* iOS/Android touch target minimum */
+    min-width: 44px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 16px; /* Larger for mobile readability */
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation; /* Prevent double-tap zoom */
+    user-select: none;
+}
+
+.onboarding-btn-primary {
+    background: var(--theme-neon, #ffffff);
+    color: var(--bg-primary, #000000);
+    flex: 1;
+    min-width: 120px;
+}
+
+.onboarding-btn-primary:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+}
+
+.onboarding-btn-secondary {
+    background: var(--bg-tertiary, #141414);
+    color: var(--text-primary, #ffffff);
+    border: 1px solid var(--border-color, #3a3a3a);
+    flex: 1;
+    min-width: 120px;
+}
+
+.onboarding-btn-secondary:active {
+    background: var(--bg-secondary, #1a1a1a);
+    border-color: var(--theme-neon, #ffffff);
+    transform: scale(0.98);
+}
+
+/* Stack buttons vertically on mobile */
+@media (max-width: 768px) {
+    .onboarding-actions {
+        flex-direction: column;
+    }
+    
+    .onboarding-btn-primary,
+    .onboarding-btn-secondary {
+        width: 100%;
+    }
+}
+
+/* Profile Customization - Mobile Touch Targets */
+.onboarding-profile-edit-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 20px;
+    background: var(--bg-tertiary, #141414);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 12px;
+    color: var(--text-primary, #ffffff);
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 12px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.onboarding-profile-edit-btn:active {
+    background: var(--bg-secondary, #1a1a1a);
+    border-color: var(--theme-neon, #ffffff);
+    transform: scale(0.98);
+}
+
+.onboarding-preview-toggle {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 12px;
+    color: var(--text-secondary, #a0a0a0);
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 12px;
+    margin-left: 8px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.onboarding-preview-toggle:active {
+    color: var(--text-primary, #ffffff);
+    border-color: var(--theme-neon, #ffffff);
+    transform: scale(0.98);
+}
+
+/* Private Sections */
+.onboarding-private-sections {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color, #3a3a3a);
+}
+
+.onboarding-private-section {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--bg-tertiary, #141414);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 8px;
+}
+
+.onboarding-private-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text-primary, #ffffff);
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.onboarding-private-section-content {
+    color: var(--text-secondary, #a0a0a0);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.onboarding-preview-mode .onboarding-private-sections {
+    display: none !important;
+}
+
+.onboarding-preview-mode .onboarding-profile-edit-btn {
+    display: none !important;
+}
+
+.onboarding-preview-mode .onboarding-preview-toggle {
+    display: block !important;
+}
+
+/* Customization Panel */
+.onboarding-customization-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    z-index: 10000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+.onboarding-customization-panel.active {
+    display: block;
+}
+
+.onboarding-customization-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.onboarding-customization-header h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary, #ffffff);
+}
+
+.onboarding-customization-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #a0a0a0);
+    font-size: 28px;
+    cursor: pointer;
+    padding: 8px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    border-radius: 8px;
+}
+
+.onboarding-customization-close:active {
+    color: var(--text-primary, #ffffff);
+    background: var(--bg-tertiary, #141414);
+}
+
+.onboarding-customization-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.onboarding-customization-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.onboarding-customization-option label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-primary, #ffffff);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px;
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.onboarding-customization-option input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    cursor: pointer;
+    accent-color: var(--theme-neon, #ffffff);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.onboarding-customization-success {
+    padding: 8px 12px;
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    border-radius: 6px;
+    color: #00ff00;
+    font-size: 13px;
+    margin-top: 12px;
+    text-align: center;
+}
+
+/* Tooltip (for future use) */
+.onboarding-tooltip {
+    position: absolute;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text-primary, #ffffff);
+    z-index: 10001;
+    pointer-events: none;
+    max-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.onboarding-tooltip::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+}
+
+.onboarding-tooltip.top::before {
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-color: var(--border-color, #3a3a3a);
+}
+
+.onboarding-tooltip.bottom::before {
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-color: var(--border-color, #3a3a3a);
+}
+
+/* Mobile-First: Default styles are mobile, desktop is enhancement */
+@media (min-width: 769px) {
+    /* Desktop enhancements */
+    .onboarding-bottom-sheet-content {
+        max-width: 500px;
+        border-radius: 20px;
+        border-top: 1px solid var(--border-color, #3a3a3a);
+        border-left: 1px solid var(--border-color, #3a3a3a);
+        border-right: 1px solid var(--border-color, #3a3a3a);
+    }
+    
+    .onboarding-actions {
+        flex-direction: row;
+    }
+    
+    .onboarding-btn-primary,
+    .onboarding-btn-secondary {
+        flex: 0 1 auto;
+        min-width: 120px;
+    }
+    
+    .onboarding-customization-panel {
+        max-width: 450px;
+    }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .onboarding-title {
+        font-size: 20px;
+    }
+    
+    .onboarding-content {
+        font-size: 15px;
+    }
+    
+    .onboarding-bottom-sheet-content {
+        padding: 20px;
+        max-height: 90vh;
+    }
+    
+    .onboarding-fullscreen-content {
+        padding: 24px 20px;
+        max-height: 90vh;
+    }
+    
+    .onboarding-customization-panel {
+        max-width: 100%;
+        width: 100%;
+        border-radius: 20px 20px 0 0;
+        bottom: 0;
+        top: auto;
+        transform: translate(-50%, 0);
+        max-height: 90vh;
+    }
+}
+
+/* Ensure onboarding doesn't interfere with existing modals */
+.onboarding-overlay {
+    z-index: 9999;
+}
+
+.onboarding-customization-panel {
+    z-index: 10000;
+}
+
+/* Accessibility - Mobile Focus States */
+.onboarding-overlay:focus-within {
+    outline: none;
+}
+
+/* Mobile: Remove focus outlines (touch devices don't need them) */
+@media (hover: none) and (pointer: coarse) {
+    .onboarding-btn-primary:focus,
+    .onboarding-btn-secondary:focus,
+    .onboarding-profile-edit-btn:focus,
+    .onboarding-preview-toggle:focus {
+        outline: none;
+    }
+}
+
+/* Desktop: Keep focus outlines for keyboard navigation */
+@media (hover: hover) and (pointer: fine) {
+    .onboarding-btn-primary:focus,
+    .onboarding-btn-secondary:focus {
+        outline: 2px solid var(--theme-neon, #ffffff);
+        outline-offset: 2px;
+    }
+}
+
+/* Prevent text selection on buttons during touch */
+.onboarding-btn-primary,
+.onboarding-btn-secondary,
+.onboarding-profile-edit-btn,
+.onboarding-preview-toggle {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Smooth scrolling for mobile */
+.onboarding-bottom-sheet-content,
+.onboarding-fullscreen-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+

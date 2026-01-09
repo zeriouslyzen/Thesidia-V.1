@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last Updated**: 2025-12-27
+**Last Updated**: 2026-01-08
 
 Complete index of Thesidia documentation organized by category. All documentation has been reorganized for better discoverability and maintainability.
 
@@ -11,9 +11,28 @@ Complete index of Thesidia documentation organized by category. All documentatio
 **New to Thesidia?** Start here:
 - [Main README](../README.md) - Project overview and quick start
 - [Quick Start Guide](../QUICK_START.md) - Get up and running in 5 minutes
-- [Engineering Practices](ENGINEERING.md) - Coding standards and workflows ⭐ NEW
-- [Architecture Overview](ARCHITECTURE.md) - System architecture and design ⭐ NEW
-- [Testing Guide](TESTING.md) - How to run and write tests ⭐ NEW
+- [Contributing Guide](../CONTRIBUTING.md) - How to contribute ⭐ NEW
+- [Engineering Practices](ENGINEERING.md) - Coding standards and workflows
+- [Architecture Overview](ARCHITECTURE.md) - System architecture and design
+- [Testing Guide](TESTING.md) - How to run and write tests
+
+---
+
+## 🔐 Security & Operations ⭐ NEW
+
+- **[SECURITY.md](../SECURITY.md)**: Security policy and vulnerability reporting
+- **[BOTTLENECKS_AND_TECH_DEBT.md](BOTTLENECKS_AND_TECH_DEBT.md)**: Technical debt registry
+
+### Runbooks
+- **[runbooks/README.md](runbooks/README.md)**: Operations runbook index
+- **[runbooks/server-crash-recovery.md](runbooks/server-crash-recovery.md)**: Server crash recovery
+- **[runbooks/deployment-rollback.md](runbooks/deployment-rollback.md)**: Deployment rollback
+
+### Architecture Decision Records (ADRs)
+- **[adr/README.md](adr/README.md)**: ADR index and purpose
+- **[adr/0001-json-storage-over-sql.md](adr/0001-json-storage-over-sql.md)**: Why JSON storage
+- **[adr/0002-sophia-7-layer-memory.md](adr/0002-sophia-7-layer-memory.md)**: Sophia memory design
+- **[adr/0003-ecdh-aes-encryption.md](adr/0003-ecdh-aes-encryption.md)**: KIM encryption choice
 
 ---
 

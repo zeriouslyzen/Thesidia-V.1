@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katanx // Messages</title>
+    <link rel="stylesheet" href="css/kim-sidebar.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#8b7355">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
+    
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered:', registration);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</head>
+<body class="kim-standalone">
+    <!-- KIM Sidebar Panel - Right Side -->
+    <div class="kim-sidebar-panel" id="kimSidebarPanel">
+        <div class="kim-panel-header">
+            <h3>Messages</h3>
+            <div class="kim-panel-actions">
+                <button id="kim-profile-btn" class="kim-header-btn" title="Profile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-profile">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+                <a href="/kim.html" class="kim-fullscreen-link" target="_blank" title="Open in full screen">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-fullscreen">
+                        <path d="M15 3h6v6"></path>
+                        <path d="M9 21H3v-6"></path>
+                        <path d="m21 3-7 7"></path>
+                        <path d="m3 21 7-7"></path>
+                    </svg>
+                </a>
+                <button class="kim-panel-close" id="kimPanelClose" aria-label="Close">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-close">
+                        <path d="M18 6L6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="kim-panel-content">
+            <!-- Login State -->
+            <div id="kim-login-state" class="kim-state">
+                <div class="kim-login-box">
+                    <div class="kim-status-text">Setting up your connection...</div>
+                    <input type="text" id="kim-nickname-input" placeholder="Your name" maxlength="15" autocomplete="off">
+                    <button id="kim-connect-btn">Connect</button>
+                </div>
+            </div>
+            
+            <!-- Status Message Editor (hidden by default, shown in settings) -->
+            <div id="kim-status-editor" class="kim-status-editor hidden">
+                <div class="kim-status-presets">
+                    <button class="kim-status-preset" data-status="online">Available</button>
+                    <button class="kim-status-preset" data-status="away">Away</button>
+                    <button class="kim-status-preset" data-status="busy">Busy</button>
+                    <button class="kim-status-preset" data-status="invisible">Invisible</button>
+                </div>
+                <textarea id="kim-status-message-input" placeholder="Status message (optional)" rows="2"></textarea>
+                <button id="kim-status-save-btn">Save Status</button>
+            </div>
+            
+            <!-- Profile Editor (hidden by default) -->
+            <div id="kim-profile-editor" class="kim-profile-editor hidden">
+                <div class="kim-profile-header">
+                    <h4>Edit Profile</h4>
+                    <button id="kim-profile-close" class="kim-profile-close">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-close">
+                            <path d="M18 6L6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="kim-profile-content">
+                    <div class="kim-profile-avatar-section">
+                        <div class="kim-avatar-preview" id="kim-avatar-preview"></div>
+                        <input type="file" id="kim-avatar-input" accept="image/*" style="display: none;">
+                        <button id="kim-avatar-upload-btn">Change Avatar</button>
+                    </div>
+                    <div class="kim-profile-fields">
+                        <label>Display Name</label>
+                        <input type="text" id="kim-profile-display-name" placeholder="Your display name" maxlength="30">
+                        <label>Bio</label>
+                        <textarea id="kim-profile-bio" placeholder="Tell us about yourself..." rows="3" maxlength="200"></textarea>
+                        <button id="kim-profile-save-btn">Save Profile</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Interface -->
+            <div id="kim-main-state" class="kim-state hidden">
+                <div class="kim-compact-layout">
+                    <!-- Conversations List (Left Sidebar) -->
+                    <div class="kim-conversations-list" id="kimConversationsList">
+                        <div class="kim-section-title">Chat Rooms</div>
+                        <div class="kim-conversation-item active" data-room="global">
+                            <span class="kim-conversation-icon">#</span>
+                            <span class="kim-conversation-name">General</span>
+                        </div>
+                        
+                        <div class="kim-section-title">Direct Messages</div>
+                        <div class="kim-users-list" id="kimUsersList">
+                            <div class="kim-empty-state">No one online yet</div>
+                        </div>
+                    </div>
+
+                    <!-- Chat View (Right Side) -->
+                    <div class="kim-chat-view" id="kimChatView">
+                        <div class="kim-chat-header">
+                            <span id="kim-current-room-name">General</span>
+                            <div class="kim-chat-header-actions">
+                                <button id="kim-search-btn" class="kim-header-btn" title="Search messages">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-search">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.35-4.35"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div id="kim-typing-indicator" class="kim-typing-indicator hidden"></div>
+                        </div>
+                        <div id="kim-search-bar" class="kim-search-bar hidden">
+                            <input type="text" id="kim-search-input" placeholder="Search messages...">
+                            <button id="kim-search-close">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-close-small">
+                                    <path d="M18 6L6 18"></path>
+                                    <path d="m6 6 12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="kim-messages-feed" id="kimMessagesFeed">
+                            <div class="kim-system-message">You're connected</div>
+                        </div>
+                        <div class="kim-input-area">
+                            <div class="kim-input-actions">
+                                <input type="file" id="kim-file-input" accept="image/*,video/*,.pdf,.doc,.docx,.txt" style="display: none;">
+                                <button id="kim-file-btn" class="kim-attach-btn" title="Attach file">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-attach">
+                                        <path d="M14.828 14.828a4 4 0 0 1-5.656 0l-4-4A4 4 0 1 1 10.828 5.172l4 4a4 4 0 0 1 0 5.656z"/>
+                                        <path d="M9 9l6 6"/>
+                                        <path d="M9 15l6-6"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <textarea id="kim-message-input" placeholder="Type a message..." rows="1"></textarea>
+                            <button id="kim-send-btn">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KIM Toggle Button (to be added to stream.html header) -->
+    <button class="kim-toggle-btn" id="kimToggleBtn" aria-label="Messages">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="js/kim-crypto.js"></script>
+    <script src="js/kim-device-integration.js"></script>
+    <script src="js/kim-media-processing.js"></script>
+    <script src="js/kim-ui-sidebar.js"></script>
+</body>
+</html>
+

@@ -18,6 +18,7 @@ logger = server_logger  # Alias for convenience
 from threading import Lock
 import time
 from pathlib import Path
+from datetime import datetime
 
 # Constants
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -109,6 +110,16 @@ except Exception as e:
 
 # Session configuration for OAuth
 app.secret_key = os.getenv('FLASK_SECRET_KEY', secrets.token_urlsafe(32))
+
+# Initialize SocketIO for real-time features
+try:
+    from flask_socketio import SocketIO
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+    SOCKETIO_AVAILABLE = True
+except ImportError:
+    socketio = None
+    SOCKETIO_AVAILABLE = False
+    print("Warning: Flask-SocketIO not available")
 
 # Initialize conversation store (SQLite) - safe no-op if imports unavailable
 conversation_store = None
@@ -401,6 +412,16 @@ def home():
         # Absolute last resort - return plain text
         error_msg = str(final_error) if final_error else "Unknown error"
         return f"Error: {error_msg}", 500, {'Content-Type': 'text/plain'}
+
+@app.route('/explore')
+def explore():
+    """Serve explore page - redirects to search"""
+    return send_from_directory('.', 'search.html')
+
+@app.route('/search')
+def search():
+    """Serve search page"""
+    return send_from_directory('.', 'search.html')
 
 @app.route('/robots.txt')
 def robots():
@@ -4142,8 +4163,12 @@ def phone_send_code():
     
     try:
         result = phone_auth_manager.send_verification_code(phone)
+        # In dev mode, log the code to console
+        if result.get('success') and result.get('mock_code'):
+            logger.info(f"📱 MOCK SMS CODE for {phone}: {result['mock_code']}")
         return jsonify(result)
     except Exception as e:
+        logger.error(f"Phone auth error: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/auth/phone/verify', methods=['POST'])
@@ -4206,6 +4231,32 @@ def phone_verify_code():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/auth/register', methods=['POST'])
+def email_register():
+    """Email/password registration"""
+    if not auth_manager:
+        return jsonify({'error': 'Authentication not available'}), 503
+    
+    data = request.get_json() or {}
+    email = data.get('email', '').strip()
+    password = data.get('password', '')
+    
+    if not email or not password:
+        return jsonify({'error': 'Email and password required'}), 400
+    
+    try:
+        # Use email as username (extract username part)
+        username = email.split('@')[0]
+        
+        # Register user
+        result = auth_manager.register_user(username, password, email=email)
+        
+        return jsonify(result)
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/auth/login', methods=['POST'])
 def email_login():
     """Email/password login"""
@@ -4233,6 +4284,30 @@ def email_login():
 @app.route('/api/auth/<provider>', methods=['GET'])
 def oauth_initiate(provider):
     """Initiate OAuth flow"""
+    # Check if in dev mode (mock OAuth)
+    is_dev = os.getenv('DEV_MODE', 'true').lower() == 'true'
+    
+    if is_dev and not oauth_manager:
+        # Mock OAuth - return success immediately
+        mock_user_id = f"user_{secrets.token_urlsafe(12)}"
+        mock_session_id = f"session_{secrets.token_urlsafe(12)}"
+        return f"""
+        <html>
+        <head><title>Mock OAuth - {provider}</title></head>
+        <body style="font-family: monospace; padding: 40px; text-align: center;">
+            <h2>🧪 Mock OAuth: {provider}</h2>
+            <p>In production, this would redirect to {provider}.</p>
+            <p>Mock user created: {mock_user_id}</p>
+            <script>
+                localStorage.setItem('thesidia_user_id', '{mock_user_id}');
+                localStorage.setItem('thesidia_session_id', '{mock_session_id}');
+                localStorage.setItem('thesidia_oauth_provider', '{provider}');
+                setTimeout(() => window.location.href = '/', 2000);
+            </script>
+        </body>
+        </html>
+        """
+    
     if not oauth_manager:
         return jsonify({'error': 'OAuth not available'}), 503
     
@@ -4325,6 +4400,25 @@ def oauth_callback(provider):
         return jsonify({'error': str(e)}), 500
 
 
+# Onboarding Feature Flag Endpoint
+@app.route('/api/onboarding/status', methods=['GET'])
+def onboarding_status():
+    """Get onboarding feature flag status"""
+    enabled = os.getenv('ONBOARDING_ENABLED', 'true').lower() == 'true'
+    return jsonify({
+        'enabled': enabled,
+        'configurable': True
+    })
+
+@app.route('/api/onboarding/test', methods=['GET'])
+def onboarding_test():
+    """Test endpoint to verify onboarding system is accessible"""
+    return jsonify({
+        'status': 'ok',
+        'message': 'Onboarding system is accessible',
+        'test_page': '/onboarding.html'
+    })
+
 # Catch-all route for static files - MUST be registered last so API routes match first
 # Skip this route on Vercel (Vercel handles static files)
 if not os.getenv('VERCEL'):
@@ -4367,6 +4461,376 @@ if not os.getenv('VERCEL'):
                 print(f"DEBUG: File not found: {path}")
                 return jsonify({'error': 'File not found', 'path': path}), 404
             raise e
+
+# --- KIM API Endpoints ---
+
+@app.route('/api/register', methods=['POST'])
+def register_kim_user():
+    """Register a user's session and public key, optionally linked to Katanx account."""
+    try:
+        from webapp.kim.storage import KIMStorage
+        kim_storage = KIMStorage()
+
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid JSON'}), 400
+
+        public_key = data.get('publicKey')
+        nickname = data.get('nickname')
+        katanx_token = data.get('katanxToken')  # Optional Katanx auth token
+        katanx_user_id = data.get('katanxUserId')  # Optional Katanx user ID
+
+        if not public_key or not nickname:
+            return jsonify({'error': 'Missing public key or nickname'}), 400
+
+        # Public key is a JWK object, convert to string for storage
+        if isinstance(public_key, dict):
+            # Use a unique identifier from the JWK
+            kim_user_id = public_key.get('x', '')[-16:] if public_key.get('x') else str(hash(str(public_key)))[-16:]
+            public_key_str = json.dumps(public_key)
+        else:
+            # Already a string
+            kim_user_id = str(public_key)[-16:]
+            public_key_str = public_key
+
+        # If Katanx auth is available and token provided, verify and link
+        display_name = nickname
+        avatar_url = None
+        if katanx_token and katanx_user_id:
+            # In a real implementation, verify the token with Katanx auth
+            pass
+
+        # Store in database
+        kim_storage.register_kim_user(
+            kim_user_id=kim_user_id,
+            public_key=public_key_str,
+            nickname=nickname,
+            katanx_user_id=katanx_user_id,
+            display_name=display_name,
+            avatar_url=avatar_url
+        )
+
+        # Store in memory for active session
+        global kim_connected_users
+        kim_connected_users[kim_user_id] = {
+            'public_key': public_key_str,
+            'nickname': nickname,
+            'katanx_user_id': katanx_user_id,
+            'display_name': display_name,
+            'avatar_url': avatar_url,
+            'status': 'online',
+            'last_seen': datetime.now().isoformat()
+        }
+
+        print(f"KIM: User registered: {nickname} ({kim_user_id})" + (f" [Katanx: {katanx_user_id}]" if katanx_user_id else ""))
+        return jsonify({
+            'userId': kim_user_id,
+            'status': 'registered',
+            'katanxLinked': bool(katanx_user_id)
+        })
+    except Exception as e:
+        print(f"KIM: Registration error: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/users', methods=['GET'])
+def get_kim_users():
+    """Get list of active users to chat with."""
+    try:
+        from webapp.kim.storage import KIMStorage
+        kim_storage = KIMStorage()
+
+        users_list = []
+        for uid, u in kim_connected_users.items():
+            # Parse public key if it's a JSON string
+            try:
+                public_key = json.loads(u['public_key']) if isinstance(u['public_key'], str) else u['public_key']
+            except:
+                public_key = u['public_key']
+
+            users_list.append({
+                'userId': uid,
+                'nickname': u['nickname'],
+                'displayName': u.get('display_name', u['nickname']),
+                'publicKey': public_key,
+                'status': u.get('status', 'online'),
+                'avatarUrl': u.get('avatar_url'),
+                'katanxUserId': u.get('katanx_user_id')
+            })
+        return jsonify(users_list)
+    except Exception as e:
+        print(f"KIM: Get users error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/kim/messages/<room_id>', methods=['GET'])
+def get_kim_messages(room_id):
+    """Get message history for a room with pagination."""
+    try:
+        from webapp.kim.storage import KIMStorage
+        kim_storage = KIMStorage()
+
+        limit = int(request.args.get('limit', 50))
+        offset = int(request.args.get('offset', 0))
+
+        messages = kim_storage.get_messages(room_id, limit, offset)
+        # Reverse to get chronological order (oldest first)
+        messages.reverse()
+
+        return jsonify({
+            'messages': messages,
+            'room_id': room_id,
+            'limit': limit,
+            'offset': offset,
+            'count': len(messages)
+        })
+    except Exception as e:
+        print(f"KIM: Get messages error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/kim/upload', methods=['POST'])
+def upload_kim_file():
+    """Upload and encrypt a file for KIM messaging"""
+    try:
+        from webapp.kim.storage import KIMStorage
+        from werkzeug.utils import secure_filename
+
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+
+        # Get user ID from request
+        user_id = request.form.get('userId') or request.args.get('userId')
+        if not user_id:
+            return jsonify({'error': 'User ID required'}), 400
+
+        # Validate file type and size
+        filename = secure_filename(file.filename)
+        file_ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf', 'txt', 'doc', 'docx', 'mp4', 'webm', 'mov'}
+
+        if file_ext not in allowed_extensions:
+            return jsonify({'error': f'File type not allowed. Allowed: {", ".join(allowed_extensions)}'}), 400
+
+        # Read file content
+        file_content = file.read()
+        file_size = len(file_content)
+
+        # Max 10MB
+        if file_size > 10 * 1024 * 1024:
+            return jsonify({'error': 'File too large. Maximum size is 10MB'}), 400
+
+        # Store encrypted file
+        uploads_dir = PROJECT_ROOT / 'data' / 'kim' / 'uploads'
+        uploads_dir.mkdir(parents=True, exist_ok=True)
+
+        timestamp = int(datetime.now().timestamp() * 1000)
+        unique_filename = f"{user_id}_{timestamp}_{filename}"
+        file_path = uploads_dir / unique_filename
+
+        # Save file
+        with open(file_path, 'wb') as f:
+            f.write(file_content)
+
+        # Determine media type
+        media_type = 'video' if file_ext in {'mp4', 'webm', 'mov'} else \
+                    'image' if file_ext in {'png', 'jpg', 'jpeg', 'gif', 'webp'} else \
+                    'document'
+
+        return jsonify({
+            'fileId': unique_filename,
+            'filename': filename,
+            'type': media_type,
+            'size': file_size,
+            'url': f'/api/kim/files/{unique_filename}'
+        }), 201
+
+    except Exception as e:
+        print(f"KIM: File upload error: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/kim/files/<filename>', methods=['GET'])
+def serve_kim_file(filename):
+    """Serve KIM uploaded files"""
+    try:
+        uploads_dir = PROJECT_ROOT / 'data' / 'kim' / 'uploads'
+        file_path = uploads_dir / secure_filename(filename)
+
+        if not file_path.exists():
+            return jsonify({'error': 'File not found'}), 404
+
+        from flask import send_from_directory
+        return send_from_directory(str(uploads_dir), secure_filename(filename))
+    except Exception as e:
+        print(f"KIM: File serve error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+# --- SocketIO Event Handlers ---
+
+# KIM Namespace (/kim) for encrypted messaging
+if SOCKETIO_AVAILABLE:
+    from webapp.kim.storage import KIMStorage
+
+    # Initialize KIM storage
+    kim_storage = KIMStorage()
+
+    # In-memory storage for active KIM sessions
+    kim_connected_users = {}
+    kim_session_to_user = {}
+
+    @socketio.on('connect', namespace='/kim')
+    def handle_kim_connect():
+        print(f"KIM: Client connected: {request.sid}")
+
+    @socketio.on('disconnect', namespace='/kim')
+    def handle_kim_disconnect():
+        print(f"KIM: Client disconnected: {request.sid}")
+        # Update user status to offline
+        user_id = kim_session_to_user.get(request.sid)
+        if user_id and user_id in kim_connected_users:
+            kim_connected_users[user_id]['status'] = 'offline'
+            kim_connected_users[user_id]['last_seen'] = datetime.now().isoformat()
+            kim_storage.update_user_status(user_id, 'offline')
+            # Broadcast presence update
+            socketio.emit('presence_update', {
+                'userId': user_id,
+                'status': 'offline',
+                'lastSeen': kim_connected_users[user_id]['last_seen']
+            }, namespace='/kim')
+        kim_session_to_user.pop(request.sid, None)
+
+    @socketio.on('presence_update', namespace='/kim')
+    def handle_kim_presence_update(data):
+        """Handle user presence status updates"""
+        user_id = data.get('userId')
+        status = data.get('status', 'online')
+        status_message = data.get('statusMessage')
+
+        if user_id in kim_connected_users:
+            kim_connected_users[user_id]['status'] = status
+            if status_message:
+                kim_connected_users[user_id]['status_message'] = status_message
+            kim_connected_users[user_id]['last_seen'] = datetime.now().isoformat()
+            kim_storage.update_user_status(user_id, status, status_message)
+
+            # Broadcast to all users
+            socketio.emit('presence_update', {
+                'userId': user_id,
+                'status': status,
+                'statusMessage': status_message,
+                'lastSeen': kim_connected_users[user_id]['last_seen']
+            }, namespace='/kim')
+
+    @socketio.on('heartbeat', namespace='/kim')
+    def handle_kim_heartbeat(data):
+        """Handle heartbeat/ping from client to maintain presence"""
+        user_id = data.get('userId')
+        if user_id and user_id in kim_connected_users:
+            kim_connected_users[user_id]['last_seen'] = datetime.now().isoformat()
+            kim_session_to_user[request.sid] = user_id
+            # Update status if it was away/busy but user is active
+            if kim_connected_users[user_id]['status'] in ['away', 'busy']:
+                # Don't auto-change to online, let user control it
+                pass
+
+    @socketio.on('typing_start', namespace='/kim')
+    def handle_kim_typing_start(data):
+        """Handle typing start event"""
+        room = data.get('room')
+        user_id = data.get('userId')
+        if room and user_id:
+            # Broadcast to all users in room except sender
+            socketio.emit('typing_indicator', {
+                'userId': user_id,
+                'room': room,
+                'typing': True
+            }, room=room, namespace='/kim', include_self=False)
+
+    @socketio.on('typing_stop', namespace='/kim')
+    def handle_kim_typing_stop(data):
+        """Handle typing stop event"""
+        room = data.get('room')
+        user_id = data.get('userId')
+        if room and user_id:
+            # Broadcast to all users in room except sender
+            socketio.emit('typing_indicator', {
+                'userId': user_id,
+                'room': room,
+                'typing': False
+            }, room=room, namespace='/kim', include_self=False)
+
+    @socketio.on('join', namespace='/kim')
+    def handle_kim_join(data):
+        """Join a chat room (dm or public)."""
+        room = data['room']
+        socketio.join_room(room, sid=request.sid, namespace='/kim')
+        print(f"KIM: User joined room: {room}")
+        socketio.emit('status', {'msg': f'Joined room {room}'}, room=room, namespace='/kim')
+
+    @socketio.on('encrypted_message', namespace='/kim')
+    def handle_kim_encrypted_message(data):
+        """
+        Relay encrypted message blob.
+        Server CANNOT read this.
+        data = {
+            'room': str,
+            'encryptedContent': str (base64/hex),
+            'iv': str,
+            'senderId': str,
+            'timestamp': str,
+            'messageId': str (optional, generated if not provided),
+            'parentMessageId': str (optional, for threading)
+        }
+        """
+        room = data.get('room')
+        if not room:
+            return
+
+        # Generate message ID if not provided
+        message_id = data.get('messageId') or f"{data.get('senderId')}_{int(datetime.now().timestamp() * 1000)}"
+
+        print(f"KIM: Relaying encrypted message in {room} (ID: {message_id})")
+
+        # Store message in database
+        kim_storage.store_message(
+            message_id=message_id,
+            room_id=room,
+            sender_id=data.get('senderId'),
+            encrypted_content=data.get('encryptedContent'),
+            iv=data.get('iv'),
+            mode=data.get('mode', 'AES-GCM'),
+            parent_message_id=data.get('parentMessageId')
+        )
+
+        # Add message ID to data
+        data['messageId'] = message_id
+
+        # Relay to everyone in room (including sender, client filters)
+        socketio.emit('new_encrypted_message', data, room=room, namespace='/kim')
+
+    @socketio.on('message_edit', namespace='/kim')
+    def handle_kim_message_edit(data):
+        """Handle message edit event"""
+        message_id = data.get('messageId')
+        user_id = data.get('userId')
+        new_content = data.get('newContent')
+
+        if not message_id or not user_id:
+            return
+
+        # In a full implementation, we'd update the database
+        # For now, we'll just broadcast the edit
+        socketio.emit('message_edited', {
+            'messageId': message_id,
+            'userId': user_id,
+            'newContent': new_content,
+            'editedAt': datetime.now().isoformat()
+        }, namespace='/kim')
 
 if __name__ == '__main__':
     import socket
@@ -4424,20 +4888,37 @@ if __name__ == '__main__':
         print(f"Starting server with HTTPS on https://0.0.0.0:{port}")
         print(f"Access from your phone: https://{local_ip}:{port}")
         print("Note: You may need to accept the self-signed certificate warning on your phone")
-        app.run(
-            host='0.0.0.0',  # Bind to all interfaces for network access
-            port=port,
-            debug=False,  # Disable debug in production
-            ssl_context=context
-        )
+        if SOCKETIO_AVAILABLE:
+            socketio.run(
+                app,
+                host='0.0.0.0',  # Bind to all interfaces for network access
+                port=port,
+                debug=False,  # Disable debug in production
+                ssl_context=context
+            )
+        else:
+            app.run(
+                host='0.0.0.0',  # Bind to all interfaces for network access
+                port=port,
+                debug=False,  # Disable debug in production
+                ssl_context=context
+            )
     else:
         print(f"Starting server on http://0.0.0.0:{port}")
         print(f"Access from your phone: http://{local_ip}:{port}")
         print(f"Access from this computer: http://localhost:{port}")
-        app.run(
-            host='0.0.0.0',  # Bind to all interfaces for network access
-            port=port,
-            debug=False  # Disable debug in production
-        )
+        if SOCKETIO_AVAILABLE:
+            socketio.run(
+                app,
+                host='0.0.0.0',  # Bind to all interfaces for network access
+                port=port,
+                debug=False  # Disable debug in production
+            )
+        else:
+            app.run(
+                host='0.0.0.0',  # Bind to all interfaces for network access
+                port=port,
+                debug=False  # Disable debug in production
+            )
 
 

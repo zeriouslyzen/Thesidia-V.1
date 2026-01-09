@@ -3635,6 +3635,15 @@
       "defensiveness_detected": false,
       "expansion_detected": false,
       "user_feedback": null
+    },
+    {
+      "query": "Hello bridge check",
+      "response_length": 12300,
+      "timestamp": "2025-12-30T21:25:50.704087",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
     }
   ],
   "expansion_metrics": [],

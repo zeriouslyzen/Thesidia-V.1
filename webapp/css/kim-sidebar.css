@@ -1,0 +1,2142 @@
+/* Body styles - ONLY for standalone kim-sidebar.html page */
+/* These should NOT affect stream.html or other pages */
+body.kim-standalone {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #e8e8e8;
+    font-family: 'Inconsolata', monospace;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Removed body::before message - not needed for integrated pages */
+
+/* KIM Sidebar Panel - Right Side Slide Out */
+.kim-sidebar-panel {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 420px;
+    max-width: 90vw;
+    height: 100vh;
+    background: var(--bg-secondary, #1a1a1a);
+    border-left: 1px solid var(--border-color, #3a3a3a);
+    z-index: 1000; /* Higher than notepad (usually 999) but lower than modals */
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    visibility: hidden;
+    /* Prevent conflicts with other panels */
+    pointer-events: none;
+}
+
+.kim-sidebar-panel.open {
+    right: 0;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Ensure panel is hidden by default */
+.kim-sidebar-panel:not(.open) {
+    right: -420px !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    transform: translateX(100%) !important;
+}
+
+/* Panel Header */
+.kim-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+    background: var(--bg-secondary, #1a1a1a);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+}
+
+.kim-panel-header h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary, #e8e8e8);
+    margin: 0;
+}
+
+.kim-panel-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.kim-fullscreen-link {
+    color: var(--text-secondary, #999);
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 1;
+    transition: color 0.2s ease;
+    padding: 4px;
+}
+
+.kim-fullscreen-link:hover {
+    color: var(--text-primary, #e8e8e8);
+}
+
+.kim-panel-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.kim-panel-close:hover {
+    color: var(--text-primary, #e8e8e8);
+}
+
+/* Panel Content */
+.kim-panel-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* State Management */
+.kim-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+.kim-state.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+}
+
+.kim-state.hidden {
+    display: none;
+}
+
+/* Login State */
+.kim-login-box {
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.kim-status-text {
+    font-size: 14px;
+    color: var(--text-secondary, #999);
+    text-align: center;
+}
+
+#kim-nickname-input {
+    width: 100%;
+    max-width: 280px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color, #3a3a3a);
+    color: var(--text-primary, #e8e8e8);
+    padding: 12px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#kim-nickname-input:focus {
+    outline: none;
+    border-color: var(--accent, #8b7355);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.15);
+}
+
+#kim-connect-btn {
+    width: 100%;
+    max-width: 280px;
+    background: var(--accent, #8b7355);
+    color: var(--bg-dark, #1a1a1a);
+    border: none;
+    padding: 12px;
+    font-family: 'Inconsolata', monospace;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+#kim-connect-btn:hover {
+    background: var(--accent-light, #a68b6f);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+}
+
+#kim-connect-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Compact Layout */
+.kim-compact-layout {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Conversations List */
+.kim-conversations-list {
+    width: 160px;
+    border-right: 1px solid var(--border-color, #3a3a3a);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+    background: var(--bg-panel, #242424);
+}
+
+.kim-conversation-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    color: var(--text-secondary, #999);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kim-conversation-item:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+}
+
+.kim-conversation-item.active {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+    border-left: 3px solid var(--accent, #8b7355);
+    padding-left: calc(12px - 3px);
+}
+
+.kim-conversation-icon {
+    color: var(--accent, #8b7355);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.kim-conversation-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kim-section-title {
+    padding: 12px;
+    font-size: 10px;
+    color: var(--text-tertiary, #666);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+}
+
+.kim-users-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.kim-empty-state {
+    padding: 20px 12px;
+    text-align: center;
+    color: var(--text-tertiary, #666);
+    font-size: 11px;
+    font-style: italic;
+}
+
+.kim-user-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+    font-size: 13px;
+    color: var(--text-secondary, #999);
+}
+
+.kim-user-item:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+}
+
+.kim-user-item.active {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+    border-left: 3px solid var(--accent, #8b7355);
+    padding-left: calc(12px - 3px);
+}
+
+/* Status Editor */
+.kim-status-editor {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+    background: var(--bg-panel, #242424);
+}
+
+.kim-status-editor.hidden {
+    display: none;
+}
+
+.kim-status-presets {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.kim-status-preset {
+    padding: 6px 12px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    color: var(--text-secondary, #999);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.kim-status-preset:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+    border-color: var(--accent, #8b7355);
+}
+
+.kim-status-preset.active {
+    background: var(--accent, #8b7355);
+    color: #fff;
+    border-color: var(--accent, #8b7355);
+}
+
+#kim-status-message-input {
+    width: 100%;
+    padding: 8px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    color: var(--text-primary, #e8e8e8);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    resize: vertical;
+    margin-bottom: 8px;
+}
+
+#kim-status-save-btn {
+    padding: 8px 16px;
+    background: var(--accent, #8b7355);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s ease;
+}
+
+#kim-status-save-btn:hover {
+    background: var(--accent-light, #a68b6f);
+}
+
+/* Typing Indicator */
+.kim-typing-indicator {
+    font-size: 12px;
+    color: var(--text-secondary, #999);
+    font-style: italic;
+    padding: 8px 16px;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: typing-fade-in 0.3s ease;
+}
+
+.kim-typing-indicator.hidden {
+    display: none;
+}
+
+.kim-typing-indicator::before {
+    content: '';
+    width: 20px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent, #8b7355), var(--text-secondary, #999), var(--accent, #8b7355));
+    background-size: 20px 4px;
+    border-radius: 2px;
+    animation: typing-wave 1.4s ease-in-out infinite;
+}
+
+@keyframes typing-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes typing-wave {
+    0%, 60%, 100% {
+        background-position: -20px 0;
+    }
+    30% {
+        background-position: 20px 0;
+    }
+}
+
+/* Read Receipts */
+.kim-read-receipt {
+    font-size: 12px;
+    color: var(--text-tertiary, #666);
+    margin-left: 6px;
+}
+
+/* Message Reactions */
+.kim-message-reactions {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.kim-reaction {
+    padding: 2px 6px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 12px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.kim-reaction:hover {
+    background: var(--bg-hover, #2d2d2d);
+    border-color: var(--accent, #8b7355);
+}
+
+.kim-message-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    margin-top: 4px;
+}
+
+.kim-message:hover .kim-message-actions {
+    opacity: 1;
+}
+
+.kim-reaction-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.kim-reaction-btn:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+}
+
+.kim-reaction-picker {
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    gap: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.kim-reaction-option {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.kim-reaction-option:hover {
+    background: var(--bg-hover, #2d2d2d);
+}
+
+/* File Input Area */
+.kim-input-actions {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.kim-attach-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.kim-attach-btn:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+}
+
+/* File Preview in Messages */
+.kim-message-file {
+    margin-top: 8px;
+    padding: 8px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 6px;
+}
+
+.kim-message-file img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 4px;
+}
+
+.kim-message-file video {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 4px;
+}
+
+.kim-file-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 6px;
+    margin-top: 4px;
+}
+
+.kim-file-icon {
+    font-size: 20px;
+}
+
+.kim-file-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.kim-file-name {
+    font-size: 13px;
+    color: var(--text-primary, #e8e8e8);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kim-file-size {
+    font-size: 11px;
+    color: var(--text-tertiary, #666);
+}
+
+.kim-file-download {
+    color: var(--accent, #8b7355);
+    text-decoration: none;
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid var(--accent, #8b7355);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.kim-file-download:hover {
+    background: var(--accent, #8b7355);
+    color: #fff;
+}
+
+/* Chat Header Actions */
+.kim-chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+    background: var(--bg-secondary, #1a1a1a);
+    flex-shrink: 0;
+}
+
+.kim-chat-header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.kim-header-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.kim-header-btn:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+}
+
+/* Search Bar */
+.kim-search-bar {
+    display: flex;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+    background: var(--bg-panel, #242424);
+    gap: 8px;
+}
+
+.kim-search-bar.hidden {
+    display: none;
+}
+
+#kim-search-input {
+    flex: 1;
+    padding: 6px 12px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    color: var(--text-primary, #e8e8e8);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+}
+
+#kim-search-input:focus {
+    outline: none;
+    border-color: var(--accent, #8b7355);
+}
+
+#kim-search-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 8px;
+    transition: color 0.2s ease;
+}
+
+#kim-search-close:hover {
+    color: var(--text-primary, #e8e8e8);
+}
+
+.kim-message.highlight {
+    background: rgba(139, 115, 85, 0.1);
+    border-left: 3px solid var(--accent, #8b7355);
+}
+
+/* Message Threading */
+.kim-message-reply {
+    margin-left: 20px;
+    border-left: 2px solid var(--border-color, #3a3a3a);
+    padding-left: 12px;
+}
+
+.kim-reply-preview {
+    font-size: 11px;
+    color: var(--text-tertiary, #666);
+    font-style: italic;
+    margin-bottom: 4px;
+    padding: 4px 8px;
+    background: var(--bg-secondary, #1a1a1a);
+    border-radius: 4px;
+}
+
+.kim-edited-indicator {
+    font-size: 10px;
+    color: var(--text-tertiary, #666);
+    font-style: italic;
+    margin-left: 6px;
+}
+
+.kim-reply-btn,
+.kim-edit-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.kim-reply-btn:hover,
+.kim-edit-btn:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+}
+
+/* Offline Indicator */
+.kim-offline-indicator {
+    padding: 8px 16px;
+    background: rgba(248, 113, 113, 0.1);
+    border-bottom: 1px solid rgba(248, 113, 113, 0.3);
+    color: #f87171;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Notification Badge */
+.kim-notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #f87171;
+    color: #fff;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 0 4px;
+}
+
+.kim-notification-badge.hidden {
+    display: none;
+}
+
+/* Toggle Button in Stream Header */
+.kim-toggle-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kim-toggle-btn:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+}
+
+.kim-toggle-btn.active {
+    background: var(--accent, #8b7355);
+    color: #fff;
+}
+
+/* Profile Editor */
+.kim-profile-editor {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+    background: var(--bg-panel, #242424);
+}
+
+.kim-profile-editor.hidden {
+    display: none;
+}
+
+.kim-profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.kim-profile-header h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary, #e8e8e8);
+}
+
+.kim-profile-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    font-size: 20px;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.kim-profile-close:hover {
+    color: var(--text-primary, #e8e8e8);
+}
+
+.kim-profile-avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.kim-avatar-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 2px solid var(--border-color, #3a3a3a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.kim-avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.kim-avatar-upload-btn {
+    padding: 6px 12px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    color: var(--text-primary, #e8e8e8);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.kim-avatar-upload-btn:hover {
+    background: var(--bg-hover, #2d2d2d);
+    border-color: var(--accent, #8b7355);
+}
+
+.kim-profile-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.kim-profile-fields label {
+    font-size: 12px;
+    color: var(--text-secondary, #999);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kim-profile-fields input,
+.kim-profile-fields textarea {
+    padding: 8px 12px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    color: var(--text-primary, #e8e8e8);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    resize: vertical;
+}
+
+.kim-profile-fields input:focus,
+.kim-profile-fields textarea:focus {
+    outline: none;
+    border-color: var(--accent, #8b7355);
+}
+
+.kim-profile-save-btn {
+    padding: 10px 16px;
+    background: var(--accent, #8b7355);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+    margin-top: 8px;
+}
+
+.kim-profile-save-btn:hover {
+    background: var(--accent-light, #a68b6f);
+}
+
+.kim-user-status-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--accent, #8b7355);
+    border-radius: 50%;
+    border: 2px solid var(--bg-secondary, #1a1a1a);
+    transition: all 0.3s ease;
+    position: relative;
+    flex-shrink: 0;
+    animation: kim-status-glow 3s ease-in-out infinite;
+}
+
+.kim-user-status-dot.status-online {
+    background: #4ade80;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+    animation: kim-online-breath 2s ease-in-out infinite;
+}
+
+.kim-user-status-dot.status-away {
+    background: #f59e0b;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+    animation: kim-away-gentle 3s ease-in-out infinite;
+}
+
+.kim-user-status-dot.status-busy {
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+    animation: kim-busy-pulse 1.5s ease-in-out infinite;
+}
+
+.kim-user-status-dot.status-offline {
+    background: #6b7280;
+    box-shadow: 0 0 4px rgba(107, 114, 128, 0.3);
+    animation: none;
+    opacity: 0.5;
+}
+
+.kim-user-name {
+    color: var(--text-primary, #e8e8e8);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Chat View */
+.kim-chat-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Allow flex shrinking */
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--bg-primary, #0a0a0a) 0%, var(--bg-secondary, #1a1a1a) 100%);
+    position: relative;
+    border-radius: 8px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.kim-chat-view::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(139, 115, 85, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(74, 222, 128, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    border-radius: 8px;
+}
+
+.kim-chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary, #e8e8e8);
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(139, 115, 85, 0.1), rgba(74, 222, 128, 0.05));
+    backdrop-filter: blur(10px);
+    border-radius: 8px 8px 0 0;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.kim-current-room-name {
+    background: linear-gradient(45deg, var(--accent, #8b7355), var(--text-primary, #e8e8e8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.kim-messages-feed {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0; /* Allow flex shrinking */
+    will-change: scroll-position; /* Optimize for scrolling */
+    position: relative;
+    z-index: 1;
+}
+
+.kim-messages-feed::-webkit-scrollbar {
+    width: 6px;
+}
+
+.kim-messages-feed::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.kim-messages-feed::-webkit-scrollbar-thumb {
+    background: var(--accent, #8b7355);
+    border-radius: 3px;
+    animation: scrollbar-pulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollbar-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+.kim-system-message {
+    text-align: center;
+    color: var(--text-tertiary, #666);
+    font-size: 11px;
+    margin: 8px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+}
+
+.kim-message {
+    max-width: 85%;
+    display: flex;
+    flex-direction: column;
+    animation: messageSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.kim-message.self {
+    align-self: flex-end;
+    align-items: flex-end;
+    animation: messageSlideInSelf 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes messageSlideInSelf {
+    from {
+        opacity: 0;
+        transform: translateY(20px) translateX(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(0) scale(1);
+    }
+}
+
+.kim-message.peer {
+    align-self: flex-start;
+    animation: messageSlideInPeer 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes messageSlideInPeer {
+    from {
+        opacity: 0;
+        transform: translateY(20px) translateX(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(0) scale(1);
+    }
+}
+
+.kim-message-meta {
+    font-size: 11px;
+    color: var(--text-secondary, #999);
+    margin-bottom: 6px;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.kim-message-bubble {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--bg-panel, #242424), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    word-wrap: break-word;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.kim-message-bubble:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.kim-message.self .kim-message-bubble {
+    background: linear-gradient(135deg, rgba(139, 115, 85, 0.2), rgba(139, 115, 85, 0.1));
+    border-color: var(--accent, #8b7355);
+    border-width: 1px;
+    position: relative;
+}
+
+.kim-message.self .kim-message-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    right: -8px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid var(--accent, #8b7355);
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+
+.kim-message.peer .kim-message-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-right: 8px solid var(--border-color, #3a3a3a);
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+
+.kim-input-area {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-color, #3a3a3a);
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(139, 115, 85, 0.05), rgba(74, 222, 128, 0.03));
+    backdrop-filter: blur(10px);
+    border-radius: 0 0 8px 8px;
+    position: relative;
+    z-index: 2;
+}
+
+#kim-message-input {
+    flex: 1;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border-color, #3a3a3a);
+    color: var(--text-primary, #e8e8e8);
+    padding: 12px 16px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 14px;
+    outline: none;
+    resize: none;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 44px;
+    max-height: 120px;
+    line-height: 1.5;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+#kim-message-input:focus {
+    border-color: var(--accent, #8b7355);
+    background: linear-gradient(135deg, rgba(139, 115, 85, 0.1), rgba(255, 255, 255, 0.05));
+    box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.2), inset 0 0 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+#kim-message-input::placeholder {
+    color: var(--text-secondary, #999);
+    opacity: 0.7;
+}
+
+#kim-send-btn {
+    background: linear-gradient(135deg, var(--accent, #8b7355), rgba(139, 115, 85, 0.8));
+    color: var(--bg-dark, #1a1a1a);
+    border: none;
+    padding: 12px 24px;
+    font-family: 'Inconsolata', monospace;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    flex-shrink: 0;
+    font-size: 14px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(139, 115, 85, 0.3);
+}
+
+#kim-send-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+#kim-send-btn:hover::before {
+    left: 100%;
+}
+
+#kim-send-btn:hover {
+    background: linear-gradient(135deg, var(--accent-hover, #9b8365), rgba(155, 131, 101, 0.8));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(139, 115, 85, 0.4);
+}
+
+#kim-send-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(139, 115, 85, 0.3);
+}
+
+/* Toggle Button */
+.kim-toggle-btn {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 50%;
+    color: var(--text-primary, #e8e8e8);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 199;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.kim-toggle-btn:hover {
+    background: var(--bg-hover, #2d2d2d);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.kim-toggle-btn.active {
+    background: var(--accent, #8b7355);
+    color: var(--bg-dark, #1a1a1a);
+}
+
+/* Room-Specific Beautiful Themes */
+.kim-chat-view[data-room="global"] {
+    background: linear-gradient(135deg, var(--bg-primary, #0a0a0a) 0%, var(--bg-secondary, #1a1a1a) 100%);
+}
+
+.kim-chat-view[data-room="global"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(139, 115, 85, 0.1), rgba(74, 222, 128, 0.05));
+}
+
+.kim-chat-view[data-room="inspiration"] {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2a 50%, #0a1a0a 100%);
+}
+
+.kim-chat-view[data-room="inspiration"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 177, 153, 0.05));
+}
+
+.kim-chat-view[data-room="inspiration"] .kim-message.self .kim-message-bubble {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 177, 153, 0.1));
+    border-color: #ff6b6b;
+}
+
+.kim-chat-view[data-room="mindfulness"] {
+    background: linear-gradient(135deg, #0a1a0a 0%, #1a2a1a 50%, #0a0a1a 100%);
+}
+
+.kim-chat-view[data-room="mindfulness"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(129, 236, 236, 0.05));
+}
+
+.kim-chat-view[data-room="mindfulness"] .kim-message.self .kim-message-bubble {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(129, 236, 236, 0.1));
+    border-color: #4ade80;
+}
+
+.kim-chat-view[data-room="connections"] {
+    background: linear-gradient(135deg, #1a0a1a 0%, #2a1a2a 50%, #1a0a0a 100%);
+}
+
+.kim-chat-view[data-room="connections"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(255, 20, 147, 0.1), rgba(255, 105, 180, 0.05));
+}
+
+.kim-chat-view[data-room="connections"] .kim-message.self .kim-message-bubble {
+    background: linear-gradient(135deg, rgba(255, 20, 147, 0.2), rgba(255, 105, 180, 0.1));
+    border-color: #ff1493;
+}
+
+.kim-chat-view[data-room="art"] {
+    background: linear-gradient(135deg, #1a1a0a 0%, #2a2a1a 50%, #1a0a1a 100%);
+}
+
+.kim-chat-view[data-room="art"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.05));
+}
+
+.kim-chat-view[data-room="writing"] {
+    background: linear-gradient(135deg, #0a1a1a 0%, #1a2a2a 50%, #0a0a1a 100%);
+}
+
+.kim-chat-view[data-room="writing"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(186, 85, 211, 0.05));
+}
+
+.kim-chat-view[data-room="music"] {
+    background: linear-gradient(135deg, #1a0a0a 0%, #2a1a1a 50%, #0a0a1a 100%);
+}
+
+.kim-chat-view[data-room="music"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.1), rgba(255, 99, 71, 0.05));
+}
+
+.kim-chat-view[data-room="learning"] {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2a 50%, #0a1a1a 100%);
+}
+
+.kim-chat-view[data-room="learning"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.1), rgba(30, 144, 255, 0.05));
+}
+
+.kim-chat-view[data-room="goals"] {
+    background: linear-gradient(135deg, #1a1a0a 0%, #2a2a1a 50%, #1a0a0a 100%);
+}
+
+.kim-chat-view[data-room="goals"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(255, 69, 0, 0.1), rgba(255, 140, 0, 0.05));
+}
+
+.kim-chat-view[data-room="reflection"] {
+    background: linear-gradient(135deg, #0a1a1a 0%, #1a2a2a 50%, #0a0a0a 100%);
+}
+
+.kim-chat-view[data-room="reflection"] .kim-chat-header {
+    background: linear-gradient(135deg, rgba(147, 112, 219, 0.1), rgba(186, 85, 211, 0.05));
+}
+
+/* Room Transition Animation */
+@keyframes room-transition {
+    0% { opacity: 0.8; filter: blur(1px); }
+    50% { opacity: 1; filter: blur(0px); }
+    100% { opacity: 1; filter: blur(0px); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .kim-sidebar-panel {
+        width: 100vw;
+        right: -100vw;
+    }
+    
+    .kim-compact-layout {
+        flex-direction: column;
+    }
+    
+    .kim-conversations-list {
+        width: 100%;
+        max-height: 200px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color, #3a3a3a);
+    }
+    
+    .kim-toggle-btn {
+        right: 12px;
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* Lightweight - No heavy animations when in background */
+.kim-sidebar-panel:not(.open) {
+    will-change: right;
+}
+
+.kim-sidebar-panel.open {
+    will-change: auto;
+}
+
+/* Somatic SVG Icon Animations */
+.kim-icon-search {
+    transition: all 0.3s ease;
+    animation: kim-pulse-slow 3s ease-in-out infinite;
+}
+
+.kim-icon-search:hover {
+    animation: kim-pulse-fast 0.6s ease-in-out infinite;
+}
+
+.kim-icon-attach {
+    transition: all 0.3s ease;
+    animation: kim-breathe 4s ease-in-out infinite;
+}
+
+.kim-icon-attach:hover {
+    animation: kim-bounce 0.8s ease-in-out;
+}
+
+.kim-icon-fullscreen {
+    transition: all 0.3s ease;
+    animation: kim-glow 5s ease-in-out infinite;
+}
+
+.kim-icon-fullscreen:hover {
+    animation: kim-expand 0.4s ease-out;
+}
+
+.kim-icon-close {
+    transition: all 0.2s ease;
+}
+
+.kim-icon-close:hover {
+    animation: kim-spin 0.3s ease-in-out;
+}
+
+.kim-icon-close-small {
+    transition: all 0.2s ease;
+}
+
+.kim-icon-close-small:hover {
+    animation: kim-fade-rotate 0.4s ease-in-out;
+}
+
+.kim-icon-profile {
+    transition: all 0.3s ease;
+    animation: kim-heartbeat 2s ease-in-out infinite;
+}
+
+.kim-icon-profile:hover {
+    animation: kim-scale 0.3s ease-out;
+}
+
+/* Keyframe Animations */
+@keyframes kim-pulse-slow {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes kim-pulse-fast {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes kim-breathe {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.02) rotate(1deg); }
+    50% { transform: scale(1.05) rotate(0deg); }
+    75% { transform: scale(1.02) rotate(-1deg); }
+}
+
+@keyframes kim-bounce {
+    0% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.2) translateY(-2px); }
+    100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes kim-glow {
+    0%, 100% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); }
+    50% { filter: drop-shadow(0 0 6px rgba(255,255,255,0.4)); }
+}
+
+@keyframes kim-expand {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1.1); }
+}
+
+@keyframes kim-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(180deg); }
+}
+
+@keyframes kim-fade-rotate {
+    0% { opacity: 0.7; transform: rotate(0deg); }
+    100% { opacity: 1; transform: rotate(90deg); }
+}
+
+@keyframes kim-heartbeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    50% { transform: scale(1.05); }
+    75% { transform: scale(1.1); }
+}
+
+@keyframes kim-scale {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1.1); }
+}
+
+@keyframes kim-status-glow {
+    0%, 100% { box-shadow: 0 0 4px rgba(139, 115, 85, 0.3); }
+    50% { box-shadow: 0 0 8px rgba(139, 115, 85, 0.5); }
+}
+
+@keyframes kim-online-breath {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 12px rgba(74, 222, 128, 0.8);
+    }
+}
+
+@keyframes kim-away-gentle {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+        box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
+    }
+}
+
+@keyframes kim-busy-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 16px rgba(239, 68, 68, 1);
+    }
+}
+
+/* Room Categories and Expandable Sections */
+.kim-room-category {
+    margin-bottom: 8px;
+}
+
+.kim-category-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: var(--bg-hover, #2d2d2d);
+    margin-bottom: 4px;
+}
+
+.kim-category-header:hover {
+    background: var(--bg-active, #3d3d3d);
+}
+
+.kim-category-icon {
+    margin-right: 8px;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
+.kim-category-name {
+    flex: 1;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.kim-category-toggle {
+    transition: transform 0.2s ease;
+    opacity: 0.6;
+}
+
+.kim-category-header.expanded .kim-category-toggle {
+    transform: rotate(180deg);
+}
+
+.kim-category-header.expanded .kim-category-icon {
+    opacity: 1;
+    color: var(--accent, #8b7355);
+}
+
+.kim-room-category.collapsed .kim-category-rooms {
+    display: none;
+}
+
+.kim-category-rooms {
+    padding-left: 20px;
+    animation: kim-slide-down 0.3s ease-out;
+}
+
+@keyframes kim-slide-down {
+    from {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+        transform: translateY(0);
+    }
+}
+
+.kim-conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.kim-conversation-item:hover {
+    background: var(--bg-hover, #2d2d2d);
+}
+
+.kim-conversation-item.active {
+    background: var(--bg-active, #3d3d3d);
+    border-left: 3px solid var(--accent, #8b7355);
+}
+
+.kim-conversation-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border-radius: 4px;
+    background: var(--bg-secondary, #1a1a1a);
+    transition: all 0.2s ease;
+}
+
+.kim-conversation-item.active .kim-conversation-icon {
+    background: var(--accent, #8b7355);
+    color: var(--bg-primary, #0a0a0a);
+}
+
+.kim-conversation-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.kim-room-desc {
+    font-size: 11px;
+    opacity: 0.7;
+    color: var(--text-secondary, #999);
+}
+
+.kim-add-room-btn {
+    background: none;
+    border: 1px solid var(--border-color, #3a3a3a);
+    color: var(--text-secondary, #999);
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: auto;
+}
+
+.kim-add-room-btn:hover {
+    background: var(--bg-hover, #2d2d2d);
+    border-color: var(--accent, #8b7355);
+    color: var(--accent, #8b7355);
+}
+
+.kim-online-count {
+    font-size: 11px;
+    opacity: 0.7;
+    color: var(--text-secondary, #999);
+    margin-left: auto;
+}
+
+/* Enhanced Empty State */
+.kim-empty-icon {
+    color: var(--text-secondary, #999);
+    margin-bottom: 12px;
+    animation: kim-float 3s ease-in-out infinite;
+}
+
+@keyframes kim-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+.kim-empty-subtitle {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Modal Styles */
+.kim-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.kim-modal.active {
+    display: flex;
+}
+
+.kim-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.kim-modal-content {
+    position: relative;
+    background: var(--bg-secondary, #1a1a1a);
+    border-radius: 12px;
+    border: 1px solid var(--border-color, #3a3a3a);
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: kim-modal-appear 0.3s ease-out;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes kim-modal-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.kim-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+}
+
+.kim-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.kim-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.kim-modal-close:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+}
+
+.kim-modal-body {
+    padding: 20px;
+}
+
+.kim-form-group {
+    margin-bottom: 16px;
+}
+
+.kim-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.kim-form-group input,
+.kim-form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-primary, #0a0a0a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 6px;
+    color: var(--text-primary, #e8e8e8);
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.kim-form-group input:focus,
+.kim-form-group select:focus {
+    outline: none;
+    border-color: var(--accent, #8b7355);
+    box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+}
+
+.kim-icon-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.kim-icon-option {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--border-color, #3a3a3a);
+    background: var(--bg-primary, #0a0a0a);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.2s ease;
+}
+
+.kim-icon-option:hover {
+    border-color: var(--accent, #8b7355);
+    background: var(--bg-hover, #2d2d2d);
+}
+
+.kim-icon-option.selected {
+    border-color: var(--accent, #8b7355);
+    background: rgba(139, 115, 85, 0.1);
+    box-shadow: 0 0 8px rgba(139, 115, 85, 0.3);
+}
+
+.kim-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px;
+    border-top: 1px solid var(--border-color, #3a3a3a);
+}
+
+.kim-btn-primary,
+.kim-btn-secondary {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.kim-btn-primary {
+    background: var(--accent, #8b7355);
+    color: var(--bg-primary, #0a0a0a);
+}
+
+.kim-btn-primary:hover {
+    background: var(--accent-hover, #9b8365);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+}
+
+.kim-btn-secondary {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+    border: 1px solid var(--border-color, #3a3a3a);
+}
+
+.kim-btn-secondary:hover {
+    background: var(--bg-active, #3d3d3d);
+    border-color: var(--text-secondary, #999);
+}
+
+/* Beautiful Navbar Enhancements */
+.kim-panel-header {
+    background: linear-gradient(135deg, var(--bg-secondary, #1a1a1a) 0%, var(--bg-primary, #0a0a0a) 100%);
+    border-bottom: 1px solid var(--border-color, #3a3a3a);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.kim-panel-header h3 {
+    background: linear-gradient(45deg, var(--accent, #8b7355), var(--text-primary, #e8e8e8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Expand/Collapse Functionality */
+.kim-panel-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kim-expand-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.kim-expand-btn:hover {
+    background: var(--bg-hover, #2d2d2d);
+    color: var(--text-primary, #e8e8e8);
+}
+
+/* Resizable Sidebar */
+.kim-sidebar-panel.resizable {
+    resize: horizontal;
+    min-width: 350px;
+    max-width: 600px;
+}
+
+.kim-sidebar-panel.resizable:hover {
+    border-right: 2px solid var(--accent, #8b7355);
+}
+
+/* Notification System */
+.kim-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--bg-secondary, #1a1a1a);
+    border: 1px solid var(--border-color, #3a3a3a);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 3000;
+    max-width: 300px;
+}
+
+.kim-notification.active {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.kim-notification-success {
+    border-color: #4ade80;
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), var(--bg-secondary, #1a1a1a));
+}
+
+.kim-notification-error {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), var(--bg-secondary, #1a1a1a));
+}
+
+.kim-notification-info {
+    border-color: var(--accent, #8b7355);
+    background: linear-gradient(135deg, rgba(139, 115, 85, 0.1), var(--bg-secondary, #1a1a1a));
+}
+
+.kim-notification-icon {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.kim-notification-success .kim-notification-icon {
+    color: #4ade80;
+}
+
+.kim-notification-error .kim-notification-icon {
+    color: #ef4444;
+}
+
+.kim-notification-info .kim-notification-icon {
+    color: var(--accent, #8b7355);
+}
+
+.kim-notification-text {
+    font-size: 14px;
+    color: var(--text-primary, #e8e8e8);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .kim-room-category {
+        margin-bottom: 4px;
+    }
+
+    .kim-category-header {
+        padding: 6px 12px;
+    }
+
+    .kim-conversation-item {
+        padding: 6px 12px;
+    }
+
+    .kim-conversation-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 12px;
+    }
+
+    .kim-conversation-name {
+        font-size: 12px;
+    }
+
+    .kim-room-desc {
+        font-size: 10px;
+    }
+
+    .kim-modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+
+    .kim-notification {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+        transform: translateY(-100px);
+    }
+
+    .kim-notification.active {
+        transform: translateY(0);
+    }
+}
+
+/* Online Status Indicators */
+.kim-online-indicator {
+    position: relative;
+}
+
+.kim-online-indicator::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    border: 2px solid var(--bg-secondary, #1a1a1a);
+    animation: kim-online-pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 4px rgba(74, 222, 128, 0.6);
+}
+
+.kim-online-indicator.offline::after {
+    background: #ef4444;
+    animation: none;
+    box-shadow: 0 0 2px rgba(239, 68, 68, 0.4);
+}
+
+.kim-online-indicator.away::after {
+    background: #f59e0b;
+    animation: kim-away-pulse 3s ease-in-out infinite;
+    box-shadow: 0 0 3px rgba(245, 158, 11, 0.5);
+}
+
+@keyframes kim-online-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+@keyframes kim-away-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* Apply online indicators to user avatars and status elements */
+.kim-user-avatar.online {
+    position: relative;
+}
+
+.kim-user-avatar.online::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    background: #4ade80;
+    border-radius: 50%;
+    border: 2px solid var(--bg-secondary, #1a1a1a);
+    animation: kim-online-pulse 2s ease-in-out infinite;
+}
+
+/* Smooth transitions */
+.kim-state {
+    will-change: opacity, transform;
+}
+
+.kim-state.active {
+    will-change: auto;
+}
+
