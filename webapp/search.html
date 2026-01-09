@@ -1349,7 +1349,17 @@
             <div id="resultsContent"></div>
         </main>
 
-
+        <!-- Search Bar (Fixed Bottom) -->
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search people, posts, topics...">
+                <button class="search-filter-btn">Filters</button>
+            </div>
+        </div>
 
         <!-- Article Modal -->
         <div class="article-modal" id="articleModal">
@@ -1613,6 +1623,16 @@
             }
         }, 300));
 
+        // Handle Enter key press
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                const query = e.target.value.trim();
+                if (query.length > 0) {
+                    performSearch(query);
+                }
+            }
+        });
+
         function debounce(func, wait) {
             let timeout;
             return function (...args) {
@@ -1776,17 +1796,6 @@
             }, 500);
         };
     </script>
-    <!-- Search Bar (Fixed Bottom) -->
-    <div class="search-bar-container">
-        <div class="search-bar">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-            </svg>
-            <input type="text" class="search-input" id="searchInput" placeholder="Search people, posts, topics...">
-            <button class="search-filter-btn">Filters</button>
-        </div>
-    </div>
 </body>
 
 </html>

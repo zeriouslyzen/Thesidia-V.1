@@ -3608,14 +3608,18 @@ function initStarNotepad() {
 }
 
 // Initialize Status Selector
+let statusSelectorRetries = 0;
 function initStatusSelector() {
     const userNameText = document.getElementById('userNameText');
     const statusOrb = document.getElementById('statusOrb');
     const statusDropdown = document.getElementById('statusSelectorDropdown');
 
     if (!userNameText || !statusOrb || !statusDropdown) {
-        console.warn('Status selector elements not found, retrying...');
-        setTimeout(initStatusSelector, 100);
+        statusSelectorRetries++;
+        if (statusSelectorRetries < 10) { // Max 10 retries (1 second total)
+            setTimeout(initStatusSelector, 100);
+        }
+        // Silently give up after 10 retries - elements don't exist on this page
         return;
     }
 
