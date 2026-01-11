@@ -169,20 +169,84 @@
     --status-error: #1a1a1a;
 }
 
-/* Light theme body overrides */
+/* Light theme body stays black so gaps don't show beige */
 [data-theme="light"] body {
-    background: #f5f0e8 !important;
-    background-color: #f5f0e8 !important;
+    background: #000000 !important;
+    background-color: #000000 !important;
 }
 
 [data-theme="light"] #app {
-    background: #f5f0e8 !important;
-    background-color: #f5f0e8 !important;
+    background: #000000 !important;
+    background-color: #000000 !important;
 }
 
 [data-theme="light"] ::selection {
     background: rgba(0, 0, 0, 0.15);
     color: #1a1a1a;
+}
+
+/* Light theme - Header (entire header including both bars) stays black like dark mode */
+[data-theme="light"] .header,
+[data-theme="light"] .header-content,
+[data-theme="light"] .header-submenu {
+    background: #000000;
+}
+
+/* Light theme - Nav items stay light colored on black background */
+[data-theme="light"] .header-submenu .nav-item {
+    color: #999999;
+}
+
+[data-theme="light"] .header-submenu .nav-item:hover,
+[data-theme="light"] .header-submenu .nav-item.active {
+    color: #ffffff;
+}
+
+[data-theme="light"] .user-status-indicator,
+[data-theme="light"] .user-name-text {
+    color: #999999;
+}
+
+/* Light theme - Katanx branding stays white like dark mode */
+[data-theme="light"] .thesidia-text {
+    color: #e8e8e8 !important;
+}
+
+[data-theme="light"] .katanx-slash {
+    color: var(--theme-neon) !important;
+}
+
+/* Light theme - Menu orb stays transparent */
+[data-theme="light"] .menu-orb {
+    background: transparent;
+    border-color: transparent;
+}
+
+[data-theme="light"] .menu-orb:hover {
+    background: transparent;
+}
+
+/* Light theme - Bottom bar / prompt bar stays black */
+[data-theme="light"] .prompt-bar-container {
+    background: #000000;
+}
+
+[data-theme="light"] .prompt-bar-wrapper {
+    background: #000000;
+}
+
+[data-theme="light"] .prompt-input-container {
+    background: #1a1a1a;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .prompt-input {
+    color: #e8e8e8;
+    background: transparent;
+}
+
+[data-theme="light"] .prompt-input::placeholder {
+    color: #666666;
 }
 
 /* Light theme - Sidebar */
@@ -204,6 +268,16 @@
 [data-theme="light"] .profile-name,
 [data-theme="light"] .profile-tag {
     color: #1a1a1a;
+}
+
+/* Light theme - Profile picture visibility */
+[data-theme="light"] .profile-picture {
+    background: #d0cbc1;
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .profile-picture img {
+    filter: invert(0.85) hue-rotate(180deg);
 }
 
 [data-theme="light"] .profile-insight {
@@ -274,6 +348,15 @@
 
 [data-theme="light"] .widget-meta {
     color: #7a7a7a;
+}
+
+/* Light theme - News tiles (titles stay white for contrast on dark gradient overlay) */
+[data-theme="light"] .news-title {
+    color: #ffffff;
+}
+
+[data-theme="light"] .news-tile {
+    color: #ffffff;
 }
 
 /* Light theme - Main content area */
@@ -378,11 +461,9 @@ a:hover {
 }
 
 #app:not(.sidebar-pushed) .stream-page-container {
-    padding: 20px 0 20px 0 !important;
-    /* Remove left/right padding when sidebar closed */
+    padding: 0 !important;
     margin-left: 0 !important;
     align-items: flex-start !important;
-    /* Align to left edge */
 }
 
 #app:not(.sidebar-pushed) .chat-container {
@@ -420,12 +501,10 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 4px 10px;
-    /* tighter vertical + horizontal */
+    padding: 2px 10px;
     max-width: 100%;
     position: relative;
-    min-height: 32px;
-    /* tighter header */
+    min-height: 24px;
     transition: padding 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
         min-height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: padding, min-height;
@@ -469,26 +548,26 @@ a:hover {
 .thesidia-text {
     position: relative;
     z-index: 3;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 400;
-    /* Regular/Book weight */
     color: var(--text-primary) !important;
-    /* White text for "katanx" - override theme */
-    letter-spacing: 3px;
-    /* +2 to +4 range, using 3px */
+    letter-spacing: 1px;
     white-space: nowrap;
-    /* text-transform: uppercase; */
-    /* Removed - using lowercase */
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.15), 0 0 16px rgba(255, 255, 255, 0.08);
-    animation: thesidia-glow-pulse 4s ease-in-out infinite;
+    text-shadow: none;
     pointer-events: none;
     font-family: var(--font-family);
 }
 
 .katanx-slash {
     color: var(--theme-neon) !important;
-    /* Yellow color for "/" */
+    /* Theme color for "/" */
     text-shadow: 0 0 8px var(--theme-neon-glow), 0 0 16px var(--theme-neon-glow) !important;
+}
+
+/* Blue X in /katanx - stays light blue in both modes */
+.katanx-x {
+    color: #00d4ff !important;
+    text-shadow: none !important;
 }
 
 /* Minimalist slash replacing the X */
@@ -547,22 +626,16 @@ a:hover {
     gap: 8px;
     padding: 0 10px;
     padding-left: 120px;
-    /* Space for "Katanx Explore" */
     padding-right: 50px;
-    /* Space for star button */
-    /* border-top: var(--border-width-thin) solid var(--border-color); */
-    /* Removed grey border */
     position: relative;
     padding-bottom: 2px;
     overflow: hidden;
-    /* FIXED: Use CSS variable for scroll-based animations */
     --scroll-progress: 0;
     transform: translateY(calc(var(--scroll-progress, 0) * -100%));
     opacity: calc(1 - var(--scroll-progress, 0));
-    max-height: calc(36px * (1 - var(--scroll-progress, 0)));
-    /* Faster transitions for smoother feel */
-    transition: transform 0.1s linear, opacity 0.1s linear, max-height 0.1s linear;
-    /* Hardware acceleration */
+    height: calc(36px * (1 - var(--scroll-progress, 0)));
+    min-height: 0;
+    transition: transform 0.1s linear, opacity 0.1s linear, height 0.1s linear;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 }
@@ -572,11 +645,11 @@ a:hover {
 }
 
 .header-submenu.scrolled-down {
-    /* Class-based fallback for non-JS scenarios */
     transform: translateY(-100%);
     opacity: 0;
-    max-height: 0;
-    padding: 0 10px;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 /* Advanced Navigation Bar */
@@ -1739,8 +1812,7 @@ html:has(#app.sidebar-pushed) {
     overflow: hidden;
     min-height: 0;
     margin: 0;
-    padding: 12px 12px;
-    /* reduce black space below header */
+    padding: 4px 12px;
     height: calc(100vh - 96px);
     max-height: calc(100vh - 96px);
     background: var(--bg-primary);
@@ -1807,12 +1879,7 @@ html:has(#app.sidebar-pushed) {
 }
 
 .home-hero {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    display: none !important;
 }
 
 .hero-greeting {
@@ -4521,6 +4588,11 @@ html:has(#app.sidebar-pushed) {
     flex: 0 0 auto;
     z-index: 1;
     position: relative;
+    outline: none;
+}
+
+.menu-orb:focus {
+    outline: none;
 }
 
 .orb-glow {

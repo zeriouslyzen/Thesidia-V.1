@@ -471,18 +471,32 @@ class ThesidiaApp {
 
     initAppearance() {
         // Load saved appearance settings from localStorage
-        const savedThemeMode = localStorage.getItem('kx_theme_mode') || 'dark';
-        const savedFontStack = localStorage.getItem('kx_font_stack') || 'cyberx';
+        // Default to light mode with mode-appropriate font/color
+        const savedThemeMode = localStorage.getItem('kx_theme_mode') || 'light';
+
+        // Mode-based defaults: light -> editorial/blue, dark -> cyberx/yellow
+        let defaultFont, defaultColor;
+        if (savedThemeMode === 'light') {
+            defaultFont = 'editorial';
+            defaultColor = 'blue';
+        } else {
+            defaultFont = 'cyberx';
+            defaultColor = 'yellow';
+        }
+
+        const savedFontStack = localStorage.getItem('kx_font_stack') || defaultFont;
+        const savedColorTheme = localStorage.getItem('thesidia_color_theme') || defaultColor;
 
         // Apply saved settings to document
-        this.setThemeMode(savedThemeMode);
+        this.setThemeMode(savedThemeMode, false); // false = don't auto-apply font/color
         this.setFontStack(savedFontStack);
+        this.setColorTheme(savedColorTheme);
 
         // Setup UI controls
         this.setupAppearanceControls();
     }
 
-    setThemeMode(mode) {
+    setThemeMode(mode, autoApplyDefaults = true) {
         // Set data attribute on html element
         document.documentElement.setAttribute('data-theme', mode);
         localStorage.setItem('kx_theme_mode', mode);
@@ -491,6 +505,17 @@ class ThesidiaApp {
         const metaThemeColor = document.querySelector('meta[name="theme-color"]');
         if (metaThemeColor) {
             metaThemeColor.setAttribute('content', mode === 'light' ? '#f5f0e8' : '#000000');
+        }
+
+        // When switching modes, apply mode-appropriate font and color defaults
+        if (autoApplyDefaults) {
+            if (mode === 'light') {
+                this.setFontStack('editorial');
+                this.setColorTheme('blue');
+            } else {
+                this.setFontStack('cyberx');
+                this.setColorTheme('yellow');
+            }
         }
     }
 
@@ -505,7 +530,7 @@ class ThesidiaApp {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             const themeBtns = themeToggle.querySelectorAll('.theme-btn');
-            const currentMode = localStorage.getItem('kx_theme_mode') || 'dark';
+            const currentMode = localStorage.getItem('kx_theme_mode') || 'light';
 
             // Set initial active state
             themeBtns.forEach(btn => {
@@ -528,7 +553,7 @@ class ThesidiaApp {
         // Font stack selector
         const fontStackSelect = document.getElementById('fontStackSelect');
         if (fontStackSelect) {
-            const currentStack = localStorage.getItem('kx_font_stack') || 'cyberx';
+            const currentStack = localStorage.getItem('kx_font_stack') || 'editorial';
             fontStackSelect.value = currentStack;
 
             fontStackSelect.addEventListener('change', (e) => {

@@ -711,7 +711,8 @@
             <div class="header-content">
                 <!-- Katanx Branding - Left (replaced profile) -->
                 <div class="header-branding">
-                    <span class="thesidia-text"><span class="katanx-slash">/</span>katanx</span>
+                    <span class="thesidia-text"><span class="katanx-slash">/</span>katan<span
+                            class="katanx-x">x</span></span>
                 </div>
 
                 <!-- Menu Orb - Right -->
@@ -757,24 +758,27 @@
                     <button class="nav-item" data-section="studio">studio</button>
                 </nav>
 
-                <!-- Messages Button - Far Right -->
-                <button class="kim-toggle-btn" id="kimToggleBtn" aria-label="Messages" style="position: relative;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                <!-- Messages Button - Compact with Notification Dot -->
+                <button class="kim-nav-btn" id="kimToggleBtn" aria-label="Messages">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
                     </svg>
-                    <span id="kim-notification-badge" class="kim-notification-badge hidden">0</span>
+                    <span id="kim-notification-dot" class="kim-notification-dot hidden"></span>
                 </button>
             </div>
 
         </header>
-        
+
         <!-- KIM Sidebar Panel - Integrated -->
         <div class="kim-sidebar-panel" id="kimSidebarPanel">
             <div class="kim-panel-header">
                 <h3>Messages</h3>
                 <div class="kim-panel-actions">
                     <a href="/kim.html" class="kim-fullscreen-link" target="_blank" title="Open in full screen">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-fullscreen">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" class="kim-icon-fullscreen">
                             <path d="M15 3h6v6"></path>
                             <path d="M9 21H3v-6"></path>
                             <path d="m21 3-7 7"></path>
@@ -782,20 +786,22 @@
                         </svg>
                     </a>
                     <button class="kim-panel-close" id="kimPanelClose" aria-label="Close">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-close">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" class="kim-icon-close">
                             <path d="M18 6L6 18"></path>
                             <path d="m6 6 12 12"></path>
                         </svg>
                     </button>
                 </div>
             </div>
-            
+
             <div class="kim-panel-content">
                 <!-- Login State -->
                 <div id="kim-login-state" class="kim-state">
                     <div class="kim-login-box">
                         <div class="kim-status-text">Setting up your connection...</div>
-                        <input type="text" id="kim-nickname-input" placeholder="Your name" maxlength="15" autocomplete="off">
+                        <input type="text" id="kim-nickname-input" placeholder="Your name" maxlength="15"
+                            autocomplete="off">
                         <button id="kim-connect-btn">Connect</button>
                     </div>
                 </div>
@@ -808,7 +814,8 @@
                             <div class="kim-section-title">
                                 <span>Chat Rooms</span>
                                 <button class="kim-add-room-btn" id="kimAddRoomBtn" title="Create new room">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-add">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" class="kim-icon-add">
                                         <path d="M12 5v14"></path>
                                         <path d="M5 12h14"></path>
                                     </svg>
@@ -818,13 +825,15 @@
                             <!-- Expandable Room Categories -->
                             <div class="kim-room-category">
                                 <div class="kim-category-header" data-category="general">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-icon">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" class="kim-category-icon">
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                                         <path d="M12 17h.01"></path>
                                     </svg>
                                     <span class="kim-category-name">General</span>
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-toggle">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" class="kim-category-toggle">
                                         <path d="M6 9l6 6 6-6"></path>
                                     </svg>
                                 </div>
@@ -854,11 +863,15 @@
 
                             <div class="kim-room-category">
                                 <div class="kim-category-header" data-category="creative">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-icon">
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" class="kim-category-icon">
+                                        <path
+                                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+                                        </path>
                                     </svg>
                                     <span class="kim-category-name">Creative</span>
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-toggle">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" class="kim-category-toggle">
                                         <path d="M6 9l6 6 6-6"></path>
                                     </svg>
                                 </div>
@@ -883,13 +896,15 @@
 
                             <div class="kim-room-category">
                                 <div class="kim-category-header" data-category="growth">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-icon">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" class="kim-category-icon">
                                         <path d="M3 21V3h18"></path>
                                         <path d="M7 9l4-4 4 4"></path>
                                         <path d="M7 15l4-4 4 4"></path>
                                     </svg>
                                     <span class="kim-category-name">Growth</span>
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-category-toggle">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" class="kim-category-toggle">
                                         <path d="M6 9l6 6 6-6"></path>
                                     </svg>
                                 </div>
@@ -918,7 +933,8 @@
                             </div>
                             <div class="kim-users-list" id="kimUsersList">
                                 <div class="kim-empty-state">
-                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="kim-empty-icon">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1" class="kim-empty-icon">
                                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="9" cy="7" r="4"></circle>
                                         <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -936,7 +952,8 @@
                                 <span id="kim-current-room-name">General</span>
                                 <div class="kim-chat-header-actions">
                                     <button id="kim-search-btn" class="kim-header-btn" title="Search messages">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-search">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" class="kim-icon-search">
                                             <circle cx="11" cy="11" r="8"></circle>
                                             <path d="m21 21-4.35-4.35"></path>
                                         </svg>
@@ -947,7 +964,8 @@
                             <div id="kim-search-bar" class="kim-search-bar hidden">
                                 <input type="text" id="kim-search-input" placeholder="Search messages...">
                                 <button id="kim-search-close">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-close-small">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" class="kim-icon-close-small">
                                         <path d="M18 6L6 18"></path>
                                         <path d="m6 6 12 12"></path>
                                     </svg>
@@ -958,12 +976,15 @@
                             </div>
                             <div class="kim-input-area">
                                 <div class="kim-input-actions">
-                                    <input type="file" id="kim-file-input" accept="image/*,video/*,.pdf,.doc,.docx,.txt" style="display: none;">
+                                    <input type="file" id="kim-file-input" accept="image/*,video/*,.pdf,.doc,.docx,.txt"
+                                        style="display: none;">
                                     <button id="kim-file-btn" class="kim-attach-btn" title="Attach file">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="kim-icon-attach">
-                                            <path d="M14.828 14.828a4 4 0 0 1-5.656 0l-4-4A4 4 0 1 1 10.828 5.172l4 4a4 4 0 0 1 0 5.656z"/>
-                                            <path d="M9 9l6 6"/>
-                                            <path d="M9 15l6-6"/>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" class="kim-icon-attach">
+                                            <path
+                                                d="M14.828 14.828a4 4 0 0 1-5.656 0l-4-4A4 4 0 1 1 10.828 5.172l4 4a4 4 0 0 1 0 5.656z" />
+                                            <path d="M9 9l6 6" />
+                                            <path d="M9 15l6-6" />
                                         </svg>
                                     </button>
                                 </div>
@@ -983,7 +1004,8 @@
                 <div class="kim-modal-header">
                     <h3>Create New Room</h3>
                     <button class="kim-modal-close" id="kimModalClose">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M18 6L6 18"></path>
                             <path d="m6 6 12 12"></path>
                         </svg>
@@ -996,7 +1018,8 @@
                     </div>
                     <div class="kim-form-group">
                         <label for="kimRoomDescription">Description (optional)</label>
-                        <input type="text" id="kimRoomDescription" placeholder="What's this room about?" maxlength="100">
+                        <input type="text" id="kimRoomDescription" placeholder="What's this room about?"
+                            maxlength="100">
                     </div>
                     <div class="kim-form-group">
                         <label for="kimRoomCategory">Category</label>
@@ -1400,12 +1423,12 @@
 
             async init() {
                 console.log('Initializing stream page...');
-                
+
                 // Hide loading screen after timeout (fallback)
                 const loadingTimeout = setTimeout(() => {
                     this.hideLoadingScreen();
                 }, 2000);
-                
+
                 try {
                     await this.loadUserSession();
                     await this.loadPosts();
@@ -1415,13 +1438,13 @@
                     clearTimeout(loadingTimeout);
                     this.hideLoadingScreen();
                 }
-                
+
                 this.setupEventListeners();
                 this.setupInfiniteScroll();
                 this.setupStreamFilter();
                 this.setupScubaDepthIndicator();
             }
-            
+
             hideLoadingScreen() {
                 const loadingScreen = document.getElementById('katanxLoadingScreen');
                 if (loadingScreen) {
@@ -3152,19 +3175,19 @@
             }
         })();
     </script>
-    
+
     <!-- KIM Scripts - Load in order for safe integration -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
     <script src="js/kim-crypto.js"></script>
     <script src="js/kim-device-integration.js"></script>
     <script src="js/kim-media-processing.js"></script>
-    
+
     <!-- Safe Integration Wrapper - Must load before kim-ui-sidebar.js -->
     <script src="js/kim-integration-safe.js"></script>
-    
+
     <!-- Main KIM UI Logic -->
     <script src="js/kim-ui-sidebar.js"></script>
-    
+
     <script>
         // Initialize KIM on page load if user is authenticated
         // This runs after all KIM scripts are loaded
@@ -3175,7 +3198,7 @@
             } else {
                 setupKIM();
             }
-            
+
             function setupKIM() {
                 // Check for Katanx auth
                 try {
@@ -3187,7 +3210,7 @@
                 } catch (e) {
                     console.log('KIM: No auth data found');
                 }
-                
+
                 // Verify KIM is properly initialized
                 if (window.KIMIntegration) {
                     console.log('KIM: Safe integration wrapper loaded');

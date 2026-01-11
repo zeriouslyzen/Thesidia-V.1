@@ -891,9 +891,20 @@ class ThreadDetailPage {
 
     // Apply saved theme settings from localStorage
     applyTheme() {
-        const savedThemeMode = localStorage.getItem('kx_theme_mode') || 'dark';
-        const savedFontStack = localStorage.getItem('kx_font_stack') || 'cyberx';
-        const savedColorTheme = localStorage.getItem('thesidia_color_theme') || 'default';
+        const savedThemeMode = localStorage.getItem('kx_theme_mode') || 'light';
+
+        // Mode-based defaults: light -> editorial/blue, dark -> cyberx/yellow
+        let defaultFont, defaultColor;
+        if (savedThemeMode === 'light') {
+            defaultFont = 'editorial';
+            defaultColor = 'blue';
+        } else {
+            defaultFont = 'cyberx';
+            defaultColor = 'yellow';
+        }
+
+        const savedFontStack = localStorage.getItem('kx_font_stack') || defaultFont;
+        const savedColorTheme = localStorage.getItem('thesidia_color_theme') || defaultColor;
 
         document.documentElement.setAttribute('data-theme', savedThemeMode);
         document.documentElement.setAttribute('data-font-stack', savedFontStack);
