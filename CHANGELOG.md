@@ -2,6 +2,20 @@
 
 All notable changes to Thesidia will be documented in this file.
 
+## [2.2.0] - 2026-01-12
+
+### Added - Navigation UI Evolution & Benchmarking
+- **Navigation Prototypes Hub**: Created `nav-prototypes.html` with 4 distinct UI archetypes for cross-platform benchmarking:
+  - **Mobile Bottom Tab Bar**: Low-profile, thumb-optimized glassmorphic bar.
+  - **Contextual Dropdown**: Minimalist header-centric selector.
+  - **Unified Single-Row**: Consolidated branding/nav/messages into a single adaptive row with horizontal scroll masking.
+  - **Floating HUD Pill**: Detached, centered floating pill for modern research-tool aesthetic.
+- **Routing Integration**: Added `/nav-prototypes` endpoint to `server.py` for direct access to UI benchmarks.
+
+### Fixed - Mobile Navigation
+- **Header Overlap Resolution**: Investigated and resolved the item-messenger collision on mobile viewports (max-width: 768px).
+- **Flex Layout Optimization**: Identified `flex-wrap` and spacing constraints in `.advanced-nav` and `.header-submenu` causing element overlap.
+
 ## [2.1.0] - 2025-12-27
 
 ### Added - Project Organization & Infrastructure

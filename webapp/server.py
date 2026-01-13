@@ -490,6 +490,11 @@ def metrics_page():
     """Metrics dashboard (clean URL)"""
     return send_from_directory('.', 'metrics_dashboard.html')
 
+@app.route('/nav-prototypes')
+def nav_prototypes_page():
+    """Navigation UI benchmarks and prototypes"""
+    return send_from_directory('.', 'nav-prototypes.html')
+
 # ============================================================================
 # Algorithmic Growth Engine - Event Tracking API
 # ============================================================================
