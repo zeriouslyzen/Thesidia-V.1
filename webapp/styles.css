@@ -10417,3 +10417,176 @@ body.profile-page-context {
     font-style: italic;
     opacity: 0.9;
 }
+/* ============================================
+   NAV STYLES - User Selectable Navigation
+   ============================================ */
+
+/* --- Dynamic Bottom Nav Bar --- */
+.dynamic-bottom-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    height: 60px;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 2000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.dynamic-bottom-nav .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #666;
+    font-size: 9px;
+    text-transform: lowercase;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 8px 12px;
+}
+
+.dynamic-bottom-nav .bottom-nav-item:hover,
+.dynamic-bottom-nav .bottom-nav-item.active {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.dynamic-bottom-nav .nav-icon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+}
+
+.dynamic-bottom-nav .bottom-nav-item.active .nav-icon {
+    opacity: 1;
+}
+
+/* --- Dynamic Floating HUD --- */
+.dynamic-floating-hud {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 10, 10, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(255, 255, 255, 0.05);
+    padding: 4px 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 2000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dynamic-floating-hud .hud-nav-item {
+    font-size: 10px;
+    text-transform: lowercase;
+    color: #555;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: color 0.3s;
+    background: none;
+    border: none;
+    padding: 8px 4px;
+}
+
+.dynamic-floating-hud .hud-nav-item:hover,
+.dynamic-floating-hud .hud-nav-item.active {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* --- Style: Unified (Default) --- */
+[data-nav-style="unified"] .dynamic-bottom-nav,
+[data-nav-style="unified"] .dynamic-floating-hud {
+    display: none !important;
+}
+
+/* --- Style: Bottom Tab --- */
+[data-nav-style="bottom-tab"] .header-submenu {
+    display: none !important;
+}
+
+[data-nav-style="bottom-tab"] .dynamic-floating-hud {
+    display: none !important;
+}
+
+[data-nav-style="bottom-tab"] .stream-page-container,
+[data-nav-style="bottom-tab"] .chat-container {
+    padding-bottom: 100px !important;
+}
+
+/* --- Style: Floating HUD --- */
+[data-nav-style="floating-hud"] .header-submenu {
+    display: none !important;
+}
+
+[data-nav-style="floating-hud"] .dynamic-bottom-nav {
+    display: none !important;
+}
+
+[data-nav-style="floating-hud"] .header {
+    padding-top: 60px;
+}
+
+/* --- Style: Contextual Dropdown --- */
+[data-nav-style="contextual"] .advanced-nav {
+    display: none !important;
+}
+
+[data-nav-style="contextual"] .header-branding {
+    cursor: pointer;
+}
+
+[data-nav-style="contextual"] .header-branding::after {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--text-secondary);
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+
+[data-nav-style="contextual"] .dynamic-bottom-nav,
+[data-nav-style="contextual"] .dynamic-floating-hud {
+    display: none !important;
+}
+
+/* Mobile adjustments for nav styles */
+@media (max-width: 768px) {
+    .dynamic-bottom-nav {
+        width: 95%;
+        max-width: none;
+        bottom: 10px;
+        height: 56px;
+        border-radius: 25px;
+    }
+    
+    .dynamic-floating-hud {
+        top: 10px;
+        gap: 12px;
+        padding: 4px 12px;
+    }
+    
+    .dynamic-floating-hud .hud-nav-item {
+        font-size: 9px;
+        letter-spacing: 0.5px;
+    }
+}
