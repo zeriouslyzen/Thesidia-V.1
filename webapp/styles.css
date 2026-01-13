@@ -10417,6 +10417,7 @@ body.profile-page-context {
     font-style: italic;
     opacity: 0.9;
 }
+
 /* ============================================
    NAV STYLES - User Selectable Navigation
    ============================================ */
@@ -10426,7 +10427,8 @@ body.profile-page-context {
     position: fixed;
     bottom: 20px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
+    /* GPU layer */
     width: 90%;
     max-width: 400px;
     height: 60px;
@@ -10440,6 +10442,12 @@ body.profile-page-context {
     align-items: center;
     z-index: 2000;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    /* Performance: GPU acceleration */
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Safe area for notched phones */
+    padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 .dynamic-bottom-nav .bottom-nav-item {
@@ -10478,7 +10486,8 @@ body.profile-page-context {
     position: fixed;
     top: 20px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
+    /* GPU layer */
     background: rgba(10, 10, 10, 0.4);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -10490,6 +10499,12 @@ body.profile-page-context {
     gap: 20px;
     z-index: 2000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    /* Performance: GPU acceleration */
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Safe area for notched phones */
+    padding-top: env(safe-area-inset-top, 0);
 }
 
 .dynamic-floating-hud .hud-nav-item {
@@ -10498,10 +10513,12 @@ body.profile-page-context {
     color: #555;
     letter-spacing: 1px;
     cursor: pointer;
-    transition: color 0.3s;
+    transition: color 0.2s ease-out, text-shadow 0.2s ease-out;
     background: none;
     border: none;
     padding: 8px 4px;
+    /* Prevent layout shift on hover */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .dynamic-floating-hud .hud-nav-item:hover,
@@ -10578,15 +10595,40 @@ body.profile-page-context {
         height: 56px;
         border-radius: 25px;
     }
-    
+
     .dynamic-floating-hud {
         top: 10px;
         gap: 12px;
         padding: 4px 12px;
     }
-    
+
     .dynamic-floating-hud .hud-nav-item {
         font-size: 9px;
         letter-spacing: 0.5px;
     }
+}
+/* ============================================
+   REDUCED MOTION - Accessibility
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .dynamic-bottom-nav,
+    .dynamic-floating-hud {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .dynamic-bottom-nav .bottom-nav-item,
+    .dynamic-floating-hud .hud-nav-item {
+        transition: none !important;
+    }
+}
+
+/* ============================================
+   NAV STYLES - Performance Cleanup
+   ============================================ */
+
+/* Remove will-change after animation settles (triggered by JS) */
+.dynamic-bottom-nav.settled,
+.dynamic-floating-hud.settled {
+    will-change: auto;
 }
