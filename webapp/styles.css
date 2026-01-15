@@ -764,7 +764,20 @@ a:hover {
     .header-submenu {
         padding-left: 10px;
         padding-right: 10px;
-        justify-content: space-between;
+        justify-content: flex-start;
+        /* Enable horizontal scroll */
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+        /* IE/Edge */
+    }
+
+    .header-submenu::-webkit-scrollbar {
+        display: none;
+        /* Chrome/Safari */
     }
 
     .user-status-indicator {
@@ -777,6 +790,7 @@ a:hover {
         justify-content: flex-start;
         margin-right: auto;
         font-size: 10px;
+        flex-shrink: 0;
     }
 
     .status-selector-dropdown {
@@ -785,15 +799,18 @@ a:hover {
 
     .advanced-nav {
         padding-left: 0;
-        justify-content: center;
-        gap: 8px;
-        width: 100%;
+        justify-content: flex-start;
+        gap: 12px;
+        width: auto;
+        min-width: max-content;
+        flex-wrap: nowrap;
     }
 
     .advanced-nav .nav-item {
-        font-size: 10px !important;
-        /* Smaller text on mobile */
-        padding: 4px 4px !important;
+        font-size: 11px !important;
+        padding: 6px 10px !important;
+        flex-shrink: 0;
+        white-space: nowrap;
     }
 }
 
@@ -7084,12 +7101,12 @@ html:has(#app.sidebar-pushed) {
    GLOBAL COLOR THEMES - NEON ACCENTS
    ============================================ */
 
-/* Theme: Yellow Neon - Premier */
+/* Theme: Yellow Neon - Bright Cyber Yellow */
 body.theme-yellow,
 html.theme-yellow {
-    --theme-neon: #d4d400;
-    --theme-neon-glow: rgba(212, 212, 0, 0.2);
-    --theme-neon-border: rgba(212, 212, 0, 0.2);
+    --theme-neon: #e6ff00;
+    --theme-neon-glow: rgba(230, 255, 0, 0.35);
+    --theme-neon-border: rgba(230, 255, 0, 0.25);
 }
 
 /* Theme: Tan */
@@ -7158,11 +7175,18 @@ html.theme-blue {
     --theme-neon-border: rgba(255, 107, 53, 0.2);
 }
 
-/* Gold */
+/* Gold - Brightened */
 [data-accent-color="gold"] {
-    --theme-neon: #ffd700;
-    --theme-neon-glow: rgba(255, 215, 0, 0.25);
-    --theme-neon-border: rgba(255, 215, 0, 0.2);
+    --theme-neon: #ffdd00;
+    --theme-neon-glow: rgba(255, 221, 0, 0.35);
+    --theme-neon-border: rgba(255, 221, 0, 0.25);
+}
+
+/* Cyber Yellow - Bright Neon Yellow */
+[data-accent-color="cyber-yellow"] {
+    --theme-neon: #e6ff00;
+    --theme-neon-glow: rgba(230, 255, 0, 0.35);
+    --theme-neon-border: rgba(230, 255, 0, 0.25);
 }
 
 /* Neutral White */
