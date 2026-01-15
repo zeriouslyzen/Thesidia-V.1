@@ -7101,12 +7101,12 @@ html:has(#app.sidebar-pushed) {
    GLOBAL COLOR THEMES - NEON ACCENTS
    ============================================ */
 
-/* Theme: Yellow Neon - Bright Cyber Yellow */
+/* Theme: Yellow - Pure True Yellow */
 body.theme-yellow,
 html.theme-yellow {
-    --theme-neon: #e6ff00;
-    --theme-neon-glow: rgba(230, 255, 0, 0.35);
-    --theme-neon-border: rgba(230, 255, 0, 0.25);
+    --theme-neon: #ffff00;
+    --theme-neon-glow: rgba(255, 255, 0, 0.35);
+    --theme-neon-border: rgba(255, 255, 0, 0.25);
 }
 
 /* Theme: Tan */
@@ -7182,7 +7182,7 @@ html.theme-blue {
     --theme-neon-border: rgba(255, 221, 0, 0.25);
 }
 
-/* Cyber Yellow - Bright Neon Yellow */
+/* Cyber Yellow - Lime Neon */
 [data-accent-color="cyber-yellow"] {
     --theme-neon: #e6ff00;
     --theme-neon-glow: rgba(230, 255, 0, 0.35);
