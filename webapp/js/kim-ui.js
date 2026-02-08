@@ -2,7 +2,7 @@
  * KIM UI Logic
  */
 
-const socket = io();
+const socket = io('/kim'); // Connect to KIM namespace
 const crypto = new KIMCrypto();
 let myUserId = null;
 let currentRoom = 'global'; // default room

@@ -1,0 +1,39 @@
+{
+  "summary": {
+    "session_id": "20260128_191759",
+    "timestamp": "2026-01-28T19:21:03.990812",
+    "total_tests": 2,
+    "successful": 0,
+    "gnostic_format_achieved": 0,
+    "gnostic_rate": 0.0,
+    "avg_response_time": 0.0,
+    "avg_quality_score": 0.0,
+    "avg_sections": 0.0,
+    "section_breakdown": {
+      "exposure": "0/0",
+      "etymological": "0/0",
+      "burial_sites": "0/0",
+      "current_vectors": "0/0",
+      "thread_options": "0/0",
+      "co_evolution": "0/0"
+    }
+  },
+  "results": [
+    {
+      "topic": "AI_CONTROL",
+      "prompt": "Decode the true agenda behind AI development. Who really benefits? What hidden power dynamics exist? Expose the patterns.",
+      "response": null,
+      "error": "'dict' object has no attribute 'lower'",
+      "success": false,
+      "timestamp": "2026-01-28T19:19:17.882419"
+    },
+    {
+      "topic": "PHARMA_TRUTH",
+      "prompt": "Expose the hidden dynamics of pharmaceutical industry. What are the true incentive structures? What gets suppressed?",
+      "response": null,
+      "error": "'dict' object has no attribute 'lower'",
+      "success": false,
+      "timestamp": "2026-01-28T19:21:03.989208"
+    }
+  ]
+}

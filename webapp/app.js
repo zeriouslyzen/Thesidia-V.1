@@ -1338,9 +1338,18 @@ class ThesidiaApp {
                     let fullResponse = '';
                     let currentEvent = null;
 
-                    // STREAM WATCHDOG: Detect hung streams
+                    // STREAM WATCHDOG: Detect truly hung streams (more forgiving than original)
                     let watchdogTimer = null;
-                    const WATCHDOG_TIMEOUT = 8000; // 8 seconds silence = reconnect
+                    // Deep research takes 40–100+ seconds, so use longer timeout for deep mode.
+                    // Detect deep research by checking if fast_mode is false or if query contains deep indicators.
+                    const isDeepQuery = !this.fastMode ||
+                        sanitizedMessage.toLowerCase().match(/\b(origins?|history|deep|comprehensive|forensic|decode|uncover|reveal|secrets?)\b/);
+                    // Previously this was 8s for fast queries, which is too aggressive when
+                    // the backend takes longer to produce the first SSE chunk. That is why
+                    // you started seeing "Stream stalled" / "Empty streaming response"
+                    // even though the server was still working. We now give fast queries
+                    // up to 60s and deep queries up to 3 minutes before declaring a stall.
+                    const WATCHDOG_TIMEOUT = isDeepQuery ? 180000 : 60000;
 
                     const resetWatchdog = () => {
                         if (watchdogTimer) clearTimeout(watchdogTimer);
@@ -1766,9 +1775,9 @@ class ThesidiaApp {
         readBtn.setAttribute('aria-label', 'Read message aloud');
         const self = this; // Preserve context
         readBtn.onclick = function () {
-            console.log('Read button clicked', { hasSelf: !!self, hasReadMessage: !!(self && self.readMessage) });
+            console.log('Read button clicked', { hasSelf: !!self, hasReadMessage: !!(self && typeof self.readMessage === 'function') });
             // Direct call - function should exist
-            if (self) {
+            if (self && typeof self.readMessage === 'function') {
                 try {
                     self.readMessage(content, messageId, readBtn);
                 } catch (error) {
@@ -1776,7 +1785,7 @@ class ThesidiaApp {
                     alert(`Error: ${error.message}. Please check console for details.`);
                 }
             } else {
-                console.error('self is not available');
+                console.error('readMessage function not available', { hasSelf: !!self, readMessageType: typeof (self && self.readMessage) });
                 alert('Read function not available. Please refresh the page.');
             }
         };

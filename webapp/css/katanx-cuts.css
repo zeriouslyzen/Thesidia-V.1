@@ -1,0 +1,648 @@
+/**
+ * Katanx Cuts Styles
+ * 
+ * Premium visual treatment for debates - the best feature on the platform
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   CUT CONTAINER
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cuts-container {
+    padding: 16px;
+}
+
+.kx-cut {
+    background: linear-gradient(135deg, rgba(20, 20, 25, 0.95) 0%, rgba(10, 10, 15, 0.98) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.kx-cut::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ffd700, #ff6f00, #ffd700);
+    background-size: 200% 100%;
+    animation: cutGradient 3s linear infinite;
+}
+
+@keyframes cutGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CUT HEADER
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.kx-cut__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #ffd700;
+}
+
+.kx-cut__badge--live {
+    background: rgba(255, 50, 50, 0.2);
+    border-color: rgba(255, 50, 50, 0.4);
+    color: #ff5050;
+    animation: livePulse 2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.kx-cut__badge--complete {
+    background: rgba(0, 255, 136, 0.15);
+    border-color: rgba(0, 255, 136, 0.3);
+    color: #00ff88;
+}
+
+.kx-cut__badge--declined {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #666;
+}
+
+.kx-cut__phase-name {
+    font-size: 12px;
+    color: var(--text-secondary, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CHALLENGERS DISPLAY
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__challengers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin: 20px 0;
+}
+
+.kx-cut__fighter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.kx-cut__fighter img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.kx-cut__fighter--challenger img {
+    border-color: #ff6f00;
+    box-shadow: 0 0 20px rgba(255, 111, 0, 0.3);
+}
+
+.kx-cut__fighter--defender img {
+    border-color: #00aaff;
+    box-shadow: 0 0 20px rgba(0, 170, 255, 0.3);
+}
+
+.kx-cut__fighter span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary, #fff);
+}
+
+.kx-cut__vs {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOPIC
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__topic {
+    text-align: center;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--text-secondary, #aaa);
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    margin: 16px 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTIONS (Accept/Decline)
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.kx-cut__btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.kx-cut__btn--accept {
+    background: linear-gradient(135deg, #ffd700 0%, #ff6f00 100%);
+    color: #000;
+}
+
+.kx-cut__btn--accept:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+}
+
+.kx-cut__btn--decline {
+    background: transparent;
+    color: var(--text-secondary, #888);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.kx-cut__btn--decline:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ARENA (Active Debate)
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__arena {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin: 16px 0;
+}
+
+.kx-cut__speaker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.kx-cut__speaker img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #ffd700;
+}
+
+.kx-cut__speaker span {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary, #fff);
+}
+
+/* Timer Display */
+.kx-cut__timer-display {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kx-cut__timer-ring {
+    position: absolute;
+    inset: 0;
+    border: 4px solid rgba(255, 215, 0, 0.2);
+    border-top-color: #ffd700;
+    border-radius: 50%;
+    animation: timerSpin 1s linear infinite;
+}
+
+@keyframes timerSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.kx-cut__timer-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary, #fff);
+    font-variant-numeric: tabular-nums;
+}
+
+.kx-cut__timer--warning {
+    color: #ffaa00;
+}
+
+.kx-cut__timer--critical {
+    color: #ff4444;
+    animation: timerFlash 0.5s ease infinite;
+}
+
+@keyframes timerFlash {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INPUT AREA
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.kx-cut__input-area textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 12px;
+    color: var(--text-primary, #fff);
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.kx-cut__input-area textarea:focus {
+    border-color: #ffd700;
+}
+
+.kx-cut__input-area button {
+    align-self: flex-end;
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #ffd700 0%, #ff6f00 100%);
+    border: none;
+    border-radius: 24px;
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.kx-cut__input-area button:hover {
+    transform: scale(1.02);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PHASES BAR
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__phases-bar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.kx-cut__phase-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.kx-cut__phase-dot.done {
+    background: #00ff88;
+}
+
+.kx-cut__phase-dot.active {
+    background: #ffd700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    transform: scale(1.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VOTING
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__vote-options {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin: 24px 0;
+}
+
+.kx-cut__vote-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.kx-cut__vote-btn:hover {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.kx-cut__vote-btn img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+}
+
+.kx-cut__vote-btn span {
+    color: var(--text-primary, #fff);
+    font-size: 14px;
+}
+
+.kx-cut__vote-count {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffd700;
+}
+
+.kx-cut__voting-ends {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-tertiary, #666);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WINNER ANNOUNCEMENT
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__winner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 32px;
+    animation: winnerReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes winnerReveal {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.kx-cut__winner-crown {
+    font-size: 48px;
+    animation: crownBounce 0.6s ease 0.3s;
+}
+
+@keyframes crownBounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.kx-cut__winner img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 4px solid #ffd700;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+}
+
+.kx-cut__winner-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary, #fff);
+}
+
+.kx-cut__winner-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.kx-cut__draw {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 32px;
+}
+
+.kx-cut__draw-icon {
+    font-size: 48px;
+}
+
+.kx-cut__draw-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-secondary, #888);
+}
+
+.kx-cut__draw-reason {
+    font-size: 14px;
+    color: var(--text-tertiary, #666);
+}
+
+.kx-cut__final-score {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding-top: 16px;
+    margin-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 14px;
+    color: var(--text-secondary, #888);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SUMMARY (Voting phase)
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__summary {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.kx-cut__statement {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.kx-cut__statement:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.kx-cut__statement strong {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #ffd700;
+    margin-bottom: 6px;
+}
+
+.kx-cut__statement p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-primary, #fff);
+    line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIMER (Pending)
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut__timer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-tertiary, #666);
+    margin-top: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DECLINED STATE
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-cut--declined {
+    opacity: 0.5;
+    animation: fadeOut 3s ease forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        height: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ERROR TOAST
+   ═══════════════════════════════════════════════════════════════ */
+
+.kx-toast--error {
+    background: rgba(255, 68, 68, 0.9);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+    .kx-cut {
+        padding: 16px;
+    }
+
+    .kx-cut__challengers {
+        gap: 16px;
+    }
+
+    .kx-cut__fighter img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .kx-cut__vs {
+        font-size: 18px;
+    }
+
+    .kx-cut__actions {
+        flex-direction: column;
+    }
+
+    .kx-cut__btn {
+        width: 100%;
+    }
+
+    .kx-cut__vote-options {
+        flex-direction: column;
+    }
+
+    .kx-cut__vote-btn {
+        flex-direction: row;
+        padding: 12px 16px;
+    }
+}

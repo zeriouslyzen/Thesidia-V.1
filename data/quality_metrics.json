@@ -1,336 +1,6 @@
 {
   "interactions": [
     {
-      "query": "tell me about consciousness",
-      "response_length": 3313,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.6,
-        "truth_seeking": 0.2,
-        "overall": 0.47000000000000003
-      },
-      "timestamp": "2025-12-17T14:05:04.858311"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 1939,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.5333333333333333,
-        "overall": 0.4833333333333334
-      },
-      "timestamp": "2025-12-17T14:07:15.780801"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 1049,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T14:09:12.854122"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 1761,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.8666666666666667,
-        "overall": 0.5566666666666666
-      },
-      "timestamp": "2025-12-17T14:10:40.947578"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 2555,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-12-17T14:12:41.375694"
-    },
-    {
-      "query": "tell me about consciousness",
-      "response_length": 1254,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-12-17T14:14:18.430619"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 778,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T15:39:09.329707"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 1201,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.6,
-        "truth_seeking": 0.2,
-        "overall": 0.38
-      },
-      "timestamp": "2025-12-17T15:39:47.927981"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 951,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:13:05.879289"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 1074,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:13:31.044751"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 658,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:15:45.199186"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 1140,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:16:02.681337"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 942,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:20:03.636179"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 958,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-12-17T16:21:52.453320"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 981,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:22:15.124570"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 667,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:25:02.074370"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 917,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-12-17T16:25:43.172091"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 1151,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:25:52.237553"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 1130,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.0,
-        "overall": 0.12
-      },
-      "timestamp": "2025-12-17T16:27:31.047714"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 965,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:32:07.129360"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 964,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.4,
-        "truth_seeking": 0.2,
-        "overall": 0.32
-      },
-      "timestamp": "2025-12-17T16:32:33.378727"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 894,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:36:08.595442"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 1337,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.2,
-        "overall": 0.26
-      },
-      "timestamp": "2025-12-17T16:36:35.864531"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 878,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:39:10.860852"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 1655,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.2,
-        "truth_seeking": 0.0,
-        "overall": 0.27
-      },
-      "timestamp": "2025-12-17T16:39:32.950193"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 1423,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-12-17T16:40:26.606793"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 1175,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T16:42:13.527719"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 1301,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-12-17T16:46:05.925241"
-    },
-    {
-      "query": "what do you think about consciousness",
-      "response_length": 1680,
-      "scores": {
-        "depth": 0.7,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.29000000000000004
-      },
-      "timestamp": "2025-12-17T16:46:43.824440"
-    },
-    {
-      "query": "tell me a random fun fact about octopuses",
-      "response_length": 932,
-      "scores": {
-        "depth": 0.4,
-        "pattern_recognition": 0.0,
-        "truth_seeking": 0.2,
-        "overall": 0.2
-      },
-      "timestamp": "2025-12-17T18:39:43.093438"
-    },
-    {
       "query": "what do you think about consciousness",
       "response_length": 1341,
       "scores": {
@@ -1099,40 +769,340 @@
         "overall": 0.38
       },
       "timestamp": "2025-12-30T21:25:29.913235"
+    },
+    {
+      "query": "hello thesidia",
+      "response_length": 3334,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2026-01-15T13:10:50.109269"
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 14867,
+      "scores": {
+        "depth": 1.0,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.38
+      },
+      "timestamp": "2026-01-15T13:29:57.282930"
+    },
+    {
+      "query": "Hello Thesidia, I want to test your conversational logic. Can you explain what consciousness is in simple terms?",
+      "response_length": 1390,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.35000000000000003
+      },
+      "timestamp": "2026-01-15T13:31:31.967929"
+    },
+    {
+      "query": "test",
+      "response_length": 674,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2026-01-15T14:06:51.267916"
+    },
+    {
+      "query": "Hello Thesidia, I want to test your conversational logic. Can you explain what consciousness is in simple terms?",
+      "response_length": 372,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2026-01-15T23:30:32.561839"
+    },
+    {
+      "query": "Hello Thesidia, test",
+      "response_length": 1560,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2026-01-15T23:31:23.291931"
+    },
+    {
+      "query": "Hello, just say hi back",
+      "response_length": 930,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.33333333333333337
+      },
+      "timestamp": "2026-01-15T23:32:57.676217"
+    },
+    {
+      "query": "Hello Thesidia, I want to test your conversational logic. Can you explain what consciousness is in simple terms?",
+      "response_length": 832,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2026-01-15T23:54:35.426889"
+    },
+    {
+      "query": "Hello Thesidia, I want to test your conversational logic. Can you explain what consciousness is in simple terms?",
+      "response_length": 972,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2026-01-15T23:55:35.757095"
+    },
+    {
+      "query": "oh wow i didnt know that, what else can  you do",
+      "response_length": 1787,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.5433333333333333
+      },
+      "timestamp": "2026-01-16T00:22:18.297496"
+    },
+    {
+      "query": "how are you doing today?",
+      "response_length": 1520,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.35000000000000003
+      },
+      "timestamp": "2026-01-27T23:00:58.667928"
+    },
+    {
+      "query": "I practice Shaolin and I&#x27;ve experienced unlimited energy through bioelectric processes. Can you cross-reference this with scientific research?",
+      "response_length": 1230,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.32
+      },
+      "timestamp": "2026-01-27T23:03:39.353104"
+    },
+    {
+      "query": "What really happened with the Baghdad Battery?",
+      "response_length": 1799,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2026-01-27T23:06:16.649046"
+    },
+    {
+      "query": "how are you thesidia",
+      "response_length": 1038,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2026-01-28T00:54:44.847150"
+    },
+    {
+      "query": "how are you thesidia",
+      "response_length": 1524,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.35000000000000003
+      },
+      "timestamp": "2026-01-28T01:00:39.252591"
+    },
+    {
+      "query": "what you know about the cosmos  ?",
+      "response_length": 477,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2026-01-28T01:53:12.310636"
+    },
+    {
+      "query": "what you know about the cosmos  ?",
+      "response_length": 370,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2026-01-28T02:02:53.581218"
+    },
+    {
+      "query": "what can you unocver",
+      "response_length": 1740,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.29000000000000004
+      },
+      "timestamp": "2026-01-28T02:14:08.085011"
+    },
+    {
+      "query": "what can you unocver",
+      "response_length": 616,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.33333333333333337
+      },
+      "timestamp": "2026-01-28T02:14:59.774817"
+    },
+    {
+      "query": "what you know",
+      "response_length": 401,
+      "scores": {
+        "depth": 0.2,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.14
+      },
+      "timestamp": "2026-01-28T02:46:32.752123"
+    },
+    {
+      "query": "i guess so, what you know about the cosmso",
+      "response_length": 2644,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.41
+      },
+      "timestamp": "2026-01-28T02:47:44.111220"
+    },
+    {
+      "query": "what you know about the cosmos",
+      "response_length": 1063,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.2,
+        "truth_seeking": 0.2,
+        "overall": 0.26
+      },
+      "timestamp": "2026-01-28T02:50:31.072063"
+    },
+    {
+      "query": "thesidia but you are ai",
+      "response_length": 876,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.2,
+        "overall": 0.32
+      },
+      "timestamp": "2026-01-28T02:53:27.463965"
+    },
+    {
+      "query": "what you know about the cosmos",
+      "response_length": 1076,
+      "scores": {
+        "depth": 0.4,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.2,
+        "overall": 0.2
+      },
+      "timestamp": "2026-01-28T03:07:28.897552"
+    },
+    {
+      "query": "what you know about the cosmos",
+      "response_length": 3159,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.6,
+        "truth_seeking": 0.2,
+        "overall": 0.47000000000000003
+      },
+      "timestamp": "2026-01-28T03:08:15.877027"
+    },
+    {
+      "query": "whats good thesidia",
+      "response_length": 2595,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.0,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.42333333333333334
+      },
+      "timestamp": "2026-02-05T17:58:49.967926"
+    },
+    {
+      "query": "decode the relationship between ancient breathwork practices, modern neuroscience of the vagus nerve, and suppressed knowledge about consciousness",
+      "response_length": 2349,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.8666666666666667,
+        "overall": 0.6766666666666666
+      },
+      "timestamp": "2026-02-07T23:19:19.429927"
+    },
+    {
+      "query": "decode the relationship between ancient breathwork practices, modern neuroscience of the vagus nerve, and suppressed knowledge about consciousness",
+      "response_length": 3990,
+      "scores": {
+        "depth": 1.0,
+        "pattern_recognition": 0.6,
+        "truth_seeking": 0.8666666666666667,
+        "overall": 0.8266666666666667
+      },
+      "timestamp": "2026-02-07T23:26:09.523868"
+    },
+    {
+      "query": "decode the hidden meaning in genesis",
+      "response_length": 3605,
+      "scores": {
+        "depth": 1.0,
+        "pattern_recognition": 0.4,
+        "truth_seeking": 0.5333333333333333,
+        "overall": 0.6333333333333333
+      },
+      "timestamp": "2026-02-08T01:24:25.109401"
+    },
+    {
+      "query": "decode the relationship between ancient breathwork practices, modern neuroscience of the vagus nerve, and suppressed knowledge about consciousness",
+      "response_length": 2892,
+      "scores": {
+        "depth": 0.7,
+        "pattern_recognition": 0.8,
+        "truth_seeking": 0.8666666666666667,
+        "overall": 0.7966666666666666
+      },
+      "timestamp": "2026-02-08T01:34:10.922547"
     }
   ],
   "quality_trends": {
     "depth_scores": [
-      0.7,
-      0.7,
-      0.4,
-      0.7,
-      0.7,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.4,
-      0.7,
-      0.7,
-      0.4,
-      0.7,
-      0.7,
-      0.4,
       0.4,
       0.4,
       0.7,
@@ -1202,39 +1172,39 @@
       0.2,
       0.2,
       0.4,
-      1.0
+      1.0,
+      0.7,
+      1.0,
+      0.7,
+      0.4,
+      0.2,
+      0.7,
+      0.4,
+      0.4,
+      0.4,
+      0.7,
+      0.7,
+      0.4,
+      0.7,
+      0.4,
+      0.7,
+      0.2,
+      0.2,
+      0.7,
+      0.2,
+      0.2,
+      0.7,
+      0.4,
+      0.4,
+      0.4,
+      0.7,
+      0.7,
+      0.7,
+      1.0,
+      1.0,
+      0.7
     ],
     "pattern_scores": [
-      0.6,
-      0.2,
-      0.0,
-      0.0,
-      0.0,
-      0.2,
-      0.0,
-      0.6,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.2,
-      0.0,
-      0.0,
-      0.2,
-      0.0,
-      0.0,
-      0.0,
-      0.4,
-      0.0,
-      0.2,
-      0.0,
-      0.2,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.2,
@@ -1304,40 +1274,40 @@
       0.0,
       0.0,
       0.0,
-      0.0
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.4,
+      0.2,
+      0.4,
+      0.0,
+      0.2,
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.2,
+      0.0,
+      0.4,
+      0.2,
+      0.4,
+      0.0,
+      0.6,
+      0.0,
+      0.4,
+      0.6,
+      0.4,
+      0.8
     ],
     "truth_seeking_scores": [
       0.2,
-      0.5333333333333333,
-      0.2,
-      0.8666666666666667,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.0,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.0,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
       0.2,
       0.2,
       0.2,
@@ -1406,39 +1376,39 @@
       0.2,
       0.2,
       0.2,
-      0.2
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.5333333333333333,
+      0.8666666666666667,
+      0.8666666666666667,
+      0.5333333333333333,
+      0.8666666666666667
     ],
     "overall_scores": [
-      0.47000000000000003,
-      0.4833333333333334,
-      0.2,
-      0.5566666666666666,
-      0.29000000000000004,
-      0.26,
-      0.2,
-      0.38,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.2,
-      0.26,
-      0.2,
-      0.2,
-      0.26,
-      0.2,
-      0.12,
-      0.2,
-      0.32,
-      0.2,
-      0.26,
-      0.2,
-      0.27,
-      0.29000000000000004,
-      0.2,
-      0.29000000000000004,
-      0.29000000000000004,
-      0.2,
       0.2,
       0.2,
       0.35000000000000003,
@@ -1508,8 +1478,38 @@
       0.14,
       0.14,
       0.2,
-      0.38
+      0.38,
+      0.29000000000000004,
+      0.38,
+      0.35000000000000003,
+      0.26,
+      0.14,
+      0.29000000000000004,
+      0.33333333333333337,
+      0.26,
+      0.2,
+      0.5433333333333333,
+      0.35000000000000003,
+      0.32,
+      0.29000000000000004,
+      0.26,
+      0.35000000000000003,
+      0.14,
+      0.14,
+      0.29000000000000004,
+      0.33333333333333337,
+      0.14,
+      0.41,
+      0.26,
+      0.32,
+      0.2,
+      0.47000000000000003,
+      0.42333333333333334,
+      0.6766666666666666,
+      0.8266666666666667,
+      0.6333333333333333,
+      0.7966666666666666
     ]
   },
-  "last_updated": "2025-12-30T21:25:29.913249"
+  "last_updated": "2026-02-08T01:34:10.922565"
 }

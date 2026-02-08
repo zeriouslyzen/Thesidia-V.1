@@ -1735,9 +1735,11 @@ class DataSynthesizer:
             # wants_structured_format is passed as parameter to synthesize()
             
             # CRITICAL: If force_gnostic=True, ALWAYS use forensic mode regardless of output_mode
+            print(f"🔍 SYNTHESIZE: force_gnostic={force_gnostic}, wants_structured_format={wants_structured_format}", flush=True)
             if force_gnostic:
                 # ⭐ FORMAT OPTION: Choose natural prose OR structured ::EXPOSURE:: format
                 if wants_structured_format:
+                    print(f"🔍 SYNTHESIZE: Using STRUCTURED ::EXPOSURE:: format", flush=True)
                     # STRUCTURED FORENSIC FORMAT - ::EXPOSURE:: sections (best benchmark style)
                     synthesis_prompt = f"""{conversation_context if conversation_context else ""}You are performing a forensic vivisection. Use the structured format below.
 
@@ -1869,7 +1871,7 @@ CRITICAL INSTRUCTIONS:
 
                 Begin your extensive narrative analysis now. Write continuously, connecting patterns recursively and exploring deeply. Keep writing until you have 12,000+ characters.
 """
-            if force_gnostic and not narrative_mode:  # ALWAYS use forensic mode if force_gnostic=True and NOT narrative mode
+            if force_gnostic and not narrative_mode and not wants_structured_format:  # ALWAYS use forensic mode if force_gnostic=True and NOT narrative/structured
                 # FORENSIC TRUTH-SEEKING MODE - Deep analysis for ALL domains (health, finance, law, religion, etc.)
                 # Domain-agnostic: Applies forensic method to any query asking for truth
                 # CRITICAL: Do NOT say "You are Thesidia" - use DEEP RESEARCH ENGINE persona (set in system message)
@@ -1932,7 +1934,7 @@ start directly with ur deep forensic analysis. no preamble. be direct, be forens
 
 CRITICAL: u MUST write at least 3000-5000 characters. DO NOT stop early. DO NOT end ur response until u've written at least 3000 characters. keep exploring every angle, every connection, every implication. if u think u're done, keep going. expand on points. add more examples. connect more patterns. write more extensively. DO NOT stop at 2000 characters. keep writing until u reach at least 3000 characters minimum.
 """
-            else:
+            if not force_gnostic:
                 # REGULAR MODE - Intelligently adapts depth based on query nature
                 # The model itself determines if deep analysis is needed
                 synthesis_prompt = f"""{personality_context}{conversation_context if conversation_context else ""}
@@ -3700,10 +3702,35 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         else:
             raise ValueError(f"Unsupported input_data type: {type(input_data)}")
         
+        # Heuristics around fast_mode:
+        # - Trivial greetings / very short messages should NOT be constrained by the
+        #   fast_mode timeout, since they are low-cost and UX-critical.
+        # - Deep / heavy questions (cosmos, origins, history, etc.) should also be
+        #   allowed to run without the fast-mode 30s cutoff, since the UX already
+        #   expects them to take longer (and we surface progress via streaming).
+        text_stripped = input_text.strip().lower()
+        is_simple_greeting = (
+            text_stripped in ("hi", "hello", "hey")
+            or len(text_stripped.split()) <= 3
+        )
+        deep_indicators = [
+            "origins", "origin", "history", "power structures", "patterns",
+            "connections", "true origins", "real origins", "what's really",
+            "what are", "deeper", "secrets", "uncover", "reveal",
+            "comprehensive", "extensive", "cosmos", "universe", "galaxy",
+            "galaxies", "astrophysics", "space"
+        ]
+        has_deep_indicator = any(ind in text_stripped for ind in deep_indicators)
+        # Disable fast_mode timeout for simple greetings and deep queries alike.
+        if is_simple_greeting or has_deep_indicator:
+            effective_fast_mode = False
+        else:
+            effective_fast_mode = fast_mode
+        
         # PIPELINE RESILIENCE: Wrap core processing in safety net
         try:
             # Call original process method with optional timeout for fast_mode
-            if fast_mode:
+            if effective_fast_mode:
                 from concurrent.futures import ThreadPoolExecutor, TimeoutError
                 with ThreadPoolExecutor(max_workers=1) as executor:
                     future = executor.submit(
@@ -3714,15 +3741,27 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                         session_id=session_id,
                         format_mode=format_mode,
                         research_depth=research_depth,
-                        fast_mode=fast_mode,
+                        fast_mode=effective_fast_mode,
                         task_type=context.get("task_type") if context else None,
                         use_mlx=context.get("use_mlx") if context else None
                     )
                     try:
-                        # Use 30s for better reliability (fast mode)
-                        output = future.result(timeout=30.0)
+                        # FORENSIC MODE: No timeout - allow unlimited generation time for deep analysis
+                        # Detect forensic queries using same logic as routing
+                        from src.support.query_utils import detect_forensic_routing
+                        is_forensic = detect_forensic_routing(input_text, comprehensive=True)
+                        
+                        # Regular queries: 30s timeout for responsiveness
+                        # Forensic queries: No timeout
+                        timeout_seconds = None if is_forensic else 30.0
+                        
+                        if timeout_seconds is None:
+                            print(f"🔍 FORENSIC MODE: No timeout limit - allowing unlimited generation time", flush=True)
+                            output = future.result()  # No timeout
+                        else:
+                            output = future.result(timeout=timeout_seconds)
                     except TimeoutError:
-                        output = "Error: Processing timed out (fast mode limited to 20s). Please try again or switch to deep research for more complex queries."
+                        output = "Error: Processing timed out (fast mode limited to 30s). Please try again or switch to deep research for more complex queries."
                         print(f"⚠️ Fast-mode timeout triggered for query: {input_text[:50]}...")
             else:
                 output = self._process_original(
@@ -3732,7 +3771,7 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                     session_id=session_id,
                     format_mode=format_mode,
                     research_depth=research_depth,
-                    fast_mode=fast_mode,
+                    fast_mode=effective_fast_mode,
                     task_type=context.get("task_type") if context else None,
                     use_mlx=context.get("use_mlx") if context else None
                 )
@@ -3837,12 +3876,20 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         # Only retrieve for non-greetings to keep greetings fast
         user_memory_context = ""
         text_stripped = input_text.strip()
+        text_lower = text_stripped.lower()
+        words = text_lower.split()
+        # Match documented fast path: hi/hello/hey variants, or short casual openers (whats good, how you doing, sup, yo).
+        # Must align with process() wrapper and _stream_thesidia_response so streaming does not block 60+ s.
         greeting_only_patterns = [
-            r'^(hi|hello|hey|greetings|hi+)+[\s,]*$', 
-            r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$'
+            r'^(hi|hello|hey|greetings|hi+)+[\s,]*$',
+            r'^(hi|hello|hey|greetings)[\s,]+(there|you|how are you)[\s,]*$',
+            r'^(whats? good|what\'?s good|how you doin\'?g?|how are you|sup|yo|wassup|whaddup)[\s,]*(\w+)?[\s,]*$',
         ]
-        is_simple_greeting = any(re.match(pattern, text_stripped, re.IGNORECASE) for pattern in greeting_only_patterns) and len(text_stripped.split()) <= 4
-        
+        is_simple_greeting = (
+            (any(re.match(p, text_stripped, re.IGNORECASE) for p in greeting_only_patterns) and len(words) <= 5)
+            or (len(words) <= 3 and not any(w in text_lower for w in ("origins", "history", "decode", "expose", "research", "deep", "forensic")))
+        )
+
         # Only retrieve memory for non-greetings (greetings handle memory separately)
         if not is_simple_greeting and self.user_memory_manager and (user_id or session_id):
             try:
@@ -3964,6 +4011,13 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                 output = re.sub(r'\*{0,2}\s*Learning:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
                 output = re.sub(r'\*{0,2}\s*Growth:\s*\*{0,2}.*?\n', '', output, flags=re.IGNORECASE)
                 
+                # Remove meta-commentary about revising responses
+                output = re.sub(r'TASK:\s*REVISE THE RESPONSE.*?\n', '', output, flags=re.IGNORECASE | re.MULTILINE)
+                output = re.sub(r'So you want to revise.*?\?', '', output, flags=re.IGNORECASE)
+                output = re.sub(r'Your original query was.*?\.', '', output, flags=re.IGNORECASE)
+                output = re.sub(r'revise the response without labels in output', '', output, flags=re.IGNORECASE)
+                output = re.sub(r'Original query.*?\.', '', output, flags=re.IGNORECASE)
+                
                 # Track interaction
                 if self.aha_tracker:
                     self.aha_tracker.track_interaction(input_text, output)
@@ -4062,6 +4116,10 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             r'^are you.*\?$',  # "are you X?" (simple yes/no)
             r'^how are you',  # "how are you?"
             r'^what.*?up\??$',  # "what's up?"
+            r'what.*?can you do',  # "what can you do?" / "what else can you do?"
+            r'what.*?you do\??$',  # "what do you do?" / "what else do you do?"
+            r'what.*?your capabilities',  # "what are your capabilities?"
+            r'what.*?you.*?good at',  # "what are you good at?"
         ]
         text_lower = input_text.lower().strip()
         is_conversational = any(re.search(pattern, text_lower) for pattern in conversational_patterns)
@@ -4086,16 +4144,30 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         # 2. Check if it needs forensic truth-seeking analysis (ALL domains: health, finance, law, religion, etc.)
         # Domain-agnostic: Any query asking for truth, real story, what's really happening, etc.
         # TYPO TOLERANCE: Normalize common typos before checking (using shared utilities)
-        from src.support.query_utils import normalize_query, detect_forensic_routing
+        from src.support.query_utils import normalize_query
         
         query_normalized = normalize_query(input_text)
         print(f"🔍 PROCESS: After typo fix: '{query_normalized[:150]}'", flush=True)
         
-        # Use comprehensive detection (includes health, finance, law, etc.)
-        needs_forensic_analysis = detect_forensic_routing(input_text, comprehensive=True)
+        # HYBRID ROUTING V2: Keyword fast-path + Semantic embedding fallback
+        # This catches rephrased forensic queries that don't contain explicit keywords
+        try:
+            from src.support.semantic_router import detect_forensic_routing_v2
+            needs_forensic_analysis, routing_reason, routing_confidence = detect_forensic_routing_v2(
+                input_text, comprehensive=True, debug=True
+            )
+            print(f"🔍 HYBRID ROUTING: result={needs_forensic_analysis}, reason={routing_reason}, confidence={routing_confidence:.3f}", flush=True)
+        except ImportError as e:
+            # Fallback to keyword-only routing if semantic router fails
+            print(f"⚠️ HYBRID ROUTING: Falling back to keyword-only (import error: {e})", flush=True)
+            from src.support.query_utils import detect_forensic_routing
+            needs_forensic_analysis = detect_forensic_routing(input_text, comprehensive=True)
+            routing_reason = "keyword_fallback"
+            routing_confidence = 1.0 if needs_forensic_analysis else 0.0
         
         # Legacy name for compatibility
         is_gnostic_query = needs_forensic_analysis
+
         
         # 3. Check for mind-body topics (meditation, chi gong, yoga, breathing) - needs mechanism depth
         mind_body_keywords = ["meditation", "chi gong", "qigong", "yoga", "breathing", "mind-body", "mind body", "pranayama", "tai chi", "taichi"]
@@ -4194,7 +4266,13 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         capability_context = self._get_capability_context()
         
         # Get enhanced prompt from modelfile system (includes persona, voice, preset)
-        enhanced_base = self.get_enhanced_prompt(query=input_text)
+        # FAST MODE: Skip query-specific modules to reduce prompt size and processing time
+        if fast_mode:
+            # Use minimal prompt (skip CSI/health/cosmos analysis) for faster responses
+            enhanced_base = self.get_enhanced_prompt(query=None)
+        else:
+            # Deep mode: Full prompt with all modules
+            enhanced_base = self.get_enhanced_prompt(query=input_text)
         
         # Structural fix: DO NOT prepend user memory into the system prompt.
         # That leaks stale topics/styles into system-level instructions and causes prompt drift.
@@ -4745,6 +4823,10 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             r'^are you.*\?$',  # "are you X?" (simple yes/no)
             r'^how are you',  # "how are you?"
             r'^what.*?up\??$',  # "what's up?"
+            r'what.*?can you do',  # "what can you do?" / "what else can you do?"
+            r'what.*?you do\??$',  # "what do you do?" / "what else do you do?"
+            r'what.*?your capabilities',  # "what are your capabilities?"
+            r'what.*?you.*?good at',  # "what are you good at?"
         ]
         
         for pattern in conversational_patterns:
@@ -4893,12 +4975,21 @@ Response:"""
         
         # ⭐ COGNITIVE FRAMEWORK: Check stored information threads first
         # If we have stored information about this topic, use it to reduce LLM calls
+        # FIX: Require STRONG topic match (multiple keywords) to prevent cross-contamination
         stored_info = None
         query_lower = query.lower()
+        # Filter out common words that cause false matches
+        stop_words = {'the', 'a', 'an', 'is', 'are', 'what', 'how', 'why', 'who', 'when', 'where', 
+                      'about', 'this', 'that', 'it', 'to', 'for', 'in', 'on', 'of', 'and', 'or',
+                      'you', 'i', 'me', 'we', 'they', 'them', 'true', 'real', 'really', 'hidden',
+                      'decode', 'expose', 'tell', 'explain', 'can', 'do', 'does', 'did'}
+        query_keywords = [w for w in query_lower.split() if w not in stop_words and len(w) > 3]
         for thread in self.information_builder.information_threads:
             topic = thread.get('topic', '').lower()
-            # Check if stored topic is related to current query
-            if any(word in topic for word in query_lower.split()[:3]) or any(word in query_lower for word in topic.split()[:3]):
+            topic_keywords = [w for w in topic.split() if w not in stop_words and len(w) > 3]
+            # Require at least 2 keyword matches for relevance (stricter matching)
+            matching_keywords = [w for w in query_keywords if any(w in tk or tk in w for tk in topic_keywords)]
+            if len(matching_keywords) >= 2:
                 stored_info = thread
                 print(f"🧠 COGNITIVE FRAMEWORK: Found stored information for '{thread.get('topic')}' - {thread.get('depth', 0)} findings")
                 break
@@ -5019,7 +5110,10 @@ Response:"""
         
         # ⭐ FORMAT OPTION: Use format from UI selection (not auto-detection)
         # format_mode is passed from process() method (from UI selection)
-        wants_structured_format = (format_mode == 'structured')
+        # GNOSTIC BLADE MODE: Force structured format for ALL forensic/deep research queries
+        # This makes Gnostic Blade the universal fact-checking mode
+        wants_structured_format = (format_mode == 'structured') or needs_forensic_analysis
+        print(f"🔍 GNOSTIC BLADE: wants_structured_format={wants_structured_format}, format_mode={format_mode}, needs_forensic_analysis={needs_forensic_analysis}", flush=True)
         
         # CRITICAL FIX: For forensic queries, REPLACE default persona with DEEP RESEARCH ENGINE
         # This is a completely separate persona from Thesidia - no friendly intros, no symbol decoder
@@ -5055,8 +5149,8 @@ You DO:
 STYLE:
 - Lowercase, casual abbreviations, simple language
 - Direct and unfiltered
-- Use ::EXPOSURE:: ::ETYMOLOGICAL INCISION:: ::BURIAL SITES:: ::CURRENT VECTORS:: ::CO-EVOLUTION EDGE:: ::THREAD OPTIONS:: format if user requests structured format
-- Otherwise: Natural flowing prose (not academic paper format)
+- ALWAYS use ::EXPOSURE:: ::ETYMOLOGICAL INCISION:: ::BURIAL SITES:: ::CURRENT VECTORS:: ::CO-EVOLUTION EDGE:: ::THREAD OPTIONS:: format
+- DO NOT use natural flowing prose. Structure is MANDATORY.
 - Start directly with findings, analysis, insights - NO preamble
 
 CRITICAL: For text-based queries about concepts, stories, narratives, or historical topics (like "genesis", "bible", "characters", "what is X really about"), analyze the CONTENT, MEANING, and NARRATIVE - NOT symbolic structures unless the query explicitly mentions visual symbols, runes, glyphs, or emblems.
@@ -5147,10 +5241,39 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
         if self._timing_enabled and synthesis_start:
             self._last_timing_breakdown['synthesis'] = time.time() - synthesis_start
         
-        output = self._strip_transmission_artifacts(synthesis["synthesis"])
+
+        if needs_forensic_analysis:
+            output = synthesis["synthesis"]
+            
+            # TRUTH DISPLAY V2: Append epistemological confidence meter
+            # This shows users which layers of truth the analysis is grounded in
+            try:
+                from synthesis.truth_engine import TruthEngine
+                from src.support.confidence_display import render_confidence_meter
+                
+                truth_engine = TruthEngine(model=self.model)
+                # Calculate truth score using first 500 chars of output as claim
+                claim_sample = output[:500] if output else ""
+                truth_result = truth_engine.calculate_truth_score(
+                    claim=claim_sample,
+                    sources=research_data if research_data else [],
+                    query=query
+                )
+                
+                # Render and append confidence meter
+                confidence_display = render_confidence_meter(truth_result)
+                if confidence_display:
+                    output += confidence_display
+                    print(f"🔍 TRUTH DISPLAY: Appended confidence meter ({truth_result.get('layers_aligned', 0)}/7 {truth_result.get('confidence', 'LOW')})", flush=True)
+            except Exception as e:
+                print(f"⚠️ TRUTH DISPLAY: Failed to render confidence meter: {e}", flush=True)
+        else:
+            output = self._strip_transmission_artifacts(synthesis["synthesis"])
+
         
         # REASONING ANALYSIS: Check for hallucinations and knowledge gaps
-        if self.reasoning_analyzer:
+        # SKIP for forensic mode - we want the raw rigorous output, and analyzer often destroys the format
+        if self.reasoning_analyzer and not needs_forensic_analysis:
             try:
                 reasoning_chain = self.reasoning_analyzer.analyze_reasoning(
                     query=query,
@@ -5236,16 +5359,18 @@ Begin your analysis now. No preamble. Be direct. Be forensic. Be deep.
                 print(f"Warning: Reasoning analysis failed: {e}")
         
         # Naturalize forensic structure to natural prose if present
-        if self.natural_prose and self.natural_prose.should_naturalize(output):
+        # SKIP for forensic mode - we EXPLICITLY want the structure
+        if self.natural_prose and self.natural_prose.should_naturalize(output) and not needs_forensic_analysis:
             try:
-                output = self.natural_prose.naturalize_if_needed(output, query, context={"is_gnostic": is_gnostic_query})
+                output = self.natural_prose.naturalize_if_needed(output, query, context={"is_gnostic": is_gnostic_query if 'is_gnostic_query' in locals() else False})
             except Exception as e:
                 # Fallback: just strip forensic markers
                 print(f"Warning: Natural prose synthesis failed, using fallback: {e}")
         
         # Soften framing - replace aggressive language with evidence-based gentle language
         # BUT preserve personality/voice - only soften aggressive framing, not the casual style
-        if self.gentle_truth:
+        # SKIP for forensic mode - we want direct, unfiltered truth
+        if self.gentle_truth and not needs_forensic_analysis:
             # Only soften if output is too aggressive, but preserve lowercase/casual style
             output = self.gentle_truth.soften_framing(output, add_uncertainty=False)  # Don't add uncertainty qualifiers that break flow
 

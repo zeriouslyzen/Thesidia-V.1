@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <title>Katanx</title>
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <h1>KATANX</h1>
+        <div class="top-icons">
+            <a href="/explore">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="11" cy="11" r="8" stroke-width="2" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2" />
+                </svg>
+            </a>
+            <a href="/profile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="8" r="4" stroke-width="2" />
+                    <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" stroke-width="2" />
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- Signal Picks - Curated News (Horizontal Scroll) -->
+        <section class="section-scroll">
+            <div class="section-header">
+                <h2>Signal picks</h2>
+                <p class="section-meta">curated for you</p>
+            </div>
+            <div class="scroll-container news-scroll" id="news-tiles">
+                <!-- News articles will load here as horizontal scrolling cards -->
+                <div class="news-card loading">
+                    <div class="news-category"> </div>
+                    <div class="news-title">Loading...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Now (Horizontal Scroll) -->
+        <section class="section-scroll">
+            <h2>LIVE NOW</h2>
+            <div class="scroll-container" id="live-scroll">
+                <div class="card-small">
+                    <div class="live-dot"></div>
+                    <p>@kai training</p>
+                </div>
+                <div class="card-small">
+                    <p><strong>103</strong> online</p>
+                </div>
+                <div class="card-small">
+                    <p><strong>14</strong> posts</p>
+                </div>
+                <div class="card-small">
+                    <p><strong>5</strong> signals</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Users (Horizontal Scroll) -->
+        <section class="section-scroll">
+            <h2>FEATURED</h2>
+            <div class="scroll-container" id="users-scroll">
+                <div class="card-user">
+                    <div class="avatar"></div>
+                    <p class="username">@kai_sensei</p>
+                    <p class="discipline">Martial Arts</p>
+                </div>
+                <div class="card-user">
+                    <div class="avatar"></div>
+                    <p class="username">@maya_art</p>
+                    <p class="discipline">Visual Arts</p>
+                </div>
+                <div class="card-user">
+                    <div class="avatar"></div>
+                    <p class="username">@alex_code</p>
+                    <p class="discipline">Engineering</p>
+                </div>
+                <div class="card-user">
+                    <div class="avatar"></div>
+                    <p class="username">@zoe_flow</p>
+                    <p class="discipline">Movement</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feed (Static List) -->
+        <section class="section-static">
+            <h2>YOUR FEED</h2>
+            <div id="feed-list">
+                <div class="feed-card">
+                    <p class="feed-user">@kai_sensei</p>
+                    <p class="feed-content">Just finished a 2-hour kata session. The precision needed is humbling.</p>
+                    <div class="feed-meta">
+                        <span>2h ago</span>
+                        <span>5 comments</span>
+                    </div>
+                </div>
+                <div class="feed-card">
+                    <p class="feed-user">@maya_art</p>
+                    <p class="feed-content">Working on a new series exploring light and shadow.</p>
+                    <div class="feed-meta">
+                        <span>5h ago</span>
+                        <span>8 comments</span>
+                    </div>
+                </div>
+            </div>
+            <a href="/stream" class="view-all">View All →</a>
+        </section>
+
+        <!-- Trending (Horizontal Scroll) -->
+        <section class="section-scroll">
+            <h2>TRENDING</h2>
+            <div class="scroll-container">
+                <div class="tag-card">#flows</div>
+                <div class="tag-card">#kata</div>
+                <div class="tag-card">#sparring</div>
+                <div class="tag-card">#progress</div>
+                <div class="tag-card">#technique</div>
+            </div>
+        </section>
+
+        <!-- Quick Actions (Static) -->
+        <section class="section-static">
+            <div class="actions-grid">
+                <a href="/stream" class="action-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="5" y="2" width="14" height="20" rx="2" stroke-width="2" />
+                    </svg>
+                    <span>Stream</span>
+                </a>
+                <a href="/explore" class="action-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="11" cy="11" r="8" stroke-width="2" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2" />
+                    </svg>
+                    <span>Explore</span>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/home.js"></script>
+</body>
+
+</html>

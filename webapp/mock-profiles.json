@@ -1,58 +1,225 @@
 {
   "profiles": [
     {
+      "user_id": "user_kxc_ren",
+      "username": "ren_mastery",
+      "display_name": "Ren Tanaka",
+      "avatar_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&h=120&q=80",
+      "banner_url": "https://images.unsplash.com/photo-1552084117-56a987666449?auto=format&fit=crop&w=1200&h=400&q=80",
+      "bio": "Traditional Budo practitioner. Integrating internal focus with tactical presence. Teaching the art of the calm mind in high-stakes environments.",
+      "role": "Martial Arts Master",
+      "domains": [
+        "martial",
+        "internal",
+        "leadership"
+      ],
+      "location": "Kyoto / SF",
+      "website": "https://renmastery.io",
+      "stats": {
+        "friends": 428,
+        "fans": 12400,
+        "resonating": 850
+      },
+      "portfolio": {
+        "summary": "Bridging ancient discipline with modern performance. Focus on Zanshin (remaining mind) and biomechanical efficiency.",
+        "credentials": [
+          "4th Dan Aikido",
+          "Systema Instructor",
+          "Meditation Guide 15y"
+        ],
+        "reading": [
+          {
+            "title": "The Unfettered Mind",
+            "author": "Takuan Sōhō",
+            "image": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=300&q=80"
+          },
+          {
+            "title": "The Book of Five Rings",
+            "author": "Miyamoto Musashi",
+            "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80"
+          }
+        ]
+      },
+      "posts": [
+        {
+          "id": "ren_p1",
+          "content": "Presence isn't about tension. It's about being 'empty' yet ready. In Budo, we call it Zanshin. Most people leak energy through unnecessary focus; real mastery is selective attention.",
+          "created_at": "2025-02-04T08:00:00Z",
+          "likes": 842,
+          "reposts": 156,
+          "replies": 45
+        },
+        {
+          "id": "ren_p2",
+          "content": "Morning drill: 200 cuts with the suburito. The weight forces you to use the core, not the shoulders. If you use your arms, you tire. If you use your center, you endure.",
+          "created_at": "2025-02-03T07:30:00Z",
+          "likes": 621,
+          "reposts": 89,
+          "replies": 32
+        }
+      ]
+    },
+    {
+      "user_id": "user_kxc_kaizen",
+      "username": "kaizen_vfx",
+      "display_name": "Leo 'Kaizen' Chen",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80",
+      "banner_url": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&h=400&q=80",
+      "bio": "Creative Technologist. Algorithmic architecture and procedural VFX. Engineering beauty through math and code.",
+      "role": "Technical Artist",
+      "domains": [
+        "invention",
+        "visual",
+        "intellectual"
+      ],
+      "location": "Berlin",
+      "website": "https://kaizenvfx.com",
+      "stats": {
+        "friends": 890,
+        "fans": 45000,
+        "resonating": 1200
+      },
+      "portfolio": {
+        "summary": "Building procedural worlds that respond to physical inputs. High performance Houdini and Unreal Engine workflows.",
+        "credentials": [
+          "Houdini Master Class",
+          "Nuke Certified",
+          "CS Degree - TU Berlin"
+        ],
+        "reading": [
+          {
+            "title": "The Nature of Code",
+            "author": "Daniel Shiffman",
+            "image": "https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?auto=format&fit=crop&w=300&q=80"
+          }
+        ]
+      },
+      "posts": [
+        {
+          "id": "kaizen_p1",
+          "content": "Just finished an 8-hour sim sweep. Finding the balance between fluid viscosity and artistic 'flow' is where the magic happens. Math is the brush, Houdini is the canvas.",
+          "created_at": "2025-02-04T12:00:00Z",
+          "likes": 1200,
+          "reposts": 300,
+          "replies": 67
+        }
+      ]
+    },
+    {
+      "user_id": "user_kxc_soma",
+      "username": "soma_flow",
+      "display_name": "Dr. Elena Vance",
+      "avatar_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=120&h=120&q=80",
+      "banner_url": "https://images.unsplash.com/photo-1518611012118-29a8d63ee002?auto=format&fit=crop&w=1200&h=400&q=80",
+      "bio": "Somatic therapist and movement researcher. Restoring human vitality through neurological feedback and primal patterns.",
+      "role": "Movement Specialist",
+      "domains": [
+        "movement",
+        "healing",
+        "internal"
+      ],
+      "location": "London",
+      "website": "https://somaflow.uk",
+      "stats": {
+        "friends": 310,
+        "fans": 8900,
+        "resonating": 420
+      },
+      "portfolio": {
+        "summary": "Evidence-based movement therapy. Integrating Feldenkrais, BMC, and modern sports science for lasting neuro-plastic change.",
+        "credentials": [
+          "PhD Neurobiology",
+          "GMB Trainer",
+          "Yoga Therapist C-IAYT"
+        ]
+      },
+      "posts": [
+        {
+          "id": "soma_p1",
+          "content": "Your nervous system doesn't care about your aesthetic goals. It cares about safety. If you want to unlock more range of motion, stop 'stretching' and start 'listening'. Movement is a conversation.",
+          "created_at": "2025-02-03T20:00:00Z",
+          "likes": 2300,
+          "reposts": 540,
+          "replies": 128
+        }
+      ]
+    },
+    {
+      "user_id": "user_kxc_vanguard",
+      "username": "vanguard_ops",
+      "display_name": "Marcus Thorne",
+      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&h=120&q=80",
+      "banner_url": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&h=400&q=80",
+      "bio": "Strategic foresight and community architecture. Designing resilient social structures for the next decade of human coordination.",
+      "role": "Social Architect",
+      "domains": [
+        "leadership",
+        "intellectual",
+        "performance"
+      ],
+      "location": "Austin / Remote",
+      "website": "https://vanguardops.com",
+      "stats": {
+        "friends": 1500,
+        "fans": 67000,
+        "resonating": 3400
+      },
+      "portfolio": {
+        "summary": "Specializing in decentralized governance and high-performance team culture. Building tools for the 'doers'.",
+        "credentials": [
+          "Strategy Consultant 12y",
+          "Organizational Design Lead",
+          "Founder"
+        ]
+      },
+      "posts": [
+        {
+          "id": "vanguard_p1",
+          "content": "The next 10 years will be defined by those who can coordinate without permission. We don't need more 'leaders' in the traditional sense; we need more 'connective tissue' between autonomous practitioners.",
+          "created_at": "2025-02-04T15:45:00Z",
+          "likes": 3100,
+          "reposts": 880,
+          "replies": 210
+        }
+      ]
+    },
+    {
       "user_id": "user_kxc_aurora",
       "username": "aurora",
       "display_name": "Aurora Vale",
       "avatar_url": "https://i.pravatar.cc/120?img=47",
       "bio": "Motion designer crafting kinetic, minimal stories.",
       "role": "Visual Artist",
-      "domains": ["movement", "visual"],
+      "domains": [
+        "movement",
+        "visual"
+      ],
       "location": "Barcelona",
       "website": "https://auroravale.studio",
       "portfolio": {
         "summary": "Kinetic minimalism, tightly timed edits, and light-driven palettes.",
         "reels": [
-          {"title": "Kinetic Loop", "thumb": "https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=600&q=60", "meta": "00:32"},
-          {"title": "Palette Motion", "thumb": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=60", "meta": "00:45"},
-          {"title": "Lighting Drill", "thumb": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60", "meta": "00:28"}
+          {
+            "title": "Kinetic Loop",
+            "thumb": "https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=600&q=60",
+            "meta": "00:32"
+          },
+          {
+            "title": "Palette Motion",
+            "thumb": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=60",
+            "meta": "00:45"
+          },
+          {
+            "title": "Lighting Drill",
+            "thumb": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60",
+            "meta": "00:28"
+          }
         ],
-        "origin": {
-          "paragraphs": [
-            "Started with analog rotoscoping, shifted into digital kinetic typography. Focused on breath-like timing and restrained palettes.",
-            "The journey began in a small Barcelona studio where I learned frame-by-frame animation. Over the years, I've developed a unique approach that combines traditional techniques with modern digital tools, always prioritizing the emotional impact of movement."
-          ],
-          "images": [
-            "https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=300&q=80",
-            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=300&q=80"
-          ]
-        },
-        "education": {
-          "cert": {"title": "Advanced Motion Design", "org": "School of Visual Arts", "url": "https://example.com/cert"},
-          "university": {"title": "BFA Digital Media", "org": "Barcelona Art Institute", "url": "https://example.com/uni"}
-        },
-        "services": [
-          {"title": "Motion Direction", "desc": "Full creative direction for motion projects"},
-          {"title": "Workshop Facilitation", "desc": "Teaching kinetic design principles"}
-        ],
-        "resume": {"name": "Aurora_Vale_CV.pdf", "url": "https://example.com/resume.pdf", "uploaded": "2024-01-15"},
-        "reading": [
-          {"title": "The Art of Looking Sideways", "author": "Alan Fletcher", "url": "https://example.com/book1", "image": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=300&q=80"},
-          {"title": "Steal Like an Artist", "author": "Austin Kleon", "url": "https://example.com/book2", "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80"},
-          {"title": "The Design of Everyday Things", "author": "Don Norman", "url": "https://example.com/book3", "image": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=300&q=80"},
-          {"title": "Thinking, Fast and Slow", "author": "Daniel Kahneman", "url": "https://example.com/book4", "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80"}
-        ],
-        "disciplines": [
-          "Vinyasa Yoga",
-          "Meditation",
-          "Breathwork",
-          "Movement Flow"
-        ],
-        "links": [
-          {"type": "Studio", "title": "Studio North", "desc": "Barcelona micro-studio for kinetic pieces", "url": "https://example.com/studionorth"},
-          {"type": "Location", "title": "Residency BCN", "desc": "Artist-in-residence loft", "url": "https://example.com/residency"}
-        ],
-        "credentials": ["Motion Design 10y", "Lighting Systems", "Creative Direction"]
+        "credentials": [
+          "Motion Design 10y",
+          "Lighting Systems",
+          "Creative Direction"
+        ]
       },
       "posts": [
         {
@@ -62,14 +229,6 @@
           "likes": 124,
           "reposts": 9,
           "replies": 6
-        },
-        {
-          "id": "aurora_p2",
-          "content": "Process: blocking beats first, textures later. Saves 40% time on motion direction.",
-          "created_at": "2025-02-01T14:30:00Z",
-          "likes": 96,
-          "reposts": 7,
-          "replies": 4
         }
       ]
     },
@@ -80,22 +239,20 @@
       "avatar_url": "https://i.pravatar.cc/120?img=12",
       "bio": "Composer + sound designer blending modular and field layers.",
       "role": "Composer / Teacher",
-      "domains": ["music", "sound"],
+      "domains": [
+        "music",
+        "sound"
+      ],
       "location": "Mexico City",
       "website": "https://motif.audio",
       "portfolio": {
         "summary": "Sound design for motion and immersive micro-stories. Modular + field recordings.",
-        "reels": [
-          {"title": "Subway Texture", "thumb": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60", "meta": "00:30"},
-          {"title": "Modular Pass", "thumb": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60", "meta": "00:42"},
-          {"title": "Field Layer", "thumb": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60", "meta": "00:26"}
-        ],
-        "origin": "Started scoring student films, now crafting hybrid acoustic/electronic beds for shortform visual stories.",
-        "links": [
-          {"type": "Studio", "title": "Motif Audio", "desc": "Modular & Foley lab", "url": "https://example.com/motif"},
-          {"type": "Location", "title": "CDMX Room", "desc": "Mix room + vocal booth", "url": "https://example.com/cdmxroom"}
-        ],
-        "credentials": ["Sound Design 8y", "Modular Synthesis", "Dialog Editing", "Mix/Master"]
+        "credentials": [
+          "Sound Design 8y",
+          "Modular Synthesis",
+          "Dialog Editing",
+          "Mix/Master"
+        ]
       },
       "posts": [
         {
@@ -115,22 +272,19 @@
       "avatar_url": "https://i.pravatar.cc/120?img=33",
       "bio": "Analog craft + textile futurist, documenting process and pattern.",
       "role": "Textile Artist",
-      "domains": ["craft", "design"],
+      "domains": [
+        "craft",
+        "design"
+      ],
       "location": "Cape Town",
       "website": "https://sierra.studio",
       "portfolio": {
         "summary": "Textile futures with natural dye gradients and parametric pattern drafts.",
-        "reels": [
-          {"title": "Dye Bath", "thumb": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=60", "meta": "00:29"},
-          {"title": "Loom Pass", "thumb": "https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=600&q=60", "meta": "00:34"},
-          {"title": "Pattern Draft", "thumb": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60", "meta": "00:22"}
-        ],
-        "origin": "From handloom weaving to computational pattern drafting; bridging tactile craft with parametric tools.",
-        "links": [
-          {"type": "Studio", "title": "Pattern Lab", "desc": "Dye and weave atelier", "url": "https://example.com/patternlab"},
-          {"type": "Gym", "title": "Maker Space", "desc": "Shared fabrication floor", "url": "https://example.com/maker"}
-        ],
-        "credentials": ["Textile Design BFA", "Natural Dyeing", "Parametric Drafting"]
+        "credentials": [
+          "Textile Design BFA",
+          "Natural Dyeing",
+          "Parametric Drafting"
+        ]
       },
       "posts": [
         {
@@ -150,21 +304,19 @@
       "avatar_url": "https://i.pravatar.cc/120?img=15",
       "bio": "Performance poet + movement storyteller, intimate rooms and late light.",
       "role": "Performance Poet",
-      "domains": ["performance", "writing"],
+      "domains": [
+        "performance",
+        "writing"
+      ],
       "location": "Toronto",
       "website": "https://embercoast.com",
       "portfolio": {
         "summary": "Performance poetry with slow movement, breathing room, and minimal staging.",
-        "reels": [
-          {"title": "Room Reading", "thumb": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60", "meta": "00:31"},
-          {"title": "Movement Beat", "thumb": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60", "meta": "00:27"},
-          {"title": "Light Cue", "thumb": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=60", "meta": "00:24"}
-        ],
-        "origin": "Started in open-mics, evolved into hybrid sets mixing spoken word, ambient sound, and slow choreography.",
-        "links": [
-          {"type": "Studio", "title": "Late Light", "desc": "Small black-box for rehearsals", "url": "https://example.com/latelight"}
-        ],
-        "credentials": ["Spoken Word 6y", "Movement Training", "Workshop Facilitator"]
+        "credentials": [
+          "Spoken Word 6y",
+          "Movement Training",
+          "Workshop Facilitator"
+        ]
       },
       "posts": [
         {
@@ -184,21 +336,19 @@
       "avatar_url": "https://i.pravatar.cc/120?img=52",
       "bio": "Systems thinker mapping AI tools to human rituals.",
       "role": "Systems Researcher",
-      "domains": ["systems", "ai"],
+      "domains": [
+        "systems",
+        "ai"
+      ],
       "location": "Tokyo",
       "website": "https://novalab.jp",
       "portfolio": {
         "summary": "Systems mapping, AI tooling, and human rituals research.",
-        "reels": [
-          {"title": "Workflow Map", "thumb": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60", "meta": "00:33"},
-          {"title": "Prompt Chain", "thumb": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60", "meta": "00:36"},
-          {"title": "Ritual Notes", "thumb": "https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=600&q=60", "meta": "00:30"}
-        ],
-        "origin": "Combining design research with AI systems to support reflective creative practice.",
-        "links": [
-          {"type": "Studio", "title": "Nova Lab", "desc": "Systems + research studio", "url": "https://example.com/novalab"}
-        ],
-        "credentials": ["Systems Design MSc", "AI Tooling", "Research Ops"]
+        "credentials": [
+          "Systems Design MSc",
+          "AI Tooling",
+          "Research Ops"
+        ]
       },
       "posts": [
         {
@@ -218,21 +368,20 @@
       "avatar_url": "https://i.pravatar.cc/120?img=68",
       "bio": "Photographer teaching lighting micro-lessons and edit recipes.",
       "role": "Photography Educator",
-      "domains": ["visual", "learning"],
+      "domains": [
+        "visual",
+        "learning"
+      ],
       "location": "Seoul",
       "website": "https://lumenpark.photo",
       "portfolio": {
         "summary": "Lighting micro-lessons, portrait systems, and editing recipes.",
-        "reels": [
-          {"title": "Key/Fill/Hair", "thumb": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=60", "meta": "00:25"},
-          {"title": "Color Grading", "thumb": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60", "meta": "00:31"},
-          {"title": "Lens Tests", "thumb": "https://images.unsplash.com/photo-1526481280695-3c469c2f77f4?auto=format&fit=crop&w=600&q=60", "meta": "00:29"}
-        ],
-        "origin": "From event photography to crafted portrait systems; sharing repeatable lighting setups and edits.",
-        "links": [
-          {"type": "Studio", "title": "Lumen Studio", "desc": "Portrait + product bay", "url": "https://example.com/lumenstudio"}
-        ],
-        "credentials": ["Photography 9y", "Lighting Design", "Post-Production", "Workshop Host"]
+        "credentials": [
+          "Photography 9y",
+          "Lighting Design",
+          "Post-Production",
+          "Workshop Host"
+        ]
       },
       "posts": [
         {
@@ -247,4 +396,3 @@
     }
   ]
 }
-

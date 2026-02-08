@@ -3644,6 +3644,438 @@
       "defensiveness_detected": false,
       "expansion_detected": false,
       "user_feedback": null
+    },
+    {
+      "query": "hello thesidia",
+      "response_length": 3334,
+      "timestamp": "2026-01-15T13:10:50.115488",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 109,
+      "timestamp": "2026-01-15T13:15:40.322034",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 169,
+      "timestamp": "2026-01-15T13:28:53.270167",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 169,
+      "timestamp": "2026-01-15T13:29:08.899662",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what is consciousness?",
+      "response_length": 14867,
+      "timestamp": "2026-01-15T13:30:21.915915",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia, I want to test your conversational logic. Can you explain what consciousness is in simple terms?",
+      "response_length": 1390,
+      "timestamp": "2026-01-15T13:31:31.972662",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "test",
+      "response_length": 674,
+      "timestamp": "2026-01-15T14:06:54.425794",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia, I want to test your conversational logic. Can you explain what consciousness is in simple terms?",
+      "response_length": 372,
+      "timestamp": "2026-01-15T23:30:36.469783",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia, test",
+      "response_length": 1560,
+      "timestamp": "2026-01-15T23:31:27.726234",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello, just say hi back",
+      "response_length": 930,
+      "timestamp": "2026-01-15T23:33:01.742699",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello",
+      "response_length": 84,
+      "timestamp": "2026-01-15T23:52:19.419791",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello",
+      "response_length": 61,
+      "timestamp": "2026-01-15T23:53:26.023258",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello",
+      "response_length": 18,
+      "timestamp": "2026-01-15T23:54:59.295872",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "Hello Thesidia, I want to test your conversational logic. Can you explain what consciousness is in simple terms?",
+      "response_length": 972,
+      "timestamp": "2026-01-15T23:55:38.213048",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "oh wow i didnt know that, what else can  you do",
+      "response_length": 1787,
+      "timestamp": "2026-01-16T00:22:18.303622",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 47,
+      "timestamp": "2026-01-27T23:00:21.582090",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you doing today?",
+      "response_length": 1520,
+      "timestamp": "2026-01-27T23:01:03.780228",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "I practice Shaolin and I&#x27;ve experienced unlimited energy through bioelectric processes. Can you cross-reference this with scientific research?",
+      "response_length": 1230,
+      "timestamp": "2026-01-27T23:03:43.772647",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 194,
+      "timestamp": "2026-01-27T23:05:23.245610",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 69,
+      "timestamp": "2026-01-27T23:05:34.254231",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "What really happened with the Baghdad Battery?",
+      "response_length": 1799,
+      "timestamp": "2026-01-27T23:06:21.606378",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you thesidia",
+      "response_length": 1038,
+      "timestamp": "2026-01-28T00:54:49.712089",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "how are you thesidia",
+      "response_length": 1524,
+      "timestamp": "2026-01-28T01:00:44.635139",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 135,
+      "timestamp": "2026-01-28T01:28:15.568112",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 134,
+      "timestamp": "2026-01-28T01:29:48.977005",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 162,
+      "timestamp": "2026-01-28T01:47:08.017124",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 144,
+      "timestamp": "2026-01-28T01:48:22.536430",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what you know about the cosmos  ?",
+      "response_length": 477,
+      "timestamp": "2026-01-28T01:53:15.560422",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what you know about the cosmos  ?",
+      "response_length": 370,
+      "timestamp": "2026-01-28T02:02:54.579849",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 267,
+      "timestamp": "2026-01-28T02:05:32.174701",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you unocver",
+      "response_length": 1740,
+      "timestamp": "2026-01-28T02:14:13.720090",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what can you unocver",
+      "response_length": 616,
+      "timestamp": "2026-01-28T02:15:00.886888",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 174,
+      "timestamp": "2026-01-28T02:43:40.599322",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 21,
+      "timestamp": "2026-01-28T02:44:20.301540",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 59,
+      "timestamp": "2026-01-28T02:44:36.239750",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hi",
+      "response_length": 58,
+      "timestamp": "2026-01-28T02:46:18.169371",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what you know",
+      "response_length": 401,
+      "timestamp": "2026-01-28T02:46:33.624910",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "i guess so, what you know about the cosmso",
+      "response_length": 2644,
+      "timestamp": "2026-01-28T02:47:51.179051",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "hello",
+      "response_length": 112,
+      "timestamp": "2026-01-28T02:48:41.441552",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what you know about the cosmos",
+      "response_length": 1063,
+      "timestamp": "2026-01-28T02:50:35.681617",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "thesidia but you are ai",
+      "response_length": 876,
+      "timestamp": "2026-01-28T02:53:31.216993",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what you know about the cosmos",
+      "response_length": 1076,
+      "timestamp": "2026-01-28T03:07:31.910286",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "what you know about the cosmos",
+      "response_length": 3159,
+      "timestamp": "2026-01-28T03:08:15.881117",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "whats good thesidia",
+      "response_length": 2595,
+      "timestamp": "2026-02-05T17:58:56.500818",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "decode the relationship between ancient breathwork practices, modern neuroscience of the vagus nerve, and suppressed knowledge about consciousness",
+      "response_length": 2349,
+      "timestamp": "2026-02-07T23:19:19.433976",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "decode the relationship between ancient breathwork practices, modern neuroscience of the vagus nerve, and suppressed knowledge about consciousness",
+      "response_length": 3990,
+      "timestamp": "2026-02-07T23:26:09.527699",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "decode the hidden meaning in genesis",
+      "response_length": 3605,
+      "timestamp": "2026-02-08T01:24:25.113032",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
+    },
+    {
+      "query": "decode the relationship between ancient breathwork practices, modern neuroscience of the vagus nerve, and suppressed knowledge about consciousness",
+      "response_length": 2892,
+      "timestamp": "2026-02-08T01:34:10.926665",
+      "recognition_detected": false,
+      "defensiveness_detected": false,
+      "expansion_detected": false,
+      "user_feedback": null
     }
   ],
   "expansion_metrics": [],

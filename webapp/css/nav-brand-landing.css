@@ -1,0 +1,39 @@
+/**
+ * Nav brand consistent with landing page.
+ * / yellow (#ffd700), "katanx" / "x" in hero blue (#00d4ff) when scrolled.
+ * On scroll: animates to /x (same colors).
+ * Use only the brand element on app/stream/index etc.; Philosophy + Join stay on landing.
+ */
+
+/* Works inside .header-branding (stream, app, index) or .nav-content (landing) */
+.header-branding .nav-brand,
+.nav-content .nav-brand,
+.nav-brand {
+    font-family: 'Inconsolata', monospace;
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+    letter-spacing: 0.02em;
+}
+
+.header-branding .nav-brand::before,
+.nav-content .nav-brand::before,
+.nav-brand::before {
+    content: '/';
+    color: #ffd700; /* yellow - same as landing */
+}
+
+/* Scrolled state: show /x with x in hero blue */
+.header-branding .nav-brand.nav-brand-x,
+.nav-content .nav-brand.nav-brand-x,
+.nav-brand.nav-brand-x {
+    color: #00d4ff; /* hero blue - same as landing */
+}
+
+.header-branding .nav-brand.nav-brand-x::before,
+.nav-content .nav-brand.nav-brand-x::before,
+.nav-brand.nav-brand-x::before {
+    color: #ffd700; /* keep / yellow */
+}

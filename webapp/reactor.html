@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -18,29 +19,29 @@
             padding: var(--spacing-lg) var(--spacing-md);
             scroll-behavior: smooth;
         }
-        
+
         .reactor-content {
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
         }
-        
+
         .reactor-header {
             margin-bottom: var(--spacing-xl);
         }
-        
+
         .reactor-title {
             font-size: var(--font-size-xl);
             font-weight: 600;
             margin-bottom: var(--spacing-sm);
             color: var(--text-primary);
         }
-        
+
         .reactor-subtitle {
             color: var(--text-secondary);
             font-size: var(--font-size-sm);
         }
-        
+
         .reactor-initiate {
             background: var(--bg-secondary);
             border: var(--border-width-thin) solid var(--border-color);
@@ -48,13 +49,13 @@
             padding: var(--spacing-lg);
             margin-bottom: var(--spacing-xl);
         }
-        
+
         .reactor-input-group {
             display: flex;
             gap: var(--spacing-md);
             margin-bottom: var(--spacing-md);
         }
-        
+
         .reactor-input {
             flex: 1;
             padding: var(--spacing-md);
@@ -66,12 +67,12 @@
             font-size: var(--font-size-base);
             transition: var(--transition);
         }
-        
+
         .reactor-input:focus {
             outline: none;
             border-color: var(--accent-active);
         }
-        
+
         .reactor-btn {
             padding: var(--spacing-md) var(--spacing-lg);
             background: var(--accent-active);
@@ -84,62 +85,62 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        
+
         .reactor-btn:hover {
             background: var(--accent-hover);
         }
-        
+
         .reactor-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        
+
         .reactor-threads {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-md);
         }
-        
+
         .reactor-thread {
             background: var(--bg-secondary);
             border: var(--border-width-thin) solid var(--border-color);
             border-radius: var(--border-radius-md);
             padding: var(--spacing-lg);
         }
-        
+
         .reactor-thread-header {
             display: flex;
             justify-content: space-between;
             align-items: start;
             margin-bottom: var(--spacing-md);
         }
-        
+
         .reactor-thread-title {
             font-size: var(--font-size-base);
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: var(--spacing-xs);
         }
-        
+
         .reactor-thread-status {
             font-size: var(--font-size-xs);
             color: var(--text-tertiary);
             font-family: var(--font-mono);
         }
-        
+
         .reactor-thread-content {
             color: var(--text-secondary);
             font-size: var(--font-size-sm);
             line-height: var(--line-height-normal);
             margin-bottom: var(--spacing-md);
         }
-        
+
         .reactor-sources {
             margin-top: var(--spacing-md);
             padding-top: var(--spacing-md);
             border-top: var(--border-width-thin) solid var(--border-color);
         }
-        
+
         .reactor-source {
             display: flex;
             align-items: center;
@@ -149,24 +150,24 @@
             border-radius: var(--border-radius-sm);
             margin-bottom: var(--spacing-xs);
         }
-        
+
         .reactor-source-url {
             font-size: var(--font-size-xs);
             color: var(--text-secondary);
             font-family: var(--font-mono);
             text-decoration: none;
         }
-        
+
         .reactor-source-url:hover {
             color: var(--text-primary);
         }
-        
+
         .reactor-empty {
             text-align: center;
             padding: var(--spacing-xxl);
             color: var(--text-secondary);
         }
-        
+
         .reactor-loading {
             text-align: center;
             padding: var(--spacing-xl);
@@ -174,6 +175,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="app">
         <!-- Header -->
@@ -181,9 +183,9 @@
             <div class="header-content">
                 <div class="logo">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span>THESIDIA</span>
                 </div>
@@ -196,50 +198,53 @@
                 <nav class="global-nav" id="globalNav">
                     <a href="/" class="nav-item" data-page="contexts">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                         </svg>
                         <span>Contexts</span>
                     </a>
                     <a href="/stream.html" class="nav-item" data-page="stream">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                            <path
+                                d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                         </svg>
                         <span>Signal Stream</span>
                     </a>
                     <a href="/atlas.html" class="nav-item" data-page="atlas">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <span>Pattern Atlas</span>
                     </a>
                     <a href="/reactor.html" class="nav-item active" data-page="reactor">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                            <circle cx="12" cy="12" r="10" />
+                            <path
+                                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
                         </svg>
                         <span>Research Reactor</span>
                     </a>
                     <a href="/application.html" class="nav-item" data-page="application">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
                         </svg>
                         <span>Application Layer</span>
                     </a>
-                    <a href="/archive.html" class="nav-item" data-page="archive">
+                    <a href="https://1cebrg.com" class="nav-item" data-page="archive" target="_blank">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                            <path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/>
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            <path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12" />
                         </svg>
-                        <span>Archive</span>
+                        <span>1cebrg</span>
                     </a>
                     <a href="/metrics_dashboard.html" class="nav-item" data-page="metrics">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="20" x2="18" y2="10"/>
-                            <line x1="12" y1="20" x2="12" y2="4"/>
-                            <line x1="6" y1="20" x2="6" y2="14"/>
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
                         </svg>
                         <span>System Metrics</span>
                     </a>
@@ -257,38 +262,40 @@
             <div class="reactor-content">
                 <div class="reactor-header">
                     <h1 class="reactor-title">Research Reactor</h1>
-                    <p class="reactor-subtitle">Deep research workspace with multi-threaded investigation and source network visualization</p>
+                    <p class="reactor-subtitle">Deep research workspace with multi-threaded investigation and source
+                        network visualization</p>
                 </div>
-                
+
                 <div class="reactor-initiate">
                     <div class="reactor-input-group">
-                        <input type="text" id="researchQuery" class="reactor-input" placeholder="Enter research query...">
+                        <input type="text" id="researchQuery" class="reactor-input"
+                            placeholder="Enter research query...">
                         <button class="reactor-btn" id="initiateBtn">Initiate</button>
                     </div>
                 </div>
-                
+
                 <div class="reactor-threads" id="reactorThreads">
                     <div class="reactor-empty">No active research threads. Initiate a research query to begin.</div>
                 </div>
             </div>
         </main>
     </div>
-    
+
     <script src="state.js"></script>
     <script src="components.js"></script>
     <script src="router.js"></script>
     <script src="nav.js"></script>
     <script>
         let threads = [];
-        
+
         // Load threads on page load
         async function loadThreads() {
             const container = document.getElementById('reactorThreads');
             if (!container) return;
-            
+
             container.innerHTML = '';
             container.appendChild(Components.createLoadingIndicator('Loading research threads...'));
-            
+
             try {
                 // Check cache
                 const cached = window.State?.getCachedData('reactor');
@@ -296,17 +303,17 @@
                     displayThreads(cached.threads || []);
                     return;
                 }
-                
+
                 const response = await fetch('/api/reactor/threads');
                 if (!response.ok) throw new Error('Failed to load threads');
-                
+
                 const data = await response.json();
-                
+
                 // Cache
                 if (window.State) {
                     window.State.cacheData('reactor', data, 300000);
                 }
-                
+
                 threads = data.threads || [];
                 displayThreads(threads);
             } catch (error) {
@@ -315,46 +322,46 @@
                 container.appendChild(Components.createErrorState('Failed to load research threads', loadThreads));
             }
         }
-        
+
         function displayThreads(threads) {
             const container = document.getElementById('reactorThreads');
             if (!container) return;
-            
+
             container.innerHTML = '';
-            
+
             if (threads.length === 0) {
                 container.appendChild(Components.createEmptyState('No active research threads. Initiate a research query to begin.'));
                 return;
             }
-            
+
             threads.forEach(thread => {
                 const card = Components.createThreadCard(thread);
                 container.appendChild(card);
             });
         }
-        
+
         async function initiateResearch(query) {
             if (!query.trim()) return;
-            
+
             const initiateBtn = document.getElementById('initiateBtn');
             initiateBtn.disabled = true;
             initiateBtn.textContent = 'Processing...';
-            
+
             try {
                 const response = await fetch('/api/reactor/initiate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         query: query,
                         user_id: window.State?.getUserId(),
                         session_id: window.State?.getSessionId()
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.thread_id) {
                     loadThreads();
                 }
@@ -366,30 +373,30 @@
                 document.getElementById('researchQuery').value = '';
             }
         }
-        
+
         async function loadThreads() {
             try {
                 const response = await fetch('/api/reactor/threads');
                 const data = await response.json();
-                
+
                 threads = data.threads || [];
                 displayThreads(threads);
-                
+
                 document.getElementById('reactorStatusDot').classList.add('ready');
             } catch (error) {
                 console.error('Error loading threads:', error);
                 document.getElementById('reactorThreads').innerHTML = '<div class="reactor-empty">Error loading research threads</div>';
             }
         }
-        
+
         function displayThreads(threads) {
             const container = document.getElementById('reactorThreads');
-            
+
             if (threads.length === 0) {
                 container.innerHTML = '<div class="reactor-empty">No active research threads. Initiate a research query to begin.</div>';
                 return;
             }
-            
+
             container.innerHTML = threads.map(thread => `
                 <div class="reactor-thread">
                     <div class="reactor-thread-header">
@@ -411,32 +418,32 @@
                 </div>
             `).join('');
         }
-        
+
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        
+
         document.getElementById('initiateBtn').addEventListener('click', () => {
             const query = document.getElementById('researchQuery').value;
             initiateResearch(query);
         });
-        
+
         document.getElementById('researchQuery').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const query = e.target.value;
                 initiateResearch(query);
             }
         });
-        
+
         // Load on page load
         loadThreads();
-        
+
         // Refresh every 10 seconds
         setInterval(loadThreads, 10000);
     </script>
     <script src="nav.js"></script>
 </body>
-</html>
 
+</html>

@@ -1,0 +1,6 @@
+QUERY: what connects the fall of the library of alexandria, the burning of the house of wisdom in baghdad, and modern information censorship
+EXPECTED: Historical pattern analysis across epochs
+TIME: 54.4s
+================================================================================
+
+Error: Processing timed out (fast mode limited to 30s). Please try again or switch to deep research for more complex queries.

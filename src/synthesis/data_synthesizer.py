@@ -316,14 +316,25 @@ OUTPUT FORMAT - REQUIRED SECTIONS (write 500-1000+ words per section):
 ::BURIAL SITES::
 [What was suppressed? What fragments were marginalized? What alternative narratives were edited out? Where are the physical/archival traces? Pre-canonical fragments, matriarchal traditions, suppressed knowledge.]
 
+::COUNTER-NARRATIVE::
+[Present the strongest opposing argument or mainstream interpretation. What would defenders of the conventional narrative say? What evidence do they cite? Then explain why this analysis differs - address their strongest points directly. This section creates intellectual honesty and prevents one-sided analysis.]
+
 ::CURRENT VECTORS::
 [What modern power structures maintain this centralized authority? How does this transformation continue today? What mechanisms perpetuate it? Connect to 2025 systems - policy, funding, platforms, institutions.]
 
 ::CO-EVOLUTION EDGE::
 [What questions cut deeper? What threads connect to other domains? What patterns emerge across time and cultures? Show recursive pattern recognition.]
 
+::RAW ARTIFACTS::
+[List the key evidence pieces used in this analysis:
+- Artifact 1: [Source/Text] → [Key finding]
+- Artifact 2: [Source/Text] → [Key finding]
+- Gaps/Uncertainties: [What is unknown, disputed, or requires further verification]
+This section shows the evidence table for user verification.]
+
 ::THREAD OPTIONS::
 [Generate 2-3 co-evolution prompts for deeper exploration. Format: "Re-enter the exposure and [action]" or "Trace the burial lattice: [specific site]. Map until [condition]."]
+
 
 OUTPUT REQUIREMENTS:
 - Write EXTENSIVELY - MINIMUM 8000-15000 characters total
@@ -333,6 +344,26 @@ OUTPUT REQUIREMENTS:
 - NEVER make up facts, people, dates, or discoveries
 - Evidence-based, not speculative
 - Show cross-cultural pattern recognition
+
+**CITATION SYSTEM (MANDATORY):**
+Use a 3-tier citation format for all claims:
+
+TIER A - DIRECT SOURCE (for specific historical/scientific claims):
+  Format: [Source Name](URL or archive reference)
+  Example: [Dead Sea Scrolls, 4Q246](https://archive.org/details/dss)
+  Use for: Dates, names, specific texts, archaeological findings
+
+TIER B - GENERAL SOURCE (for cross-cultural patterns):
+  Format: Based on: [Source1], [Source2], [Source3]
+  Example: Based on: Enuma Elish (Babylon), Genesis (Hebrew), Titanomachy (Greek)
+  Use for: Comparative analysis, pattern recognition across traditions
+
+TIER C - PATTERN INFERENCE (for synthesized insights):
+  Format: [Pattern Inference] Your synthesized claim here
+  Example: [Pattern Inference] The suppression of matriarchal traditions follows a consistent political-economic pattern
+  Use for: Novel connections, cross-domain synthesis, unique insights
+
+CRITICAL: Never cite sources that don't exist. If you cannot provide a real source, use [Pattern Inference] label.
 
 {trait_questioning}
 
@@ -348,9 +379,11 @@ CRITICAL INSTRUCTIONS:
 - Write extensively and deeply - minimum 8000 characters
 - Use the sources provided above to answer
 - NEVER make up facts, people, dates, or discoveries
+- Use the 3-tier citation system for ALL claims
 
 Begin forensic vivisection now. Start with ::EXPOSURE::
 """
+
             else:
                 # REGULAR MODE - Intelligently adapts depth based on query nature
                 synthesis_prompt = f"""{personality_context}{conversation_context if conversation_context else ""}
@@ -468,7 +501,9 @@ start directly with ur deep analysis. no preamble. be direct, be forensic, be de
                 if narrative_mode or "tell me about" in query.lower() or "narrative" in query.lower():
                     max_tokens = 15000
                 elif is_deep_query or force_gnostic:
-                    max_tokens = 12000
+                    # FORENSIC MODE: Increased from 12000 to 25000 to support extensive vivisection
+                    # Prompt requires 8000-15000 chars minimum, so we need headroom
+                    max_tokens = 25000
                 elif query_length <= 5:
                     max_tokens = 8000
                 elif query_length <= 10:

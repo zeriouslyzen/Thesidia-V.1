@@ -1608,6 +1608,100 @@
         renderStats();
         renderMedia();
         renderCommunities();
+        loadSignals(); // Load dynamic signals from API
+
+        async function loadSignals() {
+            console.log('Fetching signals for explore page...');
+            const newsGrid = document.getElementById('newsGrid');
+            const featuredSection = document.querySelector('.featured-story');
+
+            try {
+                // Fetch signals with relevant explore topics
+                const response = await fetch('/api/signals?limit=6&topic=neuroscience+human+performance+somatic+learning+mastery');
+                if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+                const data = await response.json();
+                console.log('Explore signals received:', data);
+
+                if (data.featured) {
+                    renderFeaturedStory(data.featured, featuredSection);
+                }
+
+                if (data.signals && data.signals.length > 0) {
+                    window.exploreSignals = data.signals;
+                    renderDynamicSignals(data.signals, newsGrid);
+                }
+            } catch (error) {
+                console.error('Error loading signals for explore:', error);
+                // Keep static content as fallback if needed
+            }
+        }
+
+        function renderFeaturedStory(featured, container) {
+            if (!container) return;
+
+            // Update featured story card
+            container.innerHTML = `
+                <img src="${featured.image || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80'}"
+                    alt="${featured.title}" class="featured-story-image">
+                <div class="featured-story-overlay">
+                    <span class="featured-tag">${featured.tag || 'Featured'}</span>
+                    <h2 class="featured-title">${featured.title}</h2>
+                    <p class="featured-excerpt">${featured.excerpt || ''}</p>
+                </div>
+            `;
+
+            // Update click handler to open external URL if it's not '#'
+            container.onclick = () => openSignalModal(featured);
+        }
+
+        function renderDynamicSignals(signals, container) {
+            if (!container) return;
+
+            container.innerHTML = signals.map((signal, index) => `
+                <article class="news-card" onclick="openSignalModalByIndex(${index})" data-signal-id="${signal.id}">
+                    <img src="${signal.image || 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80'}"
+                        alt="${signal.title}" class="news-card-image">
+                    <div class="news-card-overlay">
+                        <div class="news-card-tag">${signal.tag || 'Signal'}</div>
+                        <h3 class="news-card-title">${signal.title}</h3>
+                        <span class="news-card-meta">${signal.source_name || signal.source || 'Intelligence'}</span>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function openSignalModalByIndex(index) {
+            if (window.exploreSignals && window.exploreSignals[index]) {
+                openSignalModal(window.exploreSignals[index]);
+            }
+        }
+
+        function openSignalModal(signal) {
+            if (!signal) return;
+
+            // If it has a real external URL, open it in new tab
+            if (signal.url && signal.url !== '#' && signal.url.startsWith('http')) {
+                window.open(signal.url, '_blank');
+                return;
+            }
+
+            // Otherwise, show in internal modal if we have content
+            const modal = document.getElementById('articleModal');
+            if (!modal) return;
+
+            document.getElementById('articleImage').src = signal.image || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80';
+            document.getElementById('articleTag').textContent = signal.tag || 'Signal';
+            document.getElementById('articleTitle').textContent = signal.title;
+            document.getElementById('articleMeta').textContent = signal.source_name || signal.source || 'Intelligence';
+
+            // Use content if available, fallback to excerpt, then a default message
+            const content = signal.content || signal.excerpt || 'Full intelligence report coming soon.';
+            document.getElementById('articleText').innerHTML = content;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
 
         // Search functionality
         const searchInput = document.getElementById('searchInput');

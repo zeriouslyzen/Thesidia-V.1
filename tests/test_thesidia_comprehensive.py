@@ -10,6 +10,8 @@ import time
 from datetime import datetime
 
 BASE_URL = "http://localhost:5002"
+TEST_USER_ID = "test-user"
+TEST_SESSION_ID = "test-session"
 
 def test_query(query_type, query, description):
     """Test a single query"""
@@ -26,7 +28,9 @@ def test_query(query_type, query, description):
             f"{BASE_URL}/api/thesidia",
             json={
                 "message": query,
-                "stream": False
+                "stream": False,
+                "user_id": TEST_USER_ID,
+                "session_id": TEST_SESSION_ID
             },
             timeout=120
         )

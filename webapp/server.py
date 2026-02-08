@@ -497,7 +497,87 @@ def nav_prototypes_page():
 
 # ============================================================================
 # Algorithmic Growth Engine - Event Tracking API
+
 # ============================================================================
+# HOME PAGE API ENDPOINTS
+# ============================================================================
+
+@app.route('/api/stats/live', methods=['GET'])
+def get_live_stats():
+    """Get live platform statistics for home page"""
+    try:
+        # TODO: Implement actual stat tracking
+        # For now, return mock data
+        stats = {
+            'active_users': random.randint(100, 200),
+            'new_posts': random.randint(10, 30),
+            'signals_today': random.randint(5, 15),
+            'active_conversations': random.randint(15, 40)
+        }
+        
+        return jsonify(stats), 200
+        
+    except Exception as e:
+        print(f"Error getting live stats: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/users/featured', methods=['GET'])
+def get_featured_users():
+    """Get featured/active practitioners for home page"""
+    try:
+        limit = int(request.args.get('limit', 6))
+        
+        # TODO: Implement actual featured user logic
+        # For now, return mock data
+        mock_users = [
+            {
+                'username': 'kai_sensei',
+                'avatar': None,
+                'discipline': 'Martial Arts',
+                'badge': 'NEW'
+            },
+            {
+                'username': 'maya_art',
+                'avatar': None,
+                'discipline': 'Visual Arts',
+                'badge': 'UPDATED'
+            },
+            {
+                'username': 'alex_code',
+                'avatar': None,
+                'discipline': 'Engineering',
+                'badge': 'RISING'
+            },
+            {
+                'username': 'zoe_flow',
+                'avatar': None,
+                'discipline': 'Movement Arts',
+                'badge': ''
+            },
+            {
+                'username': 'rio_heal',
+                'avatar': None,
+                'discipline': 'Healing Arts',
+                'badge': ''
+            },
+            {
+                'username': 'sam_lead',
+                'avatar': None,
+                'discipline': 'Leadership',
+                'badge': ''
+            }
+        ]
+        
+        return jsonify({'users': mock_users[:limit]}), 200
+        
+    except Exception as e:
+        print(f"Error getting featured users: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+# ============================================================================
+# Main Application Entry
 # ============================================================================
 # Market Data API - Crypto & Stocks
 # ============================================================================
@@ -604,9 +684,56 @@ def get_stock_prices():
         return jsonify({'error': str(e)}), 500
 
 # ============================================================================
+# Signals API - Curated News from Brave Search + Static Content
+# ============================================================================
+
+try:
+    from webapp.services.signals_service import get_signals_service
+    signals_service = get_signals_service(base_dir=str(project_root / 'webapp'))
+except ImportError as e:
+    print(f"Warning: Signals service not available: {e}")
+    signals_service = None
+
+@app.route('/api/signals', methods=['GET'])
+def get_signals():
+    """
+    Get curated news signals from Brave Search API with static fallback.
+    
+    Query params:
+        - limit: Number of signals to return (default: 6)
+        - topic: Search topic/keywords (default: technology AI innovation)
+    
+    Returns:
+        JSON with 'signals' array, each containing:
+        - id, title, tag, excerpt, image, url, source, timestamp
+    """
+    if not signals_service:
+        return jsonify({'error': 'Signals service not available'}), 503
+    
+    try:
+        limit = int(request.args.get('limit', 6))
+        topic = request.args.get('topic', 'technology AI innovation business')
+        
+        result = signals_service.get_signals(limit=limit, topic=topic)
+        return jsonify(result)
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/signals/clear-cache', methods=['POST'])
+def clear_signals_cache():
+    """Clear the signals cache to force fresh data."""
+    if not signals_service:
+        return jsonify({'error': 'Signals service not available'}), 503
+    
+    signals_service.clear_cache()
+    return jsonify({'success': True, 'message': 'Cache cleared'})
+
+# ============================================================================
 # Algorithmic Growth Engine - Event Tracking API
 # ============================================================================
 event_store_path = project_root / 'data' / 'events.json'
+
 
 @app.route('/api/events', methods=['POST'])
 def track_events():
@@ -1133,6 +1260,159 @@ def thesidia_api(user_id=None, session_id=None):
             'message': str(e)
         }), 500
 
+
+@app.route('/api/gnostic_blade', methods=['POST'])
+@require_user
+def gnostic_blade_api(user_id=None, session_id=None):
+    """
+    Dedicated endpoint for pure Gnostic Blade mode.
+    - Forces task_type="gnostic_blade"
+    - Disables fast_mode timeout (fast_mode=False)
+    - Uses deeper research_depth by default
+    - Supports both streaming and non-streaming, mirroring /api/thesidia
+    """
+    global thesidia_ready, thesidia
+
+    # Check status and auto-init if needed
+    if not thesidia_ready or not thesidia:
+        if not init_thesidia():
+            return jsonify({
+                'error': 'Thesidia is not ready. Is Ollama running?',
+                'ollama_status': ollama_status,
+                'thesidia_ready': False
+            }), 503
+
+    # Security: Rate limiting
+    client_ip = request.remote_addr
+    if not check_rate_limit(client_ip):
+        return jsonify({'error': 'Rate limit exceeded'}), 429
+
+    if not request.is_json:
+        return jsonify({'error': 'Invalid content type'}), 400
+
+    json_data = request.get_json()
+    if json_data is None:
+        return jsonify({'error': 'Invalid JSON data'}), 400
+
+    from webapp.middleware.security import sanitize_request_data
+    data = sanitize_request_data(json_data)
+    raw_message = data.get('message', '').strip()
+
+    print(f"🔍 RAW GNOSTIC INPUT: '{raw_message}'", flush=True)
+
+    if not raw_message:
+        return jsonify({'error': 'Message is required'}), 400
+    if len(raw_message) > 10000:
+        return jsonify({'error': 'Message too long'}), 400
+
+    # Blade defaults: deep research, no fast_mode timeout, explicit task_type
+    show_thinking = data.get('show_thinking', True)
+    include_metadata = data.get('include_metadata', False)
+    stream = data.get('stream', True)
+    format_mode = data.get('format', 'natural')
+    fast_mode = False
+    research_depth = data.get('research_depth', 3)
+    task_type = 'gnostic_blade'
+
+    # Use MLX routing if available
+    use_mlx = data.get('use_mlx', True) and MLX_AVAILABLE and inference_router is not None
+    if thesidia and inference_router:
+        thesidia.inference_router = inference_router
+
+    message = raw_message.replace('<', '').replace('>', '')
+
+    print(f"🔍 ROUTING (GNOSTIC): Task={task_type}, MLX={use_mlx}", flush=True)
+
+    if stream:
+        return Response(
+            stream_with_context(
+                _stream_thesidia_response(
+                    message,
+                    show_thinking,
+                    user_id=user_id,
+                    session_id=session_id,
+                    format_mode=format_mode,
+                    research_depth=research_depth,
+                    fast_mode=fast_mode,
+                    task_type=task_type,
+                    use_mlx=use_mlx,
+                )
+            ),
+            mimetype='text/event-stream',
+            headers={
+                'Cache-Control': 'no-cache',
+                'X-Accel-Buffering': 'no',
+            },
+        )
+
+    # Non-streaming blade response
+    try:
+        thinking_steps = []
+        if show_thinking:
+            thinking_steps.append({
+                'step': 'Input received',
+                'detail': f'[Gnostic Blade] Processing: {message[:100]}...',
+                'timestamp': datetime.now().isoformat()
+            })
+
+        print(f"🔪 GNOSTIC: Processing message: {message[:100]}...", flush=True)
+        result = thesidia.process(
+            input_data=message,
+            context={
+                "user_id": user_id,
+                "session_id": session_id,
+                "format_mode": format_mode,
+                "research_depth": research_depth,
+                "fast_mode": fast_mode,
+                "task_type": task_type,
+                "use_mlx": use_mlx
+            }
+        )
+        response = result.get("output", "") if isinstance(result, dict) else str(result)
+        response = _strip_general_framework_block(response)
+        print(f"🔪 GNOSTIC: Response length: {len(response)}, has transmission: {'::TRANSMISSION:' in response}", flush=True)
+
+        try:
+            user_memory_manager.store_interaction(
+                user_input=message,
+                assistant_output=response,
+                user_id=user_id,
+                session_id=session_id,
+                metadata={
+                    'timestamp': datetime.now().isoformat(),
+                    'response_length': len(response),
+                    'mode': 'gnostic_blade'
+                }
+            )
+        except Exception as e:
+            print(f"Warning: Could not store gnostic interaction: {e}")
+
+        if show_thinking:
+            thinking_steps.append({
+                'step': 'Response generated',
+                'detail': f'[Gnostic Blade] Length: {len(response)} chars',
+                'timestamp': datetime.now().isoformat()
+            })
+
+        thesidia.save_state()
+
+        payload = {
+            'response': response,
+            'thinking_steps': thinking_steps if show_thinking else [],
+            'timestamp': datetime.now().isoformat()
+        }
+        if include_metadata and isinstance(result, dict):
+            payload["metadata"] = result.get("metadata", {})
+        return jsonify(payload)
+
+    except Exception as e:
+        print(f"Error processing gnostic blade request: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'error': 'Internal server error',
+            'message': str(e)
+        }), 500
 def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None, format_mode='natural', research_depth=2, fast_mode=True, task_type='general', use_mlx=False):
     """Stream Thesidia response with progress updates - USES FULL THESIDIA PROCESS"""
     global thesidia
@@ -1144,20 +1424,37 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
     
     try:
         # Phase 1: Input received and initial classification (for UX feedback only)
-        # NOTE: Actual routing happens in process() - this is just for UX messages
+        # NOTE: Actual routing happens in process() - this is just for UX messages.
+        # Align with _process_original greeting check so short casual openers get "Responding..." and fast path.
         text_stripped = message.strip().lower()
-        is_simple_greeting = text_stripped in ['hi', 'hello', 'hey'] or len(text_stripped.split()) <= 2
+        words = text_stripped.split()
+        is_simple_greeting = (
+            text_stripped in ['hi', 'hello', 'hey']
+            or len(words) <= 2
+            or (len(words) <= 4 and any(text_stripped.startswith(p) for p in ("whats good", "what's good", "how you", "how are you", "sup", "yo", "wassup"))))
         
         # Check forensic routing (for UX feedback - actual routing in process())
         needs_forensic = False
+        has_deep_indicator = False
         if not is_simple_greeting:
             from src.support.query_utils import normalize_query, detect_forensic_routing
             normalized_message = normalize_query(message)
             needs_forensic = detect_forensic_routing(message, comprehensive=False)
+            
+            # Check for deep indicators (for watchdog timeout adjustment)
+            deep_indicators = [
+                "origins", "history", "power structures", "patterns", "connections", 
+                "true origins", "real origins", "what's really", "what are", "deeper", 
+                "secrets", "uncover", "reveal", "comprehensive", "extensive"
+            ]
+            text_lower = message.lower()
+            has_deep_indicator = any(indicator in text_lower for indicator in deep_indicators)
+            
             print(f"🔍 NORMALIZED (streaming): '{normalized_message}'", flush=True)
             print(f"🔍 NEEDS FORENSIC (streaming): {needs_forensic}", flush=True)
+            print(f"🔍 HAS DEEP INDICATOR (streaming): {has_deep_indicator}", flush=True)
         
-        print(f"🔪 SERVER: is_simple_greeting={is_simple_greeting}, needs_forensic={needs_forensic}", flush=True)
+        print(f"🔪 SERVER: is_simple_greeting={is_simple_greeting}, needs_forensic={needs_forensic}, has_deep_indicator={has_deep_indicator}", flush=True)
         
         # Show appropriate initial progress message
         if is_simple_greeting:
@@ -1233,6 +1530,24 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
         # Phase 3: Call process() - this handles ALL routing, research, and generation
         # NOTE: We don't check _needs_research() here because process() will handle it
         # This prevents duplicate work and ensures consistency
+        
+        # Send initial progress update
+        # For deep research queries, send a more informative message
+        if needs_forensic or has_deep_indicator:
+            yield send_event('progress', {
+                'phase': 'deep_research',
+                'message': 'Starting deep research analysis... This may take 30-90 seconds.',
+                'progress': 40
+            })
+        else:
+            yield send_event('progress', {
+                'phase': 'processing',
+                'message': 'Processing your query...',
+                'progress': 40
+            })
+        
+        # Call process() - this may take time, but we've sent a progress update
+        # For deep research, the frontend watchdog is now 2 minutes (120s) instead of 8s
         result = thesidia.process(
             input_data=message,
             context={
@@ -4469,6 +4784,10 @@ if not os.getenv('VERCEL'):
 
 # --- KIM API Endpoints ---
 
+# Initialize KIM connected users dictionary (needed for registration endpoint)
+kim_connected_users = {}
+kim_session_to_user = {}
+
 @app.route('/api/register', methods=['POST'])
 def register_kim_user():
     """Register a user's session and public key, optionally linked to Katanx account."""
@@ -4684,9 +5003,8 @@ if SOCKETIO_AVAILABLE:
     # Initialize KIM storage
     kim_storage = KIMStorage()
 
-    # In-memory storage for active KIM sessions
-    kim_connected_users = {}
-    kim_session_to_user = {}
+    # In-memory storage for active KIM sessions (already initialized above for registration endpoint)
+    # kim_connected_users and kim_session_to_user are now global variables initialized above
 
     @socketio.on('connect', namespace='/kim')
     def handle_kim_connect():

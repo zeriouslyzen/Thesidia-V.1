@@ -1,0 +1,43 @@
+{
+  "post_id": "post_47066",
+  "likes": [],
+  "comments": [
+    {
+      "id": "comment_1770273243.901449",
+      "user_id": "user_9a3b3c86337b",
+      "content": "Final UX Test Comment",
+      "created_at": "2026-02-04T22:34:03.901469"
+    },
+    {
+      "id": "comment_1770273559.467731",
+      "user_id": "user_9a3b3c86337b",
+      "content": "Testing manual comment",
+      "created_at": "2026-02-04T22:39:19.467836"
+    },
+    {
+      "id": "comment_1770273581.324593",
+      "user_id": "user_9a3b3c86337b",
+      "content": "Testing manual comment again",
+      "created_at": "2026-02-04T22:39:41.324647"
+    },
+    {
+      "id": "comment_1770274137.962248",
+      "user_id": "user_9a3b3c86337b",
+      "content": "Testing via fetch",
+      "created_at": "2026-02-04T22:48:57.962267"
+    },
+    {
+      "id": "comment_1770274169.538634",
+      "user_id": "user_9a3b3c86337b",
+      "content": "This is a test reply in the new modal!",
+      "created_at": "2026-02-04T22:49:29.538641"
+    }
+  ],
+  "reposts": [],
+  "views": [],
+  "validations": [],
+  "references": [],
+  "contributions": [],
+  "availability_signals": [],
+  "updated_at": "2026-02-04T22:49:29.538646"
+}

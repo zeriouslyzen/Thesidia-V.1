@@ -640,35 +640,29 @@ class NavigationSystem {
             }
             */
 
-            // News widget
+            // News widget - Fetching from Signals API
             const newsTiles = document.getElementById('homeNewsTiles');
-            const news = (data.news && data.news.length) ? data.news.slice(0, 6) : [
-                { title: 'AI research breakthrough reshapes creative tooling', source: 'Signal Desk', image: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=600&q=60' },
-                { title: 'Communities lean into micro-stories with higher retention', source: 'Insight Brief', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=60' },
-                { title: 'New engagement patterns favor short-form synthesis', source: 'Pulse', image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=60' }
-            ];
             if (newsTiles) {
-                // Clear skeleton
-                newsTiles.innerHTML = '';
-                // Add news tiles with fade-in
-                news.forEach((item, index) => {
-                    const tile = document.createElement('div');
-                    tile.className = 'news-tile';
-                    tile.style.opacity = '0';
-                    tile.style.transition = `opacity 0.4s ease ${index * 0.1}s`;
-                    tile.innerHTML = `
-                        ${item.image ? `<img src="${item.image}" alt="${item.title || 'news'}" loading="lazy" />` : ''}
-                        <div class="news-overlay">
-                            <div class="news-title">${item.title || 'Untitled'}</div>
-                            <div class="news-source">${item.source || 'Signal'}</div>
-                        </div>
-                    `;
-                    newsTiles.appendChild(tile);
-                    // Trigger fade-in
-                    requestAnimationFrame(() => {
-                        tile.style.opacity = '1';
-                    });
-                });
+                try {
+                    const signalsUrl = `/api/signals?limit=4&topic=human+development+neuroscience+mastery`;
+                    const signalsRes = await fetch(signalsUrl);
+                    if (signalsRes.ok) {
+                        const signalsData = await signalsRes.json();
+                        // Store globally for modal access
+                        this.homeSignals = signalsData.signals;
+                        this.featuredSignal = signalsData.featured;
+                        this.renderSignalTiles(signalsData.featured, signalsData.signals, newsTiles);
+                    } else {
+                        throw new Error('Signals API error');
+                    }
+                } catch (e) {
+                    console.warn('Could not load dynamic signals, using fallback:', e);
+                    // Fallback to minimal static content if API fails
+                    this.renderSignalTiles(null, [
+                        { title: 'AI research breakthrough reshapes creative tooling', source: 'Signal Desk', image: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=600&q=60', url: '#' },
+                        { title: 'Communities lean into micro-stories with higher retention', source: 'Insight Brief', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=60', url: '#' }
+                    ], newsTiles);
+                }
             }
 
             // Trigger widget fade-ins after content is loaded
@@ -689,6 +683,121 @@ class NavigationSystem {
             console.error('Error loading home content:', error);
             // Hide loading screen even on error
             this.hideLoadingScreen();
+        }
+    }
+
+    renderSignalTiles(featured, signals, container) {
+        if (!container) return;
+
+        let html = '';
+
+        // Featured article (pinned, larger)
+        if (featured) {
+            html += `
+                <a href="${featured.url}" target="${featured.url.startsWith('http') ? '_blank' : '_self'}" 
+                   class="news-tile featured" data-signal-id="${featured.id}">
+                    <img src="${featured.image || '/assets/placeholder-signal.webp'}" alt="${featured.title}" class="tile-image-bg" />
+                    <div class="news-overlay">
+                        <span class="news-tile-tag pinned">📌 ${featured.tag || 'Featured'}</span>
+                        <div class="news-title">${featured.title}</div>
+                        <div class="news-excerpt">${featured.excerpt || ''}</div>
+                    </div>
+                </a>
+            `;
+        }
+
+        // Dynamic signals
+        if (signals && signals.length > 0) {
+            html += signals.map(signal => `
+                <a href="${signal.url}" target="${signal.url.startsWith('http') ? '_blank' : '_self'}" 
+                   class="news-tile" data-signal-id="${signal.id}">
+                    <img src="${signal.image || '/assets/placeholder-signal.webp'}" alt="${signal.title}" class="tile-image-bg" />
+                    <div class="news-overlay">
+                        <span class="news-tile-tag">${signal.tag || 'Signal'}</span>
+                        <div class="news-title">${signal.title}</div>
+                        <div class="news-source">${signal.source_name || signal.source || 'Intelligence'}</div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        container.innerHTML = html || '<div class="news-tile empty">No signals available</div>';
+
+        // Add click events for modals
+        const tiles = container.querySelectorAll('.news-tile');
+        tiles.forEach((tile, index) => {
+            // Trigger fade-in
+            tile.style.opacity = '0';
+            tile.style.transition = `opacity 0.4s ease ${index * 0.1}s`;
+            requestAnimationFrame(() => tile.style.opacity = '1');
+
+            // Click handling
+            tile.onclick = (e) => {
+                e.preventDefault();
+                if (tile.classList.contains('featured')) {
+                    this.openSignalModal(this.featuredSignal);
+                } else {
+                    const signalId = tile.dataset.signalId;
+                    const signal = this.homeSignals.find(s => s.id === signalId);
+                    if (signal) this.openSignalModal(signal);
+                }
+            };
+        });
+
+        // Setup modal close logic once
+        if (!this.modalInitialized) {
+            this.initSignalModal();
+            this.modalInitialized = true;
+        }
+    }
+
+    initSignalModal() {
+        const modal = document.getElementById('articleModal');
+        const closeBtn = document.getElementById('closeArticleBtn');
+        if (!modal) return;
+
+        if (closeBtn) {
+            closeBtn.onclick = () => this.closeSignalModal();
+        }
+
+        modal.onclick = (e) => {
+            if (e.target === modal) this.closeSignalModal();
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') this.closeSignalModal();
+        });
+    }
+
+    openSignalModal(signal) {
+        if (!signal) return;
+
+        // If it has a real external URL, open it
+        if (signal.url && signal.url !== '#' && signal.url.startsWith('http')) {
+            window.open(signal.url, '_blank');
+            return;
+        }
+
+        const modal = document.getElementById('articleModal');
+        if (!modal) return;
+
+        document.getElementById('articleImage').src = signal.image || '/assets/placeholder-signal.webp';
+        document.getElementById('articleTag').textContent = signal.tag || 'Signal';
+        document.getElementById('articleTitle').textContent = signal.title;
+        document.getElementById('articleMeta').textContent = signal.source_name || signal.source || 'Intelligence';
+
+        const content = signal.content || signal.excerpt || 'Full intelligence report coming soon.';
+        document.getElementById('articleText').innerHTML = content;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeSignalModal() {
+        const modal = document.getElementById('articleModal');
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
         }
     }
 

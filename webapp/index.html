@@ -112,6 +112,7 @@
     </script>
 
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/nav-brand-landing.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap"
@@ -124,10 +125,9 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <!-- Katanx Branding - Left (replaced profile) -->
+                <!-- Katanx Branding - same as landing: / yellow, x blue, scroll animates to /x -->
                 <div class="header-branding">
-                    <span class="thesidia-text"><span class="katanx-slash">/</span>katan<span
-                            class="katanx-x">x</span></span>
+                    <a href="/" class="nav-brand" aria-label="katanx home">katanx</a>
                 </div>
 
                 <!-- Menu Orb - Right -->
@@ -354,6 +354,7 @@
 
     <script type="module" src="edge_inference.js"></script>
     <script src="app.js"></script>
+    <script src="js/nav-brand-scroll.js"></script>
 </body>
 
 </html>

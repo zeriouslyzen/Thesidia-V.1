@@ -9,52 +9,164 @@ class ProfilePage {
     }
 
     init() {
+        this.userId = this.getQueryParam('user_id');
         this.loadProfileData();
         this.setupEventListeners();
         this.loadTimeline();
     }
 
-    loadProfileData() {
-        // Load from localStorage or use defaults
-        const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
-        
-        // Set profile data
-        document.getElementById('profileNameLarge').textContent = profileData.name || 'Jack Danger';
-        document.getElementById('profileUsernameLarge').textContent = `@${profileData.username || 'jacksonadanger'}`;
-        document.getElementById('profileBio').textContent = profileData.bio || 'Exploring the depths of consciousness and pattern recognition. Building Thesidia.';
-        
-        if (profileData.location) {
-            document.getElementById('profileLocation').querySelector('span').textContent = profileData.location;
-        }
-        
-        if (profileData.website) {
-            const websiteLink = document.getElementById('profileWebsiteLink');
-            websiteLink.textContent = profileData.website;
-            websiteLink.href = profileData.website.startsWith('http') ? profileData.website : `https://${profileData.website}`;
-        }
-        
-        if (profileData.socialUrl) {
-            const socialLink = document.getElementById('profileSocialLink');
-            socialLink.href = profileData.socialUrl;
-            const socialText = document.getElementById('profileSocialText');
-            socialText.textContent = profileData.socialType === 'facebook' ? 'Facebook' : 'Instagram';
-        }
+    getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
 
-        // Load images
-        const savedBanner = localStorage.getItem('profileBanner');
-        if (savedBanner) {
-            const banner = document.getElementById('profileBanner');
-            if (!banner.querySelector('img')) {
-                const img = document.createElement('img');
-                img.src = savedBanner;
-                banner.insertBefore(img, banner.firstChild);
+    async loadProfileData() {
+        if (this.userId) {
+            try {
+                const response = await fetch('/mock-profiles.json');
+                const data = await response.json();
+                const profile = data.profiles.find(p => p.user_id === this.userId);
+
+                if (profile) {
+                    this.renderProfile(profile);
+                    this.mockPosts = profile.posts || [];
+                    this.loadTimeline();
+                    return;
+                }
+            } catch (error) {
+                console.error('Error loading mock profile:', error);
             }
         }
 
-        const savedProfilePic = localStorage.getItem('profileImage');
-        if (savedProfilePic) {
-            document.getElementById('profilePictureImg').src = savedProfilePic;
+        // Load from localStorage or use defaults
+        const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
+        this.renderProfile({
+            display_name: profileData.name || 'Jack Danger',
+            username: profileData.username || 'jacksonadanger',
+            bio: profileData.bio || 'Exploring the depths of consciousness and pattern recognition. Building Thesidia.',
+            location: profileData.location || 'San Francisco, CA',
+            website: profileData.website || 'thesidia.com',
+            avatar_url: localStorage.getItem('profileImage'),
+            banner_url: localStorage.getItem('profileBanner')
+        });
+    }
+
+    renderProfile(data) {
+        // Basic Info
+        const nameEl = document.getElementById('profileNameLarge');
+        const userEl = document.getElementById('profileUsernameLarge');
+        const bioEl = document.getElementById('profileBio');
+        const roleEl = document.getElementById('profileRole');
+        const disciplinesEl = document.getElementById('profileDisciplines');
+
+        if (nameEl) nameEl.textContent = data.display_name || data.name;
+        if (userEl) userEl.textContent = `@${data.username}`;
+        if (bioEl) bioEl.textContent = data.bio;
+        if (roleEl) roleEl.textContent = data.role || 'Practitioner';
+
+        // Domains / Disciplines
+        if (disciplinesEl && data.domains) {
+            disciplinesEl.innerHTML = data.domains.map(d =>
+                `<span class="profile-discipline-chip">${d.charAt(0).toUpperCase() + d.slice(1)}</span>`
+            ).join('');
         }
+
+        // Meta (Location/Website)
+        const locEl = document.getElementById('profileLocation');
+        if (locEl && data.location) {
+            locEl.innerHTML = `<span>${data.location}</span>`;
+        }
+
+        const webLink = document.getElementById('profileWebsiteLink');
+        if (webLink && data.website) {
+            webLink.textContent = data.website.replace(/^https?:\/\//, '');
+            webLink.href = data.website.startsWith('http') ? data.website : `https://${data.website}`;
+        }
+
+        // Stats
+        const stats = data.stats || { friends: 0, fans: 0, resonating: 0, cuts: 0 };
+        const friendsCount = document.getElementById('profileFriendsCount');
+        const fansCount = document.getElementById('profileFansCount');
+        const resonatingCount = document.getElementById('profileResonatingCount');
+        const cutsCount = document.getElementById('profileCutsCount');
+
+        if (friendsCount) friendsCount.textContent = this.formatNumber(stats.friends);
+        if (fansCount) fansCount.textContent = this.formatNumber(stats.fans);
+        if (resonatingCount) resonatingCount.textContent = this.formatNumber(stats.resonating);
+        if (cutsCount) cutsCount.textContent = this.formatNumber(stats.cuts || 0);
+
+        // Images
+        if (data.banner_url) {
+            const banner = document.getElementById('profileBanner');
+            if (banner) {
+                banner.innerHTML = `<img src="${data.banner_url}" alt="Banner">`;
+                if (!this.userId) {
+                    banner.innerHTML += `
+                        <div class="profile-banner-edit" id="bannerEditBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            <span>Edit banner</span>
+                        </div>
+                    `;
+                    document.getElementById('bannerEditBtn').addEventListener('click', () => {
+                        document.getElementById('bannerImageInput').click();
+                    });
+                }
+            }
+        }
+
+        const avatarImg = document.getElementById('profilePictureImg');
+        if (avatarImg && data.avatar_url) {
+            avatarImg.src = data.avatar_url;
+        }
+
+        // Portfolio Deep Dive
+        if (data.portfolio) {
+            this.renderPortfolio(data.portfolio);
+        }
+
+        // UI Controls
+        const editBtn = document.getElementById('editProfileBtn');
+        if (this.userId && editBtn) {
+            editBtn.style.display = 'none';
+            const bannerEdit = document.getElementById('bannerEditBtn');
+            if (bannerEdit) bannerEdit.style.display = 'none';
+        } else if (editBtn) {
+            editBtn.style.display = 'block';
+        }
+    }
+
+    renderPortfolio(portfolio) {
+        // Reading List
+        const readingList = document.getElementById('portfolioReading');
+        if (readingList && portfolio.reading) {
+            readingList.innerHTML = portfolio.reading.map(book => `
+                <div class="reading-item">
+                    <img src="${book.image}" alt="${book.title}" class="reading-cover">
+                    <div class="reading-info">
+                        <div class="reading-title">${book.title}</div>
+                        <div class="reading-author">${book.author}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Credentials
+        const credsList = document.getElementById('portfolioCredentials');
+        if (credsList && portfolio.credentials) {
+            credsList.innerHTML = portfolio.credentials.map(cred =>
+                `<div class="credential-chip">${cred}</div>`
+            ).join('');
+        }
+    }
+
+    formatNumber(num) {
+        if (typeof num !== 'number') return num;
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num;
     }
 
     setupEventListeners() {
@@ -111,7 +223,7 @@ class ProfilePage {
     openEditModal() {
         const modal = document.getElementById('editProfileModal');
         const profileData = JSON.parse(localStorage.getItem('profileData') || '{}');
-        
+
         // Populate form
         document.getElementById('editName').value = profileData.name || 'Jack Danger';
         document.getElementById('editUsername').value = profileData.username || 'jacksonadanger';
@@ -120,13 +232,13 @@ class ProfilePage {
         document.getElementById('editLocation').value = profileData.location || '';
         document.getElementById('editWebsite').value = profileData.website || '';
         document.getElementById('editSocialUrl').value = profileData.socialUrl || '';
-        
+
         // Set social type
         const socialType = profileData.socialType || 'instagram';
         document.querySelectorAll('.edit-profile-social-option').forEach(o => {
             o.classList.toggle('selected', o.dataset.social === socialType);
         });
-        
+
         this.updateCharCount();
         modal.classList.add('open');
     }
@@ -140,10 +252,10 @@ class ProfilePage {
         const count = document.getElementById('bioCharCount');
         const length = bio.value.length;
         const maxLength = 300;
-        
+
         count.textContent = `${length} / ${maxLength}`;
         count.classList.remove('warning', 'error');
-        
+
         if (length > maxLength * 0.9) {
             count.classList.add('warning');
         }
@@ -172,7 +284,7 @@ class ProfilePage {
 
         // Save to localStorage
         localStorage.setItem('profileData', JSON.stringify(profileData));
-        
+
         // Update UI
         this.loadProfileData();
         this.closeEditModal();
@@ -180,10 +292,10 @@ class ProfilePage {
 
     handleImageUpload(file, type) {
         if (!file) return;
-        
+
         this.currentCropType = type;
         const reader = new FileReader();
-        
+
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
@@ -191,20 +303,20 @@ class ProfilePage {
             };
             img.src = e.target.result;
         };
-        
+
         reader.readAsDataURL(file);
     }
 
     openCropModal(image, type) {
         const modal = document.getElementById('cropModal');
         const preview = document.getElementById('cropPreview');
-        
+
         this.cropImage = image;
-        
+
         // Create canvas
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        
+
         // Set dimensions based on type
         if (type === 'banner') {
             canvas.width = 1200;
@@ -215,21 +327,21 @@ class ProfilePage {
             const size = Math.min(image.width, image.height);
             canvas.width = 400;
             canvas.height = 400;
-            
+
             // Center crop
             const sourceX = (image.width - size) / 2;
             const sourceY = (image.height - size) / 2;
-            
+
             ctx.drawImage(
                 image,
                 sourceX, sourceY, size, size,
                 0, 0, canvas.width, canvas.height
             );
         }
-        
+
         this.cropCanvas = canvas;
         this.cropContext = ctx;
-        
+
         preview.innerHTML = '';
         preview.appendChild(canvas);
         modal.classList.add('open');
@@ -244,9 +356,9 @@ class ProfilePage {
 
     applyCrop() {
         if (!this.cropCanvas) return;
-        
+
         const dataURL = this.cropCanvas.toDataURL('image/jpeg', 0.9);
-        
+
         if (this.currentCropType === 'banner') {
             // Update banner
             const banner = document.getElementById('profileBanner');
@@ -261,7 +373,7 @@ class ProfilePage {
             // Update profile picture
             document.getElementById('profilePictureImg').src = dataURL;
             localStorage.setItem('profileImage', dataURL);
-            
+
             // Also update header profile picture
             const headerProfile = document.getElementById('headerProfilePicture');
             if (headerProfile) {
@@ -271,7 +383,7 @@ class ProfilePage {
                 }
             }
         }
-        
+
         this.closeCropModal();
     }
 
@@ -282,14 +394,20 @@ class ProfilePage {
     }
 
     loadTimeline() {
-        // Load user's posts
         const timeline = document.getElementById('profileTimeline');
-        const posts = JSON.parse(localStorage.getItem('profilePosts') || '[]');
-        
-        if (posts.length === 0) {
-            return; // Show empty state
+        let posts = [];
+
+        if (this.userId && this.mockPosts) {
+            posts = this.mockPosts;
+        } else {
+            posts = JSON.parse(localStorage.getItem('profilePosts') || '[]');
         }
-        
+
+        if (posts.length === 0) {
+            timeline.innerHTML = '<div class="profile-empty"><p>No posts yet.</p></div>';
+            return;
+        }
+
         timeline.innerHTML = '';
         posts.forEach(post => {
             const postElement = this.createPostElement(post);
@@ -300,9 +418,9 @@ class ProfilePage {
     createPostElement(post) {
         const div = document.createElement('div');
         div.className = 'profile-post';
-        
+
         const isPinned = post.pinned || false;
-        
+
         div.innerHTML = `
             <div class="profile-post-header">
                 <div class="profile-post-avatar">
@@ -344,14 +462,14 @@ class ProfilePage {
                 </div>
             </div>
         `;
-        
+
         return div;
     }
 
     togglePin(postId) {
         const posts = JSON.parse(localStorage.getItem('profilePosts') || '[]');
         const post = posts.find(p => p.id === postId);
-        
+
         if (post) {
             // Unpin all other posts
             posts.forEach(p => {
@@ -359,7 +477,7 @@ class ProfilePage {
                     p.pinned = false;
                 }
             });
-            
+
             // Toggle this post
             post.pinned = !post.pinned;
             localStorage.setItem('profilePosts', JSON.stringify(posts));

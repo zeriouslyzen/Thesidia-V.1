@@ -136,8 +136,12 @@ def postprocess_response(response: str, naturalize: bool = True) -> str:
     # Step 3: Fix "designed to" language
     cleaned = fix_designed_language(cleaned)
 
-    # Step 3.5: Strip correction labels if the model included them
+    # Step 3.5: Strip correction labels and meta-commentary if the model included them
     cleaned = re.sub(r'^\s*corrected\s*response:\s*', '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'TASK:\s*REVISE THE RESPONSE.*?\n', '', cleaned, flags=re.IGNORECASE | re.MULTILINE)
+    cleaned = re.sub(r'So you want to revise.*?\?', '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'Your original query was.*?\.', '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'revise the response without labels in output', '', cleaned, flags=re.IGNORECASE)
     
     # Step 4: Detect and flag fake citations
     cleaned, warnings = detect_fake_citations(cleaned)

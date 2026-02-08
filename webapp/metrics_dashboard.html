@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,11 +16,13 @@
             background: var(--bg-primary);
             color: var(--text-primary);
         }
+
         #app {
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
+
         .dashboard {
             flex: 1;
             overflow-y: auto;
@@ -28,6 +31,7 @@
             padding: var(--spacing-lg);
             width: 100%;
         }
+
         .dashboard .header {
             display: flex;
             justify-content: space-between;
@@ -36,27 +40,32 @@
             padding-bottom: var(--spacing-lg);
             border-bottom: var(--border-width-thick) solid var(--border-color);
         }
+
         .header h1 {
             font-size: var(--font-size-xl);
             font-weight: 600;
             color: var(--accent-active);
         }
+
         .refresh-info {
             color: var(--text-secondary);
             font-size: var(--font-size-sm);
         }
+
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: var(--spacing-lg);
             margin-bottom: var(--spacing-xl);
         }
+
         .metric-card {
             background: var(--bg-secondary);
             border: var(--border-width-thin) solid var(--border-color);
             border-radius: var(--border-radius-md);
             padding: var(--spacing-lg);
         }
+
         .metric-card h3 {
             color: var(--accent-active);
             font-size: var(--font-size-md);
@@ -64,25 +73,30 @@
             border-bottom: var(--border-width-thin) solid var(--border-color);
             padding-bottom: var(--spacing-sm);
         }
+
         .metric-value {
             font-size: var(--font-size-xl);
             font-weight: 600;
             color: var(--accent-active);
             margin: var(--spacing-sm) 0;
         }
+
         .metric-label {
             color: var(--text-secondary);
             font-size: var(--font-size-sm);
         }
+
         .metric-row {
             display: flex;
             justify-content: space-between;
             padding: var(--spacing-sm) 0;
             border-bottom: var(--border-width-thin) solid var(--border-color);
         }
+
         .metric-row:last-child {
             border-bottom: none;
         }
+
         .chart-container {
             background: var(--bg-secondary);
             border: var(--border-width-thin) solid var(--border-color);
@@ -90,6 +104,7 @@
             padding: var(--spacing-lg);
             margin-bottom: var(--spacing-lg);
         }
+
         .chart-container h3 {
             color: var(--accent-active);
             font-size: var(--font-size-md);
@@ -97,10 +112,12 @@
             border-bottom: var(--border-width-thin) solid var(--border-color);
             padding-bottom: var(--spacing-sm);
         }
+
         .pattern-list {
             max-height: 400px;
             overflow-y: auto;
         }
+
         .pattern-item {
             display: flex;
             justify-content: space-between;
@@ -109,11 +126,22 @@
             background: var(--bg-tertiary);
             border-radius: var(--border-radius-sm);
         }
-        .trend-up { color: var(--text-primary); opacity: 0.9; }
-        .trend-down { color: var(--text-secondary); }
-        .trend-stable { color: var(--text-secondary); }
+
+        .trend-up {
+            color: var(--text-primary);
+            opacity: 0.9;
+        }
+
+        .trend-down {
+            color: var(--text-secondary);
+        }
+
+        .trend-stable {
+            color: var(--text-secondary);
+        }
     </style>
 </head>
+
 <body>
     <div id="app">
         <!-- Header -->
@@ -121,9 +149,9 @@
             <div class="header-content">
                 <div class="logo">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span>THESIDIA</span>
                 </div>
@@ -136,50 +164,53 @@
                 <nav class="global-nav" id="globalNav">
                     <a href="/" class="nav-item" data-page="contexts">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                         </svg>
                         <span>Contexts</span>
                     </a>
                     <a href="/stream.html" class="nav-item" data-page="stream">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                            <path
+                                d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                         </svg>
                         <span>Signal Stream</span>
                     </a>
                     <a href="/atlas.html" class="nav-item" data-page="atlas">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <span>Pattern Atlas</span>
                     </a>
                     <a href="/reactor.html" class="nav-item" data-page="reactor">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                            <circle cx="12" cy="12" r="10" />
+                            <path
+                                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
                         </svg>
                         <span>Research Reactor</span>
                     </a>
                     <a href="/application.html" class="nav-item" data-page="application">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
                         </svg>
                         <span>Application Layer</span>
                     </a>
-                    <a href="/archive.html" class="nav-item" data-page="archive">
+                    <a href="https://1cebrg.com" class="nav-item" data-page="archive" target="_blank">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                            <path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/>
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            <path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12" />
                         </svg>
-                        <span>Archive</span>
+                        <span>1cebrg</span>
                     </a>
                     <a href="/metrics_dashboard.html" class="nav-item active" data-page="metrics">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="20" x2="18" y2="10"/>
-                            <line x1="12" y1="20" x2="12" y2="4"/>
-                            <line x1="6" y1="20" x2="6" y2="14"/>
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
                         </svg>
                         <span>System Metrics</span>
                     </a>
@@ -191,154 +222,154 @@
                 </button>
             </div>
         </header>
-    <div class="dashboard">
-        <div class="header">
-            <h1>System Metrics</h1>
-            <div class="refresh-info">
-                Auto-refresh: <span id="refreshCountdown">5</span>s | 
-                Last update: <span id="lastUpdate">--</span>
+        <div class="dashboard">
+            <div class="header">
+                <h1>System Metrics</h1>
+                <div class="refresh-info">
+                    Auto-refresh: <span id="refreshCountdown">5</span>s |
+                    Last update: <span id="lastUpdate">--</span>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>Performance</h3>
+                    <div class="metric-value" id="avgResponseTime">--</div>
+                    <div class="metric-label">Avg Response Time</div>
+                    <div class="metric-row">
+                        <span>Min:</span>
+                        <span id="minResponseTime">--</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Max:</span>
+                        <span id="maxResponseTime">--</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Median:</span>
+                        <span id="medianResponseTime">--</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>Tokens</h3>
+                    <div class="metric-value" id="avgTokens">--</div>
+                    <div class="metric-label">Avg Tokens per Response</div>
+                    <div class="metric-row">
+                        <span>Total:</span>
+                        <span id="totalTokens">--</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Range:</span>
+                        <span id="tokenRange">--</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>Session Stats</h3>
+                    <div class="metric-value" id="totalQueries">--</div>
+                    <div class="metric-label">Total Queries</div>
+                    <div class="metric-row">
+                        <span>Total Time:</span>
+                        <span id="totalTime">--</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Session Start:</span>
+                        <span id="sessionStart">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eval Runner -->
+            <div class="chart-container">
+                <h3>Eval Runner (SynthesisPressure)</h3>
+                <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+                    <button id="runEvalBtn" class="btn btn-primary">Run Eval Suite</button>
+                    <button id="loadLatestBtn" class="btn">Load Latest</button>
+                    <span class="refresh-info" id="evalStatus">idle</span>
+                </div>
+                <div class="pattern-list" id="evalProcess"></div>
+                <div class="pattern-list" id="evalSummary"></div>
+                <div class="pattern-list" id="evalResults"></div>
             </div>
         </div>
 
-        <!-- Performance Metrics -->
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <h3>Performance</h3>
-                <div class="metric-value" id="avgResponseTime">--</div>
-                <div class="metric-label">Avg Response Time</div>
-                <div class="metric-row">
-                    <span>Min:</span>
-                    <span id="minResponseTime">--</span>
-                </div>
-                <div class="metric-row">
-                    <span>Max:</span>
-                    <span id="maxResponseTime">--</span>
-                </div>
-                <div class="metric-row">
-                    <span>Median:</span>
-                    <span id="medianResponseTime">--</span>
-                </div>
-            </div>
+        <script>
+            let refreshInterval;
+            let countdownInterval;
 
-            <div class="metric-card">
-                <h3>Tokens</h3>
-                <div class="metric-value" id="avgTokens">--</div>
-                <div class="metric-label">Avg Tokens per Response</div>
-                <div class="metric-row">
-                    <span>Total:</span>
-                    <span id="totalTokens">--</span>
-                </div>
-                <div class="metric-row">
-                    <span>Range:</span>
-                    <span id="tokenRange">--</span>
-                </div>
-            </div>
+            async function loadMetrics() {
+                try {
+                    const response = await fetch('/api/metrics/current');
+                    const metrics = await response.json();
 
-            <div class="metric-card">
-                <h3>Session Stats</h3>
-                <div class="metric-value" id="totalQueries">--</div>
-                <div class="metric-label">Total Queries</div>
-                <div class="metric-row">
-                    <span>Total Time:</span>
-                    <span id="totalTime">--</span>
-                </div>
-                <div class="metric-row">
-                    <span>Session Start:</span>
-                    <span id="sessionStart">--</span>
-                </div>
-            </div>
-        </div>
+                    // Performance
+                    if (metrics.performance) {
+                        document.getElementById('avgResponseTime').textContent =
+                            metrics.performance.avg_response_time.toFixed(2) + 's';
+                        document.getElementById('minResponseTime').textContent =
+                            metrics.performance.min_response_time.toFixed(2) + 's';
+                        document.getElementById('maxResponseTime').textContent =
+                            metrics.performance.max_response_time.toFixed(2) + 's';
+                        document.getElementById('medianResponseTime').textContent =
+                            metrics.performance.median_response_time.toFixed(2) + 's';
+                    }
 
-        <!-- Eval Runner -->
-        <div class="chart-container">
-            <h3>Eval Runner (SynthesisPressure)</h3>
-            <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
-                <button id="runEvalBtn" class="btn btn-primary">Run Eval Suite</button>
-                <button id="loadLatestBtn" class="btn">Load Latest</button>
-                <span class="refresh-info" id="evalStatus">idle</span>
-            </div>
-            <div class="pattern-list" id="evalProcess"></div>
-            <div class="pattern-list" id="evalSummary"></div>
-            <div class="pattern-list" id="evalResults"></div>
-        </div>
-    </div>
+                    // Tokens
+                    if (metrics.tokens) {
+                        document.getElementById('avgTokens').textContent =
+                            Math.round(metrics.tokens.avg_tokens);
+                        document.getElementById('totalTokens').textContent =
+                            metrics.tokens.total_tokens;
+                        document.getElementById('tokenRange').textContent =
+                            `${metrics.tokens.min_tokens} - ${metrics.tokens.max_tokens}`;
+                    }
 
-    <script>
-        let refreshInterval;
-        let countdownInterval;
+                    // Session
+                    document.getElementById('totalQueries').textContent =
+                        metrics.total_queries || 0;
+                    document.getElementById('totalTime').textContent =
+                        (metrics.total_time || 0).toFixed(2) + 's';
+                    document.getElementById('sessionStart').textContent =
+                        new Date(metrics.start_time).toLocaleTimeString();
 
-        async function loadMetrics() {
-            try {
-                const response = await fetch('/api/metrics/current');
-                const metrics = await response.json();
+                    // Keep legacy sections if present, but dashboard now focuses on eval runner.
 
-                // Performance
-                if (metrics.performance) {
-                    document.getElementById('avgResponseTime').textContent = 
-                        metrics.performance.avg_response_time.toFixed(2) + 's';
-                    document.getElementById('minResponseTime').textContent = 
-                        metrics.performance.min_response_time.toFixed(2) + 's';
-                    document.getElementById('maxResponseTime').textContent = 
-                        metrics.performance.max_response_time.toFixed(2) + 's';
-                    document.getElementById('medianResponseTime').textContent = 
-                        metrics.performance.median_response_time.toFixed(2) + 's';
+                    document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+                } catch (error) {
+                    console.error('Error loading metrics:', error);
                 }
-
-                // Tokens
-                if (metrics.tokens) {
-                    document.getElementById('avgTokens').textContent = 
-                        Math.round(metrics.tokens.avg_tokens);
-                    document.getElementById('totalTokens').textContent = 
-                        metrics.tokens.total_tokens;
-                    document.getElementById('tokenRange').textContent = 
-                        `${metrics.tokens.min_tokens} - ${metrics.tokens.max_tokens}`;
-                }
-
-                // Session
-                document.getElementById('totalQueries').textContent = 
-                    metrics.total_queries || 0;
-                document.getElementById('totalTime').textContent = 
-                    (metrics.total_time || 0).toFixed(2) + 's';
-                document.getElementById('sessionStart').textContent = 
-                    new Date(metrics.start_time).toLocaleTimeString();
-
-                // Keep legacy sections if present, but dashboard now focuses on eval runner.
-
-                document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
-            } catch (error) {
-                console.error('Error loading metrics:', error);
             }
-        }
 
-        function setEvalStatus(text) {
-            const el = document.getElementById('evalStatus');
-            if (el) el.textContent = text;
-        }
+            function setEvalStatus(text) {
+                const el = document.getElementById('evalStatus');
+                if (el) el.textContent = text;
+            }
 
-        function computeLinguistics(text) {
-            const t = String(text || '');
-            const chars = t.length;
-            const words = (t.match(/[A-Za-z0-9']+/g) || []);
-            const wordCount = words.length;
-            const uniqueWords = new Set(words.map(w => w.toLowerCase())).size;
-            const sentences = (t.match(/[.!?]+/g) || []).length;
-            const avgWordLen = wordCount ? (words.reduce((a, w) => a + w.length, 0) / wordCount) : 0;
-            return { chars, wordCount, uniqueWords, sentences, avgWordLen };
-        }
+            function computeLinguistics(text) {
+                const t = String(text || '');
+                const chars = t.length;
+                const words = (t.match(/[A-Za-z0-9']+/g) || []);
+                const wordCount = words.length;
+                const uniqueWords = new Set(words.map(w => w.toLowerCase())).size;
+                const sentences = (t.match(/[.!?]+/g) || []).length;
+                const avgWordLen = wordCount ? (words.reduce((a, w) => a + w.length, 0) / wordCount) : 0;
+                return { chars, wordCount, uniqueWords, sentences, avgWordLen };
+            }
 
-        function escapeHtml(text) {
-            return String(text ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/\"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
+            function escapeHtml(text) {
+                return String(text ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/\"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
 
-        function renderProcessDiagram() {
-            const el = document.getElementById('evalProcess');
-            if (!el) return;
-            el.innerHTML = `
+            function renderProcessDiagram() {
+                const el = document.getElementById('evalProcess');
+                if (!el) return;
+                el.innerHTML = `
                 <div class="pattern-item">
                     <span>what you are seeing</span>
                     <strong>the same prompt, run twice</strong>
@@ -352,60 +383,60 @@
                     <strong>pressure = “squeezed” reply (more compact)</strong>
                 </div>
             `;
-        }
-
-        function renderEval(report) {
-            renderProcessDiagram();
-            const summary = document.getElementById('evalSummary');
-            const results = document.getElementById('evalResults');
-            if (!summary || !results) return;
-            summary.innerHTML = '';
-            results.innerHTML = '';
-
-            if (!report || !report.variants) {
-                summary.innerHTML = '<div class="pattern-item"><span>No eval report found</span></div>';
-                return;
             }
 
-            const runId = report.run_id || 'unknown';
-            const ts = report.ts ? new Date(report.ts * 1000).toLocaleString() : '--';
-            summary.innerHTML = `
+            function renderEval(report) {
+                renderProcessDiagram();
+                const summary = document.getElementById('evalSummary');
+                const results = document.getElementById('evalResults');
+                if (!summary || !results) return;
+                summary.innerHTML = '';
+                results.innerHTML = '';
+
+                if (!report || !report.variants) {
+                    summary.innerHTML = '<div class="pattern-item"><span>No eval report found</span></div>';
+                    return;
+                }
+
+                const runId = report.run_id || 'unknown';
+                const ts = report.ts ? new Date(report.ts * 1000).toLocaleString() : '--';
+                summary.innerHTML = `
                 <div class="pattern-item"><span>run_id</span><strong>${runId}</strong></div>
                 <div class="pattern-item"><span>timestamp</span><strong>${ts}</strong></div>
             `;
 
-            const baseline = report.variants.baseline?.results || [];
-            const pressure = report.variants.pressure?.results || [];
-            const byId = new Map();
-            baseline.forEach(r => byId.set(r.id, { baseline: r }));
-            pressure.forEach(r => {
-                const cur = byId.get(r.id) || {};
-                cur.pressure = r;
-                byId.set(r.id, cur);
-            });
+                const baseline = report.variants.baseline?.results || [];
+                const pressure = report.variants.pressure?.results || [];
+                const byId = new Map();
+                baseline.forEach(r => byId.set(r.id, { baseline: r }));
+                pressure.forEach(r => {
+                    const cur = byId.get(r.id) || {};
+                    cur.pressure = r;
+                    byId.set(r.id, cur);
+                });
 
-            for (const [id, pair] of byId.entries()) {
-                const b = pair.baseline;
-                const p = pair.pressure;
-                const pre = b?.output_chars || 0;
-                const post = p?.output_chars || 0;
-                const ratio = pre > 0 ? (post / pre) : 0;
-                const prompt = b?.prompt || p?.prompt || '';
-                const suite = b?.suite || p?.suite || '';
-                const bPreview = b?.output_preview || '';
-                const pPreview = p?.output_preview || '';
-                const pressureMeta = p?.metadata?.synthesis_pressure || null;
+                for (const [id, pair] of byId.entries()) {
+                    const b = pair.baseline;
+                    const p = pair.pressure;
+                    const pre = b?.output_chars || 0;
+                    const post = p?.output_chars || 0;
+                    const ratio = pre > 0 ? (post / pre) : 0;
+                    const prompt = b?.prompt || p?.prompt || '';
+                    const suite = b?.suite || p?.suite || '';
+                    const bPreview = b?.output_preview || '';
+                    const pPreview = p?.output_preview || '';
+                    const pressureMeta = p?.metadata?.synthesis_pressure || null;
 
-                const bLing = computeLinguistics(bPreview);
-                const pLing = computeLinguistics(pPreview);
+                    const bLing = computeLinguistics(bPreview);
+                    const pLing = computeLinguistics(pPreview);
 
-                const item = document.createElement('details');
-                item.style.padding = '10px';
-                item.style.border = '1px solid var(--border-color)';
-                item.style.borderRadius = '8px';
-                item.style.margin = '8px 0';
-                item.style.background = 'var(--bg-tertiary)';
-                item.innerHTML = `
+                    const item = document.createElement('details');
+                    item.style.padding = '10px';
+                    item.style.border = '1px solid var(--border-color)';
+                    item.style.borderRadius = '8px';
+                    item.style.margin = '8px 0';
+                    item.style.background = 'var(--bg-tertiary)';
+                    item.innerHTML = `
                     <summary style="cursor:pointer; display:flex; justify-content:space-between; gap:12px;">
                         <span>${escapeHtml(id)} <span style="opacity:.7;">(${escapeHtml(suite)})</span></span>
                         <strong>chars: ${pre} → ${post} | ratio: ${ratio.toFixed(2)}</strong>
@@ -427,70 +458,70 @@
                         <div class="pattern-item"><span>linguistics</span><strong>words ${bLing.wordCount}→${pLing.wordCount} | uniq ${bLing.uniqueWords}→${pLing.uniqueWords} | sents ${bLing.sentences}→${pLing.sentences}</strong></div>
                     </div>
                 `;
-                results.appendChild(item);
+                    results.appendChild(item);
+                }
+
+                // UX: bring results into view and auto-expand the first case so users immediately see prompts + replies.
+                try {
+                    const first = results.querySelector('details');
+                    if (first) first.open = true;
+                    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } catch (_) { }
             }
 
-            // UX: bring results into view and auto-expand the first case so users immediately see prompts + replies.
-            try {
-                const first = results.querySelector('details');
-                if (first) first.open = true;
-                results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } catch (_) {}
-        }
-
-        async function runEval() {
-            setEvalStatus('running...');
-            try {
-                const resp = await fetch('/api/eval/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
-                const data = await resp.json();
-                renderEval(data);
-                setEvalStatus('done');
-            } catch (e) {
-                console.error(e);
-                setEvalStatus('error');
+            async function runEval() {
+                setEvalStatus('running...');
+                try {
+                    const resp = await fetch('/api/eval/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+                    const data = await resp.json();
+                    renderEval(data);
+                    setEvalStatus('done');
+                } catch (e) {
+                    console.error(e);
+                    setEvalStatus('error');
+                }
             }
-        }
 
-        async function loadLatestEval() {
-            setEvalStatus('loading latest...');
-            try {
-                const resp = await fetch('/api/eval/latest');
-                const data = await resp.json();
-                renderEval(data);
-                setEvalStatus('loaded');
-            } catch (e) {
-                console.error(e);
-                setEvalStatus('error');
+            async function loadLatestEval() {
+                setEvalStatus('loading latest...');
+                try {
+                    const resp = await fetch('/api/eval/latest');
+                    const data = await resp.json();
+                    renderEval(data);
+                    setEvalStatus('loaded');
+                } catch (e) {
+                    console.error(e);
+                    setEvalStatus('error');
+                }
             }
-        }
 
-        function startAutoRefresh() {
-            let countdown = 5;
-            document.getElementById('refreshCountdown').textContent = countdown;
-            
-            countdownInterval = setInterval(() => {
-                countdown--;
-                if (countdown <= 0) countdown = 5;
+            function startAutoRefresh() {
+                let countdown = 5;
                 document.getElementById('refreshCountdown').textContent = countdown;
-            }, 1000);
 
-            refreshInterval = setInterval(() => {
-                loadMetrics();
-            }, 5000);
-        }
+                countdownInterval = setInterval(() => {
+                    countdown--;
+                    if (countdown <= 0) countdown = 5;
+                    document.getElementById('refreshCountdown').textContent = countdown;
+                }, 1000);
 
-        // Initial load
-        loadMetrics();
-        startAutoRefresh();
-        loadLatestEval();
+                refreshInterval = setInterval(() => {
+                    loadMetrics();
+                }, 5000);
+            }
 
-        const runBtn = document.getElementById('runEvalBtn');
-        if (runBtn) runBtn.addEventListener('click', runEval);
-        const latestBtn = document.getElementById('loadLatestBtn');
-        if (latestBtn) latestBtn.addEventListener('click', loadLatestEval);
-    </script>
-    <script src="nav.js"></script>
+            // Initial load
+            loadMetrics();
+            startAutoRefresh();
+            loadLatestEval();
+
+            const runBtn = document.getElementById('runEvalBtn');
+            if (runBtn) runBtn.addEventListener('click', runEval);
+            const latestBtn = document.getElementById('loadLatestBtn');
+            if (latestBtn) latestBtn.addEventListener('click', loadLatestEval);
+        </script>
+        <script src="nav.js"></script>
     </div>
 </body>
-</html>
 
+</html>

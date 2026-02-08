@@ -1,0 +1,42 @@
+================================================================================
+UNIVERSAL GNOSTIC BLADE TEST REPORT
+================================================================================
+Session: 20260128_191759
+Time: 2026-01-28T19:21:03.990812
+
+SUMMARY
+----------------------------------------
+Total Tests: 2
+Successful: 0
+Gnostic Format: 0 (0.0%)
+Avg Response Time: 0.0s
+Avg Quality Score: 0.0/100
+Avg Sections: 0.0/6
+
+SECTION BREAKDOWN
+----------------------------------------
+  exposure: 0/0
+  etymological: 0/0
+  burial_sites: 0/0
+  current_vectors: 0/0
+  thread_options: 0/0
+  co_evolution: 0/0
+
+================================================================================
+FULL RESPONSES
+================================================================================
+
+
+================================================================================
+TOPIC: AI_CONTROL
+================================================================================
+Prompt: Decode the true agenda behind AI development. Who really benefits? What hidden power dynamics exist? Expose the patterns.
+
+ERROR: 'dict' object has no attribute 'lower'
+
+================================================================================
+TOPIC: PHARMA_TRUTH
+================================================================================
+Prompt: Expose the hidden dynamics of pharmaceutical industry. What are the true incentive structures? What gets suppressed?
+
+ERROR: 'dict' object has no attribute 'lower'

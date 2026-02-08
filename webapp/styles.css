@@ -34,10 +34,10 @@
     --accent-hover: #e0e0e0;
     --accent-subtle: rgba(255, 255, 255, 0.05);
 
-    /* Theme Colors - Neon Accents (Default: White) */
-    --theme-neon: #ffffff;
-    --theme-neon-glow: rgba(255, 255, 255, 0.15);
-    --theme-neon-border: rgba(255, 255, 255, 0.15);
+    /* Theme Colors - Neon Accents (Default: Yellow) */
+    --theme-neon: #ffff00;
+    --theme-neon-glow: rgba(255, 255, 0, 0.35);
+    --theme-neon-border: rgba(255, 255, 0, 0.25);
 
     /* Functional Shadows - Minimal */
     --shadow-subtle: rgba(255, 255, 255, 0.02);
@@ -160,9 +160,10 @@
     --accent-hover: #333333;
     --accent-subtle: rgba(0, 0, 0, 0.05);
 
-    --theme-neon: #333333;
-    --theme-neon-glow: rgba(0, 0, 0, 0.1);
-    --theme-neon-border: rgba(0, 0, 0, 0.15);
+    /* Keep neon yellow even in light mode for global consistency */
+    /* --theme-neon: #333333; */
+    /* --theme-neon-glow: rgba(0, 0, 0, 0.1); */
+    /* --theme-neon-border: rgba(0, 0, 0, 0.15); */
 
     --shadow-subtle: rgba(0, 0, 0, 0.02);
     --shadow-medium: rgba(0, 0, 0, 0.05);
@@ -174,15 +175,15 @@
     --status-error: #1a1a1a;
 }
 
-/* Light theme body stays black so gaps don't show beige */
+/* Light theme body beige */
 [data-theme="light"] body {
-    background: #000000 !important;
-    background-color: #000000 !important;
+    background: #f5f0e8 !important;
+    background-color: #f5f0e8 !important;
 }
 
 [data-theme="light"] #app {
-    background: #000000 !important;
-    background-color: #000000 !important;
+    background: #f5f0e8 !important;
+    background-color: #f5f0e8 !important;
 }
 
 [data-theme="light"] ::selection {
@@ -191,19 +192,24 @@
 }
 
 /* Light theme - Header (entire header including both bars) stays black like dark mode */
+/* Light theme - Header (entire header including both bars) stays black like dark mode */
 [data-theme="light"] .header,
 [data-theme="light"] .header-content,
 [data-theme="light"] .header-submenu {
-    background: #000000;
+    background: #000000 !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Light theme - Nav items stay light colored on black background */
-[data-theme="light"] .header-submenu .nav-item {
+[data-theme="light"] .header-submenu .nav-item,
+[data-theme="light"] .advanced-nav .nav-item {
     color: #999999;
 }
 
 [data-theme="light"] .header-submenu .nav-item:hover,
-[data-theme="light"] .header-submenu .nav-item.active {
+[data-theme="light"] .header-submenu .nav-item.active,
+[data-theme="light"] .advanced-nav .nav-item:hover,
+[data-theme="light"] .advanced-nav .nav-item.active {
     color: #ffffff;
 }
 
@@ -212,19 +218,32 @@
     color: #999999;
 }
 
-/* Light theme - Katanx branding stays white like dark mode */
+/* Light theme - Katanx branding stays white/neon like dark mode */
 [data-theme="light"] .thesidia-text {
-    color: #e8e8e8 !important;
+    color: #ffffff !important;
 }
 
 [data-theme="light"] .katanx-slash {
-    color: var(--theme-neon) !important;
+    color: #ffff00 !important;
+}
+
+[data-theme="light"] .katanx-x {
+    color: #00d4ff !important;
+}
+
+/* Light theme - Menu orb stays transparent with light icon */
+[data-theme="light"] .menu-orb {
+    background: transparent;
+    border-color: transparent;
+    color: #ffffff;
 }
 
 /* Light theme - Menu orb stays transparent */
 [data-theme="light"] .menu-orb {
     background: transparent;
     border-color: transparent;
+    color: #ffffff;
+    /* Ensure icon is white on black header */
 }
 
 [data-theme="light"] .menu-orb:hover {
@@ -256,23 +275,26 @@
 
 /* Light theme - Sidebar */
 [data-theme="light"] .left-sidebar {
-    background: #f5f0e8;
+    background: #f5f0e8 !important;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .sidebar-content {
-    background: #f5f0e8;
+    background: #f5f0e8 !important;
 }
 
 /* Light theme - Profile section */
 [data-theme="light"] .sidebar-profile,
 [data-theme="light"] .profile-picture-container {
-    background: transparent;
+    background: transparent !important;
 }
 
-[data-theme="light"] .profile-name,
+[data-theme="light"] .profile-name {
+    color: #1a1a1a !important;
+}
+
 [data-theme="light"] .profile-tag {
-    color: #1a1a1a;
+    color: #4a4a4a !important;
 }
 
 /* Light theme - Profile picture visibility */
@@ -286,18 +308,18 @@
 }
 
 [data-theme="light"] .profile-insight {
-    color: #4a4a4a;
+    color: #4a4a4a !important;
 }
 
 /* Light theme - Navigation */
 [data-theme="light"] .nav-menu-item {
-    color: #4a4a4a;
+    color: #4a4a4a !important;
 }
 
 [data-theme="light"] .nav-menu-item:hover,
 [data-theme="light"] .nav-menu-item.active {
-    color: #1a1a1a;
-    background: rgba(0, 0, 0, 0.05);
+    color: #1a1a1a !important;
+    background: rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Light theme - Sidebar settings */
@@ -306,11 +328,11 @@
 }
 
 [data-theme="light"] .settings-label {
-    color: #7a7a7a;
+    color: #7a7a7a !important;
 }
 
 [data-theme="light"] .settings-item {
-    color: #4a4a4a;
+    color: #4a4a4a !important;
 }
 
 /* Light theme - Forums/Circles */
@@ -2176,6 +2198,119 @@ html:has(#app.sidebar-pushed) {
 .news-source {
     font-size: 11px;
     color: var(--text-tertiary);
+}
+
+/* Signal Tile Elements - Dynamic API Content */
+.news-tile-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.75);
+    transition: filter 0.3s ease, transform 0.4s ease;
+}
+
+.news-tile:hover .news-tile-image {
+    filter: brightness(0.85);
+    transform: scale(1.05);
+}
+
+.news-tile-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.75) 100%);
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: auto;
+}
+
+.news-tile-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--theme-neon, #67d0ff);
+    background: rgba(103, 208, 255, 0.15);
+    padding: 3px 7px;
+    border-radius: 4px;
+    width: fit-content;
+}
+
+.news-tile-title {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #fff;
+    font-family: var(--font-heading);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-tile-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.news-tile-source {
+    font-size: 10px;
+    color: var(--text-tertiary, rgba(255, 255, 255, 0.5));
+    text-transform: capitalize;
+}
+
+.news-tile.empty {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 12px;
+}
+
+/* Featured Signal Tile - Larger Pinned Article */
+.news-tile.featured {
+    min-width: 280px;
+    flex: 0 0 280px;
+    min-height: 180px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.news-tile.featured .news-tile-content {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.85) 100%);
+    padding: 14px;
+}
+
+.news-tile.featured .news-tile-tag.pinned {
+    background: rgba(255, 200, 50, 0.2);
+    color: #ffc832;
+}
+
+.news-tile.featured .news-tile-title {
+    font-size: 15px;
+    -webkit-line-clamp: 3;
+}
+
+.news-tile-excerpt {
+    font-size: 11px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 /* What You're Following Widget - Carousel */
@@ -7176,17 +7311,19 @@ html.theme-blue {
 }
 
 /* Gold - Brightened */
+/* Gold - Unified to Pure Yellow */
 [data-accent-color="gold"] {
-    --theme-neon: #ffdd00;
-    --theme-neon-glow: rgba(255, 221, 0, 0.35);
-    --theme-neon-border: rgba(255, 221, 0, 0.25);
+    --theme-neon: #ffff00;
+    --theme-neon-glow: rgba(255, 255, 0, 0.35);
+    --theme-neon-border: rgba(255, 255, 0, 0.25);
 }
 
 /* Cyber Yellow - Lime Neon */
+/* Cyber Yellow - Unified to Pure Yellow */
 [data-accent-color="cyber-yellow"] {
-    --theme-neon: #e6ff00;
-    --theme-neon-glow: rgba(230, 255, 0, 0.35);
-    --theme-neon-border: rgba(230, 255, 0, 0.25);
+    --theme-neon: #ffff00;
+    --theme-neon-glow: rgba(255, 255, 0, 0.35);
+    --theme-neon-border: rgba(255, 255, 0, 0.25);
 }
 
 /* Neutral White */
@@ -7194,6 +7331,53 @@ html.theme-blue {
     --theme-neon: #ffffff;
     --theme-neon-glow: rgba(255, 255, 255, 0.15);
     --theme-neon-border: rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   LIGHT MODE CONTRAST OVERRIDES
+   ============================================ */
+
+
+/* Cyan/Blue Themes - Darken for Beige */
+[data-theme="light"].theme-blue,
+[data-theme="light"] .theme-blue,
+[data-theme="light"][data-accent-color="cyber"],
+[data-theme="light"] [data-accent-color="cyber"] {
+    --theme-neon: #0077b3;
+    /* Darker Blue */
+    --theme-neon-glow: rgba(0, 119, 179, 0.25);
+    --theme-neon-border: rgba(0, 119, 179, 0.2);
+}
+
+/* Red/Orange Themes */
+[data-theme="light"].theme-red,
+[data-theme="light"] .theme-red,
+[data-theme="light"].theme-orange,
+[data-theme="light"] .theme-orange,
+[data-theme="light"][data-accent-color="ember"],
+[data-theme="light"] [data-accent-color="ember"] {
+    --theme-neon: #cc4400;
+    /* Darker Rust/Orange */
+    --theme-neon-glow: rgba(204, 68, 0, 0.25);
+    --theme-neon-border: rgba(204, 68, 0, 0.2);
+}
+
+/* Green Themes */
+[data-theme="light"][data-accent-color="neon"],
+[data-theme="light"] [data-accent-color="neon"] {
+    --theme-neon: #00994d;
+    /* Darker Green */
+    --theme-neon-glow: rgba(0, 153, 77, 0.25);
+    --theme-neon-border: rgba(0, 153, 77, 0.2);
+}
+
+/* Pink/Purple Themes */
+[data-theme="light"][data-accent-color="plasma"],
+[data-theme="light"] [data-accent-color="plasma"] {
+    --theme-neon: #b300b3;
+    /* Darker Magenta */
+    --theme-neon-glow: rgba(179, 0, 179, 0.25);
+    --theme-neon-border: rgba(179, 0, 179, 0.2);
 }
 
 /* Apply theme colors to names, titles, icons, and borders - Subtle */
@@ -10662,4 +10846,293 @@ body.profile-page-context {
 .dynamic-bottom-nav.settled,
 .dynamic-floating-hud.settled {
     will-change: auto;
+}
+
+/* ============================================
+   KATANX ADVANCED LOADING SCREEN
+   ============================================ */
+
+.katanx-loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 1;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Subtle scanline background */
+    background-image: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0.02) 50%,
+            rgba(0, 0, 0, 0.02) 50%);
+    background-size: 100% 4px;
+}
+
+.katanx-loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.katanx-loading-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    position: relative;
+}
+
+.katanx-logo-x {
+    font-family: 'Inconsolata', monospace;
+    font-size: 72px;
+    font-weight: 300;
+    /* Lighter weight as requested */
+    color: var(--text-primary);
+    letter-spacing: -4px;
+    position: relative;
+    text-transform: lowercase;
+}
+
+/* The Slash */
+.katanx-logo-x::before {
+    content: '/';
+    color: var(--theme-neon);
+    /* Uses global Pure Yellow */
+    margin-right: 2px;
+    font-weight: 300;
+}
+
+/* Glitch/Scan Animation */
+.katanx-logo-x {
+    animation: glitch-skew 4s infinite linear alternate-reverse;
+}
+
+/* Advanced Loader Ring */
+.katanx-loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--theme-neon);
+    border-radius: 50%;
+    animation: katanx-spin 0.8s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
+    position: relative;
+}
+
+.katanx-loading-spinner::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+    animation: katanx-spin 1.2s linear infinite reverse;
+}
+
+@keyframes katanx-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes glitch-skew {
+    0% {
+        transform: skew(0deg);
+    }
+
+    80% {
+        transform: skew(0deg);
+    }
+
+    81% {
+        transform: skew(2deg);
+    }
+
+    82% {
+        transform: skew(-2deg);
+    }
+
+    83% {
+        transform: skew(0deg);
+    }
+
+    100% {
+        transform: skew(0deg);
+    }
+}
+
+/* ============================================
+   LIGHT MODE CONTRAST FIX - ROUNDED BACKGROUNDS
+   ============================================ */
+/* Adds black background to yellow accent elements (Resonate/Refine) in Light Mode */
+[data-theme="light"] .stream-action-btn,
+[data-theme="light"] .post-action-btn,
+[data-theme="light"] .icon-btn,
+[data-theme="light"] .action-btn {
+    background-color: #000000 !important;
+    border-radius: 50% !important;
+    color: var(--theme-neon) !important;
+    /* Ensure the yellow icon pops */
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .stream-action-btn:hover,
+[data-theme="light"] .post-action-btn:hover,
+[data-theme="light"] .icon-btn:hover,
+[data-theme="light"] .action-btn:hover {
+    background-color: #222222 !important;
+    transform: scale(1.05);
+}
+
+/* ============================================
+   LIGHT MODE OVERRIDES: YELLOW -> BLACK
+   ============================================ */
+
+[data-theme="light"] {
+    /* Override the neon yellow to be stark black in light mode */
+    --theme-neon: #000000 !important;
+    --theme-neon-glow: rgba(0, 0, 0, 0.15) !important;
+    --theme-neon-border: rgba(0, 0, 0, 0.2) !important;
+
+    /* Ensure links and accents follow suit */
+    --accent-active: #000000 !important;
+    --accent-hover: #333333 !important;
+}
+
+/* Force Black Selection in Light Mode */
+[data-theme="light"] ::selection {
+    background: #000000 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="light"] ::-moz-selection {
+    background: #000000 !important;
+    color: #ffffff !important;
+}
+
+/* Ensure the Katanx branding uses this variable or explicit black */
+[data-theme="light"] .katanx-slash,
+[data-theme="light"] .katanx-x::before {
+    color: #000000 !important;
+    text-shadow: none !important;
+}
+/* Article Modal/Popup (Shared) */
+.article-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.article-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.article-content {
+    max-width: 700px;
+    max-height: 85vh;
+    width: 100%;
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    overflow: hidden;
+    transform: translateY(20px) scale(0.95);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+}
+
+.article-modal.active .article-content {
+    transform: translateY(0) scale(1);
+}
+
+.article-hero {
+    position: relative;
+    aspect-ratio: 16/9;
+}
+
+.article-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.article-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.article-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.article-body {
+    padding: 24px;
+    overflow-y: auto;
+    max-height: 50vh;
+}
+
+.article-tag {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--theme-neon);
+    margin-bottom: 12px;
+}
+
+.article-title {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 16px;
+}
+
+.article-meta {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.article-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.article-text p {
+    margin-bottom: 16px;
 }

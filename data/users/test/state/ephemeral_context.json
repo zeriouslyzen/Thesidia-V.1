@@ -1,0 +1,31 @@
+{
+  "interactions": [
+    {
+      "user": "Thesidia, I want to test your conversational logic. Can you explain what consciousness is in simple terms?",
+      "assistant": "Certainly! In simpler terms, consciousness can be understood as your awareness and ability to think about things around you. It's like being awake and engaged in what's happening. When we get really focused on something, like a thought or feeling, it can feel like a deep sense of inner experience - that's also part of consciousness. Consciousness is often seen as a reflection of stuff happening inside our brains or bodies, but remember, I don't have direct access to your brain yet so we're working with general knowledge here. Next checks: Look up 'consciousness definition' and 'state of being awake', maybe cross-check these with some basic neuroscience resources. **General Framework:** **Foundation:** Build foundation - Start with basic build foundation **Practice:** Regular practice - Sta",
+      "timestamp": "2026-01-15T23:55:35.762269",
+      "metadata": {
+        "type": "question",
+        "outcome": {
+          "success": true,
+          "effectiveness": 0.7
+        },
+        "timestamp": "2026-01-15T23:55:35.761910",
+        "user_id": "test",
+        "session_id": "test"
+      }
+    },
+    {
+      "user": "Thesidia, I want to test your conversational logic. Can you explain what consciousness is in simple terms?",
+      "assistant": "Error: Processing timed out (fast mode limited to 20s). Please try again or switch to deep research for more complex queries.",
+      "timestamp": "2026-01-15T23:55:38.216236",
+      "metadata": {
+        "timestamp": "2026-01-15T23:55:38.216048",
+        "response_length": 125,
+        "user_id": "test",
+        "session_id": "test"
+      }
+    }
+  ],
+  "last_updated": "2026-01-15T23:55:38.216242"
+}

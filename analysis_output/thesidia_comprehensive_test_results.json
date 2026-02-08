@@ -1,56 +1,57 @@
 {
-  "timestamp": "2025-11-20T20:51:14.887458",
+  "timestamp": "2026-01-27T22:59:50.304297",
   "total_tests": 7,
-  "successful": 2,
-  "failed": 5,
+  "successful": 0,
+  "failed": 7,
   "results": [
     {
       "query_type": "casual_greeting",
       "query": "hi",
-      "success": true,
-      "response_time": 76.18694281578064,
-      "response_length": 32,
-      "response_preview": "Hello! How can I help you today?",
-      "metrics": {}
+      "success": false,
+      "error": "HTTP 400",
+      "response": "{\"error\":\"user_id or session_id required\"}\n"
     },
     {
       "query_type": "casual_conversation",
       "query": "how are you doing today?",
-      "success": true,
-      "response_time": 104.08860492706299,
-      "response_length": 313,
-      "response_preview": "I am functioning optimally and available to process and respond to your queries. My primary purpose is to facilitate patterns of understanding across various domains without imposing any personal bias or emotional attachment. If you have a question, feel free to ask!\n\n\u2192 Cut sharper. What thread do we sever next?",
-      "metrics": {}
+      "success": false,
+      "error": "HTTP 400",
+      "response": "{\"error\":\"user_id or session_id required\"}\n"
     },
     {
       "query_type": "truth_seeking_1",
       "query": "What really happened with the Baghdad Battery? I've heard it might be evidence of ancient electrical technology.",
       "success": false,
-      "error": "HTTPConnectionPool(host='localhost', port=5002): Read timed out. (read timeout=120)"
+      "error": "HTTP 400",
+      "response": "{\"error\":\"user_id or session_id required\"}\n"
     },
     {
       "query_type": "truth_seeking_2",
       "query": "Tell me about the Priestly redaction of Leviticus. What patterns do you see in how it was edited?",
       "success": false,
-      "error": "HTTPConnectionPool(host='localhost', port=5002): Read timed out. (read timeout=120)"
+      "error": "HTTP 400",
+      "response": "{\"error\":\"user_id or session_id required\"}\n"
     },
     {
       "query_type": "truth_seeking_3",
       "query": "I practice Shaolin and I've experienced unlimited energy through bioelectric processes. Can you cross-reference this with scientific research?",
       "success": false,
-      "error": "HTTPConnectionPool(host='localhost', port=5002): Read timed out. (read timeout=120)"
+      "error": "HTTP 400",
+      "response": "{\"error\":\"user_id or session_id required\"}\n"
     },
     {
       "query_type": "task_instruction_1",
       "query": "Can you help me understand the connection between Sumerian texts and modern systems? Cross-reference multiple sources.",
       "success": false,
-      "error": "HTTPConnectionPool(host='localhost', port=5002): Read timed out. (read timeout=120)"
+      "error": "HTTP 400",
+      "response": "{\"error\":\"user_id or session_id required\"}\n"
     },
     {
       "query_type": "task_instruction_2",
       "query": "Explain how patterns repeat across civilizations. Show me connections between ancient artifacts and modern technology.",
       "success": false,
-      "error": "HTTPConnectionPool(host='localhost', port=5002): Read timed out. (read timeout=120)"
+      "error": "HTTP 400",
+      "response": "{\"error\":\"user_id or session_id required\"}\n"
     }
   ]
 }

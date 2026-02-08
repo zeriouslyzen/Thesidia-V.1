@@ -41,84 +41,14 @@
     <link rel="stylesheet" href="css/category-cards-test.css">
     <link rel="stylesheet" href="css/kim-sidebar.css">
     <link rel="stylesheet" href="css/onboarding.css">
+    <link rel="stylesheet" href="css/stream-comments.css">
+    <link rel="stylesheet" href="css/katanx-cuts.css">
+    <link rel="stylesheet" href="css/nav-brand-landing.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
-        /* Loading Screen with /X Logo */
-        .katanx-loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #000000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            opacity: 1;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .katanx-loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .katanx-loading-logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .katanx-logo-x {
-            font-family: 'Inconsolata', monospace;
-            font-size: 64px;
-            font-weight: 700;
-            color: #67d0ff;
-            letter-spacing: -2px;
-            position: relative;
-            animation: katanx-logo-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes katanx-logo-pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.7;
-                transform: scale(0.98);
-            }
-        }
-
-        .katanx-logo-x::before {
-            content: '/';
-            color: #ffd700;
-            margin-right: 4px;
-        }
-
-        .katanx-loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 2px solid rgba(103, 208, 255, 0.2);
-            border-top-color: #67d0ff;
-            border-radius: 50%;
-            animation: katanx-spin 1s linear infinite;
-        }
-
-        @keyframes katanx-spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
         /* Progressive Fade-In for Home Dashboard */
         .home-dashboard {
             opacity: 0;
@@ -693,6 +623,626 @@
         .stream-post {
             position: relative;
         }
+
+        /* KX Cuts Header Styles */
+        .kx-cuts-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .kx-cuts-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .kx-cuts-icon {
+            font-size: 24px;
+        }
+
+        .kx-cuts-title h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary, #fff);
+        }
+
+        .kx-cuts-subtitle {
+            font-size: 12px;
+            color: var(--text-tertiary, #666);
+        }
+
+        .kx-cuts-new-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #ffd700 0%, #ff6f00 100%);
+            border: none;
+            border-radius: 20px;
+            color: #000;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .kx-cuts-new-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .kx-cuts-empty {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-secondary, #888);
+            font-size: 14px;
+        }
+
+        /* Stream Comments Integration */
+        .kx-stream-comments {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .kx-comments-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .kx-comments-header h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary, #fff);
+        }
+
+        .kx-comments-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 11px;
+            color: var(--text-secondary, #888);
+        }
+
+        .kx-comments {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+
+        .kx-comment {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .kx-comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .kx-comment-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .kx-comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .kx-comment-author {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary, #fff);
+        }
+
+        .kx-comment-time {
+            font-size: 11px;
+            color: var(--text-tertiary, #666);
+        }
+
+        .kx-comment-content {
+            font-size: 13px;
+            color: var(--text-secondary, #aaa);
+            line-height: 1.5;
+        }
+
+        .kx-mention {
+            color: #ffd700;
+            font-weight: 500;
+        }
+
+        .kx-hashtag {
+            color: #00aaff;
+        }
+
+        .kx-comment-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .kx-comment-action {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary, #666);
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .kx-comment-action:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary, #888);
+        }
+
+        .kx-comment-replies {
+            margin-top: 12px;
+            padding-left: 12px;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .kx-comment-replies .kx-comment {
+            background: transparent;
+            border: none;
+            padding: 8px 0;
+        }
+
+        .kx-comment-input-container {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .kx-comment-input-avatar img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .kx-comment-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .kx-comment-input {
+            width: 100%;
+            min-height: 40px;
+            padding: 10px 12px;
+            padding-right: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: var(--text-primary, #fff);
+            font-size: 13px;
+            font-family: inherit;
+            resize: none;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .kx-comment-input:focus {
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .kx-comment-counter {
+            position: absolute;
+            right: 12px;
+            bottom: 10px;
+            font-size: 11px;
+            color: var(--text-tertiary, #666);
+        }
+
+        /* Winner Badge */
+        .kx-cut__winner-badge {
+            text-align: center;
+            padding: 12px;
+            margin-top: 12px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: #ffd700;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .kx-cut__fighter.winner img {
+            border-color: #ffd700 !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5) !important;
+        }
+
+        /* Post Comments/Replies Styles */
+        .post-comments-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .post-comments-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: var(--text-secondary, #888);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .post-comments-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary, #fff);
+        }
+
+        /* Post Detail Modal - Twitter Style */
+        .post-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .post-detail-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            cursor: pointer;
+        }
+
+        .post-detail-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            max-height: 100vh;
+            background: #000;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .post-detail-back {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .post-detail-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .post-detail-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .post-detail-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .post-detail-main {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .post-detail-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-detail-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+        }
+
+        .post-detail-author-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-detail-author-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .post-detail-author-handle {
+            font-size: 15px;
+            color: #71767b;
+        }
+
+        .post-detail-text {
+            font-size: 23px;
+            line-height: 1.4;
+            color: #fff;
+            margin: 12px 0 16px;
+        }
+
+        .post-detail-media {
+            margin: 16px 0;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .post-detail-media-item {
+            width: 100%;
+            display: block;
+            border-radius: 16px;
+        }
+
+        .post-detail-meta {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .post-detail-time {
+            font-size: 15px;
+            color: #71767b;
+        }
+
+        .post-detail-actions {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .post-detail-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: #71767b;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .post-detail-action-btn:hover {
+            background: rgba(255, 215, 0, 0.05);
+            border-color: rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+        }
+
+        .post-detail-action-btn .action-label {
+            font-weight: 600;
+        }
+
+        .post-detail-action-btn .action-count {
+            font-weight: 700;
+        }
+
+        /* Comments Section */
+        .post-detail-comments {
+            padding: 0;
+        }
+
+        .post-detail-reply-box {
+            display: flex;
+            gap: 12px;
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+
+        .reply-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .reply-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 17px;
+            outline: none;
+            padding: 8px 0;
+        }
+
+        .reply-input::placeholder {
+            color: #71767b;
+        }
+
+        .post-detail-comments-list {
+            padding: 0;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.2s ease;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .comment-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .comment-item--new {
+            background: rgba(255, 215, 0, 0.05);
+            animation: highlightFade 2s ease;
+        }
+
+        @keyframes highlightFade {
+            0% {
+                background: rgba(255, 215, 0, 0.15);
+            }
+
+            100% {
+                background: rgba(255, 215, 0, 0.05);
+            }
+        }
+
+        .comment-item .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .comment-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .comment-author {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .comment-handle {
+            font-size: 15px;
+            color: #71767b;
+        }
+
+        .comment-time {
+            font-size: 15px;
+            color: #71767b;
+        }
+
+        .comment-header .comment-time::before {
+            content: '·';
+            margin: 0 4px;
+        }
+
+        .comment-text {
+            font-size: 15px;
+            line-height: 1.4;
+            color: #fff;
+        }
+
+        .no-comments-detail {
+            padding: 40px 20px;
+            text-align: center;
+            color: #71767b;
+            font-size: 15px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -709,10 +1259,9 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <!-- Katanx Branding - Left (replaced profile) -->
+                <!-- Katanx Branding - same as landing: / yellow, x blue, scroll animates to /x -->
                 <div class="header-branding">
-                    <span class="thesidia-text"><span class="katanx-slash">/</span>katan<span
-                            class="katanx-x">x</span></span>
+                    <a href="/" class="nav-brand" aria-label="katanx home">katanx</a>
                 </div>
 
                 <!-- Menu Orb - Right -->
@@ -1167,14 +1716,14 @@
                             </div>
                         </div>
                         <div class="stream-feed-container">
-                            <!-- Stream Feed -->
+                            <!-- Stream Feed - comments are on each post -->
                             <div class="stream-feed" id="streamFeed">
                                 <div class="stream-loading">Loading stream...</div>
                             </div>
                         </div>
                     </section>
 
-                    <!-- KX Cuts Section - Short Form Content -->
+                    <!-- KX Cuts Section - Short Form Video Content -->
                     <section class="carousel-section" data-section="kx-cuts">
                         <div class="kx-cuts-container">
                             <div class="cuts-feed" id="cutsFeed">
@@ -1327,14 +1876,14 @@
                         </div>
                         <span class="nav-title">Thesidia</span>
                     </a>
-                    <a href="/archive.html" class="nav-menu-item">
+                    <a href="https://1cebrg.com" class="nav-menu-item" target="_blank">
                         <div class="nav-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                             </svg>
                         </div>
-                        <span class="nav-title">Archive</span>
+                        <span class="nav-title">1cebrg</span>
                     </a>
                 </nav>
 
@@ -1415,6 +1964,11 @@
     <script src="app.js"></script>
     <script src="navigation.js"></script>
     <script src="js/nav-styles.js"></script>
+    <script src="js/nav-brand-scroll.js"></script>
+    <!-- Katanx Moderation & Comments & Debates -->
+    <script src="js/moderation.js"></script>
+    <script src="js/stream-comments.js"></script>
+    <script src="js/katanx-cuts.js"></script>
     <script>
         // Stream Page Specific Script
         class StreamPage {
@@ -1444,6 +1998,7 @@
                 try {
                     await this.loadUserSession();
                     await this.loadPosts();
+                    await this.loadSignals(); // Load curated signals for home page
                 } catch (error) {
                     console.log('Error loading data, continuing anyway:', error);
                 } finally {
@@ -1455,6 +2010,214 @@
                 this.setupInfiniteScroll();
                 this.setupStreamFilter();
                 this.setupScubaDepthIndicator();
+
+                // Initialize Katanx Cuts & Comments
+                this.initKatanxCuts();
+                this.initStreamComments();
+            }
+
+            initKatanxCuts() {
+                // KX Cuts is for video content, not debates
+                // Debates/challenges happen in Stream section comments
+                console.log('KX Cuts section ready for video content');
+            }
+
+            initStreamComments() {
+                // Clear stale localStorage comment data
+                localStorage.removeItem('kx_comments_stream_main');
+
+                // Load mock comments directly
+                this.loadMockComments();
+            }
+
+            async loadMockDebates() {
+                try {
+                    const response = await fetch('/mock-debates.json');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.renderDebates(data.debates || []);
+                    }
+                } catch (e) {
+                    console.log('Loading sample debates inline');
+                    this.renderSampleDebates();
+                }
+            }
+
+            async loadMockComments() {
+                try {
+                    const response = await fetch('/mock-debates.json');
+                    if (response.ok) {
+                        const data = await response.json();
+                        const container = document.getElementById('streamComments');
+                        const countEl = document.getElementById('commentsCount');
+
+                        if (container && data.comments) {
+                            container.innerHTML = data.comments.map(c => this.renderComment(c)).join('');
+                            if (countEl) countEl.textContent = data.comments.length;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Comments will load from local storage');
+                }
+            }
+
+            renderComment(comment) {
+                const timeAgo = this.formatTimeAgo(comment.created_at);
+                return `
+                    <div class="kx-comment" data-comment-id="${comment.id}">
+                        <img class="kx-comment-avatar" src="${comment.user.avatar_url}" alt="${comment.user.display_name}">
+                        <div class="kx-comment-body">
+                            <div class="kx-comment-header">
+                                <span class="kx-comment-author">${comment.user.display_name}</span>
+                                <span class="kx-comment-time">${timeAgo}</span>
+                            </div>
+                            <div class="kx-comment-content">${this.formatCommentContent(comment.content)}</div>
+                            <div class="kx-comment-actions">
+                                <button class="kx-comment-action" data-action="like">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                    <span>${comment.likes || 0}</span>
+                                </button>
+                                <button class="kx-comment-action" data-action="reply">Reply</button>
+                            </div>
+                            ${comment.replies && comment.replies.length > 0 ? `
+                                <div class="kx-comment-replies">
+                                    ${comment.replies.map(r => this.renderComment(r)).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            formatCommentContent(content) {
+                return content
+                    .replace(/@(\w+)/g, '<span class="kx-mention">@$1</span>')
+                    .replace(/#(\w+)/g, '<span class="kx-hashtag">#$1</span>');
+            }
+
+            formatTimeAgo(dateStr) {
+                const date = new Date(dateStr);
+                const now = new Date();
+                const diff = Math.floor((now - date) / 1000);
+
+                if (diff < 60) return 'just now';
+                if (diff < 3600) return Math.floor(diff / 60) + 'm';
+                if (diff < 86400) return Math.floor(diff / 3600) + 'h';
+                return Math.floor(diff / 86400) + 'd';
+            }
+
+            renderDebates(debates) {
+                const container = document.getElementById('cutsFeed');
+                if (!container) return;
+
+                if (debates.length === 0) {
+                    container.innerHTML = '<div class="kx-cuts-empty">No active debates. Issue a challenge to start one!</div>';
+                    return;
+                }
+
+                container.innerHTML = debates.map(d => this.renderDebateCard(d)).join('');
+            }
+
+            renderDebateCard(debate) {
+                const isVoting = debate.status === 'voting';
+                const isComplete = debate.status === 'complete';
+                const totalVotes = (debate.votes?.challenger || 0) + (debate.votes?.defender || 0);
+
+                return `
+                    <div class="kx-cut ${isVoting ? 'kx-cut--voting' : ''} ${isComplete ? 'kx-cut--complete' : ''}" data-cut-id="${debate.id}">
+                        <div class="kx-cut__header">
+                            <div class="kx-cut__badge ${isVoting ? '' : isComplete ? 'kx-cut__badge--complete' : 'kx-cut__badge--live'}">
+                                ${isVoting ? '⚖️ VOTING OPEN' : isComplete ? '🏆 COMPLETE' : '🔴 LIVE'}
+                            </div>
+                        </div>
+                        
+                        <div class="kx-cut__challengers">
+                            <div class="kx-cut__fighter kx-cut__fighter--challenger ${debate.winner === 'challenger' ? 'winner' : ''}">
+                                <img src="${debate.challenger.avatar_url}" alt="${debate.challenger.display_name}">
+                                <span>${debate.challenger.display_name}</span>
+                                ${isComplete || isVoting ? `<span class="kx-cut__vote-count">${debate.votes?.challenger || 0}</span>` : ''}
+                            </div>
+                            <div class="kx-cut__vs">VS</div>
+                            <div class="kx-cut__fighter kx-cut__fighter--defender ${debate.winner === 'defender' ? 'winner' : ''}">
+                                <img src="${debate.defender.avatar_url}" alt="${debate.defender.display_name}">
+                                <span>${debate.defender.display_name}</span>
+                                ${isComplete || isVoting ? `<span class="kx-cut__vote-count">${debate.votes?.defender || 0}</span>` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="kx-cut__topic">"${debate.topic}"</div>
+                        
+                        ${isVoting ? `
+                            <div class="kx-cut__vote-options">
+                                <button class="kx-cut__vote-btn" onclick="KatanxCuts.vote('${debate.id}', 'challenger')">
+                                    Vote ${debate.challenger.display_name}
+                                </button>
+                                <button class="kx-cut__vote-btn" onclick="KatanxCuts.vote('${debate.id}', 'defender')">
+                                    Vote ${debate.defender.display_name}
+                                </button>
+                            </div>
+                            <div class="kx-cut__voting-ends">
+                                ${totalVotes} votes cast • Voting ends ${new Date(debate.voting_ends_at).toLocaleDateString()}
+                            </div>
+                        ` : ''}
+                        
+                        ${isComplete && debate.winner ? `
+                            <div class="kx-cut__winner-badge">
+                                👑 Winner: ${debate.winner === 'challenger' ? debate.challenger.display_name : debate.defender.display_name}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="kx-cut__phases-bar">
+                            ${(debate.phases || []).map((p, i) => `
+                                <div class="kx-cut__phase-dot ${p.completed ? 'done' : ''}"></div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderSampleDebates() {
+                const container = document.getElementById('cutsFeed');
+                if (!container) return;
+
+                container.innerHTML = `
+                    <div class="kx-cut kx-cut--voting" data-cut-id="demo_1">
+                        <div class="kx-cut__header">
+                            <div class="kx-cut__badge">⚖️ VOTING OPEN</div>
+                        </div>
+                        <div class="kx-cut__challengers">
+                            <div class="kx-cut__fighter kx-cut__fighter--challenger">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="Kaizen">
+                                <span>Leo 'Kaizen' Chen</span>
+                                <span class="kx-cut__vote-count">347</span>
+                            </div>
+                            <div class="kx-cut__vs">VS</div>
+                            <div class="kx-cut__fighter kx-cut__fighter--defender">
+                                <img src="https://i.pravatar.cc/100?img=47" alt="Aurora">
+                                <span>Aurora Vale</span>
+                                <span class="kx-cut__vote-count">412</span>
+                            </div>
+                        </div>
+                        <div class="kx-cut__topic">"AI assistance in creative work: Enhancement or replacement?"</div>
+                        <div class="kx-cut__vote-options">
+                            <button class="kx-cut__vote-btn">Vote Kaizen</button>
+                            <button class="kx-cut__vote-btn">Vote Aurora</button>
+                        </div>
+                        <div class="kx-cut__voting-ends">759 votes • Voting ends Feb 5</div>
+                        <div class="kx-cut__phases-bar">
+                            <div class="kx-cut__phase-dot done"></div>
+                            <div class="kx-cut__phase-dot done"></div>
+                            <div class="kx-cut__phase-dot done"></div>
+                            <div class="kx-cut__phase-dot done"></div>
+                            <div class="kx-cut__phase-dot done"></div>
+                            <div class="kx-cut__phase-dot done"></div>
+                            <div class="kx-cut__phase-dot done"></div>
+                            <div class="kx-cut__phase-dot done"></div>
+                        </div>
+                    </div>
+                `;
             }
 
             hideLoadingScreen() {
@@ -1982,6 +2745,72 @@
                 }
             }
 
+            async loadSignals() {
+                console.log('Loading signals...');
+                const container = document.getElementById('homeNewsTiles');
+                if (!container) return;
+
+                try {
+                    const response = await fetch('/api/signals?limit=5&topic=AI+technology+business+mastery+neuroscience');
+                    if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+                    const data = await response.json();
+                    console.log('Signals received:', data);
+
+                    // Store for modal access
+                    window.homeSignals = data.signals;
+                    window.featuredHomeSignal = data.featured;
+
+                    this.renderSignalTiles(data.featured, data.signals, container);
+                } catch (error) {
+                    console.error('Error loading signals:', error);
+                    container.innerHTML = '<div class="news-tile empty">Signals unavailable.</div>';
+                }
+            }
+
+            renderSignalTiles(featured, signals, container) {
+                let html = '';
+
+                if (featured) {
+                    html += `
+                        <a href="${featured.url}" target="${featured.url.startsWith('http') ? '_blank' : '_self'}" 
+                           class="news-tile featured" data-signal-id="${featured.id}" onclick="event.preventDefault(); window.navSystem.openSignalModal(window.featuredHomeSignal)">
+                            <div class="news-tile-image" style="background-image: url('${featured.image || '/assets/placeholder-signal.webp'}')"></div>
+                            <div class="news-tile-content">
+                                <span class="news-tile-tag pinned">📌 ${featured.tag || 'Featured'}</span>
+                                <div class="news-tile-title">${featured.title}</div>
+                                <div class="news-tile-excerpt">${featured.excerpt || ''}</div>
+                            </div>
+                        </a>
+                    `;
+                }
+
+                if (signals && signals.length > 0) {
+                    html += signals.map((signal, index) => `
+                        <a href="${signal.url}" target="${signal.url.startsWith('http') ? '_blank' : '_self'}" 
+                           class="news-tile" data-signal-id="${signal.id}" onclick="event.preventDefault(); window.navSystem.openSignalModal(window.homeSignals[${index}])">
+                            <div class="news-tile-image" style="background-image: url('${signal.image || '/assets/placeholder-signal.webp'}')"></div>
+                            <div class="news-tile-content">
+                                <span class="news-tile-tag">${signal.tag || 'Signal'}</span>
+                                <div class="news-tile-title">${signal.title}</div>
+                                <div class="news-tile-meta">
+                                    <span class="news-tile-source">${signal.source_name || signal.source}</span>
+                                </div>
+                            </div>
+                        </a>
+                    `).join('');
+                }
+
+                container.innerHTML = html || '<div class="news-tile empty">No signals available</div>';
+
+                // Trigger fade-in
+                container.querySelectorAll('.news-tile').forEach((tile, index) => {
+                    tile.style.opacity = '0';
+                    tile.style.transition = `opacity 0.4s ease ${index * 0.1}s`;
+                    requestAnimationFrame(() => tile.style.opacity = '1');
+                });
+            }
+
             renderPosts() {
                 const feed = document.getElementById('streamFeed');
                 if (!feed) return;
@@ -2007,6 +2836,15 @@
                 feed.addEventListener('click', (e) => {
                     const btn = e.target.closest('.cyberpunk-action-btn');
                     if (!btn) return;
+
+                    const action = btn.dataset.action;
+                    const postId = btn.dataset.postId;
+
+                    // Refine action opens post detail view
+                    if (action === 'refine') {
+                        this.openPostDetail(postId);
+                        return;
+                    }
 
                     // Toggle clicked state to reveal number
                     btn.classList.toggle('clicked');
@@ -2107,9 +2945,9 @@
                                         <span class="cyberpunk-label">respect</span>
                                         <span class="cyberpunk-count" style="display: none;">${validations || 0}</span>
                                     </button>
-                                    <button class="cyberpunk-action-btn" data-action="refine" data-post-id="${post.id}" data-count="${references || 0}">
+                                    <button class="cyberpunk-action-btn" data-action="refine" data-post-id="${post.id}" data-count="${this.getCommentCount(post.comments)}">
                                         <span class="cyberpunk-label">refine</span>
-                                        <span class="cyberpunk-count" style="display: none;">${references || 0}</span>
+                                        <span class="cyberpunk-count">${this.getCommentCount(post.comments)}</span>
                                     </button>
                                     <button class="cyberpunk-action-btn" data-action="repost" data-post-id="${post.id}" data-count="${reposts || 0}">
                                         <span class="cyberpunk-label">repost</span>
@@ -2120,6 +2958,183 @@
                         </div>
                     </div>
                 `;
+            }
+
+            renderPostComments(postId, comments) {
+                // Handle case where comments is a number (count) instead of array
+                if (!Array.isArray(comments) || comments.length === 0) {
+                    return '<div class="no-comments">No replies yet. Be the first!</div>';
+                }
+
+                return comments.slice(0, 5).map(c => `
+                    <div class="post-comment" data-comment-id="${c.id}">
+                        <img src="${c.user?.avatar_url || 'https://i.pravatar.cc/32'}" class="comment-avatar" alt="${c.user?.display_name || 'User'}">
+                        <div class="comment-content">
+                            <span class="comment-author">${this.escapeHtml(c.user?.display_name || 'User')}</span>
+                            <span class="comment-text">${this.escapeHtml(c.content || '')}</span>
+                            <span class="comment-time">${this.getTimeAgo(c.created_at)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            getCommentCount(comments) {
+                if (Array.isArray(comments)) return comments.length;
+                if (typeof comments === 'number') return comments;
+                return 0;
+            }
+
+            openPostDetail(postId) {
+                const post = this.posts.find(p => p.id === postId);
+                if (!post) return;
+
+                // Create modal overlay
+                const modal = document.createElement('div');
+                modal.className = 'post-detail-modal';
+                modal.innerHTML = `
+                    <div class="post-detail-overlay" onclick="this.parentElement.remove()"></div>
+                    <div class="post-detail-container">
+                        <div class="post-detail-header">
+                            <button class="post-detail-back" onclick="this.closest('.post-detail-modal').remove()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                                </svg>
+                            </button>
+                            <span class="post-detail-title">Post</span>
+                        </div>
+                        <div class="post-detail-content">
+                            ${this.renderPostDetail(post)}
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            renderPostDetail(post) {
+                const { user, content, created_at, media, comments } = post;
+                const commentsList = Array.isArray(comments) ? comments : [];
+
+                return `
+                    <div class="post-detail-main">
+                        <div class="post-detail-author">
+                            <img src="${user?.avatar_url || 'https://i.pravatar.cc/48'}" class="post-detail-avatar" alt="${user?.display_name || 'User'}">
+                            <div class="post-detail-author-info">
+                                <div class="post-detail-author-name">${this.escapeHtml(user?.display_name || 'User')}</div>
+                                <div class="post-detail-author-handle">@${this.escapeHtml(user?.username || 'user')}</div>
+                            </div>
+                        </div>
+                        <div class="post-detail-text">${this.escapeHtml(content)}</div>
+                        ${media && media.length > 0 ? `
+                            <div class="post-detail-media">
+                                ${media.map(m => {
+                    if (m.type === 'image' || m.url.includes('.gif')) {
+                        return `<img src="${m.url}" alt="Post media" class="post-detail-media-item">`;
+                    } else if (m.type === 'video') {
+                        return `<video src="${m.url}" controls class="post-detail-media-item"></video>`;
+                    }
+                    return '';
+                }).join('')}
+                            </div>
+                        ` : ''}
+                        <div class="post-detail-meta">
+                            <span class="post-detail-time">${this.getTimeAgo(created_at)}</span>
+                        </div>
+                        <div class="post-detail-actions">
+                            <button class="post-detail-action-btn">
+                                <span class="action-label">resonate</span>
+                                <span class="action-count">${post.interactions?.likes || 0}</span>
+                            </button>
+                            <button class="post-detail-action-btn">
+                                <span class="action-label">respect</span>
+                                <span class="action-count">${post.interactions?.validations || 0}</span>
+                            </button>
+                            <button class="post-detail-action-btn">
+                                <span class="action-label">refine</span>
+                                <span class="action-count">${this.getCommentCount(comments)}</span>
+                            </button>
+                            <button class="post-detail-action-btn">
+                                <span class="action-label">repost</span>
+                                <span class="action-count">${post.interactions?.reposts || 0}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="post-detail-comments">
+                        <div class="post-detail-reply-box">
+                            <img src="https://i.pravatar.cc/40" class="reply-avatar" alt="You">
+                            <input type="text" placeholder="Post your reply" class="reply-input" data-post-id="${post.id}" onkeydown="if(event.key==='Enter') window.streamPage.addComment('${post.id}', this.value, this)">
+                        </div>
+                        <div class="post-detail-comments-list">
+                            ${commentsList.length > 0 ? commentsList.map(c => this.renderComment(c)).join('') : '<div class="no-comments-detail">No replies yet. Be the first to respond!</div>'}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderComment(comment) {
+                return `
+                    <div class="comment-item">
+                        <img src="${comment.user?.avatar_url || 'https://i.pravatar.cc/40'}" class="comment-avatar" alt="${comment.user?.display_name || 'User'}">
+                        <div class="comment-body">
+                            <div class="comment-header">
+                                <span class="comment-author">${this.escapeHtml(comment.user?.display_name || 'User')}</span>
+                                <span class="comment-handle">@${this.escapeHtml(comment.user?.username || 'user')}</span>
+                                <span class="comment-time">${this.getTimeAgo(comment.created_at)}</span>
+                            </div>
+                            <div class="comment-text">${this.escapeHtml(comment.content || '')}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            addComment(postId, content, inputEl) {
+                if (!content.trim()) return;
+
+                // Run through moderation if available
+                if (typeof KatanxModeration !== 'undefined') {
+                    const result = KatanxModeration.moderate(content, this.userId);
+                    if (result.action !== 'allow') {
+                        alert(result.reason || 'Message blocked by moderation');
+                        return;
+                    }
+                }
+
+                // Find the comments list in the modal
+                const commentsList = inputEl.closest('.post-detail-comments')?.querySelector('.post-detail-comments-list');
+                if (!commentsList) return;
+
+                // Remove "no comments" message if present
+                const noComments = commentsList.querySelector('.no-comments-detail');
+                if (noComments) noComments.remove();
+
+                // Create new comment element
+                const newComment = document.createElement('div');
+                newComment.className = 'comment-item comment-item--new';
+                newComment.innerHTML = `
+                    <img src="https://i.pravatar.cc/40" class="comment-avatar" alt="You">
+                    <div class="comment-body">
+                        <div class="comment-header">
+                            <span class="comment-author">You</span>
+                            <span class="comment-handle">@you</span>
+                            <span class="comment-time">just now</span>
+                        </div>
+                        <div class="comment-text">${this.escapeHtml(content)}</div>
+                    </div>
+                `;
+
+                commentsList.appendChild(newComment);
+                inputEl.value = '';
+
+                // Update comment count in posts array
+                const post = this.posts.find(p => p.id === postId);
+                if (post) {
+                    if (!Array.isArray(post.comments)) post.comments = [];
+                    post.comments.push({
+                        id: Date.now(),
+                        user: { display_name: 'You', username: 'you', avatar_url: 'https://i.pravatar.cc/40' },
+                        content: content,
+                        created_at: new Date().toISOString()
+                    });
+                }
             }
 
             getAvatarColor(userId) {
@@ -3234,6 +4249,24 @@
     </script>
     <!-- Onboarding System (isolated, non-breaking) -->
     <script type="module" src="js/onboarding/integration.js"></script>
+
+    <!-- Article Modal -->
+    <div class="article-modal" id="articleModal">
+        <div class="article-content">
+            <div class="article-hero">
+                <img id="articleImage" src="" alt="Article">
+                <button class="article-close" id="closeArticleBtn">×</button>
+            </div>
+            <div class="article-body">
+                <div class="article-tag" id="articleTag">Research</div>
+                <h1 class="article-title" id="articleTitle">Article Title</h1>
+                <p class="article-meta" id="articleMeta"></p>
+                <div class="article-text" id="articleText">
+                    <p>Article content goes here...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 

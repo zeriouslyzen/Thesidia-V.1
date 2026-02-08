@@ -1,0 +1,61 @@
+{
+    "featured": {
+        "id": "featured_neuroplasticity",
+        "title": "The Science of Neuroplasticity",
+        "tag": "Neuroscience",
+        "excerpt": "Your brain can rewire itself at any age. New research reveals how deliberate practice, focused attention, and novel experiences reshape neural pathways, unlocking potential for continuous growth and mastery.",
+        "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
+        "url": "#",
+        "pinned": true,
+        "timestamp": "2026-02-01T00:00:00Z",
+        "content": "<p>The brain's capacity for change—neuroplasticity—represents one of the most profound discoveries in modern neuroscience. What we're now understanding is that this plasticity isn't random; it responds to specific types of training in predictable ways.</p><p>Deliberate practice involves focused, repetitive training on specific aspects of performance. But what actually happens in the brain during this process?</p><p>Recent studies using fMRI and diffusion tensor imaging have revealed that intensive practice leads to measurable changes in both gray and white matter. The brain literally restructures itself around what we repeatedly do with focused attention.</p>"
+    },
+    "signals": [
+        {
+            "id": "cur_1",
+            "title": "The Rise of Local AI Models",
+            "tag": "AI Research",
+            "excerpt": "How local models like Ollama and MLX are democratizing AI access for developers.",
+            "image": "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=600&q=60",
+            "url": "#",
+            "timestamp": "2026-02-01T00:00:00Z",
+            "content": "<p>Local AI models like Ollama and MLX are changing the landscape of development. By running models locally, developers gain privacy, speed, and the ability to iterate without reliance on external APIs.</p><p>This shift democratizes access to high-performance AI, allowing for more creative and experimental applications in various fields.</p>"
+        },
+        {
+            "id": "cur_2",
+            "title": "Mastery Through Deliberate Practice",
+            "tag": "Personal Growth",
+            "excerpt": "Research reveals the compound effect of focused, intentional practice.",
+            "image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80",
+            "url": "#",
+            "timestamp": "2026-01-30T00:00:00Z"
+        },
+        {
+            "id": "cur_3",
+            "title": "The Philosophy of Flow States",
+            "tag": "Philosophy",
+            "excerpt": "Ancient wisdom meets modern neuroscience in understanding peak performance.",
+            "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+            "url": "#",
+            "timestamp": "2026-01-28T00:00:00Z"
+        },
+        {
+            "id": "cur_4",
+            "title": "Building Sustainable Ventures",
+            "tag": "Business",
+            "excerpt": "Creating ventures that serve both profit and purpose.",
+            "image": "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80",
+            "url": "#",
+            "timestamp": "2026-01-26T00:00:00Z"
+        },
+        {
+            "id": "cur_5",
+            "title": "Art and Technology Convergence",
+            "tag": "Creative Tech",
+            "excerpt": "Artists using AI to amplify human expression.",
+            "image": "https://images.unsplash.com/photo-1552058544-f2b08422138a?auto=format&fit=crop&w=600&q=80",
+            "url": "#",
+            "timestamp": "2026-01-24T00:00:00Z"
+        }
+    ]
+}

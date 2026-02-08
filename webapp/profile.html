@@ -37,6 +37,7 @@
 
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/onboarding.css">
+    <link rel="stylesheet" href="css/nav-brand-landing.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap"
@@ -1098,10 +1099,9 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <!-- Katanx Branding - Left (replaced profile) -->
+                <!-- Katanx Branding - same as landing: / yellow, x blue, scroll animates to /x -->
                 <div class="header-branding">
-                    <span class="thesidia-text"><span class="katanx-slash">/</span>katan<span
-                            class="katanx-x">x</span></span>
+                    <a href="/" class="nav-brand" aria-label="katanx home">katanx</a>
                 </div>
 
                 <!-- Menu Orb - Right -->
@@ -1469,14 +1469,14 @@
                         </div>
                         <span class="nav-title">Thesidia</span>
                     </a>
-                    <a href="/archive.html" class="nav-menu-item">
+                    <a href="https://1cebrg.com" class="nav-menu-item" target="_blank">
                         <div class="nav-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                             </svg>
                         </div>
-                        <span class="nav-title">Archive</span>
+                        <span class="nav-title">1cebrg</span>
                     </a>
                 </nav>
 
@@ -1700,6 +1700,7 @@
     <input type="file" id="resumeUploadInput" accept=".pdf,.doc,.docx" style="display: none;">
 
     <script src="app.js"></script>
+    <script src="js/nav-brand-scroll.js"></script>
     <script src="profile.js"></script>
     <!-- Onboarding System (isolated, non-breaking) -->
     <script type="module" src="js/onboarding/integration.js"></script>

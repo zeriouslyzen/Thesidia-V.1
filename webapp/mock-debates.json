@@ -1,0 +1,228 @@
+{
+    "debates": [
+        {
+            "id": "cut_demo_001",
+            "stream_id": "stream_main",
+            "topic": "AI assistance in creative work: Enhancement or replacement of human skill?",
+            "challenger": {
+                "id": "user_kxc_kaizen",
+                "username": "kaizen",
+                "display_name": "Leo 'Kaizen' Chen",
+                "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"
+            },
+            "defender": {
+                "id": "user_kxc_aurora",
+                "username": "aurora",
+                "display_name": "Aurora Vale",
+                "avatar_url": "https://i.pravatar.cc/100?img=47"
+            },
+            "status": "voting",
+            "phases": [
+                {
+                    "type": "challenger_opening",
+                    "duration": 60,
+                    "content": "AI tools are extensions of human creativity, not replacements. Every generation has faced this fear - from photography threatening painters to synthesizers 'killing' live music. What actually happened? New art forms emerged. AI allows us to iterate faster, explore variations we'd never have time to try manually, and amplify our creative vision. The skill shifts from execution to direction - and that's still deeply human.",
+                    "submitted_at": "2026-02-04T19:00:00Z",
+                    "completed": true
+                },
+                {
+                    "type": "defender_opening",
+                    "duration": 60,
+                    "content": "The analogy breaks down because previous tools didn't learn from and replicate human creative decisions. AI trained on artist work is fundamentally different - it's not a tool, it's a pattern-matching system that can bypass the skill development entirely. When someone uses AI to generate 'in the style of,' they're extracting value from years of human practice without the investment. That's not enhancement - that's extraction.",
+                    "submitted_at": "2026-02-04T19:01:30Z",
+                    "completed": true
+                },
+                {
+                    "type": "challenger_rebuttal_1",
+                    "duration": 45,
+                    "content": "But 'style' has always been learned from others. Every artist studies masters. The difference is speed, not kind. And AI can't replicate taste, judgment, or the willingness to break rules meaningfully. Those remain human territories. The artists who'll thrive are hybrid practitioners - leveraging AI for ideation while bringing irreplaceable human context.",
+                    "submitted_at": "2026-02-04T19:03:00Z",
+                    "completed": true
+                },
+                {
+                    "type": "defender_rebuttal_1",
+                    "duration": 45,
+                    "content": "Speed IS the difference. Learning style through study takes years and develops understanding. AI collapses that into seconds with no understanding. The 'hybrid practitioner' you describe often becomes dependent on the tool rather than developing foundational skill. We're seeing this in junior designers already - they can prompt but can't draw. That's not enhancement, that's atrophy.",
+                    "submitted_at": "2026-02-04T19:04:00Z",
+                    "completed": true
+                },
+                {
+                    "type": "challenger_rebuttal_2",
+                    "duration": 30,
+                    "content": "Atrophy assumes the old skills remain essential. Calculators didn't destroy mathematical thinking - they shifted it higher. The same reorientation is happening. Directing AI effectively requires deep understanding of the craft. Mediocre prompts produce mediocre work.",
+                    "submitted_at": "2026-02-04T19:05:00Z",
+                    "completed": true
+                },
+                {
+                    "type": "defender_rebuttal_2",
+                    "duration": 30,
+                    "content": "Calculators enhance calculation. AI doesn't enhance creativity - it simulates the output while bypassing the process. The process IS the art. The journey of skill acquisition shapes the artist's voice. Skip that, and you're left with technically impressive but spiritually empty work.",
+                    "submitted_at": "2026-02-04T19:05:45Z",
+                    "completed": true
+                },
+                {
+                    "type": "challenger_closing",
+                    "duration": 30,
+                    "content": "AI is a mirror that reflects back our collective creative history, accelerated. Used wisely, it's liberating. The question isn't whether to use it - that ship has sailed. It's how to use it to amplify what makes us human.",
+                    "submitted_at": "2026-02-04T19:06:30Z",
+                    "completed": true
+                },
+                {
+                    "type": "defender_closing",
+                    "duration": 30,
+                    "content": "Liberation requires agency. Dependence on AI for creative output isn't liberation - it's outsourcing the soul. Amplification requires something genuine to amplify. Build the foundation first, then optimize. Never the reverse.",
+                    "submitted_at": "2026-02-04T19:07:15Z",
+                    "completed": true
+                }
+            ],
+            "votes": {
+                "challenger": 347,
+                "defender": 412
+            },
+            "voting_ends_at": "2026-02-05T19:07:15Z",
+            "created_at": "2026-02-04T18:55:00Z",
+            "started_at": "2026-02-04T19:00:00Z"
+        },
+        {
+            "id": "cut_demo_002",
+            "stream_id": "stream_main",
+            "topic": "Is structured discipline or spontaneous practice more effective for skill development?",
+            "challenger": {
+                "id": "user_kxc_ren",
+                "username": "ren_tanaka",
+                "display_name": "Ren Tanaka",
+                "avatar_url": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop"
+            },
+            "defender": {
+                "id": "user_kxc_soma",
+                "username": "dr_soma",
+                "display_name": "Dr. Elena 'Soma' Vance",
+                "avatar_url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop"
+            },
+            "status": "complete",
+            "phases": [
+                {
+                    "type": "challenger_opening",
+                    "duration": 60,
+                    "content": "Discipline provides the container that makes breakthroughs possible. In martial arts, we practice kata - the same movements, thousands of times. Not because repetition is enlightenment, but because repetition builds the neural pathways that make spontaneity available under pressure. Freedom comes through form, not despite it.",
+                    "submitted_at": "2026-02-03T14:00:00Z",
+                    "completed": true
+                },
+                {
+                    "type": "defender_opening",
+                    "duration": 60,
+                    "content": "Neuroplasticity research shows that novelty drives adaptation more efficiently than repetition. The brain responds to challenge, not routine. Structured practice past a certain threshold shows diminishing returns - the 10,000 hour rule has been largely debunked. What matters is deliberate variation within a framework, not rigid discipline.",
+                    "submitted_at": "2026-02-03T14:01:30Z",
+                    "completed": true
+                },
+                {
+                    "type": "challenger_rebuttal_1",
+                    "duration": 45,
+                    "content": "Variation requires a baseline. You can't play jazz without knowing scales. Discipline builds that baseline efficiently. The debate isn't discipline versus spontaneity - it's whether discipline creates the conditions for meaningful spontaneity. It does.",
+                    "submitted_at": "2026-02-03T14:03:00Z",
+                    "completed": true
+                },
+                {
+                    "type": "defender_rebuttal_1",
+                    "duration": 45,
+                    "content": "Agreed on baseline - but we're discussing effectiveness for skill development, not sequence. Once baseline exists, continuing rigid structure actively inhibits growth. The learning curve flattens. Interleaved, spontaneous practice maintains the cognitive challenge that drives adaptation.",
+                    "submitted_at": "2026-02-03T14:04:00Z",
+                    "completed": true
+                },
+                {
+                    "type": "challenger_rebuttal_2",
+                    "duration": 30,
+                    "content": "Cognitive challenge isn't the only variable. Discipline builds consistency, shows up when motivation fails, creates accountability. Spontaneity is seductive but fragile.",
+                    "submitted_at": "2026-02-03T14:05:00Z",
+                    "completed": true
+                },
+                {
+                    "type": "defender_rebuttal_2",
+                    "duration": 30,
+                    "content": "Consistency applied to inefficient methods is wasted effort. The point is to work smarter, not just harder. Evidence supports structured variation over structured repetition.",
+                    "submitted_at": "2026-02-03T14:05:45Z",
+                    "completed": true
+                },
+                {
+                    "type": "challenger_closing",
+                    "duration": 30,
+                    "content": "Discipline IS the structure that contains variation. Without it, spontaneity is chaos. The master isn't free because they abandoned form - they're free because they embodied it completely.",
+                    "submitted_at": "2026-02-03T14:06:30Z",
+                    "completed": true
+                },
+                {
+                    "type": "defender_closing",
+                    "duration": 30,
+                    "content": "Embodiment doesn't require rigid repetition - it requires intelligent practice. The evidence is clear: challenging the system, not just exercising it, produces faster and more durable gains.",
+                    "submitted_at": "2026-02-03T14:07:15Z",
+                    "completed": true
+                }
+            ],
+            "votes": {
+                "challenger": 523,
+                "defender": 448
+            },
+            "winner": "challenger",
+            "voting_ends_at": "2026-02-04T14:07:15Z",
+            "created_at": "2026-02-03T13:55:00Z",
+            "started_at": "2026-02-03T14:00:00Z"
+        }
+    ],
+    "comments": [
+        {
+            "id": "cmt_001",
+            "stream_id": "stream_main",
+            "user": {
+                "id": "user_marcus",
+                "username": "vanguard",
+                "display_name": "Marcus Thorne",
+                "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop"
+            },
+            "content": "That opening statement from Kaizen was fire 🔥 The photography analogy really landed. But Aurora's counter about pattern-matching hit different.",
+            "created_at": "2026-02-04T19:02:00Z",
+            "likes": 47,
+            "replies": [
+                {
+                    "id": "cmt_001_r1",
+                    "user": {
+                        "id": "user_observer",
+                        "username": "observer",
+                        "display_name": "Quiet Observer",
+                        "avatar_url": "https://i.pravatar.cc/100?img=12"
+                    },
+                    "content": "The extraction vs enhancement framing really shifted my perspective mid-debate. Both valid points tbh",
+                    "created_at": "2026-02-04T19:03:30Z",
+                    "likes": 23
+                }
+            ]
+        },
+        {
+            "id": "cmt_002",
+            "stream_id": "stream_main",
+            "user": {
+                "id": "user_techsoul",
+                "username": "techsoul",
+                "display_name": "Tech Soul",
+                "avatar_url": "https://i.pravatar.cc/100?img=33"
+            },
+            "content": "@aurora Curious about your take on musicians using AI for stems and arrangement. Still extraction or different category?",
+            "created_at": "2026-02-04T19:04:30Z",
+            "likes": 31,
+            "replies": []
+        },
+        {
+            "id": "cmt_003",
+            "stream_id": "stream_main",
+            "user": {
+                "id": "user_skeptic",
+                "username": "healthyskeptic",
+                "display_name": "Healthy Skeptic",
+                "avatar_url": "https://i.pravatar.cc/100?img=45"
+            },
+            "content": "Discipline debate was really good - Ren's closing about freedom through form was poetic but I think Elena had the data on her side",
+            "created_at": "2026-02-04T15:30:00Z",
+            "likes": 89,
+            "replies": []
+        }
+    ]
+}
