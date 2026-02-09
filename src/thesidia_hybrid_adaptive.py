@@ -4979,19 +4979,29 @@ Response:"""
         stored_info = None
         query_lower = query.lower()
         # Filter out common words that cause false matches
+        import re
         stop_words = {'the', 'a', 'an', 'is', 'are', 'what', 'how', 'why', 'who', 'when', 'where', 
                       'about', 'this', 'that', 'it', 'to', 'for', 'in', 'on', 'of', 'and', 'or',
                       'you', 'i', 'me', 'we', 'they', 'them', 'true', 'real', 'really', 'hidden',
-                      'decode', 'expose', 'tell', 'explain', 'can', 'do', 'does', 'did'}
-        query_keywords = [w for w in query_lower.split() if w not in stop_words and len(w) > 3]
+                      'decode', 'expose', 'tell', 'explain', 'can', 'do', 'does', 'did',
+                      'deep', 'dive', 'research', 'analysis', 'investigate', 'analyze',
+                      'relationship', 'between', 'pattern', 'traces', 'trace', 'impact', 
+                      'influence', 'connection', 'funding', 'origins', 'significance'}
+        
+        def get_clean_keywords(text):
+            words = re.findall(r'\w+', text.lower())
+            return {w for w in words if w not in stop_words and len(w) > 3}
+
+        query_keywords = get_clean_keywords(query)
         for thread in self.information_builder.information_threads:
             topic = thread.get('topic', '').lower()
-            topic_keywords = [w for w in topic.split() if w not in stop_words and len(w) > 3]
-            # Require at least 2 keyword matches for relevance (stricter matching)
-            matching_keywords = [w for w in query_keywords if any(w in tk or tk in w for tk in topic_keywords)]
-            if len(matching_keywords) >= 2:
+            topic_keywords = get_clean_keywords(topic)
+            
+            # Require at least 2 EXACT keyword matches for relevance (stricter matching)
+            intersection = query_keywords.intersection(topic_keywords)
+            if len(intersection) >= 2:
                 stored_info = thread
-                print(f"🧠 COGNITIVE FRAMEWORK: Found stored information for '{thread.get('topic')}' - {thread.get('depth', 0)} findings")
+                print(f"🧠 COGNITIVE FRAMEWORK: Found stored information for '{thread.get('topic')}' - matches: {intersection}")
                 break
         
         # Detect technical domain for search refinement

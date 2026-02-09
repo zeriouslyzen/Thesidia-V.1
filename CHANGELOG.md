@@ -2,6 +2,25 @@
 
 All notable changes to Thesidia will be documented in this file.
 
+## [3.0.0] - 2026-02-09
+
+### Added - Forensic Pipeline v2.0 & Gnostic Lattice
+- **Forensic Pipeline v2.0**: Major upgrade to the truth-seeking engine with structured output and 3-tier citation systems.
+- **Gnostic Lattice (Knowledge Graph)**: Implemented `GnosticLattice` for tracking semantic relationships and entity cross-referencing.
+- **Intelligence Metrics (FQI/PRS)**: Introduced Forensic Quality Index (FQI) and Pattern Reinforcement Score (PRS) for tracking evolution.
+- **Semantic Intelligence Router**: Adaptive keyword/embedding routing for precise forensic engagement.
+- **Confidence Meter**: Visual truth-score display with 7-layer epistemological validation.
+- **Forensic Design System**: Complete //lowercase aesthetic overhaul for the frontend with interactive thread cards and gnostic layouts.
+
+### Fixed - Cognitive Framework
+- **Surgical Collision Fix**: Resolved a critical bug in `_handle_deep_research` where punctuation-naive tokenization caused false matching of "DEEP DIVE" prefixes.
+- **Improved Tokenization**: Implemented `re.findall(r'\w+')` for robust stop-word filtering.
+- **Clean Context Verification**: Validated 5/5 stress tests with 100% clean context separation.
+
+### Performance
+- **Ollama Backend Stability**: Optimized fallbacks to ensure deep research queries succeed on M1/M4 hardware when MLX conflicts arise.
+- **Gnostic Search Cache**: Implemented topic-based result reuse in `InformationBuilder`.
+
 ## [2.2.0] - 2026-01-12
 
 ### Added - Navigation UI Evolution & Benchmarking

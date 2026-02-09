@@ -65,8 +65,9 @@ def _get_embedding_model():
             from sentence_transformers import SentenceTransformer
             # all-MiniLM-L6-v2 is fast and effective for semantic similarity
             _embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-        except ImportError:
+        except ImportError as e:
             # Fallback: return None if sentence-transformers not installed
+            print(f"⚠️ Semantic Router Import Error: {e}")
             return None
     return _embedding_model
 

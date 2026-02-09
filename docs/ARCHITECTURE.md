@@ -45,54 +45,42 @@ High-level overview of the Thesidia system architecture, component relationships
 
 ### High-Level Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                       THESIDIA SYSTEM                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌────────────────┐         ┌─────────────────┐                │
-│  │   Web Client   │────────▶│  Flask Server   │                │
-│  │  (Frontend)    │         │   (webapp/)     │                │
-│  └────────────────┘         └────────┬────────┘                │
-│                                      │                           │
-│                                      ▼                           │
-│                           ┌──────────────────┐                  │
-│                           │   API Routes     │                  │
-│                           │   (Blueprints)   │                  │
-│                           └────────┬─────────┘                  │
-│                                    │                             │
-│        ┌───────────────────────────┼──────────────────┐         │
-│        │                           │                  │         │
-│        ▼                           ▼                  ▼         │
-│  ┌──────────┐           ┌─────────────────┐    ┌─────────┐    │
-│  │   Auth   │           │     Thesidia    │    │ Memory  │    │
-│  │ Manager  │           │ HybridAdaptive  │    │ Manager │    │
-│  └──────────┘           │   (Core AI)     │    └─────────┘    │
-│                         └────────┬────────┘                     │
-│                                  │                              │
-│         ┌────────────────────────┼─────────────────┐           │
-│         │                        │                 │           │
-│         ▼                        ▼                 ▼           │
-│  ┌──────────────┐    ┌──────────────────┐  ┌──────────────┐  │
-│  │   Sophia     │    │   Capabilities   │  │   Model      │  │
-│  │ Gnostic Map  │    │   & Learning     │  │   Router     │  │
-│  └──────────────┘    └──────────────────┘  └──────────────┘  │
-│         │                     │                      │         │
-│         └─────────────────────┼──────────────────────┘         │
-│                               │                                 │
-│                               ▼                                 │
-│                    ┌──────────────────┐                        │
-│                    │  Ollama / MLX    │                        │
-│                    │  (LLM Backend)   │                        │
-│                    └──────────────────┘                        │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────┐
-                    │   Data Storage   │
-                    │   (JSON/SQLite)  │
-                    └──────────────────┘
+```mermaid
+flowchart TD
+    subgraph Frontend [Presentation Layer]
+        UI[//lowercase forensic UI]
+        Metrics[Intelligence Dashboards]
+    end
+
+    subgraph API [Application Layer]
+        Router[Semantic Intelligence Router]
+        Auth[Identity Manager]
+    end
+
+    subgraph Logic [Business Logic Layer]
+        Core[Thesidia HybridAdaptive]
+        Learning[Adaptive Learning Engine]
+    end
+
+    subgraph Intelligence [Intelligence Layer]
+        Sophia[Sophia Gnostic Map]
+        Lattice[Gnostic Lattice Graph]
+        Truth[7-Layer Epistemology]
+    end
+
+    subgraph Backend [Model Layer]
+        Router2[Model Router]
+        Ollama[Ollama / MLX Backend]
+    end
+
+    UI --> Router
+    Router --> Core
+    Core --> Sophia
+    Core --> Lattice
+    Core --> Truth
+    Core --> Router2
+    Router2 --> Ollama
+    Sophia <--> Lattice
 ```
 
 ### Component Layers
@@ -100,16 +88,16 @@ High-level overview of the Thesidia system architecture, component relationships
 ```
 ┌───────────────────────────────────────────┐
 │        Presentation Layer                 │
-│  (HTML/CSS/JS, Admin Dashboard, API)      │
+│  (//lowercase UI, Intelligence Dashboards)│
 ├───────────────────────────────────────────┤
 │        Application Layer                  │
-│  (Flask Routes, Auth, Middleware)         │
+│  (Semantic Router, Auth, Middleware)      │
 ├───────────────────────────────────────────┤
 │        Business Logic Layer               │
-│  (Thesidia Core, Capabilities, Learning)  │
+│  (Thesidia Core, Learning Engine)         │
 ├───────────────────────────────────────────┤
 │        Intelligence Layer                 │
-│  (Sophia Memory, Gnostic Map, Patterns)   │
+│  (Sophia Map, Gnostic Lattice, Episteme)  │
 ├───────────────────────────────────────────┤
 │        Model Layer                        │
 │  (Ollama, MLX, Model Router)              │

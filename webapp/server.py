@@ -57,6 +57,18 @@ AstronomicalPatternEngine = None
 
 from datetime import datetime, timedelta
 import importlib
+try:
+    from src.synthesis.conversation_manager import ConversationManager
+except ImportError:
+    ConversationManager = None
+try:
+    from src.synthesis.metrics_tracker import MetricsTracker
+    from src.synthesis.gnostic_lattice import GnosticLattice
+except ImportError:
+    MetricsTracker = None
+    GnosticLattice = None
+
+
 
 # Response cleanup helpers
 def _strip_general_framework_block(text: str) -> str:
@@ -728,6 +740,130 @@ def clear_signals_cache():
     
     signals_service.clear_cache()
     return jsonify({'success': True, 'message': 'Cache cleared'})
+
+# ============================================================================
+# Forensic Pipeline API
+# ============================================================================
+
+# Initialize ConversationManager & MetricsTracker
+conversation_manager = None
+metrics_tracker = None
+
+try:
+    data_dir = project_root / 'data'
+    data_dir.mkdir(exist_ok=True)
+    
+    if ConversationManager:
+        conversation_manager = ConversationManager(storage_file=str(data_dir / 'forensic_history.json'))
+        
+    if MetricsTracker:
+        metrics_tracker = MetricsTracker(storage_file=str(data_dir / 'forensic_metrics.json'))
+        
+except Exception as e:
+    print(f"Warning: Could not initialize Forensic components: {e}")
+
+@app.route('/api/forensic/query', methods=['POST'])
+def forensic_query_api():
+    """
+    Handle forensic thread queries with context preservation.
+    """
+    if not thesidia_ready or not thesidia:
+        return jsonify({'error': 'System initializing, please wait...'}), 503
+        
+    try:
+        data = request.json
+        if not data:
+             return jsonify({'error': 'No data provided'}), 400
+             
+        query = data.get('query')
+        parent_id = data.get('parent_id')
+        
+        if not query:
+            return jsonify({'error': 'Query is required'}), 400
+            
+        # Generate ID
+        import uuid
+        query_id = str(uuid.uuid4())
+        
+        # 1. Build context-aware prompt using ConversationManager
+        enhanced_query = query
+        if conversation_manager:
+            enhanced_query = conversation_manager.build_context_prompt(query, parent_id)
+            
+        # 2. Process with DataSynthesizer (Force Gnostic/Forensic Mode)
+        # We access the synthesizer directly to bypass standard routing and force the forensic pipeline
+        output_text = ""
+        
+        if hasattr(thesidia, 'data_synthesizer') and thesidia.data_synthesizer:
+            print(f"🕵️ executing forensic query: {query[:50]}...")
+            
+            # Using synthesizer directly
+            # We pass empty sources -> relies on model's internal knowledge + context
+            result = thesidia.data_synthesizer.synthesize(
+                sources=[], 
+                query=enhanced_query,
+                force_gnostic=True, # Forces forensic output format
+                output_mode="spacious"
+            )
+            
+            # Extract content from result
+            if isinstance(result, dict):
+                output_text = result.get('content', '') or result.get('response', '') or str(result)
+            else:
+                output_text = str(result)
+                
+        else:
+            # Fallback if synthesizer unavailable
+            output_text = "Error: DataSynthesizer not available."
+            
+        # 3. Store result for future context
+        if conversation_manager:
+            conversation_manager.store_query(query_id, query, output_text, parent_id)
+            
+        # 4. Background Metrics Tracking (Async)
+        if metrics_tracker:
+            metrics_tracker.submit_task(query_id, query, output_text)
+            
+        return jsonify({
+            'query_id': query_id,
+            'output': output_text,
+            'parent_id': parent_id
+        })
+
+    except Exception as e:
+        logger.error(f"Forensic API Error: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/forensic/lattice', methods=['GET', 'POST'])
+def forensic_lattice_api():
+    """
+    Get the Gnostic Lattice data for visualization.
+    """
+    try:
+        if not GnosticLattice:
+             return jsonify({'error': 'Gnostic Lattice not available'}), 503
+             
+        data_dir = project_root / 'data'
+        lattice_path = data_dir / 'gnostic_lattice.json'
+        
+        lattice = GnosticLattice(storage_file=str(lattice_path))
+        
+        # Determine format
+        fmt = request.args.get('format', 'd3')
+        
+        if fmt == 'burning':
+            # Return just the top "burning" nodes
+            return jsonify(lattice.get_burning_nodes(limit=20))
+        else:
+            # Return full graph for D3
+            return jsonify(lattice.get_full_graph_data())
+
+    except Exception as e:
+        logger.error(f"Lattice API Error: {e}")
+        return jsonify({'error': str(e)}), 500
+
 
 # ============================================================================
 # Algorithmic Growth Engine - Event Tracking API
