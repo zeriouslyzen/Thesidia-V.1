@@ -355,5 +355,22 @@
       "co_evolution_history": 19,
       "co_evolution_score": 0.855
     }
+  },
+  {
+    "version_id": "v22_2026-02-09T10-15-11-520581Z",
+    "created_at": "2026-02-09T10:15:11.520581Z",
+    "reason": "state_save",
+    "checksum": "066fe2f3eeb377bd8f540f24ac070d61b8679e89ebf29d2a6edbedbc7aee8951",
+    "summary": {
+      "redactions": 0,
+      "archons": 0,
+      "fragments": 0,
+      "active_lies": 1,
+      "control_patterns": 0,
+      "liberation_patterns": 0,
+      "timeline_events": 0,
+      "co_evolution_history": 20,
+      "co_evolution_score": 0.9
+    }
   }
 ]

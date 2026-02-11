@@ -1,0 +1,47 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "weight": 1,
+      "first_seen": "2026-02-08T23:14:38.960932",
+      "last_seen": "2026-02-08T23:14:38.960932",
+      "type": "entity",
+      "id": "Key Entities:"
+    },
+    {
+      "weight": 1,
+      "first_seen": "2026-02-08T23:14:38.960932",
+      "last_seen": "2026-02-08T23:14:38.960932",
+      "type": "entity",
+      "id": "Sophia"
+    },
+    {
+      "weight": 1,
+      "first_seen": "2026-02-08T23:14:38.960932",
+      "last_seen": "2026-02-08T23:14:38.960932",
+      "type": "entity",
+      "id": "Control Grid"
+    },
+    {
+      "weight": 1,
+      "first_seen": "2026-02-08T23:14:38.960932",
+      "last_seen": "2026-02-08T23:14:38.960932",
+      "type": "entity",
+      "id": "Demiurge"
+    }
+  ],
+  "links": [
+    {
+      "weight": 1,
+      "relation": "implies",
+      "first_seen": "2026-02-08T23:14:38.960932",
+      "contexts": [
+        "test_mt_1"
+      ],
+      "source": "Sophia",
+      "target": "Demiurge"
+    }
+  ]
+}
