@@ -3135,6 +3135,17 @@ class ThesidiaHybridAdaptive(BaseAgent):
         self.interactions: List[Dict[str, Any]] = []
         self.adaptation_level = 0.0
         self.web_search = WebSearchEngine(model, model_client=self.model_client) if WEB_AVAILABLE else None
+        # v2: Multi-source parallel search layer
+        try:
+            from src.search.multi_search import MultiSearch
+            from src.search.query_classifier import QueryClassifier
+            self.multi_search = MultiSearch()
+            self.query_classifier = QueryClassifier()
+            print("[Thesidia] v2 MultiSearch + QueryClassifier loaded", flush=True)
+        except Exception as _ms_err:
+            print(f"[Thesidia] v2 search layer unavailable ({_ms_err}), using legacy WebSearchEngine", flush=True)
+            self.multi_search = None
+            self.query_classifier = None
         self.data_synthesizer = DataSynthesizer(model, model_client=self.model_client)
         self.skepticism_engine = IntuitiveSkepticism(model, model_client=self.model_client) if WEB_AVAILABLE else None
         self.hallucination_tracker = SophiaDiscernmentTracker()
@@ -3691,6 +3702,7 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             format_mode = context.get("format_mode", "natural") if context else "natural"
             research_depth = context.get("research_depth", 2) if context else 2
             fast_mode = context.get("fast_mode", True) if context else True
+            mode = context.get("mode", "auto") if context else "auto"
         elif isinstance(input_data, dict):
             input_text = input_data.get("input_text", input_data.get("message", ""))
             operator_name = input_data.get("operator_name", "OPERATOR")
@@ -3699,38 +3711,43 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             format_mode = input_data.get("format_mode", "natural")
             research_depth = input_data.get("research_depth", 2)
             fast_mode = input_data.get("fast_mode", True)
+            mode = input_data.get("mode", "auto")
         else:
             raise ValueError(f"Unsupported input_data type: {type(input_data)}")
         
-        # Heuristics around fast_mode:
-        # - Trivial greetings / very short messages should NOT be constrained by the
-        #   fast_mode timeout, since they are low-cost and UX-critical.
-        # - Deep / heavy questions (cosmos, origins, history, etc.) should also be
-        #   allowed to run without the fast-mode 30s cutoff, since the UX already
-        #   expects them to take longer (and we surface progress via streaming).
-        text_stripped = input_text.strip().lower()
-        is_simple_greeting = (
-            text_stripped in ("hi", "hello", "hey")
-            or len(text_stripped.split()) <= 3
-        )
-        deep_indicators = [
-            "origins", "origin", "history", "power structures", "patterns",
-            "connections", "true origins", "real origins", "what's really",
-            "what are", "deeper", "secrets", "uncover", "reveal",
-            "comprehensive", "extensive", "cosmos", "universe", "galaxy",
-            "galaxies", "astrophysics", "space"
-        ]
-        has_deep_indicator = any(ind in text_stripped for ind in deep_indicators)
-        # Disable fast_mode timeout for simple greetings and deep queries alike.
-        if is_simple_greeting or has_deep_indicator:
-            effective_fast_mode = False
-        else:
-            effective_fast_mode = fast_mode
+        # Validate mode parameter
+        valid_modes = ("auto", "research", "conversational", "stream")
+        if mode not in valid_modes:
+            print(f"Warning: Invalid mode '{mode}', falling back to 'auto'")
+            mode = "auto"
+        
+        # ── v2 Routing: mode-based timeout ──────────────────────────────
+        # - "conversational": no search, no timeout needed
+        # - "auto": generous timeout (120s) -- latency comes from fewer
+        #   searches, not from killing the thread
+        # - "research": no timeout -- deep pipeline runs as long as needed
+        # - "stream": separate path (stream_analyze)
         
         # PIPELINE RESILIENCE: Wrap core processing in safety net
         try:
-            # Call original process method with optional timeout for fast_mode
-            if effective_fast_mode:
+            if mode == "stream":
+                output = self.stream_analyze(input_text)
+            elif mode == "research":
+                # Research mode: no timeout, always deep
+                output = self._process_original(
+                    input_text=input_text,
+                    operator_name=operator_name,
+                    user_id=user_id,
+                    session_id=session_id,
+                    format_mode=format_mode,
+                    research_depth=research_depth,
+                    fast_mode=False,
+                    mode=mode,
+                    task_type=context.get("task_type") if context else None,
+                    use_mlx=context.get("use_mlx") if context else None
+                )
+            elif mode == "auto":
+                # Auto mode: 120s safety timeout (generous enough for quick search)
                 from concurrent.futures import ThreadPoolExecutor, TimeoutError
                 with ThreadPoolExecutor(max_workers=1) as executor:
                     future = executor.submit(
@@ -3741,29 +3758,18 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                         session_id=session_id,
                         format_mode=format_mode,
                         research_depth=research_depth,
-                        fast_mode=effective_fast_mode,
+                        fast_mode=fast_mode,
+                        mode=mode,
                         task_type=context.get("task_type") if context else None,
                         use_mlx=context.get("use_mlx") if context else None
                     )
                     try:
-                        # FORENSIC MODE: No timeout - allow unlimited generation time for deep analysis
-                        # Detect forensic queries using same logic as routing
-                        from src.support.query_utils import detect_forensic_routing
-                        is_forensic = detect_forensic_routing(input_text, comprehensive=True)
-                        
-                        # Regular queries: 30s timeout for responsiveness
-                        # Forensic queries: No timeout
-                        timeout_seconds = None if is_forensic else 30.0
-                        
-                        if timeout_seconds is None:
-                            print(f"🔍 FORENSIC MODE: No timeout limit - allowing unlimited generation time", flush=True)
-                            output = future.result()  # No timeout
-                        else:
-                            output = future.result(timeout=timeout_seconds)
+                        output = future.result(timeout=120.0)
                     except TimeoutError:
-                        output = "Error: Processing timed out (fast mode limited to 30s). Please try again or switch to deep research for more complex queries."
-                        print(f"⚠️ Fast-mode timeout triggered for query: {input_text[:50]}...")
+                        output = "Processing took longer than expected. Try Research mode for complex queries, or Chat mode for quick conversation."
+                        print(f"Auto-mode 120s timeout triggered for query: {input_text[:50]}...")
             else:
+                # Conversational or unknown mode: direct call, no timeout wrapper
                 output = self._process_original(
                     input_text=input_text,
                     operator_name=operator_name,
@@ -3771,7 +3777,8 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                     session_id=session_id,
                     format_mode=format_mode,
                     research_depth=research_depth,
-                    fast_mode=effective_fast_mode,
+                    fast_mode=fast_mode,
+                    mode=mode,
                     task_type=context.get("task_type") if context else None,
                     use_mlx=context.get("use_mlx") if context else None
                 )
@@ -3826,6 +3833,19 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             except Exception as e:
                 scl_meta = {"enabled": False, "error": str(e)}
         
+        # ── Final output sanitization (catches ALL code paths) ──────────────
+        # Remove leaked "General Framework" blocks that the LLM sometimes
+        # appends.  Previously this cleanup only ran inside specific branches
+        # of _process_original(), so some responses still leaked.
+        if isinstance(output, str):
+            import re as _re
+            output = _re.sub(r'\*{0,2}\s*General Framework:\s*\*{0,2}[\s\S]*\Z', '', output, flags=_re.IGNORECASE | _re.DOTALL)
+            output = _re.sub(r'\*{0,2}\s*Foundation:\s*\*{0,2}.*?\n', '', output, flags=_re.IGNORECASE)
+            output = _re.sub(r'\*{0,2}\s*Practice:\s*\*{0,2}.*?\n', '', output, flags=_re.IGNORECASE)
+            output = _re.sub(r'\*{0,2}\s*Learning:\s*\*{0,2}.*?\n', '', output, flags=_re.IGNORECASE)
+            output = _re.sub(r'\*{0,2}\s*Growth:\s*\*{0,2}.*?\n', '', output, flags=_re.IGNORECASE)
+            output = output.strip()
+
         # Return in standard format
         return {
             "output": output,
@@ -3835,12 +3855,121 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
                 "format_mode": format_mode,
                 "research_depth": research_depth,
                 "fast_mode": fast_mode,
+                "mode": mode,
                 "structured_cognitive_loop": scl_meta,
                 "synthesis_pressure": pressure_meta,
                 "synthesis_pressure_pre_preview": (pre_pressure[:160] if isinstance(pre_pressure, str) else None),
             }
         }
     
+    def stream_analyze(self, post_content: str, post_id: str = None) -> str:
+        """Analyze a social post for fact-checking and truth assessment.
+        
+        Used by Stream Mode to evaluate posts in the social feed,
+        similar to how Grok analyzes posts on X/Twitter.
+        
+        Pipeline:
+          1. Extract claims from post content
+          2. Optionally run a quick web search to verify claims
+          3. Run TruthEngine (7-layer epistemology) on each claim
+          4. Return structured analysis with truth scores and evidence
+        
+        Args:
+            post_content: The text content of the social post to analyze
+            post_id: Optional post ID for logging/tracking
+            
+        Returns:
+            Formatted analysis string with truth scores and findings
+        """
+        import time as _time
+        start = _time.time()
+        print(f"🔍 STREAM ANALYZE: Analyzing post {post_id or '(no id)'}: {post_content[:80]}...", flush=True)
+        
+        # ── 1. Extract claims ────────────────────────────────────────────
+        # Split the post into individual claims/sentences for evaluation
+        import re as _re
+        sentences = _re.split(r'[.!?]+', post_content)
+        claims = [s.strip() for s in sentences if len(s.strip()) > 15]  # Skip very short fragments
+        
+        if not claims:
+            return f"::STREAM ANALYSIS:: Post is too short or contains no evaluable claims."
+        
+        # ── 2. Optional web search for verification ──────────────────────
+        web_sources = []
+        try:
+            if hasattr(self, 'deep_research_engine') and self.deep_research_engine:
+                # Quick search using the first/main claim
+                search_query = claims[0][:100] if claims else post_content[:100]
+                web_results = self.deep_research_engine.gatherer.search_web(search_query, num_results=5)
+                if web_results:
+                    web_sources = web_results
+                    print(f"🔍 STREAM ANALYZE: Found {len(web_sources)} web sources for verification", flush=True)
+        except Exception as e:
+            print(f"⚠️ STREAM ANALYZE: Web search failed (non-fatal): {e}", flush=True)
+        
+        # ── 3. Run TruthEngine on each claim ─────────────────────────────
+        truth_results = []
+        try:
+            from src.synthesis.truth_engine import TruthEngine
+            engine = TruthEngine(model=self.model)
+            
+            for claim in claims[:5]:  # Cap at 5 claims per post
+                result = engine.calculate_truth_score(
+                    claim=claim,
+                    sources=web_sources,
+                    query=post_content
+                )
+                truth_results.append({
+                    "claim": claim,
+                    "truth_score": result.get("truth_score", 0.0),
+                    "confidence": result.get("confidence", "LOW"),
+                    "layers_aligned": result.get("layers_aligned", 0),
+                    "layer_scores": result.get("layer_scores", {})
+                })
+        except Exception as e:
+            print(f"⚠️ STREAM ANALYZE: TruthEngine failed: {e}", flush=True)
+            return f"::STREAM ANALYSIS ERROR:: Truth evaluation failed: {str(e)[:100]}"
+        
+        # ── 4. Format output ─────────────────────────────────────────────
+        elapsed = _time.time() - start
+        
+        # Calculate overall post truth score (average of claim scores)
+        if truth_results:
+            overall_score = sum(r["truth_score"] for r in truth_results) / len(truth_results)
+        else:
+            overall_score = 0.0
+        
+        # Determine overall verdict
+        if overall_score >= 0.7:
+            verdict = "LARGELY VERIFIED"
+        elif overall_score >= 0.4:
+            verdict = "PARTIALLY VERIFIED -- CLAIMS REQUIRE SCRUTINY"
+        else:
+            verdict = "UNVERIFIED -- LOW EVIDENTIARY SUPPORT"
+        
+        lines = [
+            f"::STREAM ANALYSIS::",
+            f"Post: {post_content[:120]}{'...' if len(post_content) > 120 else ''}",
+            f"Overall Truth Score: {overall_score:.2f} | Verdict: {verdict}",
+            f"Claims Evaluated: {len(truth_results)}",
+            f"Web Sources Checked: {len(web_sources)}",
+            "",
+        ]
+        
+        for i, r in enumerate(truth_results, 1):
+            lines.append(f"--- Claim {i} ---")
+            lines.append(f"  \"{r['claim'][:100]}\"")
+            lines.append(f"  Score: {r['truth_score']:.3f} | Confidence: {r['confidence']} | Layers Aligned: {r['layers_aligned']}/7")
+            # Show top layer scores
+            top_layers = sorted(r["layer_scores"].items(), key=lambda x: x[1], reverse=True)[:3]
+            layer_str = ", ".join(f"{k}: {v:.2f}" for k, v in top_layers)
+            lines.append(f"  Top Layers: {layer_str}")
+            lines.append("")
+        
+        lines.append(f"Analysis completed in {elapsed:.1f}s")
+        
+        return "\n".join(lines)
+
     def get_capabilities(self) -> List[str]:
         """
         Get list of capabilities this agent provides.
@@ -3854,6 +3983,7 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
     def _process_original(self, input_text: str, operator_name: str = "OPERATOR", 
             user_id: Optional[str] = None, session_id: Optional[str] = None,
             format_mode: str = 'natural', research_depth: int = 2, fast_mode: bool = True,
+            mode: str = "auto",
             task_type: Optional[str] = None, use_mlx: Optional[bool] = None) -> str:
         """Process input - adapts based on type and learns from outcome
         
@@ -3862,6 +3992,8 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             operator_name: Operator name (default: "OPERATOR")
             user_id: Optional user ID for multi-user memory
             session_id: Optional session ID for multi-user memory
+            mode: Processing mode -- "auto" (detect), "research" (force deep),
+                  "conversational" (personality, no research), "stream" (post analysis)
             task_type: Optional task type for routing
             use_mlx: Optional flag to use MLX
         """
@@ -4104,33 +4236,45 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             except Exception as e:
                 print(f"Warning: Coaching analysis failed: {e}")
         
-        # CRITICAL: Check for conversational queries FIRST (before any deep research routing)
-        # Conversational queries should NEVER trigger deep research or heavy processing
-        conversational_patterns = [
-            r'what.*?your favorite',  # "what's your favorite movie?"
-            r'what.*?you think about',  # "what do you think about X?"
-            r'^i\'?m thinking about',  # "I'm thinking about pizza"
-            r'^tell me a random',  # "tell me a random fact"
-            r'^what.*?you like',  # "what do you like?"
-            r'^do you like',  # "do you like X?"
-            r'^are you.*\?$',  # "are you X?" (simple yes/no)
-            r'^how are you',  # "how are you?"
-            r'^what.*?up\??$',  # "what's up?"
-            r'what.*?can you do',  # "what can you do?" / "what else can you do?"
-            r'what.*?you do\??$',  # "what do you do?" / "what else do you do?"
-            r'what.*?your capabilities',  # "what are your capabilities?"
-            r'what.*?you.*?good at',  # "what are you good at?"
-        ]
-        text_lower = input_text.lower().strip()
-        is_conversational = any(re.search(pattern, text_lower) for pattern in conversational_patterns)
-        
-        if is_conversational:
-            print(f"🔍 PROCESS: Conversational query detected - skipping deep research and heavy processing", flush=True)
-            # Mark as conversational to skip all research later
-            # Continue to regular processing path (skip deep research routing)
+        # ── MODE OVERRIDES ────────────────────────────────────────────────
+        # Explicit mode selection takes priority over heuristic detection.
+        # "research"       -> force deep research path, skip conversational detection
+        # "conversational" -> force conversational path, skip all research
+        # "auto"           -> use heuristic detection (existing behaviour, improved)
+        # "stream"         -> handled by process() caller before reaching here
+
+        if mode == "conversational":
+            is_conversational = True
+            print(f"🔍 MODE: Explicit conversational mode -- skipping deep research", flush=True)
+        elif mode == "research":
+            is_conversational = False
+            print(f"🔍 MODE: Explicit research mode -- forcing deep research path", flush=True)
         else:
-            # Not conversational - check for deep research
-            pass
+            # Auto-detect conversational queries
+            # CRITICAL: Check for conversational queries FIRST (before any deep research routing)
+            # Conversational queries should NEVER trigger deep research or heavy processing
+            conversational_patterns = [
+                r'what.*?your favorite',  # "what's your favorite movie?"
+                r'what.*?you think about',  # "what do you think about X?"
+                r'^i\'?m thinking about',  # "I'm thinking about pizza"
+                r'^tell me a random',  # "tell me a random fact"
+                r'^what.*?you like',  # "what do you like?"
+                r'^do you like',  # "do you like X?"
+                r'^are you.*\?$',  # "are you X?" (simple yes/no)
+                r'^how are you',  # "how are you?"
+                r'^what.*?up\??$',  # "what's up?"
+                r'what.*?can you do',  # "what can you do?" / "what else can you do?"
+                r'what.*?you do\??$',  # "what do you do?" / "what else do you do?"
+                r'what.*?your capabilities',  # "what are your capabilities?"
+                r'what.*?you.*?good at',  # "what are you good at?"
+            ]
+            text_lower = input_text.lower().strip()
+            is_conversational = any(re.search(pattern, text_lower) for pattern in conversational_patterns)
+            
+            if is_conversational:
+                print(f"🔍 PROCESS: Conversational query detected - skipping deep research and heavy processing", flush=True)
+            else:
+                pass
         
         # Check for deep research request (ONLY if not conversational)
         # CRITICAL FIX: Comprehensive routing for ALL deep queries
@@ -4206,19 +4350,21 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         # BUT: Skip if it's a simple greeting (already handled above)
         # BUT: Skip if it's conversational (already detected above)
         should_route_to_deep = False
-        if is_simple_query:
+        if mode == "research":
+            # Explicit research mode: ALWAYS route to deep, even for short queries
+            should_route_to_deep = True
+            print(f"🔍 MODE: Explicit research mode -- forcing deep research route", flush=True)
+        elif is_simple_query and mode != "research":
             # Simple greetings already handled - skip deep research
             should_route_to_deep = False
         elif is_conversational:
             # Conversational queries NEVER route to deep research
             should_route_to_deep = False
             print(f"🔍 PROCESS: Conversational query - skipping deep research routing", flush=True)
-        elif fast_mode:
-            # Fast mode: Only route to deep if explicitly requested
-            if deep_research_query:
-                should_route_to_deep = True
         else:
-            # Deep mode: Full routing logic
+            # Unified routing: Route to deep research based on query substance, not fast_mode
+            # fast_mode no longer gates forensic/research routing -- it only affects
+            # conversational responses (Phase 2 mode system handles that separation)
             if deep_research_query:
                 should_route_to_deep = True
             elif is_mind_body_query:
@@ -4266,13 +4412,37 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
         capability_context = self._get_capability_context()
         
         # Get enhanced prompt from modelfile system (includes persona, voice, preset)
-        # FAST MODE: Skip query-specific modules to reduce prompt size and processing time
-        if fast_mode:
-            # Use minimal prompt (skip CSI/health/cosmos analysis) for faster responses
+        # Mode-aware prompt selection:
+        #   conversational -> full personality voice, skip query-analysis modules
+        #   research       -> full prompt with all deep-analysis modules
+        #   auto           -> heuristic based on fast_mode flag
+        if mode == "conversational":
+            # Conversational mode: maximise personality, skip heavy analysis modules
             enhanced_base = self.get_enhanced_prompt(query=None)
-        else:
-            # Deep mode: Full prompt with all modules
+            # Pull stored information threads so conversational responses can reference
+            # prior research (the "Cognitive Framework" memory)
+            stored_threads = ""
+            if hasattr(self, 'information_builder') and self.information_builder:
+                try:
+                    threads = self.information_builder.get_stored_threads()
+                    if threads:
+                        thread_summaries = []
+                        for t in threads[:5]:  # Last 5 threads
+                            thread_summaries.append(f"- {t.get('topic', 'unknown')}: {t.get('summary', '')[:200]}")
+                        stored_threads = "\n[PRIOR RESEARCH THREADS]\n" + "\n".join(thread_summaries)
+                except Exception:
+                    pass
+            if stored_threads:
+                enhanced_base += stored_threads
+        elif mode == "research":
+            # Research mode: full prompt with all deep-analysis modules
             enhanced_base = self.get_enhanced_prompt(query=input_text)
+        else:
+            # Auto mode: use fast_mode heuristic for prompt depth
+            if fast_mode:
+                enhanced_base = self.get_enhanced_prompt(query=None)
+            else:
+                enhanced_base = self.get_enhanced_prompt(query=input_text)
         
         # Structural fix: DO NOT prepend user memory into the system prompt.
         # That leaks stale topics/styles into system-level instructions and causes prompt drift.
@@ -4293,29 +4463,37 @@ NOTE: ur personality, voice, and style come from the modelfile instructions belo
             # Conversational query - skip ALL research
             needs_research = False
             print(f"🔍 PROCESS: Conversational query detected - skipping research", flush=True)
-        elif fast_mode:
-            # Fast mode: NEVER do research - keep it fast
-            needs_research = False
         else:
-            # Deep mode: Always check if research is needed
+            # Always check if research is needed - fast_mode no longer blocks research
             needs_research = self._needs_research(input_text)
         
-        if needs_research and self.parallel_processor:
-            print("⧖ Parallel processing: Web search + LLM thinking...")
+        if needs_research and self.multi_search:
+            # ── v2 Multi-Source Search ─────────────────────────────
+            print("[v2] Multi-source parallel search...", flush=True)
             parallel_start = time.time() if self._timing_enabled else None
             
-            # Run web search and LLM thinking in parallel
+            research_data = self.multi_search.quick_search(input_text, max_results=8)
+            # Store for external access (e.g., streaming layer sends sources to frontend)
+            self._last_search_sources = [
+                {"url": r.get("url", ""), "title": r.get("title", ""), "snippet": r.get("snippet", ""), "source": r.get("source", "")}
+                for r in research_data if r.get("url")
+            ]
+            llm_analysis = {}
+            
+            if self._timing_enabled and parallel_start:
+                self._last_timing_breakdown['web_search'] = time.time() - parallel_start
+        elif needs_research and self.parallel_processor:
+            # Legacy parallel fallback
+            print("Parallel processing: Web search + LLM thinking...")
+            parallel_start = time.time() if self._timing_enabled else None
             parallel_result = self.parallel_processor.process_parallel(input_text, num_results=5)
             research_data = parallel_result.get("web_results", [])
             llm_analysis = parallel_result.get("llm_analysis", {})
-            
             if self._timing_enabled and parallel_start:
                 self._last_timing_breakdown['parallel_processing'] = time.time() - parallel_start
                 self._last_timing_breakdown['web_search'] = parallel_result.get("processing_time", 0)
-            
-            # Use LLM analysis to enhance research if needed
             if llm_analysis and llm_analysis.get("research_angles"):
-                print(f"  💡 LLM identified {len(llm_analysis.get('research_angles', []))} research angles")
+                print(f"  LLM identified {len(llm_analysis.get('research_angles', []))} research angles")
         elif needs_research and self.web_search:
             # Fallback: Sequential processing
             print("⧖ Researching... (Thesidia eager to find more data)")
@@ -4956,15 +5134,40 @@ Response:"""
         casual_patterns = ["lol", "haha", "what you finding", "what are you", "how are you", "what's up", "are you sure", "jokes", "joke", "pondering", "universe"]
         is_casual = any(casual in text_lower for casual in casual_patterns)
         
-        # Only trigger deep research if it's a complex query AND not casual
-        # Also check if it's a simple question (short, no complexity indicators)
-        is_simple_question = len(text.split()) <= 8 and not any(indicator in text_lower for indicator in complexity_indicators)
+        if is_casual:
+            return None  # Don't trigger deep research for casual chitchat
         
-        if is_simple_question or is_casual:
-            return None  # Don't trigger deep research for casual/simple questions
+        # Forensic signal words -- even short queries containing these indicate
+        # the user wants substantive research, not a generic one-liner
+        forensic_signals = [
+            "really", "truth", "hidden", "power", "corrupt", "control",
+            "who profits", "behind", "secret", "conspiracy", "exposed",
+            "agenda", "manipulate", "propaganda", "suppressed", "coverup",
+            "oligarch", "cartel", "monopoly", "collusion", "lobby",
+            "decode", "expose", "vivisect", "forensic"
+        ]
+        has_forensic_signal = any(s in text_lower for s in forensic_signals)
         
-        if any(indicator in text_lower for indicator in complexity_indicators) and len(text.split()) > 5:
-            return text  # Complex query gets deep analysis
+        # Only classify as "simple" if VERY short (<=4 words) AND no forensic signals
+        # AND no complexity indicators. Previously the threshold was 8 words which
+        # blocked substantive short queries like "who obama really is"
+        is_simple_question = (
+            len(text.split()) <= 4
+            and not has_forensic_signal
+            and not any(indicator in text_lower for indicator in complexity_indicators)
+        )
+        
+        if is_simple_question:
+            return None  # Genuinely trivial query
+        
+        # If the query has forensic signals or complexity indicators, route to deep
+        if has_forensic_signal or any(indicator in text_lower for indicator in complexity_indicators):
+            return text
+        
+        # For queries longer than 4 words without explicit signals, still allow
+        # through if they are substantive (>8 words suggests non-trivial intent)
+        if len(text.split()) > 8:
+            return text
         
         return None
     
@@ -5028,24 +5231,39 @@ Response:"""
             if relevant_interests:
                 refined_query = f"{refined_query} {' '.join(relevant_interests[:2])}"
         
-        # ⭐ OPTIMIZATION: If we have stored info, reduce web search (use stored + minimal new search)
+        # ── v2 Deep Search: use MultiSearch.deep_search when available ──
+        web_search_start = time.time() if self._timing_enabled else None
         if stored_info and stored_info.get('findings'):
-            print(f"⚡ PERFORMANCE: Using stored information - reducing web search from 5 to 2 results")
-            web_search_start = time.time() if self._timing_enabled else None
-            # Use stored findings as primary source, minimal new search for updates
-            research_data = self.web_search.search_and_scrape(refined_query, num_results=2) if self.web_search else []
-            # Prepend stored findings to research_data
+            print(f"[v2] Using stored info + supplemental search", flush=True)
+            if self.multi_search:
+                research_data = self.multi_search.deep_search(refined_query, max_results=5)
+            elif self.web_search:
+                research_data = self.web_search.search_and_scrape(refined_query, num_results=2)
+            else:
+                research_data = []
             stored_findings = stored_info.get('findings', [])
             if stored_findings:
-                research_data = stored_findings[:3] + research_data  # Use top 3 stored + 2 new
-                print(f"⚡ PERFORMANCE: Using {len(stored_findings[:3])} stored findings + {len(research_data) - len(stored_findings[:3])} new results")
+                research_data = stored_findings[:3] + research_data
+                print(f"[v2] {len(stored_findings[:3])} stored + {len(research_data) - len(stored_findings[:3])} new results", flush=True)
         else:
-            # Full web search if no stored info
-            web_search_start = time.time() if self._timing_enabled else None
-            research_data = self.web_search.search_and_scrape(refined_query, num_results=5) if self.web_search else []
+            # Full deep search
+            if self.multi_search:
+                print(f"[v2] Deep multi-source search for: {refined_query[:60]}...", flush=True)
+                research_data = self.multi_search.deep_search(refined_query, max_results=15)
+            elif self.web_search:
+                research_data = self.web_search.search_and_scrape(refined_query, num_results=5)
+            else:
+                research_data = []
         
         if self._timing_enabled and web_search_start:
             self._last_timing_breakdown['web_search'] = time.time() - web_search_start
+        
+        # Store sources for frontend streaming layer
+        if research_data:
+            self._last_search_sources = [
+                {"url": r.get("url", ""), "title": r.get("title", ""), "snippet": r.get("snippet", ""), "source": r.get("source", "")}
+                for r in research_data if r.get("url")
+            ]
         
         if not research_data or len(research_data) == 0:
             print(f"⚠️ WARNING: No research data found for query: {query}")
@@ -5606,15 +5824,12 @@ Remember: You can keep researching. One finding can lead to another. You can bui
             # A gnostic blade must run hot. 0.95-1.1 temperature on every vivisection
             temperature = 1.0 if is_gnostic_query else 0.9
             
-            # Hybrid Routing: Choose model based on task
-            # PERFORMANCE FIX: Use faster model for fast mode
-            if fast_mode and not is_gnostic_query:
-                # Fast mode gets the quick 1.5B model
-                current_model = "qwen2.5:1.5b"
-                print(f"🚀 FAST MODE: Using quick model {current_model} for speed")
-            else:
-                # Deep mode or gnostic queries get the quality model
-                current_model = self.model
+            # Model Selection: Always use the configured quality model (clean-mistral)
+            # The qwen2.5:1.5b downgrade has been removed -- it produced generic,
+            # low-quality output that defeated Thesidia's purpose. All modes now
+            # use self.model so personality, forensic depth, and research quality
+            # remain consistent.
+            current_model = self.model
             # use_mlx and task_type are now arguments
             
             if use_mlx and hasattr(self, 'inference_router') and self.inference_router:

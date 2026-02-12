@@ -111,238 +111,168 @@
     }
     </script>
 
+    <!-- v3: Isolated Thesidia styles -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/thesidia-chat.css">
+    <!-- Legacy site styles (non-chat elements) -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/nav-brand-landing.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
-    <!-- Note: For actual Neue Montreal or Gotham Book, add @font-face declarations if you have licenses -->
 </head>
 
-<body>
-    <div id="app">
+<body style="margin:0;padding:0;background:#0a0a0a;">
+    <div id="thesidia-app">
         <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <!-- Katanx Branding - same as landing: / yellow, x blue, scroll animates to /x -->
-                <div class="header-branding">
-                    <a href="/" class="nav-brand" aria-label="katanx home">katanx</a>
-                </div>
+        <header class="th-header">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="th-icon-btn" id="menuBtn" aria-label="Menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <a href="/" class="th-brand" aria-label="home"><span class="th-slash">/</span>thesidia</a>
+            </div>
 
-                <!-- Menu Orb - Right -->
-                <button class="menu-orb" id="menuBtn" aria-label="Menu">
-                    <div class="orb-glow"></div>
+            <div class="th-mode-selector" id="modeSelector">
+                <button class="th-mode-btn active" data-mode="auto" id="modeAuto">Auto</button>
+                <button class="th-mode-btn" data-mode="research" id="modeResearch">Research</button>
+                <button class="th-mode-btn" data-mode="conversational" id="modeConversational">Chat</button>
+            </div>
+
+            <div class="th-header-actions">
+                <button class="th-icon-btn" id="voiceToggleBtn" aria-label="Voice" title="Voice playback">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                </button>
+                <button class="th-icon-btn" id="notebookToggleBtn" aria-label="Notebook" title="Research notebook">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </button>
+                <button class="th-icon-btn" id="settingsToggleBtn" aria-label="Settings" title="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 </button>
             </div>
 
-            <!-- Sub Menu -->
-            <div class="header-submenu">
-                <!-- User Status Indicator - Far Left -->
-                <div class="user-status-indicator" id="userStatusIndicator">
-                    <span class="user-name-text" id="userNameText">Katanx Explore</span>
-                    <span class="status-orb status-online" id="statusOrb" title="Status: Online"></span>
-                </div>
-
-                <!-- Status Selector Dropdown -->
-                <div class="status-selector-dropdown" id="statusSelectorDropdown">
-                    <div class="status-option" data-status="online">
-                        <span class="status-orb status-online"></span>
-                        <span>Online</span>
-                    </div>
-                    <div class="status-option" data-status="offline">
-                        <span class="status-orb status-offline"></span>
-                        <span>Offline</span>
-                    </div>
-                    <div class="status-option" data-status="away">
-                        <span class="status-orb status-away"></span>
-                        <span>Away</span>
-                    </div>
-                    <div class="status-option" data-status="focused">
-                        <span class="status-orb status-focused"></span>
-                        <span>Focused</span>
-                    </div>
-                </div>
-
-                <nav class="advanced-nav">
-                    <a href="/search.html" class="nav-item">explore</a>
-                    <button class="nav-item" data-section="home">home</button>
-                    <button class="nav-item" data-section="stream">stream</button>
-                    <button class="nav-item" data-section="kx-cuts">kx cuts</button>
-                    <button class="nav-item" data-section="circles">forums</button>
-                    <button class="nav-item" data-section="studio">studio</button>
-                </nav>
-
-                <!-- Star Notepad Button - Far Right -->
-                <button class="star-notepad-btn" id="starNotepadBtn" aria-label="Notes">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                    </svg>
-                </button>
+            <!-- Server Status -->
+            <div class="th-status-banner" id="serverStatusBanner">
+                <span class="th-status-dot offline"></span>
+                <span>Browser-only mode -- start server for full research</span>
             </div>
 
-            <!-- Star Notepad Panel -->
-            <div class="notepad-panel" id="starNotepadPanel">
-                <div class="notepad-header">
-                    <h3>Notes</h3>
-                    <button class="notepad-close" id="notepadClose" aria-label="Close">×</button>
+            <!-- Settings Dropdown -->
+            <div class="th-settings-dropdown" id="settingsDropdown">
+                <label class="th-settings-row">
+                    <span class="th-settings-label">Thinking Steps</span>
+                    <label class="th-toggle"><input type="checkbox" id="thinkingToggle"/><span class="th-toggle-slider"></span></label>
+                </label>
+                <label class="th-settings-row">
+                    <span class="th-settings-label">Voice</span>
+                    <select id="voiceSelector" class="th-select"><option value="">Loading...</option></select>
+                </label>
+                <label class="th-settings-row">
+                    <span class="th-settings-label">Edge AI Model</span>
+                    <select id="edgeModelSelector" class="th-select">
+                        <option value="auto">Auto (best for device)</option>
+                        <option value="high">Qwen 2.5 3B</option>
+                        <option value="medium">Llama 3.2 3B</option>
+                        <option value="light">Llama 3.2 1B</option>
+                    </select>
+                </label>
+                <div class="th-settings-row">
+                    <span class="th-settings-label">Edge AI</span>
+                    <button id="loadEdgeBtn" class="th-btn-small">Load Model</button>
+                    <div id="edgeStatus" style="display:none;"><span class="th-status-dot"></span> <span id="edgeStatusText">0%</span></div>
                 </div>
-                <textarea class="notepad-textarea" id="notepadTextarea"
-                    placeholder="Your notes here... They persist across pages."></textarea>
             </div>
         </header>
 
-        <!-- Main Chat Container -->
-        <main class="chat-container" id="chatContainer">
-            <div class="messages" id="messages">
-                <!-- Messages will appear here -->
+        <!-- Welcome Hero (visible when no messages) -->
+        <section class="th-hero" id="thHero">
+            <div id="heroGrid"></div>
+            <div class="th-hero-brand">thesidia</div>
+            <div class="th-hero-sub">Deep research engine. Ask anything.</div>
+            <div class="th-hero-chips">
+                <button class="th-chip" data-prompt="What is going on with AI regulation?">What is going on with AI regulation?</button>
+                <button class="th-chip" data-prompt="Trace the hidden history of surveillance technology">Trace the hidden history of surveillance</button>
+                <button class="th-chip" data-prompt="Explain CRISPR gene editing">Explain CRISPR gene editing</button>
+                <button class="th-chip" data-prompt="Who really controls global finance?">Who really controls global finance?</button>
+            </div>
+        </section>
+
+        <!-- Chat Area (hidden until first message) -->
+        <main class="th-chat" id="chatContainer">
+            <div id="chatGrid"></div>
+            <div class="th-messages" id="messages"></div>
+
+            <div class="th-routing" id="routingStatus">
+                <div class="th-routing-row">
+                    <span id="routingGears"></span>
+                    <span class="th-routing-text" id="routingText">Searching...</span>
+                </div>
+                <div class="th-progress-bar"><div class="th-progress-fill" id="routingProgress"></div></div>
             </div>
 
-            <!-- Typing indicator -->
-            <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+            <div class="th-typing" id="typingIndicator">
+                <span class="th-typing-dot"></span>
+                <span class="th-typing-dot"></span>
+                <span class="th-typing-dot"></span>
             </div>
         </main>
 
-        <!-- Control Panel Dashboard -->
-        <div class="control-panel-dashboard" id="controlPanelDashboard">
-            <div class="control-panel-header">
-                <span class="control-panel-title">Controls</span>
-                <button class="control-panel-close" id="controlPanelClose" aria-label="Close controls">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
+        <!-- Research Notebook (right drawer) -->
+        <aside class="th-notebook" id="researchNotebook">
+            <div class="th-notebook-header">
+                <span class="th-notebook-title">Notebook</span>
+                <button class="th-icon-btn" id="notebookCloseBtn" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
-            <div class="control-panel-content">
-                <div class="control-item">
-                    <label class="control-label">
-                        <span>Mode</span>
-                        <span class="control-description">Fast responses or deep research</span>
-                    </label>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <label class="control-toggle">
-                            <input type="checkbox" id="deepResearchToggle" />
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span class="toggle-label" id="modeLabel">Fast</span>
-                    </div>
-                </div>
-
-                <div class="control-item">
-                    <label class="control-label">
-                        <span>Thinking Steps</span>
-                        <span class="control-description">Show internal reasoning process</span>
-                    </label>
-                    <label class="control-toggle">
-                        <input type="checkbox" id="thinkingToggle" />
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-
-                <div class="control-item">
-                    <label class="control-label">
-                        <span>Voice</span>
-                        <span class="control-description">Hear Thesidia's replies as they're written</span>
-                    </label>
-                    <label class="control-toggle">
-                        <input type="checkbox" id="voiceToggle" />
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-
-                <div class="control-item" id="voiceSelectorItem" style="display: none;">
-                    <label class="control-label">
-                        <span>Voice Selection</span>
-                        <span class="control-description">Choose voice for Thesidia</span>
-                    </label>
-                    <select id="voiceSelector" class="control-select">
-                        <option value="">Loading voices...</option>
-                    </select>
+            <div class="th-notebook-tabs">
+                <button class="th-notebook-tab active" data-tab="sources">Sources</button>
+                <button class="th-notebook-tab" data-tab="findings">Findings</button>
+                <button class="th-notebook-tab" data-tab="notes">Notes</button>
+            </div>
+            <div class="th-notebook-content" id="notebookContent">
+                <div id="notebookSources"></div>
+                <div id="notebookFindings" style="display:none;"></div>
+                <div id="notebookNotes" style="display:none;">
+                    <textarea class="th-notebook-notes" id="notebookNotesTextarea" placeholder="Your research notes..."></textarea>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <!-- Modern Prompt Bar - Clean Design -->
-        <div class="prompt-bar-container">
-            <div class="prompt-bar-wrapper">
-                <!-- Main Prompt Input -->
-                <div class="prompt-input-wrapper">
-                    <div class="prompt-input-container" id="promptContainer">
-                        <!-- File Upload Button -->
-                        <input type="file" id="fileInput" multiple accept="*/*" style="display: none;">
-                        <button class="attach-btn" id="attachBtn" aria-label="Attach file" title="Attach file">
-                            <span class="attach-orb">
-                                <span class="attach-plus">+</span>
-                            </span>
-                        </button>
-
-                        <!-- Text Input -->
-                        <textarea id="promptInput" class="prompt-input" placeholder="" rows="1" autocomplete="off"
-                            autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-                        <span class="cursor-placeholder" id="cursorPlaceholder">|</span>
-
-                        <!-- Attached Files Indicator -->
-                        <div class="attached-files" id="attachedFiles" style="display: none;"></div>
-
-                        <!-- Send Button -->
-                        <button class="send-btn" id="sendBtn" aria-label="Send" title="Send message">
-                            <span class="send-orb"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Control Panel Tab -->
-        <div class="control-panel-tab" id="controlPanelTab">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="18 15 12 9 6 15"></polyline>
-            </svg>
-        </div>
-
-        <!-- Sidebar Menu -->
-        <div class="left-sidebar" id="leftSidebar">
-            <div class="sidebar-content">
-                <div class="sidebar-header">
-                    <h2>Conversations</h2>
-                    <button class="close-btn" id="closeSidebar" aria-label="Close">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
+        <!-- Prompt Bar -->
+        <div class="th-prompt-container">
+            <div class="th-prompt-wrap">
+                <div class="th-prompt-input-row" id="promptContainer">
+                    <input type="file" id="fileInput" multiple accept="*/*" style="display:none;">
+                    <button class="th-attach-btn" id="attachBtn" aria-label="Attach" title="Attach file">+</button>
+                    <textarea id="promptInput" class="th-prompt-input" placeholder="Ask anything..." rows="1"
+                        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+                    <div class="th-attached" id="attachedFiles"></div>
+                    <button class="th-send-btn" id="sendBtn" aria-label="Send" title="Send">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                     </button>
                 </div>
-                <div class="sidebar-actions">
-                    <button class="sidebar-action-btn" id="newChatBtn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        <span>New Conversation</span>
-                    </button>
-                </div>
-                <div class="conversations-list" id="conversationsList">
-                    <!-- Conversations will be loaded here -->
-                </div>
             </div>
         </div>
 
-        <div class="overlay" id="overlay"></div>
+        <!-- Sidebar (conversations) -->
+        <nav class="th-sidebar" id="leftSidebar">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <span style="font-family:var(--th-font-brand);font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--th-text-2);">Conversations</span>
+                <button class="th-icon-btn" id="closeSidebar" aria-label="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <button class="th-chip" id="newChatBtn" style="width:100%;margin-bottom:16px;">+ New Conversation</button>
+            <div id="conversationsList"></div>
+        </nav>
+        <div class="th-sidebar-overlay" id="overlay"></div>
     </div>
 
+    <script src="js/thesidia-animations.js"></script>
     <script type="module" src="edge_inference.js"></script>
     <script src="app.js"></script>
-    <script src="js/nav-brand-scroll.js"></script>
 </body>
 
 </html>

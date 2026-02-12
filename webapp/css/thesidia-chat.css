@@ -1,0 +1,1075 @@
+/*  ============================================================
+    Thesidia Chat UI — v3
+    ============================================================
+    ALL rules scoped under #thesidia-app.
+    Consumes tokens from tokens.css.
+    Zero bleed to/from other site pages.
+    ============================================================ */
+
+/* ── Reset within scope ────────────────────────────────── */
+
+#thesidia-app {
+  all: initial;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  background: var(--th-bg-0);
+  color: var(--th-text-0);
+  font-family: var(--th-font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  position: relative;
+}
+
+#thesidia-app *,
+#thesidia-app *::before,
+#thesidia-app *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+
+#thesidia-app .th-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--th-sp-lg);
+  height: 52px;
+  min-height: 52px;
+  background: var(--th-bg-0);
+  border-bottom: 1px solid var(--th-border-subtle);
+  z-index: var(--th-z-header);
+  position: relative;
+}
+
+#thesidia-app .th-brand {
+  font-family: var(--th-font-brand);
+  font-size: 16px;
+  color: var(--th-text-0);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+#thesidia-app .th-slash {
+  color: var(--th-gold);
+  font-weight: 700;
+}
+
+/* Mode Selector */
+
+#thesidia-app .th-mode-selector {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--th-bg-1);
+  border: 1px solid var(--th-border);
+  border-radius: var(--th-radius-md);
+  padding: 3px;
+}
+
+#thesidia-app .th-mode-btn {
+  font-family: var(--th-font-body);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 16px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--th-text-2);
+  cursor: pointer;
+  transition: background var(--th-t-normal) var(--th-ease),
+              color var(--th-t-normal) var(--th-ease);
+  white-space: nowrap;
+}
+
+#thesidia-app .th-mode-btn:hover {
+  color: var(--th-text-1);
+  background: var(--th-bg-3);
+}
+
+#thesidia-app .th-mode-btn.active {
+  background: var(--th-gold);
+  color: var(--th-bg-0);
+  font-weight: 600;
+}
+
+/* Header actions (right side) */
+
+#thesidia-app .th-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--th-sp-sm);
+}
+
+#thesidia-app .th-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--th-radius-md);
+  background: transparent;
+  color: var(--th-text-2);
+  cursor: pointer;
+  transition: color var(--th-t-fast) var(--th-ease),
+              background var(--th-t-fast) var(--th-ease);
+}
+
+#thesidia-app .th-icon-btn:hover {
+  color: var(--th-text-0);
+  background: var(--th-bg-3);
+}
+
+#thesidia-app .th-icon-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+
+/* ── Settings Dropdown ─────────────────────────────────── */
+
+#thesidia-app .th-settings-dropdown {
+  display: none;
+  position: absolute;
+  top: 52px;
+  right: var(--th-sp-lg);
+  background: var(--th-bg-1);
+  border: 1px solid var(--th-border);
+  border-radius: var(--th-radius-lg);
+  padding: var(--th-sp-md);
+  min-width: 260px;
+  z-index: var(--th-z-dropdown);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+#thesidia-app .th-settings-dropdown.open {
+  display: block;
+}
+
+#thesidia-app .th-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--th-sp-sm) 0;
+}
+
+#thesidia-app .th-settings-label {
+  font-size: 13px;
+  color: var(--th-text-1);
+}
+
+#thesidia-app .th-toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: var(--th-bg-3);
+  border-radius: var(--th-radius-pill);
+  cursor: pointer;
+  transition: background var(--th-t-fast) var(--th-ease);
+}
+
+#thesidia-app .th-toggle input {
+  display: none;
+}
+
+#thesidia-app .th-toggle .th-toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--th-text-2);
+  transition: transform var(--th-t-fast) var(--th-ease),
+              background var(--th-t-fast) var(--th-ease);
+}
+
+#thesidia-app .th-toggle input:checked + .th-toggle-slider {
+  transform: translateX(16px);
+  background: var(--th-gold);
+}
+
+#thesidia-app .th-toggle input:checked ~ .th-toggle-slider {
+  transform: translateX(16px);
+  background: var(--th-gold);
+}
+
+#thesidia-app .th-select {
+  font-family: var(--th-font-body);
+  font-size: 12px;
+  color: var(--th-text-1);
+  background: var(--th-bg-3);
+  border: 1px solid var(--th-border);
+  border-radius: var(--th-radius-sm);
+  padding: 4px 8px;
+  outline: none;
+  cursor: pointer;
+  max-width: 140px;
+}
+
+#thesidia-app .th-btn-small {
+  font-family: var(--th-font-body);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border: 1px solid var(--th-border);
+  border-radius: var(--th-radius-sm);
+  background: transparent;
+  color: var(--th-text-1);
+  cursor: pointer;
+  transition: all var(--th-t-fast) var(--th-ease);
+}
+
+#thesidia-app .th-btn-small:hover {
+  border-color: var(--th-gold);
+  color: var(--th-gold);
+}
+
+/* ── Server Status Banner ──────────────────────────────── */
+
+#thesidia-app .th-status-banner {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--th-sp-sm);
+  padding: 6px var(--th-sp-md);
+  background: var(--th-bg-2);
+  border-bottom: 1px solid var(--th-border-subtle);
+  font-size: 12px;
+  color: var(--th-text-2);
+}
+
+#thesidia-app .th-status-banner.visible {
+  display: flex;
+}
+
+#thesidia-app .th-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--th-text-3);
+}
+
+#thesidia-app .th-status-dot.online { background: #22c55e; }
+#thesidia-app .th-status-dot.offline { background: #ef4444; }
+
+/* ── Welcome Hero ──────────────────────────────────────── */
+
+#thesidia-app .th-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding: var(--th-sp-xxl) var(--th-sp-lg);
+  overflow: hidden;
+  transition: opacity var(--th-t-slow) var(--th-ease),
+              transform var(--th-t-slow) var(--th-ease);
+}
+
+#thesidia-app .th-hero.hidden {
+  opacity: 0;
+  transform: scale(0.98);
+  pointer-events: none;
+  position: absolute;
+  inset: 52px 0 0 0;
+}
+
+/* Grid container fills the hero */
+#thesidia-app #heroGrid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#thesidia-app #heroGrid .th-lattice,
+#thesidia-app .th-hero .th-lattice {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+#thesidia-app .th-hero-brand {
+  font-family: var(--th-font-brand);
+  font-size: 36px;
+  font-weight: 500;
+  color: var(--th-text-0);
+  letter-spacing: 0.5px;
+  margin-bottom: var(--th-sp-md);
+  position: relative;
+  z-index: 2;
+}
+
+#thesidia-app .th-hero-sub {
+  font-size: 14px;
+  color: var(--th-text-2);
+  margin-bottom: var(--th-sp-xl);
+  position: relative;
+  z-index: 2;
+}
+
+#thesidia-app .th-hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--th-sp-sm);
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+#thesidia-app .th-chip {
+  font-family: var(--th-font-body);
+  font-size: 13px;
+  color: var(--th-text-1);
+  padding: var(--th-sp-sm) var(--th-sp-md);
+  border: 1px solid var(--th-border);
+  border-radius: var(--th-radius-md);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--th-t-normal) var(--th-ease);
+}
+
+#thesidia-app .th-chip:hover {
+  border-color: var(--th-gold);
+  color: var(--th-gold);
+  transform: translateY(-2px);
+}
+
+/* ── Chat Container ────────────────────────────────────── */
+
+#thesidia-app .th-chat {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--th-sp-lg) var(--th-sp-md) 120px;
+  scroll-behavior: smooth;
+  position: relative;
+  display: none; /* shown when messages exist */
+}
+
+#thesidia-app .th-chat.active {
+  display: block;
+}
+
+/* Chat grid container */
+#thesidia-app #chatGrid {
+  position: fixed;
+  top: 52px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+#thesidia-app #chatGrid .th-lattice {
+  width: 100%;
+  height: 100%;
+  opacity: 0.03;
+}
+
+#thesidia-app .th-messages {
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Messages ──────────────────────────────────────────── */
+
+#thesidia-app .th-msg {
+  margin-bottom: var(--th-sp-lg);
+  animation: th-msg-in 300ms var(--th-ease) both;
+}
+
+#thesidia-app .th-msg-user {
+  border-left: 2px solid rgba(255, 215, 0, 0.2);
+  padding: var(--th-sp-md) var(--th-sp-lg);
+}
+
+#thesidia-app .th-msg-user .th-msg-body {
+  font-size: 15px;
+  color: var(--th-text-0);
+  line-height: 1.7;
+}
+
+/* Thesidia response */
+
+#thesidia-app .th-msg-ai {
+  padding: var(--th-sp-md) 0;
+}
+
+#thesidia-app .th-msg-label {
+  display: flex;
+  align-items: center;
+  gap: var(--th-sp-sm);
+  margin-bottom: var(--th-sp-sm);
+  padding-left: var(--th-sp-lg);
+}
+
+#thesidia-app .th-msg-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--th-gold);
+  flex-shrink: 0;
+}
+
+#thesidia-app .th-msg-name {
+  font-family: var(--th-font-brand);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--th-text-2);
+}
+
+#thesidia-app .th-msg-meta {
+  font-size: 11px;
+  color: var(--th-text-3);
+  margin-left: var(--th-sp-sm);
+}
+
+#thesidia-app .th-msg-ai .th-msg-body {
+  font-size: 15px;
+  color: var(--th-text-0);
+  line-height: 1.7;
+  padding: 0 var(--th-sp-lg);
+}
+
+#thesidia-app .th-msg-body p {
+  margin-bottom: 12px;
+}
+
+#thesidia-app .th-msg-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Inline citations */
+#thesidia-app .th-cite {
+  color: var(--th-gold);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  vertical-align: super;
+  margin: 0 1px;
+  transition: opacity var(--th-t-fast);
+}
+
+#thesidia-app .th-cite:hover {
+  text-decoration: underline;
+}
+
+/* Source block */
+#thesidia-app .th-sources {
+  margin-top: var(--th-sp-md);
+  padding: var(--th-sp-md) var(--th-sp-lg);
+  border-top: 1px solid var(--th-border-subtle);
+}
+
+#thesidia-app .th-sources-header {
+  font-family: var(--th-font-brand);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--th-text-3);
+  margin-bottom: var(--th-sp-sm);
+}
+
+#thesidia-app .th-source-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--th-sp-sm);
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+#thesidia-app .th-source-num {
+  color: var(--th-gold);
+  font-weight: 600;
+  min-width: 18px;
+}
+
+#thesidia-app .th-source-domain {
+  color: var(--th-text-1);
+  text-decoration: none;
+  transition: color var(--th-t-fast);
+}
+
+#thesidia-app .th-source-domain:hover {
+  color: var(--th-gold);
+  text-decoration: underline;
+}
+
+#thesidia-app .th-source-title {
+  color: var(--th-text-2);
+}
+
+#thesidia-app .th-sources-toggle {
+  font-size: 12px;
+  color: var(--th-text-2);
+  cursor: pointer;
+  padding: var(--th-sp-xs) 0;
+  border: none;
+  background: none;
+  font-family: var(--th-font-body);
+  transition: color var(--th-t-fast);
+}
+
+#thesidia-app .th-sources-toggle:hover {
+  color: var(--th-gold);
+}
+
+/* Message actions */
+#thesidia-app .th-msg-actions {
+  display: flex;
+  gap: var(--th-sp-sm);
+  padding: var(--th-sp-sm) var(--th-sp-lg);
+  opacity: 0;
+  transition: opacity var(--th-t-fast) var(--th-ease);
+}
+
+#thesidia-app .th-msg:hover .th-msg-actions {
+  opacity: 1;
+}
+
+#thesidia-app .th-action-btn {
+  font-family: var(--th-font-body);
+  font-size: 11px;
+  color: var(--th-text-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--th-radius-sm);
+  transition: all var(--th-t-fast) var(--th-ease);
+}
+
+#thesidia-app .th-action-btn:hover {
+  color: var(--th-text-0);
+  background: var(--th-bg-3);
+}
+
+/* ── Routing Status ────────────────────────────────────── */
+
+#thesidia-app .th-routing {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--th-sp-sm);
+  padding: var(--th-sp-md) 0;
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+#thesidia-app .th-routing.active {
+  display: flex;
+  flex-direction: column;
+  gap: var(--th-sp-sm);
+  animation: th-msg-in 200ms var(--th-ease) both;
+}
+
+#thesidia-app .th-routing-row {
+  display: flex;
+  align-items: center;
+  gap: var(--th-sp-sm);
+  justify-content: center;
+}
+
+#thesidia-app .th-routing-text {
+  font-size: 12px;
+  color: var(--th-text-2);
+}
+
+#thesidia-app .th-routing .th-gears {
+  color: var(--th-text-3);
+}
+
+#thesidia-app .th-progress-bar {
+  width: 200px;
+  height: 2px;
+  background: var(--th-border-subtle);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+#thesidia-app .th-progress-fill {
+  height: 100%;
+  background: var(--th-gold);
+  border-radius: 1px;
+  width: 0%;
+  transition: width var(--th-t-smooth) var(--th-ease);
+  animation: th-shimmer 1.5s infinite;
+}
+
+/* ── Typing Indicator ──────────────────────────────────── */
+
+#thesidia-app .th-typing {
+  display: none;
+  padding: var(--th-sp-md) var(--th-sp-lg);
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+#thesidia-app .th-typing.active {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#thesidia-app .th-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--th-gold);
+  animation: th-dot-bounce 1.4s infinite both;
+}
+
+#thesidia-app .th-typing-dot:nth-child(2) { animation-delay: 0.16s; }
+#thesidia-app .th-typing-dot:nth-child(3) { animation-delay: 0.32s; }
+
+/* ── Prompt Bar ────────────────────────────────────────── */
+
+#thesidia-app .th-prompt-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--th-z-prompt);
+  background: var(--th-bg-0);
+  border-top: 1px solid var(--th-border-subtle);
+  padding: var(--th-sp-md);
+  padding-bottom: max(var(--th-sp-md), env(safe-area-inset-bottom));
+}
+
+#thesidia-app .th-prompt-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+#thesidia-app .th-prompt-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--th-bg-1);
+  border: 1px solid var(--th-border);
+  border-radius: var(--th-radius-xl);
+  padding: 10px 16px;
+  transition: border-color var(--th-t-fast) var(--th-ease);
+}
+
+#thesidia-app .th-prompt-input-row:focus-within {
+  border-color: var(--th-gold-glow);
+}
+
+#thesidia-app .th-attach-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--th-border);
+  background: transparent;
+  color: var(--th-text-2);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 300;
+  flex-shrink: 0;
+  transition: all var(--th-t-fast) var(--th-ease);
+  font-family: var(--th-font-body);
+}
+
+#thesidia-app .th-attach-btn:hover {
+  border-color: var(--th-gold);
+  color: var(--th-gold);
+}
+
+#thesidia-app .th-prompt-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--th-text-0);
+  font-family: var(--th-font-body);
+  font-size: 15px;
+  resize: none;
+  outline: none;
+  max-height: 200px;
+  overflow-y: auto;
+  line-height: 1.5;
+  min-height: 24px;
+}
+
+#thesidia-app .th-prompt-input::placeholder {
+  color: var(--th-text-3);
+}
+
+#thesidia-app .th-send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--th-border);
+  color: var(--th-text-2);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--th-t-fast) var(--th-ease);
+}
+
+#thesidia-app .th-send-btn.ready {
+  background: var(--th-gold);
+  color: var(--th-bg-0);
+}
+
+#thesidia-app .th-send-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Attached files bar */
+#thesidia-app .th-attached {
+  display: none;
+  gap: var(--th-sp-sm);
+  padding: var(--th-sp-sm) 0 0;
+  flex-wrap: wrap;
+}
+
+#thesidia-app .th-attached.has-files {
+  display: flex;
+}
+
+/* ── Notebook Panel ────────────────────────────────────── */
+
+#thesidia-app .th-notebook {
+  position: fixed;
+  top: 52px;
+  right: 0;
+  bottom: 0;
+  width: 360px;
+  background: #0f0f0f;
+  border-left: 1px solid var(--th-border-subtle);
+  z-index: var(--th-z-drawer);
+  transform: translateX(100%);
+  transition: transform var(--th-t-smooth) var(--th-ease);
+  display: flex;
+  flex-direction: column;
+}
+
+#thesidia-app .th-notebook.open {
+  transform: translateX(0);
+}
+
+#thesidia-app .th-notebook-header {
+  padding: var(--th-sp-md) var(--th-sp-lg);
+  border-bottom: 1px solid var(--th-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#thesidia-app .th-notebook-title {
+  font-family: var(--th-font-brand);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--th-text-2);
+}
+
+#thesidia-app .th-notebook-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--th-border-subtle);
+}
+
+#thesidia-app .th-notebook-tab {
+  flex: 1;
+  text-align: center;
+  padding: var(--th-sp-sm) 0;
+  font-size: 12px;
+  color: var(--th-text-2);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-family: var(--th-font-body);
+  transition: all var(--th-t-fast) var(--th-ease);
+}
+
+#thesidia-app .th-notebook-tab.active {
+  color: var(--th-text-0);
+  border-bottom-color: var(--th-gold);
+}
+
+#thesidia-app .th-notebook-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--th-sp-md);
+}
+
+#thesidia-app .th-notebook-card {
+  border: 1px solid var(--th-border-subtle);
+  border-radius: var(--th-radius-md);
+  padding: var(--th-sp-sm) var(--th-sp-md);
+  margin-bottom: var(--th-sp-sm);
+  font-size: 13px;
+  color: var(--th-text-1);
+}
+
+#thesidia-app .th-notebook-notes {
+  width: 100%;
+  min-height: 200px;
+  background: transparent;
+  border: 1px solid var(--th-border-subtle);
+  border-radius: var(--th-radius-md);
+  color: var(--th-text-0);
+  font-family: var(--th-font-body);
+  font-size: 14px;
+  padding: var(--th-sp-md);
+  resize: vertical;
+  outline: none;
+}
+
+#thesidia-app .th-notebook-notes:focus {
+  border-color: var(--th-gold-glow);
+}
+
+/* ── Sidebar (conversations) ───────────────────────────── */
+
+#thesidia-app .th-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background: var(--th-bg-1);
+  border-right: 1px solid var(--th-border-subtle);
+  z-index: var(--th-z-drawer);
+  transform: translateX(-100%);
+  transition: transform var(--th-t-smooth) var(--th-ease);
+  display: flex;
+  flex-direction: column;
+  padding: var(--th-sp-lg);
+}
+
+#thesidia-app .th-sidebar.open {
+  transform: translateX(0);
+}
+
+#thesidia-app .th-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--th-z-drawer) - 1);
+}
+
+#thesidia-app .th-sidebar.open ~ .th-sidebar-overlay {
+  display: block;
+}
+
+/* ── Keyframe Animations ───────────────────────────────── */
+
+@keyframes th-msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes th-dot-bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes th-shimmer {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* ── Triangle Grid Animation States ────────────────────── */
+
+#thesidia-app .th-lattice .th-vertex {
+  fill: var(--th-border);
+  transition: fill 600ms var(--th-ease);
+}
+
+#thesidia-app .th-lattice .th-edge {
+  stroke: transparent;
+  stroke-width: 0.5;
+  transition: stroke 600ms var(--th-ease);
+}
+
+/* Searching: vertices pulse gold in wave */
+#thesidia-app.lattice-searching .th-lattice {
+  opacity: 0.15 !important;
+}
+
+#thesidia-app.lattice-searching .th-lattice .th-vertex {
+  animation: th-vertex-pulse 1.5s var(--th-ease) infinite;
+}
+
+#thesidia-app.lattice-searching .th-lattice .th-edge {
+  stroke: rgba(255, 215, 0, 0.12);
+}
+
+/* Ranking: steady glow, edges visible */
+#thesidia-app.lattice-ranking .th-lattice {
+  opacity: 0.2 !important;
+}
+
+#thesidia-app.lattice-ranking .th-lattice .th-vertex {
+  fill: var(--th-gold);
+  opacity: 0.6;
+  animation: none;
+}
+
+#thesidia-app.lattice-ranking .th-lattice .th-edge {
+  stroke: rgba(255, 215, 0, 0.2);
+}
+
+/* Synthesizing: bright, convergent */
+#thesidia-app.lattice-synthesizing .th-lattice {
+  opacity: 0.25 !important;
+}
+
+#thesidia-app.lattice-synthesizing .th-lattice .th-vertex {
+  fill: var(--th-gold);
+  opacity: 0.8;
+  animation: th-vertex-pulse 0.8s var(--th-ease) infinite;
+}
+
+#thesidia-app.lattice-synthesizing .th-lattice .th-edge {
+  stroke: rgba(255, 215, 0, 0.3);
+}
+
+/* Complete: fade back to idle */
+#thesidia-app.lattice-complete .th-lattice .th-vertex {
+  fill: var(--th-border);
+  transition: fill 800ms var(--th-ease);
+  animation: none;
+}
+
+#thesidia-app.lattice-complete .th-lattice .th-edge {
+  stroke: transparent;
+  transition: stroke 800ms var(--th-ease);
+}
+
+@keyframes th-vertex-pulse {
+  0%   { fill: var(--th-border); }
+  50%  { fill: var(--th-gold); }
+  100% { fill: var(--th-border); }
+}
+
+/* ── Gear Animation ────────────────────────────────────── */
+
+#thesidia-app .th-gear-1 {
+  transform-origin: 10px 10px;
+  animation: th-gear-spin 2s linear infinite;
+}
+
+#thesidia-app .th-gear-2 {
+  transform-origin: 24px 10px;
+  animation: th-gear-spin 2s linear infinite reverse;
+}
+
+@keyframes th-gear-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Gears only animate when routing is active */
+#thesidia-app .th-routing:not(.active) .th-gears {
+  display: none;
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  #thesidia-app .th-header {
+    padding: 0 var(--th-sp-md);
+    height: 48px;
+    min-height: 48px;
+  }
+
+  #thesidia-app .th-mode-btn {
+    padding: 4px 12px;
+    font-size: 11px;
+  }
+
+  #thesidia-app .th-hero-brand {
+    font-size: 24px;
+    letter-spacing: 2px;
+  }
+
+  #thesidia-app .th-hero-sub {
+    font-size: 13px;
+  }
+
+  #thesidia-app .th-messages {
+    max-width: 100%;
+  }
+
+  #thesidia-app .th-notebook {
+    width: 100%;
+  }
+
+  #thesidia-app .th-prompt-container {
+    padding: var(--th-sp-sm);
+  }
+
+  #thesidia-app .th-prompt-input-row {
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  #thesidia-app .th-hero-chips {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #thesidia-app .th-chip {
+    width: 100%;
+    max-width: 240px;
+    text-align: center;
+  }
+
+  #thesidia-app .th-header-actions {
+    gap: var(--th-sp-xs);
+  }
+}

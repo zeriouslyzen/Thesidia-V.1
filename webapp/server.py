@@ -72,12 +72,19 @@ except ImportError:
 
 # Response cleanup helpers
 def _strip_general_framework_block(text: str) -> str:
-    """Remove leaked coaching 'General Framework' template blocks from model output."""
+    """Remove leaked coaching/template blocks from model output."""
     if not text:
         return text
-    # Strip from the first occurrence of (optional markdown) 'General Framework:' to the end.
-    # This is intentionally aggressive because the block is placeholder/template noise.
+    # Strip 'General Framework:', 'Business Framework:', 'Market Research:', etc.
     text = re.sub(r'\*{0,2}\s*General Framework:\s*\*{0,2}[\s\S]*\Z', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\*{0,2}\s*Business Framework:\s*\*{0,2}[\s\S]*\Z', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\*{0,2}\s*Market Research:\s*\*{0,2}[\s\S]*\Z', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\*{0,2}\s*MVP:\s*\*{0,2}.*?Product development[\s\S]*\Z', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\*{0,2}\s*Launch:\s*\*{0,2}.*?Launch strategy[\s\S]*\Z', '', text, flags=re.IGNORECASE)
+    # Strip "I can also:" suggestion blocks
+    text = re.sub(r'\n\s*\*{0,2}I can also:?\*{0,2}\s*\n[\s\S]*\Z', '', text, flags=re.IGNORECASE)
+    # Strip leaked "As an AI" disclaimers at the end
+    text = re.sub(r'\nAs an AI,\s*it\'?s essential[\s\S]*\Z', '', text, flags=re.IGNORECASE)
     return text.strip()
 
 # Conversation persistence (SQLite default)
@@ -1240,6 +1247,8 @@ def thesidia_api(user_id=None, session_id=None):
     format_mode = data.get('format', 'natural')  # 'natural' or 'structured' - from UI selection
     fast_mode = data.get('fast_mode', True)  # true = fast (regular search), false = deep research
     research_depth = data.get('research_depth', 1 if fast_mode else 3)  # 1=Quick (fast), 3=Forensic (deep)
+    # Mode: "auto" (heuristic), "research" (force deep), "conversational" (personality), "stream" (post analysis)
+    mode = data.get('mode', 'auto')
     
     # user_id and session_id are now provided by the @require_user decorator
     
@@ -1286,7 +1295,7 @@ def thesidia_api(user_id=None, session_id=None):
         return Response(
             stream_with_context(_stream_thesidia_response(message, show_thinking, user_id=user_id, session_id=session_id,
                                                          format_mode=format_mode, research_depth=research_depth, fast_mode=fast_mode,
-                                                         task_type=task_type, use_mlx=use_mlx)),
+                                                         mode=mode, task_type=task_type, use_mlx=use_mlx)),
             mimetype='text/event-stream',
             headers={
                 'Cache-Control': 'no-cache',
@@ -1345,6 +1354,7 @@ def thesidia_api(user_id=None, session_id=None):
                 "format_mode": format_mode,
                 "research_depth": research_depth,
                 "fast_mode": fast_mode,
+                "mode": mode,
                 "task_type": task_type,
                 "use_mlx": use_mlx
             }
@@ -1500,6 +1510,7 @@ def gnostic_blade_api(user_id=None, session_id=None):
                 "format_mode": format_mode,
                 "research_depth": research_depth,
                 "fast_mode": fast_mode,
+                "mode": "research",  # Gnostic Blade always uses research mode
                 "task_type": task_type,
                 "use_mlx": use_mlx
             }
@@ -1549,7 +1560,7 @@ def gnostic_blade_api(user_id=None, session_id=None):
             'error': 'Internal server error',
             'message': str(e)
         }), 500
-def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None, format_mode='natural', research_depth=2, fast_mode=True, task_type='general', use_mlx=False):
+def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=None, format_mode='natural', research_depth=2, fast_mode=True, mode='auto', task_type='general', use_mlx=False):
     """Stream Thesidia response with progress updates - USES FULL THESIDIA PROCESS"""
     global thesidia
     
@@ -1692,6 +1703,7 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
                 "format_mode": format_mode,
                 "research_depth": research_depth,
                 "fast_mode": fast_mode,
+                "mode": mode,
                 "task_type": task_type,
                 "use_mlx": use_mlx
             }
@@ -1699,11 +1711,20 @@ def _stream_thesidia_response(message, show_thinking, user_id=None, session_id=N
         response = result.get("output", "") if isinstance(result, dict) else str(result)
         response = _strip_general_framework_block(response)
         
+        # Phase 3b: Send sources to frontend (if research was performed)
+        search_sources = getattr(thesidia, '_last_search_sources', [])
+        if search_sources:
+            yield send_event('sources', {
+                'sources': search_sources[:10],
+                'count': len(search_sources)
+            })
+            # Clear for next request
+            thesidia._last_search_sources = []
+        
         # Phase 4: Stream the response token-by-token for optimal UX
-        # Response is already generated by process(), now we stream it
         yield send_event('progress', {
             'phase': 'streaming',
-            'message': 'Streaming response...',
+            'message': f'Streaming response... ({len(search_sources)} sources found)' if search_sources else 'Streaming response...',
             'progress': 50
         })
         
@@ -2621,6 +2642,58 @@ def get_post(post_id):
         return jsonify(post)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/stream/analyze', methods=['POST'])
+@require_user
+def stream_analyze_post(user_id=None, session_id=None):
+    """Fact-check / truth-analyze a social post using Thesidia's TruthEngine.
+    
+    Request JSON:
+        post_id: (str) ID of an existing post to analyze, OR
+        content: (str) Raw text content to analyze directly
+        
+    Returns JSON:
+        analysis: (str)  Formatted truth analysis
+        post_id:  (str)  The post ID that was analyzed (if provided)
+        mode:     (str)  Always "stream"
+    """
+    global thesidia, thesidia_ready
+
+    # Ensure Thesidia is initialized
+    if not thesidia_ready or not thesidia:
+        if not init_thesidia():
+            return jsonify({'error': 'Thesidia is not ready. Is Ollama running?'}), 503
+
+    data = request.get_json() or {}
+    post_id = data.get('post_id')
+    content = data.get('content', '').strip()
+
+    # Resolve content: either from post_id or directly from request body
+    if post_id and not content:
+        if not post_manager:
+            return jsonify({'error': 'Social features not available'}), 503
+        post = post_manager.get_post(post_id)
+        if not post:
+            return jsonify({'error': f'Post {post_id} not found'}), 404
+        content = post.get('content', post.get('text', ''))
+
+    if not content:
+        return jsonify({'error': 'Either post_id or content is required'}), 400
+
+    if len(content) > 10000:
+        return jsonify({'error': 'Content too long (max 10000 chars)'}), 400
+
+    try:
+        analysis = thesidia.stream_analyze(post_content=content, post_id=post_id)
+        return jsonify({
+            'analysis': analysis,
+            'post_id': post_id,
+            'mode': 'stream'
+        })
+    except Exception as e:
+        print(f"STREAM ANALYZE ERROR: {e}", flush=True)
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/posts/<post_id>', methods=['DELETE'])
 @require_thesidia_user_data
