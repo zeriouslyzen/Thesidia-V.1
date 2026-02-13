@@ -44,12 +44,18 @@ class EmbeddingGenerator:
         # Prefer Ollama embeddings if available
         if self._ollama:
             try:
-                resp = self._ollama.embeddings(model=self.model, prompt=text)
-                emb = resp.get("embedding") if isinstance(resp, dict) else getattr(resp, "embedding", None)
+                import ollama  # type: ignore
+                response = ollama.embeddings(model=self.model, prompt=text)
+                emb = response.get('embedding', response.embedding if hasattr(response, 'embedding') else [])
                 if emb:
                     return list(emb)
-            except Exception:
+            except Exception as e:
+                print(f"⚠️ Local embedding error: {e}")
+                # Return a zero vector of a common embedding size (e.g., 384 for all-MiniLM-L6-v2)
+                # or None if a specific size isn't guaranteed or desired for fallback.
+                # For now, returning None to indicate failure, consistent with original logic.
                 pass
+
 
         # Fallback to sentence-transformers if installed
         if self._st_model:

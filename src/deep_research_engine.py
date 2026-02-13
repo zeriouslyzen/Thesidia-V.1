@@ -9,7 +9,10 @@ import requests
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 from bs4 import BeautifulSoup
-import ollama
+try:
+    import ollama
+except ImportError:
+    ollama = None
 
 # Free tools for multi-source research
 try:
@@ -28,8 +31,9 @@ except ImportError:
 class ResearchPlanner:
     """Clarifies research objectives and plans strategy"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
+        self.model_client = model_client
     
     def clarify_objectives(self, query: str) -> Dict[str, Any]:
         """Clarify what to search for - directive-like approach"""
@@ -65,11 +69,17 @@ Return JSON format:
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 options={"temperature": 0.7}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                raise RuntimeError("No model backend available")
             
             content = response['message']['content']
             # Extract JSON from response
@@ -239,8 +249,9 @@ class MultiSourceGatherer:
 class IterativeSearchLoop:
     """Implements search → think → search again pattern"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
+        self.model_client = model_client
         self.search_notes = []
         self.gaps_identified = []
         self.iterations = 0
@@ -280,11 +291,17 @@ Return JSON:
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 options={"temperature": 0.7}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                raise RuntimeError("No model backend available")
             
             content = response['message']['content']
             json_start = content.find('{')
@@ -383,11 +400,12 @@ class ToolExecutor:
 class DeepResearchEngine:
     """Main deep research engine - iterative, multi-source research"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
-        self.planner = ResearchPlanner(model)
+        self.model_client = model_client
+        self.planner = ResearchPlanner(model, model_client=model_client)
         self.gatherer = MultiSourceGatherer()
-        self.search_loop = IterativeSearchLoop(model)
+        self.search_loop = IterativeSearchLoop(model, model_client=model_client)
         self.tool_executor = ToolExecutor()
         self.research_history = []
     
@@ -540,11 +558,17 @@ Cite sources with URLs.
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 options={"temperature": 0.7, "top_p": 0.95}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                raise RuntimeError("No model backend available")
             
             return response['message']['content']
         except Exception as e:

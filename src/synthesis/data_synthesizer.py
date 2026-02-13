@@ -9,7 +9,13 @@ Integrates TruthEngine for 7-layer epistemology validation.
 
 from __future__ import annotations
 
-import ollama
+try:
+    import ollama
+    OLLAMA_AVAILABLE = True
+except ImportError:
+    ollama = None
+    OLLAMA_AVAILABLE = False
+
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 
@@ -538,6 +544,9 @@ start directly with ur deep analysis. no preamble. be direct, be forensic, be de
                 synthesis = strip_meta_noise(response.message.content)
             else:
                 # Fallback: direct ollama.chat
+                if not OLLAMA_AVAILABLE:
+                    raise ValueError("Ollama not available and no ModelClient provided")
+                
                 messages = []
                 if enhanced_prompt:
                     messages.append({"role": "system", "content": enhanced_prompt[:6000]})
@@ -555,10 +564,7 @@ start directly with ur deep analysis. no preamble. be direct, be forensic, be de
                     }
                 )
                 
-                if not response or not hasattr(response, 'message') or not hasattr(response.message, 'content'):
-                    raise ValueError("ollama.chat() response invalid")
-                
-                synthesis = strip_meta_noise(response.message.content)
+                synthesis = strip_meta_noise(response['message']['content'] if isinstance(response, dict) and 'message' in response else (response.message.content if hasattr(response, 'message') else str(response)))
             
             # For gnostic queries, ensure we got enough content
             if force_gnostic and len(synthesis) < 2000:

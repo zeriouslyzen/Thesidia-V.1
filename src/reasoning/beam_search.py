@@ -41,6 +41,7 @@ try:
     import ollama
     OLLAMA_AVAILABLE = True
 except ImportError:
+    ollama = None
     OLLAMA_AVAILABLE = False
 
 # MLX support (Apple Silicon optimization)
@@ -270,7 +271,7 @@ Respond thoughtfully from this perspective. Be specific and insightful."""
                     "top_p": 0.9
                 }
             )
-            return response.message.content if hasattr(response, 'message') else str(response)
+            return response['message']['content'] if isinstance(response, dict) and 'message' in response else (response.message.content if hasattr(response, 'message') else str(response))
         else:
             return "No model available for generation"
     

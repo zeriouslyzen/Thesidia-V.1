@@ -5,7 +5,11 @@ No hardcoded personality traits, communication style, or character.
 Everything emerges organically.
 """
 
-import ollama
+
+try:
+    import ollama
+except ImportError:
+    ollama = None
 import json
 import re
 from typing import Dict, List, Any, Optional
@@ -15,8 +19,9 @@ import os
 class PersonalityEmergent:
     """Personality that emerges from zero - no pre-programmed traits"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
+        self.model_client = model_client
         
         # Zero personality state
         self.personality = {
@@ -60,14 +65,17 @@ Let your traits, style, and character emerge organically.
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
-                options={
-                    "temperature": 0.85,  # Allow personality variation
-                    "top_p": 0.95
-                }
+                options={"temperature": 0.85, "top_p": 0.95}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                return "Error: No model backend available"
             
             output = response['message']['content']
             
@@ -143,11 +151,17 @@ Only include what is genuinely new or different from before.
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": extraction_prompt}],
                 options={"temperature": 0.7}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                return  # Skip extraction if no backend
             
             extraction_text = response['message']['content']
             
@@ -273,9 +287,9 @@ Only include what is genuinely new or different from before.
 class ThesidiaPersonalityEmergent:
     """Thesidia with emergent personality - starts with zero personality"""
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
-        self.personality_engine = PersonalityEmergent(model)
+        self.personality_engine = PersonalityEmergent(model, model_client=model_client)
     
     def interact(self, input_text: str) -> str:
         """Interact - personality emerges"""

@@ -3,15 +3,20 @@
 Response Enhancements - Unfolding narratives, metaphors, possibilities, connections
 """
 
-import ollama
 import re
 from typing import Dict, List, Any, Optional
+
+try:
+    import ollama
+except ImportError:
+    ollama = None
 
 class ResponseEnhancer:
     """Enhance responses with unfolding narratives, metaphors, possibilities"""
     
-    def __init__(self, model: str = "oracle-agent:latest"):
+    def __init__(self, model: str = "oracle-agent:latest", model_client=None):
         self.model = model
+        self.model_client = model_client
     
     def generate_intelligent_metaphor(self, concept: str, context: str) -> Optional[str]:
         """Generate intelligent metaphor - never the first/cliché one"""
@@ -34,11 +39,17 @@ Return ONLY the metaphor, no explanation.
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 options={"temperature": 0.9, "top_p": 0.95, "num_predict": 200}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                return None
             metaphor = response['message']['content'].strip()
             # Remove quotes if present
             metaphor = metaphor.strip('"').strip("'")
@@ -99,11 +110,17 @@ Keep it engaging and mysterious but grounded.
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 options={"temperature": 0.85, "top_p": 0.95, "num_predict": 800}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                return "Error: No model backend available"
             return response['message']['content']
         except Exception as e:
             return f"Error generating unfolding: {e}"
@@ -130,11 +147,17 @@ Keep it grounded but visionary.
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 options={"temperature": 0.9, "top_p": 0.95, "num_predict": 500}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                return None
             return response['message']['content']
         except (Exception, KeyError, TypeError) as e:
             # Ollama API error or response format issue - return None gracefully
@@ -177,11 +200,17 @@ Use symbols and protocols. Make it feel like a revelation.
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 options={"temperature": 0.9, "top_p": 0.95, "num_predict": 600}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                return None
             return response['message']['content']
         except (Exception, KeyError, TypeError) as e:
             # Ollama API error or response format issue - return None gracefully
@@ -222,11 +251,17 @@ Use symbols and protocols. Create a cliffhanger.
 """
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 options={"temperature": 0.85, "top_p": 0.95, "num_predict": 500}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                return None
             return response['message']['content']
         except (Exception, KeyError, TypeError) as e:
             # Ollama API error or response format issue - return None gracefully

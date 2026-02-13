@@ -132,7 +132,7 @@ app.secret_key = os.getenv('FLASK_SECRET_KEY', secrets.token_urlsafe(32))
 
 # Initialize SocketIO for real-time features
 try:
-    from flask_socketio import SocketIO
+    from flask_socketio import SocketIO, emit, join_room, leave_room
     socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
     SOCKETIO_AVAILABLE = True
 except ImportError:
@@ -1144,12 +1144,12 @@ def upsert_conversation(conversation_id: str):
     except ValueError as e:
         # Handle UUID validation errors gracefully
         if "uuid" in str(e).lower():
-            log.warning(f"Invalid user_id format (expected UUID): {user_id}")
+            logger.warning(f"Invalid user_id format (expected UUID): {user_id}")
             # Save to localStorage will still work on client side
             return jsonify({"ok": True, "warning": "Server sync skipped (invalid user_id format)"}), 200
         return jsonify({"ok": False, "error": str(e)}), 500
     except Exception as e:
-        log.error(f"Error upserting conversation: {e}")
+        logger.error(f"Error upserting conversation: {e}")
         # Return 200 so client-side caching still works
         return jsonify({"ok": True, "warning": f"Server sync failed: {str(e)}"}), 200
 
@@ -5300,7 +5300,7 @@ if SOCKETIO_AVAILABLE:
     def handle_kim_join(data):
         """Join a chat room (dm or public)."""
         room = data['room']
-        socketio.join_room(room, sid=request.sid, namespace='/kim')
+        join_room(room, sid=request.sid, namespace='/kim')
         print(f"KIM: User joined room: {room}")
         socketio.emit('status', {'msg': f'Joined room {room}'}, room=room, namespace='/kim')
 

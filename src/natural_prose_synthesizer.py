@@ -5,9 +5,13 @@ Converts structured forensic analysis into natural, flowing prose
 """
 
 import re
-import ollama
 from typing import Dict, List, Optional, Any, Iterator
 from collections import OrderedDict
+
+try:
+    import ollama
+except ImportError:
+    ollama = None
 
 
 class NaturalProseSynthesizer:
@@ -19,8 +23,9 @@ class NaturalProseSynthesizer:
     4. Post-process for smoothness
     """
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
+        self.model_client = model_client
         self.natural_transitions = {
             'exposure': [
                 "What emerges from the evidence is",
@@ -117,15 +122,21 @@ class NaturalProseSynthesizer:
         naturalization_prompt = self._build_naturalization_prompt(forensic_data, query, context)
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": naturalization_prompt}],
                 options={
-                    "temperature": 0.7,  # Lower temperature for more coherent prose
+                    "temperature": 0.7,
                     "top_p": 0.9,
-                    "num_predict": 4000  # Allow for natural expansion
+                    "num_predict": 4000
                 }
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                raise RuntimeError("No model backend available")
             
             naturalized = response['message']['content'].strip()
             

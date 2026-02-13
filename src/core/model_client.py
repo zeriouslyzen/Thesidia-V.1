@@ -210,6 +210,91 @@ class ModelClient:
             '_raw_response': response
         }
     
+    def raw_chat(
+        self,
+        model: str = None,
+        messages: list = None,
+        options: dict = None
+    ) -> dict:
+        """
+        Raw chat bridge — same signature as ollama.chat() for easy migration.
+        
+        Use this when you have pre-built messages and just need the model call
+        routed through the centralized client (with MLX fallback support).
+        
+        Args:
+            model: Model name (defaults to self.default_model)
+            messages: List of message dicts [{"role": "...", "content": "..."}]
+            options: Ollama options dict
+        
+        Returns:
+            Dict with {'message': {'content': '...', 'role': '...'}}
+        """
+        model = model or self.default_model
+        messages = messages or []
+        options = options or {}
+        
+        self.call_count += 1
+        
+        # Check if we should use MLX
+        is_mlx_model = any(m in model.lower() for m in ["llama-3.", "qwen2.5", "mlx"])
+        
+        if is_mlx_model and self.mlx_inference:
+            try:
+                full_prompt = ""
+                for m in messages:
+                    role = m["role"].upper()
+                    content = m["content"]
+                    full_prompt += f"{role}: {content}\n\n"
+                
+                mlx_response_text = self.mlx_inference.generate(
+                    prompt=full_prompt,
+                    max_tokens=options.get("num_predict", 1024)
+                )
+                
+                return {
+                    "message": {
+                        "role": "assistant",
+                        "content": mlx_response_text
+                    },
+                    "done": True
+                }
+            except Exception as e:
+                print(f"Error in MLX raw_chat: {e}. Falling back to Ollama.")
+        
+        # Normalize MLX model paths for Ollama
+        if "mlx-community/" in model:
+            original_model = model
+            if "Qwen2.5-1.5B" in model:
+                model = "qwen2.5:1.5b"
+            elif "Llama-3.2-1B" in model:
+                model = "llama3.2:1b"
+            elif "Llama-3.2-3B" in model:
+                model = "llama3.2:3b"
+            elif "Phi-3.5-mini" in model:
+                model = "phi3.5:3.8b"
+            elif "Llama-3.1-8B" in model:
+                model = "llama3.1:8b"
+            if model != original_model:
+                print(f"⚠️ Normalized MLX model path '{original_model}' to Ollama name '{model}'")
+        
+        # Make the call via Ollama
+        response = ollama.chat(
+            model=model,
+            messages=messages,
+            options=options
+        )
+        
+        if not response:
+            return {'message': {'content': '', 'role': 'assistant'}}
+        
+        return {
+            'message': {
+                'content': response.message.content if hasattr(response, 'message') and hasattr(response.message, 'content') else '',
+                'role': response.message.role if hasattr(response, 'message') and hasattr(response.message, 'role') else 'assistant'
+            }
+        }
+    
     def _sanitize_system_prompt(self, prompt: str) -> str:
         """Remove TODOs, debug text, commented instructions (Vibecode #5)"""
         # Remove TODO comments

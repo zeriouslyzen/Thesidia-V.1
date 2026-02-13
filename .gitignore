@@ -10,6 +10,10 @@ ENV/
 build/
 dist/
 *.egg-info/
+webapp/venv/
+data/users/
+analysis_output/
+datasets/
 
 # State files (optional - uncomment if you don't want to track state)
 # data/*.json
@@ -29,3 +33,8 @@ Thumbs.db
 *.log
 .env
 webapp/assets/videos/*.mp4
+data/**/*.json
+data/**/*.jsonl
+*.log.txt
+system_stats.txt
+.antigravity/

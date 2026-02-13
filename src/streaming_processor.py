@@ -4,9 +4,13 @@ Streaming Processor - Real-time token streaming for better UX
 Implements early stopping and quality thresholds
 """
 
-import ollama
 from typing import Iterator, Dict, Any, Optional, Callable, List
 import time
+
+try:
+    import ollama
+except ImportError:
+    ollama = None
 
 
 class StreamingProcessor:
@@ -15,8 +19,9 @@ class StreamingProcessor:
     Implements early stopping based on quality thresholds
     """
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
+        self.model_client = model_client  # Note: streaming still uses ollama directly
         self.quality_check_interval = 100  # Check quality every N tokens
         self.min_tokens = 50  # Minimum tokens before early stopping
         self.quality_threshold = 0.85  # Quality threshold for early stopping
@@ -34,6 +39,10 @@ class StreamingProcessor:
         last_quality_check = 0
         
         try:
+            # Streaming requires ollama directly — raw_chat doesn't support stream=True
+            if not ollama:
+                yield {"token": "", "accumulated": "", "token_count": 0, "complete": True, "error": "Ollama not available for streaming", "quality": None, "should_stop": False}
+                return
             response = ollama.chat(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
@@ -41,7 +50,7 @@ class StreamingProcessor:
                     "temperature": temperature,
                     "num_predict": max_tokens
                 },
-                stream=True  # Enable streaming
+                stream=True
             )
             
             for chunk in response:
@@ -163,8 +172,9 @@ class TreeOfThoughts:
     Tree of Thoughts reasoning - explores multiple reasoning paths
     """
     
-    def __init__(self, model: str = "clean-mistral:latest"):
+    def __init__(self, model: str = "clean-mistral:latest", model_client=None):
         self.model = model
+        self.model_client = model_client
     
     def explore_paths(self, query: str, sources: List[Dict[str, Any]], 
                      num_paths: int = 4) -> List[Dict[str, Any]]:
@@ -208,11 +218,17 @@ Focus on:
 
 Historical Analysis:"""
         
-        response = ollama.chat(
+        call_kwargs = dict(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": 0.8, "num_predict": 2000}
         )
+        if self.model_client:
+            response = self.model_client.raw_chat(**call_kwargs)
+        elif ollama:
+            response = ollama.chat(**call_kwargs)
+        else:
+            return ""
         return response['message']['content'].strip()
     
     def _pattern_path(self, query: str, sources: List[Dict[str, Any]]) -> str:
@@ -231,11 +247,17 @@ Focus on:
 
 Pattern Analysis:"""
         
-        response = ollama.chat(
+        call_kwargs = dict(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": 0.8, "num_predict": 2000}
         )
+        if self.model_client:
+            response = self.model_client.raw_chat(**call_kwargs)
+        elif ollama:
+            response = ollama.chat(**call_kwargs)
+        else:
+            return ""
         return response['message']['content'].strip()
     
     def _etymological_path(self, query: str, sources: List[Dict[str, Any]]) -> str:
@@ -254,11 +276,17 @@ Focus on:
 
 Etymological Analysis:"""
         
-        response = ollama.chat(
+        call_kwargs = dict(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": 0.8, "num_predict": 2000}
         )
+        if self.model_client:
+            response = self.model_client.raw_chat(**call_kwargs)
+        elif ollama:
+            response = ollama.chat(**call_kwargs)
+        else:
+            return ""
         return response['message']['content'].strip()
     
     def _cross_domain_path(self, query: str, sources: List[Dict[str, Any]]) -> str:
@@ -277,11 +305,17 @@ Focus on:
 
 Cross-Domain Analysis:"""
         
-        response = ollama.chat(
+        call_kwargs = dict(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": 0.8, "num_predict": 2000}
         )
+        if self.model_client:
+            response = self.model_client.raw_chat(**call_kwargs)
+        elif ollama:
+            response = ollama.chat(**call_kwargs)
+        else:
+            return ""
         return response['message']['content'].strip()
     
     def _evaluate_path(self, path_content: str, query: str) -> Dict[str, Any]:
@@ -352,10 +386,16 @@ Synthesize these paths into a comprehensive, flowing response that:
 
 Synthesis:"""
         
-        response = ollama.chat(
+        call_kwargs = dict(
             model=self.model,
             messages=[{"role": "user", "content": synthesis_prompt}],
             options={"temperature": 0.7, "num_predict": 3000}
         )
+        if self.model_client:
+            response = self.model_client.raw_chat(**call_kwargs)
+        elif ollama:
+            response = ollama.chat(**call_kwargs)
+        else:
+            return ""
         return response['message']['content'].strip()
 

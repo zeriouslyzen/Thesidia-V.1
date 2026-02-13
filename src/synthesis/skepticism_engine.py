@@ -9,7 +9,13 @@ Detects control structures through pattern recognition.
 
 from __future__ import annotations
 
-import ollama
+try:
+    import ollama
+    OLLAMA_AVAILABLE = True
+except ImportError:
+    ollama = None
+    OLLAMA_AVAILABLE = False
+
 import re
 from typing import Dict, List, Any, Optional
 from datetime import datetime
@@ -73,6 +79,14 @@ Respond with intuitive assessment, not hardcoded skepticism.
                     options={"temperature": 0.7, "top_p": 0.95}
                 )
             else:
+                if not OLLAMA_AVAILABLE:
+                    return {
+                        "analysis": "Ollama not available for analysis.",
+                        "patterns_detected": [],
+                        "skepticism_level": 0.5,
+                        "control_indicators": [],
+                        "timestamp": datetime.now().isoformat()
+                    }
                 response = ollama.chat(
                     model=self.model,
                     messages=[{"role": "user", "content": prompt}],
@@ -199,6 +213,8 @@ Respond with intuitive assessment.
                     options={"temperature": 0.7}
                 )
             else:
+                if not OLLAMA_AVAILABLE:
+                    return {"verified": False, "reason": "Ollama not available"}
                 response = ollama.chat(
                     model=self.model,
                     messages=[{"role": "user", "content": prompt}],

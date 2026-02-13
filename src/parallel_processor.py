@@ -8,7 +8,11 @@ import asyncio
 import concurrent.futures
 import time
 from typing import Dict, List, Optional, Any, Tuple
-import ollama
+
+try:
+    import ollama
+except ImportError:
+    ollama = None
 
 
 class ParallelProcessor:
@@ -17,9 +21,10 @@ class ParallelProcessor:
     Optimized for Mac Neural Engine when available
     """
     
-    def __init__(self, model: str = "clean-mistral:latest", web_search_engine=None):
+    def __init__(self, model: str = "clean-mistral:latest", web_search_engine=None, model_client=None):
         self.model = model
         self.web_search = web_search_engine
+        self.model_client = model_client
         self.is_mac = self._detect_mac()
         self.neural_engine_available = self._check_neural_engine()
     
@@ -103,15 +108,17 @@ Keep this brief (200-300 words). This is initial thinking, not a full answer.
 Initial Analysis:"""
         
         try:
-            response = ollama.chat(
+            call_kwargs = dict(
                 model=self.model,
                 messages=[{"role": "user", "content": thinking_prompt}],
-                options={
-                    "temperature": 0.7,
-                    "num_predict": 500,  # Brief thinking, not full response
-                    "top_p": 0.9
-                }
+                options={"temperature": 0.7, "num_predict": 500, "top_p": 0.9}
             )
+            if self.model_client:
+                response = self.model_client.raw_chat(**call_kwargs)
+            elif ollama:
+                response = ollama.chat(**call_kwargs)
+            else:
+                raise RuntimeError("No model client or ollama available")
             
             analysis = response['message']['content'].strip()
             
@@ -224,9 +231,10 @@ class AsyncParallelProcessor:
     Uses asyncio for non-blocking operations
     """
     
-    def __init__(self, model: str = "clean-mistral:latest", web_search_engine=None):
+    def __init__(self, model: str = "clean-mistral:latest", web_search_engine=None, model_client=None):
         self.model = model
         self.web_search = web_search_engine
+        self.model_client = model_client
     
     async def process_async(self, query: str, num_results: int = 5) -> Dict[str, Any]:
         """Process query with async parallel operations"""
@@ -279,9 +287,12 @@ Initial Analysis:"""
         
         # Run in thread pool (Ollama is I/O bound)
         loop = asyncio.get_event_loop()
+        chat_fn = self.model_client.raw_chat if self.model_client else (ollama.chat if ollama else None)
+        if not chat_fn:
+            raise RuntimeError("No model client or ollama available")
         response = await loop.run_in_executor(
             None,
-            lambda: ollama.chat(
+            lambda: chat_fn(
                 model=self.model,
                 messages=[{"role": "user", "content": thinking_prompt}],
                 options={"temperature": 0.7, "num_predict": 500}

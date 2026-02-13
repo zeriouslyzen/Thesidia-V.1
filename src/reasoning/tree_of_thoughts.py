@@ -41,6 +41,7 @@ try:
     import ollama
     OLLAMA_AVAILABLE = True
 except ImportError:
+    ollama = None
     OLLAMA_AVAILABLE = False
 
 
@@ -269,7 +270,7 @@ Bridge domains. Show how knowledge in one area illuminates another."""
                     "top_p": 0.9
                 }
             )
-            return response.message.content if hasattr(response, 'message') else str(response)
+            return response['message']['content'] if isinstance(response, dict) and 'message' in response else (response.message.content if hasattr(response, 'message') else str(response))
         else:
             return f"No model available for {path.perspective} exploration"
     
@@ -473,7 +474,7 @@ Write naturally, not as a list. Aim for deep, flowing prose that reveals deeper 
                     "top_p": 0.9
                 }
             )
-            return response.message.content if hasattr(response, 'message') else str(response)
+            return response['message']['content'] if isinstance(response, dict) and 'message' in response else (response.message.content if hasattr(response, 'message') else str(response))
         else:
             # Fallback: simple concatenation
             return "\n\n".join([f"## {p.perspective}\n{p.response}" for p in paths])

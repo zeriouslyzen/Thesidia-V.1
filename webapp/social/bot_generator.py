@@ -708,7 +708,8 @@ class BotGenerator:
                 min(comments_count, len(all_bot_ids) - 1)
             ) if len(all_bot_ids) > 1 else []
             
-            # Generate realistic comments
+            # Generate comments -- use Thesidia stream analysis when available,
+            # falling back to simple templates otherwise.
             comment_templates = [
                 "Great point!",
                 "Interesting perspective",
@@ -722,9 +723,38 @@ class BotGenerator:
                 "This is helpful"
             ]
             
-            for bot_id in commenting_bots:
+            # Attempt fact-check comment via Thesidia stream_analyze (at most once per post)
+            fact_check_comment = None
+            if self.use_thesidia and self.thesidia_instance and hasattr(self.thesidia_instance, 'stream_analyze'):
                 try:
-                    comment_text = random.choice(comment_templates)
+                    # Retrieve the post content for analysis
+                    post_file_check = self.post_manager.posts_dir / f"{post_id}.json"
+                    if post_file_check.exists():
+                        with open(post_file_check, 'r', encoding='utf-8') as f:
+                            post_data = json.load(f)
+                        post_content = post_data.get('content', post_data.get('text', ''))
+                        if post_content and len(post_content) > 30:
+                            analysis = self.thesidia_instance.stream_analyze(
+                                post_content=post_content, post_id=post_id
+                            )
+                            # Extract a short summary line for the comment
+                            # Use the verdict line if present, else first two lines
+                            for line in analysis.split('\n'):
+                                if 'Verdict:' in line or 'Truth Score:' in line:
+                                    fact_check_comment = line.strip()
+                                    break
+                            if not fact_check_comment and analysis:
+                                fact_check_comment = analysis.split('\n')[0][:140]
+                except Exception as e:
+                    print(f"Bot fact-check comment failed (non-fatal): {e}")
+            
+            for i, bot_id in enumerate(commenting_bots):
+                try:
+                    # First commenter uses fact-check if available
+                    if i == 0 and fact_check_comment:
+                        comment_text = fact_check_comment
+                    else:
+                        comment_text = random.choice(comment_templates)
                     self.interaction_manager.comment_post(post_id, bot_id, comment_text)
                 except Exception:
                     pass

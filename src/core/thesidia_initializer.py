@@ -51,7 +51,10 @@ class ThesidiaInitializer:
         """Check if Ollama is running."""
         try:
             import ollama
-            ollama.list()
+            if hasattr(ollama, 'list'):
+                ollama.list()
+            elif isinstance(ollama, dict) and 'list' in ollama:
+                ollama['list']()
             return True
         except Exception:
             return False

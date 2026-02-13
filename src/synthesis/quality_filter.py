@@ -8,10 +8,16 @@ Filter and enrich data for quality and richness.
 
 from __future__ import annotations
 
-import ollama
+try:
+    import ollama
+    OLLAMA_AVAILABLE = True
+except ImportError:
+    ollama = None
+    OLLAMA_AVAILABLE = False
+
 import json
 import re
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from ..core.model_client import ModelClient
 from .skepticism_engine import IntuitiveSkepticism
@@ -62,6 +68,8 @@ Respond in JSON:
                     options={"temperature": 0.3}  # Lower temp for assessment
                 )
             else:
+                if not OLLAMA_AVAILABLE:
+                    return self._heuristic_quality(content, url)
                 response = ollama.chat(
                     model=self.model,
                     messages=[{"role": "user", "content": prompt}],
@@ -158,6 +166,8 @@ Return enriched content that is more complete and useful.
                     options={"temperature": 0.6}
                 )
             else:
+                if not OLLAMA_AVAILABLE:
+                    return content
                 response = ollama.chat(
                     model=self.model,
                     messages=[{"role": "user", "content": prompt}],
