@@ -16,6 +16,10 @@
 | [ENGINEERING_LOG.md](ENGINEERING_LOG.md) | Reasoning journal -- why decisions were made, what failed, what was learned |
 | [V4_ROADMAP.md](V4_ROADMAP.md) | Next-generation plan with prioritized gaps, proposed solutions, and effort estimates |
 | [COMPETITIVE_ANALYSIS.md](COMPETITIVE_ANALYSIS.md) | Raw honest assessment of Thesidia vs Perplexity, Grok, ChatGPT Search, Gemini Deep Research |
+| [OPENCLAW_RESEARCH_AND_THESI_AGENT.md](OPENCLAW_RESEARCH_AND_THESI_AGENT.md) | OpenClaw (2026) research, lessons for Thesidia, and Thesi as a separate agentic-only agent |
+| [CURRENT_FIRST_AGENTIC_STACK.md](CURRENT_FIRST_AGENTIC_STACK.md) | Unified stack (all features + currentness layer): as_of, freshness, stale/supersede; solves outdated material |
+| [AI_STACK_ADVANCES_AND_DIRECTION.md](AI_STACK_ADVANCES_AND_DIRECTION.md) | What actually advanced (algorithms) vs hype; map of your early work to today; concrete direction |
+| [BEYOND_CLAW_RESEARCH_DIRECTION.md](BEYOND_CLAW_RESEARCH_DIRECTION.md) | What Claw is in research terms; what research is past Claw (verification, long-horizon, multi-agent, reflection); what to explore |
 
 ---
 
